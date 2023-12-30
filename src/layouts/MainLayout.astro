@@ -1,0 +1,67 @@
+---
+
+---
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="generator" content={Astro.generator} />
+        <title>Astro</title>
+    </head>
+    <body>
+        <div class="custom-navbar">
+            <nav
+                class="container mx-auto flex items-center justify-items-center justify-between flex-wrap bg-transparent py-6 text-black dark:bg-transparent order-1 gap-4"
+            >
+                <a href="/" class="inline-flex items-center mr-4">
+                    <span
+                        class="text-2xl text-black font-bold uppercase tracking-wide"
+                    >
+                        Fazley
+                    </span>
+                </a>
+
+                <div class='w-full lg:inline-flex lg:flex-grow lg:w-auto order-2'>
+                    <div
+                        class="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start flex flex-col lg:h-auto gap-4 font-semibold"
+                    >
+                        <a
+                            href="/blogs/"
+                            class={`dark:text-white"  lg:inline-flex lg:w-auto w-full text-black px-3 py-2 rounded items-center justify-center hover:bg-gray-100 dark:hover:text-black`}
+                        >
+                            Blogs
+                        </a>
+                        <a
+                            href="/projects/"
+                            class={`dark:text-white"  lg:inline-flex lg:w-auto w-full text-black px-3 py-2 rounded items-center justify-center hover:bg-gray-100 dark:hover:text-black`}
+                        >
+                            Projects
+                        </a>
+                        <a
+                            href="/about/"
+                            class={`dark:text-white"  lg:inline-flex lg:w-auto w-full text-black px-3 py-2 rounded items-center justify-center hover:bg-gray-100 dark:hover:text-black`}
+                        >
+                            About
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="flex flex-col h-screen justify-between">
+            <div class="container mx-auto w-full mt-32 md:mt-24">
+                <slot></slot>
+            </div>
+            <footer class="bg-gray-200 text-center lg:text-left dark:bg-black dark:text-white">
+                <div class="text-gray-700 text-center p-4 bg-gray-100 dark:bg-black dark:text-white flex items-center justify-center gap-2">
+                    Build with <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-red-700" viewBox="0 0 20 20" fill="currentColor">
+      <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+    </svg>by Fazley Rabbi (with Astro)
+                </div>
+            </footer>
+        </div>
+
+      
+    </body>
+</html>

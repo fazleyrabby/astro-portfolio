@@ -1,9 +1,55 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';
+import MainLayout from "../layouts/MainLayout.astro";
+const posts = await Astro.glob("../pages/post/*.md");
 ---
+
 <MainLayout>
-
-
-			Blogs
-	
+	<div class="mb-4">
+		<h1 class="text-4xl font-bold m-6 text-center">Blogs</h1>
+		<div class="space-y-10">
+			{
+				posts.map((post) => (
+					<div class="w-full lg:max-w-full lg:flex group cursor-pointer">
+						<div class="blog-item">
+							<div class="mb-8">
+								<a
+									href={post.url}
+									class="text-2xl font-bold mb-2 block capitalize group-hover:underline"
+								>
+									{post.frontmatter.title}
+								</a>
+							</div>
+							<div class="flex items-center">
+								<div class="text-sm">
+									<a
+										href={post.url}
+										class="bg-black dark:bg-slate-100 dark:text-black hover:text-slate-100 text-white text-xs py-2 px-3 rounded group w-max flex justify-center items-center"
+									>
+										<span>Read More</span>
+										<span class="inline-block group-hover:translate-x-1 transition-transform ml-1">
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												fill="none"
+												view-box="0 0 24 24"
+												stroke-width="1.5"
+												stroke="currentColor"
+												class="w-4 h-4"
+											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
+												/>
+											</svg>
+										</span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				))
+			}
+		</div>
+	</div>
+	<ul></ul>
 </MainLayout>

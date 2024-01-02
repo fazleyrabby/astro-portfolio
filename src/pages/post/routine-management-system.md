@@ -1,7 +1,7 @@
 ---
-title: Routine Management System
-date: 25/02/2022,18:12:00
 layout: ../../layouts/BlogLayout.astro
+title: Routine Management System
+date: 2022-02-25T12:00:00.000Z
 ---
 
 ### Project Overview

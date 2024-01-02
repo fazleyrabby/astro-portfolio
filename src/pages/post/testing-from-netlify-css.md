@@ -1,8 +1,8 @@
 ---
 layout: ../../layouts/BlogLayout.astro
-title: Testing from netlify cms
+title: The Power of Mindfulness
 date: 2024-01-02T19:21:22.207Z
-slug: Testing-from-netlify-css
+slug: The Power of Mindfulness
 ---
 # The Power of Mindfulness: Enhancing Mental Well-being
 

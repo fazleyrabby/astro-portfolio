@@ -1,6 +1,7 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 const posts = await Astro.glob("../pages/post/*.md");
+import moment from "moment";
 ---
 
 <MainLayout title="Blogs">
@@ -19,7 +20,7 @@ const posts = await Astro.glob("../pages/post/*.md");
 									{post.frontmatter.title}
 								</a>
 							</div>
-							<div>{post.frontmatter.date}</div>
+							<div>{moment(post.frontmatter.date).format('Y-MM-DD hh:mm:s')}</div>
 							<div>
 								<div class="text-sm">
 									<a

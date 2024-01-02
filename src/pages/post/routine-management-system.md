@@ -1,6 +1,5 @@
 ---
 title: Routine Management System
-slug: routine-management-system
 date: 25/02/2022,18:12:00
 layout: ../../layouts/BlogLayout.astro
 ---

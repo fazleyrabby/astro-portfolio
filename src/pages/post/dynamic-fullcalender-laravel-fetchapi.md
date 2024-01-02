@@ -1,7 +1,8 @@
 ---
-title: Dynamic Fullcalender with Laravel & FetchAPI
-date: 26/02/2022,18:10:00
 layout: ../../layouts/BlogLayout.astro
+title: Dynamic Fullcalender with Laravel & FetchAPI
+date: 2022-02-25T12:00:00.000Z
+slug: test
 ---
 
 ## This is applicable on existing or a fresh laravel project

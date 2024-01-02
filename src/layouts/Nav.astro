@@ -69,8 +69,17 @@ import ThemeIcon from '../components/ThemeIcon.astro';
 </div>
 
 <script is:inline>
+    
     const handleClick = () =>{
-        document.getElementById('nav').classList.toggle('opacity-0')
-        document.getElementById('nav').classList.toggle('h-0')
+        const nav = document.getElementById('nav')
+        nav.classList.toggle('opacity-0')
+        nav.classList.toggle('h-0')
     }
+
+    document.addEventListener('astro:after-swap', () => {
+        if(window.innerWidth <= 800){
+            nav.classList.toggle('opacity-0')
+            nav.classList.toggle('h-0')
+        }
+    });
 </script>

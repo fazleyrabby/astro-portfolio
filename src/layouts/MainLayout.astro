@@ -1,34 +1,12 @@
 ---
+import Head from './Head.astro';
 import Nav from './Nav.astro';
 import Footer from './Footer.astro';
-import { ViewTransitions } from "astro:transitions";
-import { fade } from 'astro:transitions';
-const { title } = Astro.props
 import '../styles/global.css';
+import { fade } from 'astro:transitions';
 ---
-
 <html lang="en" transition:animate="none">
-    <head>
-        <meta charset="utf-8" />
-        <title>Fazley Rabbi | {title}</title>
-        <meta name="viewport" content="width=device-width" />
-        <meta name="generator" content={Astro.generator} />
-        <meta name="description" content="Fazley Rabbi Portfolio"/>
-        <meta property="og:title" content="Fazley Rabbi Web Developer Portfolio" />
-        <meta
-            property="og:description"
-            content="Web developer portfolio laravel developer"
-        />
-        <meta
-            property="og:image"
-            content="https://fazleyrabbi.xyz/me.webp"
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" cross-origin="true" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=League+Spartan:wght@800&display=swap" rel="stylesheet">
-        <ViewTransitions />
-    </head>
+    <Head/>
     <body class="bg-white dark:bg-black text-black dark:text-white">
         <Nav/>
         <div class="flex flex-col h-screen justify-between">
@@ -37,7 +15,5 @@ import '../styles/global.css';
             </div>
             <Footer/>
         </div>
-
-      
     </body>
 </html>

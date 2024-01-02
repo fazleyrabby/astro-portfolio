@@ -2,6 +2,7 @@
 import Nav from './Nav.astro';
 import Footer from './Footer.astro';
 import { ViewTransitions } from "astro:transitions";
+import '../styles/global.css';
 ---
 
 <html lang="en">
@@ -24,7 +25,6 @@ import { ViewTransitions } from "astro:transitions";
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" cross-origin="true" />
         <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=League+Spartan:wght@800&display=swap" rel="stylesheet">
-        <link href="../../src/styles/global.css" rel="stylesheet"> 
         <ViewTransitions/>
     </head>
     <body class="bg-white dark:bg-black text-black dark:text-white">

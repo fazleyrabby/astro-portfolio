@@ -21,7 +21,7 @@ color: #fff;
   }
 
   .nav-link{
-    @apply dark:text-white lg:inline-flex lg:w-auto w-full text-black px-3 py-2 rounded items-center justify-center hover:bg-gray-100 dark:hover:text-black;
+    @apply lg:inline-flex lg:w-auto w-full px-3 py-2 rounded items-center justify-center hover:bg-gray-100 dark:hover:text-black;
   }
   
   html {

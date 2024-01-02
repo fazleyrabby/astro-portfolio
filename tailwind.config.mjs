@@ -13,8 +13,9 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-		  'sans' : ['Inter','sans-serif'],
+		  'sans' : ['Figtree','sans-serif'],
 		  'serif' : ['Lora','serif'],
+		  'logo' : ['League Spartan','sans-serif'],
 		  'jost' : ['Jost','sans-serif'],
 		},
 		container: {

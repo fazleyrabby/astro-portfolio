@@ -19,6 +19,10 @@ color: #fff;
   .blog-item{
     @apply shadow-sm dark:shadow-md dark:border-r dark:border-b dark:border-l  dark:lg:border-t rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal w-full;
   }
+
+  .nav-link{
+    @apply dark:text-white lg:inline-flex lg:w-auto w-full text-black px-3 py-2 rounded items-center justify-center hover:bg-gray-100 dark:hover:text-black;
+  }
   
   html {
     scroll-behavior: smooth;
@@ -34,14 +38,14 @@ color: #fff;
   }
   
   
-  html,
+  /* html,
   body {
     padding: 0;
     margin: 0;
-    font-family:  'Inter','Segoe UI', 'system-ui', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    font-family:  'Poppins','Segoe UI', 'system-ui', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
       Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
       height: 100vh;
-  }
+  } */
   
   a {
     color: inherit;

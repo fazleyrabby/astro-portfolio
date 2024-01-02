@@ -1,15 +1,18 @@
 ---
 import Nav from './Nav.astro';
 import Footer from './Footer.astro';
+import { ViewTransitions } from "astro:transitions";
+import { fade } from 'astro:transitions';
+const { title } = Astro.props
+
 ---
 
-<html lang="en">
+<html lang="en" transition:animate="none">
     <head>
         <meta charset="utf-8" />
-        <title>Fazley Rabbi Portofolio</title>
+        <title>Fazley Rabbi | {title}</title>
         <meta name="viewport" content="width=device-width" />
         <meta name="generator" content={Astro.generator} />
-        <!-- <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> -->
         <meta name="description" content="Fazley Rabbi Portfolio"/>
         <meta property="og:title" content="Fazley Rabbi Web Developer Portfolio" />
         <meta
@@ -22,13 +25,15 @@ import Footer from './Footer.astro';
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" cross-origin="true" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=League+Spartan:wght@800&display=swap" rel="stylesheet">
         <link href="../../src/styles/global.css" rel="stylesheet"> 
+        <ViewTransitions />
     </head>
     <body class="bg-white dark:bg-black text-black dark:text-white">
         <Nav/>
         <div class="flex flex-col h-screen justify-between">
-            <div class="container mx-auto w-full mt-32 md:mt-24 py-6">
+            <div class="container mx-auto w-full mt-32 md:mt-24 py-6" transition:animate={fade({ duration: '0.5s' })}>
                 <slot></slot>
             </div>
             <Footer/>

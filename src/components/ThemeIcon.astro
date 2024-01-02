@@ -5,11 +5,11 @@
 
 <button id="themeToggle" aria-label="Theme toggle" class='inline-flex hover:bg-gray-100 text-black dark:hover:text-black rounded ml-auto outline-none group'>
             
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" view-box="0 0 24 24" stroke-width="1.5" stroke="currentColor" id="moon"
-        class="h-6 w-6 m-2 dark:stroke-white dark:group:sroke-white dark:group-hover:stroke-black">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
-            </svg>
-            
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" view-box="0 0 24 24" stroke-width="1.5" stroke="currentColor" id="moon"
+    class="h-6 w-6 m-2 dark:stroke-white dark:group:sroke-white dark:group-hover:stroke-black">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+        </svg>
+        
             
 
     <svg xmlns="http://www.w3.org/2000/svg"  id="sun" fill="none" view-box="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 m-2 fill-yellow-400 dark:stroke-white">
@@ -33,6 +33,7 @@
 </style> -->
 
 <script is:inline>
+    document.addEventListener('astro:page-load', () => {
     const theme = (() => {
       if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
         return localStorage.getItem('theme');
@@ -43,7 +44,9 @@
         return 'light';
     })();
 
+    
     setIcon(theme == 'dark')
+    
   
     if (theme === 'light') {
       document.documentElement.classList.remove('dark');
@@ -72,4 +75,6 @@
     }
   
     document.getElementById("themeToggle").addEventListener("click", handleToggleClick);
+
+  })
   </script>

@@ -1,6 +1,6 @@
 ---
 layout: ../../layouts/BlogLayout.astro
-thumbnail: ""
+thumbnail: /images/uploads/markus-winkler-hxcifi47fgq-unsplash-2-.jpg
 title: Dynamic Fullcalender with Laravel & FetchAPI
 date: 2022-02-25T12:00:00.000Z
 ---

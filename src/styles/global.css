@@ -17,7 +17,7 @@ color: #fff;
     @apply border border-gray-700 dark:border-gray-100 rounded-md px-3 py-2 uppercase text-xs;
   }
   .blog-item{
-    @apply shadow-sm dark:shadow-md dark:border-r dark:border-b dark:border-l  dark:lg:border-t rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal w-full;
+    @apply shadow-sm dark:shadow-md dark:border-r dark:border-b dark:border-l dark:lg:border-t rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal w-full;
   }
 
   .nav-link{

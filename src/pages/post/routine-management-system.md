@@ -3,7 +3,6 @@ layout: ../../layouts/BlogLayout.astro
 title: Routine Management System
 date: 2022-02-25T12:00:00.000Z
 ---
-
 ### Project Overview
 
 This project was created using Laravel 7 and mysql on my last semester as my final year project. The database design was completely done my me as my first laravel project I tried my best to make it as optimize as possible. Most of the complicated DB queries created with raw query as I was not much familiar with eloquent relationships at the beginning but recently I have worked with a team and improved my coding structure as well as eloquent relationship knowledge. This project was appreciated by my university faculty as it's almost a new concept of migrating a manual routine system to an automated one. As I can say this was not completed entriely because I was working alone in this project but I can surely say that I have gained alot of real world experience.
@@ -18,7 +17,6 @@ This project was created using Laravel 7 and mysql on my last semester as my fin
 <li>Implementation of Class Routine Management System.</li>
 <li>Maintenance of the Class Routine Management System.</li>
 </ul>
-
 
 <br>
 
@@ -75,8 +73,6 @@ This project was created using Laravel 7 and mysql on my last semester as my fin
 ### Day WIse Time Slot with Class Slot Count
 
 <img src="https://user-images.githubusercontent.com/26044286/118699400-4d05ca00-b833-11eb-8c7f-e0023804417e.png" alt="" width="100%"/>
-
-
 
 ### Modules:
 
@@ -148,17 +144,17 @@ This project was created using Laravel 7 and mysql on my last semester as my fin
         <td><ol><li>Assign Courses to Batch with sessions</li><li>Edit / Delete Course offers data</li></ol></td>
         </tr>
         <tr>
-        <th scope="row">12</th>
+        <th scope="row">13</th>
         <td>Time Slot Management</td>
         <td>Day wise time &amp; Class slot management | <ol><li>Assign Time Slots to Days</li><li>Assign Class Slots to Day and time slot</li><li>Edit Information of day</li></ol></td>
         </tr>
         <tr>
-        <th scope="row">12</th>
+        <th scope="row">14</th>
         <td>Assign Data in Main Sheet</td>
         <td><ol><li>Assign data (Teacher, Course, Room) in main sheet</li><li>Edit Assigned Data</li></ol></td>
         </tr>
         <tr>
-        <th scope="row">13</th>
+        <th scope="row">15</th>
         <td>Routine View &amp; Download</td>
         <td><ol><li>List view for batch and teachers</li><li>Search Teacher and batch view</li><li>Download as PDF</li></ol></td>
         </tr>

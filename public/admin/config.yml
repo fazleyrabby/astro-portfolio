@@ -3,8 +3,8 @@ backend:
   branch: main
 
 publish_mode: editorial_workflow
-media_folder: "images/uploads"
-public_folder: "/images/uploads"
+media_folder: "public/images/uploads"
+public_folder: "public/images/uploads"
 collections: # A list of collections the CMS should be able to edit
   - name: 'post' # Used in routes, ie.: /admin/collections/:slug/edit
     label: 'Post' # Used in the UI, ie.: "New Post"

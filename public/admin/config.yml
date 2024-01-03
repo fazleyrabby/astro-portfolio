@@ -12,7 +12,7 @@ collections: # A list of collections the CMS should be able to edit
     create: true # Allow users to create new documents in this collection
     slug: "{{slug}}"
     fields: # The fields each document in this collection have
-      - {label: "Layout", name: "layout", widget: "hidden", default: "../../layouts/BlogLayout.astro"}
+      - { label: "Layout", name: "layout", widget: "hidden", default: "../../layouts/BlogLayout.astro"}
       - { label: "Featured Image", name: "thumbnail", widget: "image", required: false}
       - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Body', name: 'body', widget: 'markdown' }

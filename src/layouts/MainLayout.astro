@@ -4,19 +4,22 @@ import Nav from './Nav.astro';
 import Footer from './Footer.astro';
 import '../styles/global.css';
 import { fade } from 'astro:transitions';
+import ScrollToTop from '../components/ScrollToTop.astro';
+import Loader from '../components/Loader.astro';
 const { title } = Astro.props;
 ---
 <html lang="en" transition:animate="none">
     <Head title={title}/>
     <body class="bg-white dark:bg-black text-black dark:text-white">
         <Nav/>
+        <Loader/>
         <div class="flex flex-col h-screen justify-between">
             <div class="container mx-auto w-full mt-32 md:mt-24 py-6" transition:animate={fade({ duration: '0.5s' })}>
                 <slot></slot>
             </div>
             <Footer/>
         </div>
-
+        <ScrollToTop/>
         <script>
             declare global {
                 interface Window {
@@ -32,6 +35,8 @@ const { title } = Astro.props;
                 }
               });
             }
+
+            
           </script>
     </body>
 </html>

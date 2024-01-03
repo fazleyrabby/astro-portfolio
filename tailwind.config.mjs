@@ -32,7 +32,8 @@ export default {
 			wiggle: 'wiggle 3s ease-in-out infinite',
 			bounce: 'bounce 2s ease-in-out infinite',
 			fadein: 'fadein 200ms linear',
-			objtoright: 'objtoright 10s alternate infinite'
+			objtoright: 'objtoright 10s alternate infinite',
+			spin: 'spin 1s linear infinite'
 		  },
 		  keyframes: {
 			wiggle: {
@@ -46,7 +47,11 @@ export default {
 			objtoright: {
 			  '0%': { 'object-position': 'top left'},
 			  '100%': { 'object-position': 'top right'},
-			}
+			},
+			spin:{
+				from: { transform: 'rotate(0deg)' },
+				to: { transform: 'rotate(360deg)'}
+			} 
 		  }
 		},
 	  },

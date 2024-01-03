@@ -1,0 +1,41 @@
+---
+
+---
+
+<div class="fixed bottom-6 right-6">
+    <div
+        onclick="scrollToTop()"
+        class="p-2 rounded-md bg-black cursor-pointer group scrollTop"
+    >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 fill-white group-hover:-translate-y-0.5 transition-transform"
+            fill="currentColor"
+            class="bi bi-arrow-up"
+            viewBox="0 0 16 16"
+        >
+            <path
+                fill-rule="evenodd"
+                d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"
+            ></path>
+        </svg>
+    </div>
+</div>
+
+<script is:inline>
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
+    const toggleVisibility = () => {
+        if (window.pageYOffset > 500) {
+            document.querySelector('.scrollTop').style.display = 'block'
+        } else {
+            document.querySelector('.scrollTop').style.display = 'none'
+        }
+    };
+
+    window.addEventListener("scroll", toggleVisibility);
+</script>

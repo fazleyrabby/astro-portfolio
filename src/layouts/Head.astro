@@ -1,22 +1,17 @@
 ---
 import { ViewTransitions } from "astro:transitions";
+const { title } = Astro.props;
 ---
 <head>
     <meta charset="utf-8" />
-    <title>Fazley Rabbi Portofolio</title>
+    <title>{title}</title>
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <!-- <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> -->
     <meta name="description" content="Fazley Rabbi Portfolio"/>
     <meta property="og:title" content="Fazley Rabbi Web Developer Portfolio" />
-    <meta
-        property="og:description"
-        content="Web developer portfolio laravel developer"
-    />
-    <meta
-        property="og:image"
-        content="https://fazleyrabbi.xyz/me.webp"
-    />
+    <meta property="og:description" content="Web developer portfolio laravel developer"/>
+    <meta property="og:image" content="https://fazleyrabbi.xyz/me.webp"/>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" cross-origin="true" />
     <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&family=League+Spartan:wght@800&display=swap" rel="stylesheet">

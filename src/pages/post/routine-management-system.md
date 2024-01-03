@@ -1,6 +1,6 @@
 ---
 layout: ../../layouts/BlogLayout.astro
-thumbnail: /images/uploads/markus-winkler-hxcifi47fgq-unsplash-2-.jpg
+thumbnail: https://i.postimg.cc/brfpk46T/markus-winkler-hx-CIfi47-Fg-Q-unsplash-2.jpg
 title: Routine Management System
 date: 2022-02-25T12:00:00.000Z
 ---

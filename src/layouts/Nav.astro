@@ -71,14 +71,16 @@ import ThemeIcon from '../components/ThemeIcon.astro';
 <script is:inline>
     const checkDeviceWidth = () => {
         if(window.innerWidth <= 1025){
-            nav.classList.toggle('opacity-0')
-            nav.classList.toggle('h-0')
+            // nav.classList.add('opacity-0')
+            // nav.classList.add('h-0')
+            nav.classList.add('hidden')
         }
     }
     const handleClick = () =>{
         const nav = document.getElementById('nav')
-        nav.classList.toggle('opacity-0')
-        nav.classList.toggle('h-0')
+        // nav.classList.toggle('opacity-0')
+        // nav.classList.toggle('h-0')
+        nav.classList.toggle('hidden')
     }
 
     document.addEventListener('astro:after-swap', () => {

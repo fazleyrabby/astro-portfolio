@@ -1,12 +1,40 @@
+
 <span class="loader border-violet-700 border-2 absolute top-4 right-4 z-10"></span>
 
 <script>
 
-document.addEventListener('astro:before-preparation', () => {
-              document.querySelector('.loader').style.visibility = '';
-            });
-            document.addEventListener('astro:page-load', () => {
-              document.querySelector('.loader').style.visibility = 'hidden';
-            });
+  document.addEventListener("astro:before-preparation", () => {
+    document.querySelector(".loader").style.visibility = "";
+    simulateProgress(true);
+  });
+  document.addEventListener("astro:page-load", () => {
+    document.querySelector(".loader").style.visibility = "hidden";
+    simulateProgress(false);
+  });
 
+//   function simulateProgress(value) {
+//     console.log(value)
+//     let progress = value ? 0 : 100;
+//     const increment = value ? 1 : -100; // If true, increment from 0 to 100; if false, decrement from 100 to 0
+ 
+//    if(value){
+//     const interval = setInterval(() => {
+//     console.log(`Progress: ${progress}%`);
+//     progress += increment;
+
+    
+//     if (progress > 100 || !value || progress < 0) {
+//       clearInterval(interval);
+//       console.log("Progress complete");
+//     }
+//     }, 1);
+//    }
+  
+// }
+
+// Call the function twice with true and false parameters
+// setTimeout(() => {
+//   simulateProgress(false);
+// }, 2000); 
 </script>
+

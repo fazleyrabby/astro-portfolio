@@ -1,9 +1,7 @@
-<div
-    id="modal"
+<div id="modal"
     tabindex="-1"
     aria-hidden="true"
-    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-40 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full backdrop-blur-md bg-white/30"
->
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-40 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full backdrop-blur-md bg-white/30">
     <div class="relative w-full max-w-2xl max-h-full top-28 mx-auto z-50">
         <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -37,29 +35,33 @@
 <script>
     // When the user clicks on <div>, open the popup
     // alert(id)
-    function init() {
-        let modal = document.querySelectorAll(".lightbox-image");
+    // function init() {
+        
+    // }
+
+  
+
+    // init();
+
+    document.addEventListener('astro:page-load', () => {
+    // This only runs once.
+    let modal = document.querySelectorAll(".lightbox-image");
         modal.forEach((el) => {
             el.addEventListener("click", () => {
-                document.getElementById("modal").classList.toggle("hidden");
-                document.querySelector(".image-show").innerHTML =
-                    `<img loading="lazy" class="w-full" src=${el.getAttribute(
-                        "data-img",
-                    )}>`;
+                document.getElementById("modal").classList.remove("hidden");
+                document.querySelector(".image-show").innerHTML = `<img loading="lazy" class="w-full" src=${el.getAttribute("data-img")}>`;
             });
         });
 
         document.querySelectorAll(".close-btn").forEach((eachClose) => {
             eachClose.addEventListener("click", () => {
-                let id = eachClose.getAttribute("data-modal-hide");
-                document.getElementById(id).classList.toggle("hidden");
+                document.getElementById("modal").classList.add("hidden");
             });
         });
-    }
 
-    document.addEventListener("astro:page-load", () => {
-        init();
-    });
-
-    init();
+        document.addEventListener("astro:page-load", () => {
+            modal = document.querySelectorAll(".lightbox-image");
+        });
+  });
+    
 </script>

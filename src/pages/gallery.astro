@@ -1,0 +1,145 @@
+---
+Astro.response.headers.set('Cache-Control', 'max-age=604800');
+import { Image } from "@unpic/astro";
+import MainLayout from "../layouts/MainLayout.astro";
+import { v2 as cloudinary } from "cloudinary";
+import ImagePopup from "../components/ImagePopup.astro";
+const env = import.meta.env;
+
+cloudinary.config({
+    cloud_name: env.CLOUDINARY_CLOUD_NAME, // add your cloud_name
+    api_key: env.CLOUDINARY_API_KEY, // add your api_key
+    api_secret: env.CLOUDINARY_API_SECRET, // add your api_secret
+    secure: true,
+});
+
+const images = await cloudinary.search
+    .expression(
+        "folder:photography*", // add your folder
+    )
+    .sort_by("uploaded_at", "desc")
+    .max_results(15)
+    .execute();
+// const chunkSize = 3;
+// const chunk = [];
+// for (let i = 0; i < images.resources.length; i += chunkSize) {
+//     chunk.push(images.resources.slice(i, i + chunkSize));
+// }
+// console.log(chunk)
+---
+
+<MainLayout title="Photography">
+    <main>
+        <h1 class="text-4xl font-bold m-6 text-center">Photography</h1>
+        <p class="text-md text-center my-4">Some random shots I have taken on various trips. Mostly using my smart phone!</p>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {
+                images.total_count > 0 &&
+                    images.resources.map(
+                        (img, idx) => (
+                            <div>
+                                <Image
+                                    height={400}
+                                    width={400}
+                                    loading="lazy"
+                                    layout="constrained"
+                                    class="rounded-lg object-cover aspect-video lightbox-image"
+                                    data-img={img.secure_url}
+                                    src={img.secure_url}
+                                    alt=""
+                                />
+                            </div>
+                        ),
+                        // data.map((img) => (
+
+                        // )),
+                        // <div class="grid gap-4" style="grid-template-rows: max-content;">
+                        //     {}
+                        // </div>
+                    )
+            }
+
+            <ImagePopup client:load/>
+
+            <!-- <div>
+                <img
+                    class="h-auto max-w-full rounded-lg"
+                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg"
+                    alt=""
+                />
+            </div>
+            <div>
+                <img
+                    class="h-auto max-w-full rounded-lg"
+                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg"
+                    alt=""
+                />
+            </div>
+            <div>
+                <img
+                    class="h-auto max-w-full rounded-lg"
+                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg"
+                    alt=""
+                />
+            </div>
+            <div>
+                <img
+                    class="h-auto max-w-full rounded-lg"
+                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg"
+                    alt=""
+                />
+            </div>
+            <div>
+                <img
+                    class="h-auto max-w-full rounded-lg"
+                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg"
+                    alt=""
+                />
+            </div>
+            <div>
+                <img
+                    class="h-auto max-w-full rounded-lg"
+                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-6.jpg"
+                    alt=""
+                />
+            </div>
+            <div>
+                <img
+                    class="h-auto max-w-full rounded-lg"
+                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-7.jpg"
+                    alt=""
+                />
+            </div>
+            <div>
+                <img
+                    class="h-auto max-w-full rounded-lg"
+                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-8.jpg"
+                    alt=""
+                />
+            </div>
+            <div>
+                <img
+                    class="h-auto max-w-full rounded-lg"
+                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-9.jpg"
+                    alt=""
+                />
+            </div>
+            <div>
+                <img
+                    class="h-auto max-w-full rounded-lg"
+                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-10.jpg"
+                    alt=""
+                />
+            </div>
+            <div>
+                <img
+                    class="h-auto max-w-full rounded-lg"
+                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-11.jpg"
+                    alt=""
+                />
+            </div> -->
+        </div>
+        <p class="text-slate-400 my-4 text-xs">(These images are hosted on cloudinary)</p>
+    </main>
+</MainLayout>

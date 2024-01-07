@@ -1,0 +1,69 @@
+---
+// const {id, img } = Astro.props;
+---
+
+<div
+    id="modal"
+    tabindex="-1"
+    aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-40 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full backdrop-blur-md bg-white/30"
+>
+    <div class="relative w-full max-w-2xl max-h-full top-28 mx-auto z-50">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <!-- Modal header -->
+            <button
+                type="button"
+                class="close-btn bg-slate-400 absolute right-2 top-2 text-black bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                data-modal-hide="modal"
+            >
+                <svg
+                    class="w-3 h-3"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 14"
+                >
+                    <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="image-show bg-slate-500"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // When the user clicks on <div>, open the popup
+    // alert(id)
+    function init() {
+        let modal = document.querySelectorAll(".lightbox-image");
+        modal.forEach((el) => {
+            el.addEventListener("click", () => {
+                document.getElementById("modal").classList.toggle("hidden");
+                document.querySelector(".image-show").innerHTML =
+                    `<img loading="lazy" class="w-full" src=${el.getAttribute(
+                        "data-img",
+                    )}>`;
+            });
+        });
+
+        document.querySelectorAll(".close-btn").forEach((eachClose) => {
+            eachClose.addEventListener("click", () => {
+                let id = eachClose.getAttribute("data-modal-hide");
+                document.getElementById(id).classList.toggle("hidden");
+            });
+        });
+    }
+
+    document.addEventListener("astro:page-load", () => {
+        init();
+    });
+
+    init();
+</script>

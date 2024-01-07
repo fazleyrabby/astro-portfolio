@@ -4,7 +4,7 @@ import { Image } from "@unpic/astro";
 import MainLayout from "../layouts/MainLayout.astro";
 import { v2 as cloudinary } from "cloudinary";
 import ImagePopup from "../components/ImagePopup.astro";
-const env = import.meta.env;
+const env = import.meta.env ?? process.env.GREETING;
 
 cloudinary.config({
     cloud_name: env.CLOUDINARY_CLOUD_NAME, // add your cloud_name
@@ -60,7 +60,7 @@ const images = await cloudinary.search
                     )
             }
 
-            <ImagePopup client:load/>
+            <ImagePopup/>
 
             <!-- <div>
                 <img

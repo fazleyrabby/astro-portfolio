@@ -5,11 +5,11 @@
 
   document.addEventListener("astro:before-preparation", () => {
     document.querySelector(".loader").style.visibility = "";
-    simulateProgress(true);
+    // simulateProgress(true);
   });
   document.addEventListener("astro:page-load", () => {
     document.querySelector(".loader").style.visibility = "hidden";
-    simulateProgress(false);
+    // simulateProgress(false);
   });
 
 //   function simulateProgress(value) {

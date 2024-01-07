@@ -6,6 +6,7 @@ import Email from '../components/Icons/Email.astro';
 import Codepen from '../components/Icons/Codepen.astro';
 import Linkedin from '../components/Icons/Linkedin.astro';
 import {Content as AboutMarkdown} from '../components/about.md';
+import ContactForm from '../components/ContactForm.astro';
 ---
 <MainLayout title="About">
 
@@ -17,16 +18,20 @@ import {Content as AboutMarkdown} from '../components/about.md';
 			  <AboutMarkdown/>
 			</div>
 		  </section>
-		  <h3 class='mb-4'>Connect with me on</h3>
-        <div class='flex gap-3 mb-6 icons'>
+		  
+
+        <p class='mb-4 text-lg font-medium'>Send me a message</p>
+        <div class="mb-8">
+          <ContactForm/>
+        </div>
+        <hr class="my-16 w-3/4 mx-auto">
+        <p class='mb-4 text-lg font-medium text-center'>Or Connect with me on</p>
+        <div class='flex gap-3 mb-6 icons justify-center'>
           <Github/>
           <Linkedin/>
           <Youtube/>
           <Email/>
           <Codepen/>
         </div>
-
       </main>
-		
-
 </MainLayout>

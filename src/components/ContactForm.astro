@@ -58,11 +58,6 @@
             alert("Ensure you input a value in both fields!");
         } else {
             // perform operation with form input
-            alert("This form has been successfully submitted!");
-            console.log(
-                `This form has a email of ${email.value} and message of ${message.value}`,
-            );
-
             form.submit()
             email.value = "";
             message.value = "";

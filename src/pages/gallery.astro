@@ -4,7 +4,7 @@ import { Image } from "@unpic/astro";
 import MainLayout from "../layouts/MainLayout.astro";
 import { v2 as cloudinary } from "cloudinary";
 import ImagePopup from "../components/ImagePopup.astro";
-const env = import.meta.env ?? process.env.GREETING;
+const env = import.meta.env;
 
 cloudinary.config({
     cloud_name: env.CLOUDINARY_CLOUD_NAME, // add your cloud_name
@@ -44,7 +44,7 @@ const images = await cloudinary.search
                                     width={400}
                                     loading="lazy"
                                     layout="constrained"
-                                    class="rounded-lg object-cover aspect-video lightbox-image"
+                                    class="rounded-lg object-cover aspect-video lightbox-image cursor-pointer"
                                     data-img={img.secure_url}
                                     src={img.secure_url}
                                     alt=""

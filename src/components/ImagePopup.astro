@@ -1,14 +1,14 @@
 <div id="modal"
     tabindex="-1"
     aria-hidden="true"
-    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-40 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full backdrop-blur-md bg-white/30">
-    <div class="relative w-full max-w-2xl max-h-full top-28 mx-auto z-50">
+    class="hidden overlay overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full backdrop-blur-md bg-white/30">
+    <div class="relative w-full max-w-2xl max-h-full top-28 mx-auto">
         <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <!-- Modal header -->
             <button
                 type="button"
-                class="close-btn bg-slate-400 absolute right-2 top-2 text-black bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                class="close-btn bg-black absolute opacity-70 hover:opacity-100 -right-4 -top-4 text-white hover:text-gray-200 rounded-full text-sm w-8 h-8 ms-auto inline-flex justify-center items-center "
                 data-modal-hide="modal"
             >
                 <svg
@@ -58,6 +58,14 @@
                 document.getElementById("modal").classList.add("hidden");
             });
         });
+
+        document.querySelector(".overlay").addEventListener("click", (e) => {
+            if(e.target.getAttribute('id') == 'modal'){
+                document.getElementById("modal").classList.toggle("hidden")
+            }
+        });
+
+        
 
         document.addEventListener("astro:page-load", () => {
             modal = document.querySelectorAll(".lightbox-image");

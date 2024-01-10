@@ -3,67 +3,81 @@
 //     "https://jsonplaceholder.typicode.com/posts?_limit=10",
 // );
 // const data = await response.json();
-import Projects from '../components/Projects.astro';
-import Experience from '../components/Experience.astro';
-import Skills from '../components/Skills.astro';
-import MainLayout from '../layouts/MainLayout.astro';
+import Projects from "../components/Projects.astro";
+import Experience from "../components/Experience.astro";
+import Skills from "../components/Skills.astro";
+import MainLayout from "../layouts/MainLayout.astro";
 ---
+
 <MainLayout title="Home">
+  <main class="mb-auto">
+    <div
+      class="mb-6 h-screen sm:h-[calc(100vh-15rem)] flex flex-col justify-center items-center -mt-6 text-center"
+    >
+      <div class="mb-4">
+        <img
+          src="/me.webp"
+          width={240}
+          height={240}
+          class="rounded-full overflow-hidden"
+          alt="profile img"
+        />
+      </div>
+      <h1 class="lg:text-5xl text-3xl font-extrabold mb-4">
+        I am <span title="Fazley Rabbi" class="title-animate">Fazley Rabbi</span
+        >
+        <span class="animate-wiggle inline-flex origin-bottom">👋</span>
+      </h1>
+      <p class="mb-4">A Passionate Web Developer & Tech Enthusiast</p>
+      <p class="mb-4">Based on Bangladesh</p>
+      <a
+        id="resume-link"
+        href="/resume"
+        class="bg-black dark:bg-white dark:text-black lg:inline-flex lg:w-auto text-white px-3 py-2 items-center justify-center hover:bg-slate-700 dark:hover:text-white dark:hover:bg-slate-700 custom-border"
+      >
+        Resume
+      </a>
+      <a href="#projects" aria-label="projects" rel="noopener">
+        <!-- class="animate-[bounce_2s_ease-in-out_infinite]" -->
+        <svg
+          class="w-6 h-6 mt-12"
+          fill="none"
+          stroke="currentColor"
+          view-box="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z"
+          ></path>
+        </svg>
+      </a>
+    </div>
 
-	<main class="mb-auto">
-        <div class="mb-6 h-screen sm:h-[calc(100vh-15rem)] flex flex-col justify-center items-center -mt-6 text-center">
-          <div class="mb-4">
-            <img
-              src="/me.webp"
-              width={240}
-              height={240}
-              class="rounded-full overflow-hidden"
-              alt="profile img"
-            />
-          </div>
-          <h1 class="lg:text-5xl text-3xl font-extrabold mb-4">
-            I am <span title="Fazley Rabbi" class="title-animate">Fazley Rabbi</span>
-            <span class="animate-wiggle inline-flex origin-bottom">👋</span>
-          </h1>
-          <p class="mb-4">A Passionate Web Developer & Tech Enthusiast</p>
-          <p class="mb-4">Based on Bangladesh</p>
-		  <a href="/resume"
-              class="bg-black dark:bg-white dark:text-black lg:inline-flex lg:w-auto text-white px-3 py-2 rounded items-center justify-center hover:bg-slate-700 dark:hover:text-white dark:hover:bg-slate-700"
-            >
-              Resume
-            </a>
-          <a href="#projects" alt="projects" aria-label="projects" rel="noopener">
-            <svg
-              class="w-6 h-6 mt-12 " //animate-[bounce_2s_ease-in-out_infinite]
-              fill="none"
-              stroke="currentColor"
-              view-box="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z"
-              ></path>
-            </svg>
-          </a>
-        </div>
+    {/* Projects  */}
+    <div class="lg:mb-48 mb-24" id="projects">
+      <Projects />
+    </div>
 
-		{/* Projects  */}
-        <div class="lg:mb-48 mb-24" id="projects">
-			<Projects/>
-		  </div>
+    {/* Skills */}
+    <div class="lg:mb-48 mb-24">
+      <Skills />
+    </div>
 
-		  {/* Skills */}
-		  <div class="lg:mb-48 mb-24">
-			<Skills/>
-		  </div>
-  
-		  {/* Experience */}
-		  <div class="lg:mb-48 mb-24">
-			<Experience/>
-		  </div>
-        
-      </main>
+    {/* Experience */}
+    <div class="lg:mb-48 mb-24">
+      <Experience />
+    </div>
+  </main>
 </MainLayout>
+
+<script is:inline>
+  if (window.matchMedia("(max-width: 767px)").matches) {
+    // The viewport is less than 768 pixels wide
+    const resumeLink = document.getElementById("resume-link");
+    resumeLink.setAttribute("target", "_blank");
+    resumeLink.setAttribute("href","https://drive.google.com/file/d/1OKkIKXabCV5AZidDxPnoERFfPsiLoSqK/view");
+  }
+</script>

@@ -13,10 +13,10 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-		  'sans' : ['Sen','sans-serif'],
+		  'sans' : ['Sen','system-ui'],
 		  'serif' : ['Lora','serif'],
-		  'logo' : ['League Spartan','sans-serif'],
-		  'jost' : ['Jost','sans-serif'],
+		  'logo' : ['League Spartan','system-ui'],
+		  'jost' : ['Jost','system-ui'],
 		},
 		container: {
 		  padding: {

@@ -18,7 +18,7 @@ const images = await cloudinary.search
         "folder:photography*", // add your folder
     )
     .sort_by("uploaded_at", "desc")
-    .max_results(1)
+    .max_results(15)
     .execute();
 // const chunkSize = 3;
 // const chunk = [];

@@ -15,7 +15,7 @@ export default {
 		fontFamily: {
 		  'sans' : ['Kumbh Sans','system-ui'],
 		  'serif' : ['Lora','serif'],
-		  'logo' : ['League Spartan','system-ui'],
+		  'logo' : ['Comforter Brush','system-ui'],
 		},
 		container: {
 		  padding: {

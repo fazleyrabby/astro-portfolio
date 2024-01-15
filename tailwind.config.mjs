@@ -13,7 +13,7 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-		  'sans' : ['Kumbh Sans','system-ui'],
+		  'sans' : ['Albert Sans','system-ui'],
 		  'serif' : ['Lora','serif'],
 		  'logo' : ['Comforter Brush','system-ui'],
 		},

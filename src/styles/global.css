@@ -1,3 +1,8 @@
+/* @font-face {
+  font-family: Sligoil-Micro;
+  src: url('/public/fonts/Sligoil-Micro.woff2');
+} */
+
 body::before {
   --line: hsla(0, 11%, 74%, 0.25);
   content: "";
@@ -73,6 +78,7 @@ html.dark body::before {
   }
   
   html {
+    /* font-feature-settings: "cv02","cv03","cv04","cv11"; */
     scroll-behavior: smooth;
     scroll-padding-top: 12rem;
   }

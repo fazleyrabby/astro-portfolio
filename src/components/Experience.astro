@@ -12,7 +12,7 @@ experiences.sort((a, b) => new Date(b.timeline).valueOf() - new Date(a.timeline)
                   <time class="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
                     {item.from} - {item.to}
                   </time>
-                  <h2 class="text-2xl font-bold">
+                  <h2 class="text-xl md:text-2xl font-bold">
                     <a class="fancy-text" href={item.link ?? '#'} target='_blank' rel="noreferrer">
                       {item.name}
                     </a>

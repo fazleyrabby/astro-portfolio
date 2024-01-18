@@ -47,7 +47,7 @@ html.dark body::before {
   background-size: 100% 4px;
 }
 .custom-button{
-  @apply text-white bg-slate-700 hover:bg-slate-800 font-medium text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-800 custom-box-shadow outline-none active:outline-none active:border-none active:outline-offset-0 focus:outline-none rounded-sm
+  @apply text-white bg-slate-700 hover:bg-slate-800 font-medium text-sm  sm:w-auto px-5 py-2.5 text-center dark:bg-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-800 custom-box-shadow outline-none active:outline-none active:border-none active:outline-offset-0 focus:outline-none rounded-sm
 }
 .custom-box-shadow{
   transition: box-shadow ease-in 100ms, transform ease 400ms;
@@ -67,7 +67,7 @@ html.dark body::before {
     @apply fixed w-full z-10 top-0 bg-clip-padding backdrop-filter backdrop-blur-xl bg-opacity-60 backdrop-brightness-100 firefox:bg-white  firefox:bg-opacity-30 border-b border-b-gray-100 dark:border-b-gray-800 bg-white/[.25] dark:bg-black/[.1];
   }
   .skill-items li{
-    @apply border border-gray-700 dark:border-gray-100 rounded-sm px-3 py-2 text-sm custom-box-shadow;
+    @apply border border-gray-700 dark:border-gray-100 rounded-sm px-3 py-2 text-sm custom-box-shadow flex-1 basis-auto text-center;
   }
   .blog-item{
     @apply shadow-sm dark:shadow-md dark:border-r dark:border-b dark:border-l dark:lg:border-t rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal w-full;

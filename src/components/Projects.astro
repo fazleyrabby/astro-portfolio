@@ -42,10 +42,10 @@ if(type == 'home'){
             />
           </a>
           <div class="p-3">
-            <h2 class="text-gray-900 text-2xl font-bold mb-2">{item.title}</h2>
+            <h2 class="text-gray-900 text-xl md:text-2xl font-bold mb-2">{item.title}</h2>
             <p class="text-gray-700 text-sm mb-4">{item.description}</p>
             <div class="flex justify-between space-y-2 flex-wrap">
-              <div class="flex md:space-x-2  flex-wrap">
+              <div class="flex space-x-2  flex-wrap">
                 {item.tech?.map((each) => (
                   <span class="px-3 py-1 mb-2 border rounded-sm text-slate-500 font-medium uppercase text-[11px]">
                     {each}

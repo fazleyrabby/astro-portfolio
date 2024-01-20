@@ -13,9 +13,10 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-		  'sans' : ['Albert Sans','system-ui'],
+		  'sans' : ['Albert Sans','system-ui'], //Albert Sans
 		  'serif' : ['Lora','serif'],
 		  'logo' : ['Comforter Brush','system-ui'],
+		  'mono' : ['IBM Plex Mono','monospace'],
 		},
 		fontSize: {
 			xs: '0.7rem',

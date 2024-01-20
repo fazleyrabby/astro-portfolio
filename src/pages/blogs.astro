@@ -1,11 +1,10 @@
 ---
-import MainLayout from "../layouts/MainLayout.astro";
+import MainLayout from "@layouts/MainLayout.astro";
 const posts = await Astro.glob("../pages/post/*.md");
 posts.sort((a, b) => new Date(b.frontmatter.date).valueOf() - new Date(a.frontmatter.date).valueOf());
-import '../styles/global.css';
+import "../styles/global.css";
 import moment from "moment";
 ---
-
 <MainLayout title="Blogs">
 	<div class="mb-4">
 		<h1 class="text-4xl font-bold m-6 text-center">Blogs</h1>
@@ -22,7 +21,11 @@ import moment from "moment";
 									{post.frontmatter.title}
 								</a>
 							</div>
-							<div>{moment(post.frontmatter.date).format('Y-MM-DD hh:mm:s')}</div>
+							<div>
+								{moment(post.frontmatter.date).format(
+									"Y-MM-DD hh:mm:s",
+								)}
+							</div>
 							<div>
 								<div class="text-sm">
 									<a
@@ -30,10 +33,17 @@ import moment from "moment";
 										class="custom-readmore-button"
 									>
 										<span>Read More</span>
-										<svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" class="inline-block transition-transform ml-2 w-4 h-4" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
-</svg>
-										
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											fill="currentColor"
+											class="inline-block transition-transform ml-2 w-4 h-4"
+											viewBox="0 0 16 16"
+										>
+											<path
+												fill-rule="evenodd"
+												d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"
+											/>
+										</svg>
 									</a>
 								</div>
 							</div>

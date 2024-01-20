@@ -1,9 +1,9 @@
 ---
 Astro.response.headers.set('Cache-Control', 'max-age=604800');
 import { Image } from "@unpic/astro";
-import MainLayout from "../layouts/MainLayout.astro";
+import MainLayout from "@layouts/MainLayout.astro";
 import { v2 as cloudinary } from "cloudinary";
-import ImagePopup from "../components/ImagePopup.astro";
+import ImagePopup from "@components/ImagePopup.astro";
 const env = import.meta.env;
 
 cloudinary.config({

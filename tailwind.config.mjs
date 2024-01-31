@@ -13,15 +13,15 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-		  'sans' : ['Albert Sans','system-ui'], //Albert Sans
+		  'sans' : ['Figtree','system-ui'], //Albert Sans
 		  'serif' : ['Lora','serif'],
 		  'logo' : ['Comforter Brush','system-ui'],
 		  'mono' : ['IBM Plex Mono','monospace'],
 		},
 		fontSize: {
-			xs: '0.7rem',
-			sm: '0.8rem',
-			base: '0.95rem',
+			xs: '0.8rem',
+			sm: '0.9rem',
+			base: '1rem',
 			xl: '1.15rem',
 			'2xl': '1.563rem',
 			'3xl': '1.953rem',
@@ -66,7 +66,7 @@ export default {
 		},
 	  },
 	  corePlugins: {
-		container: false
+		container: true
 	  },
 	  plugins: [
 		require('@tailwindcss/typography'),
@@ -74,7 +74,7 @@ export default {
 		plugin(function ({ addVariant, e, postcss, addComponents }) {
 		  addComponents({
 			'.container': {
-			  maxWidth: '80%',
+			  maxWidth: '90%',
 			  '@screen sm': {
 				maxWidth: '640px',
 			  },
@@ -82,10 +82,10 @@ export default {
 				maxWidth: '768px',
 			  },
 			  '@screen lg': {
-				maxWidth: '800px',
+				maxWidth: '860px',
 			  },
 			  '@screen xl': {
-				maxWidth: '860px',
+				maxWidth: '1100px',
 			  },
 			}
 		  }),

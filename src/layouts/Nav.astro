@@ -20,10 +20,10 @@ import ThemeIcon from '@components/ThemeIcon.astro';
                 class="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start flex flex-col lg:h-auto gap-4 font-semibold"
             >
                 <a
-                    href="/blogs/"
-                    class=`nav-link ${currentPath.includes('blogs') ? 'bg-slate-100': "dark:text-white"}`
+                    href="/posts/"
+                    class=`nav-link ${currentPath.includes('posts') ? 'bg-slate-100': "dark:text-white"}`
                 >
-                    Blogs
+                    Posts
                 </a>
                 <a
                     href="/projects/"
@@ -55,7 +55,7 @@ import ThemeIcon from '@components/ThemeIcon.astro';
                         onclick="handleClick()"
                     >
                         <svg
-                            class='w-6 h-6 dark:fill-white'
+                            class='w-6 h-6 dark:fill-white open'
                             fill='none'
                             stroke='currentColor'
                             viewBox='0 0 24 24'
@@ -68,6 +68,12 @@ import ThemeIcon from '@components/ThemeIcon.astro';
                                 d='M4 6h16M4 12h16M4 18h16'
                             />
                         </svg>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 close dark:fill-white hidden">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                          </svg>
+                          
+                        
                     </button>
                     <ThemeIcon />
         </div>
@@ -84,9 +90,16 @@ import ThemeIcon from '@components/ThemeIcon.astro';
     }
     const handleClick = () =>{
         const nav = document.getElementById('nav')
-        // nav.classList.toggle('opacity-0')
-        // nav.classList.toggle('h-0')
         nav.classList.toggle('hidden')
+        // if(nav.classList.contains('hidden')){
+        //     document.querySelector('.close').classList.add('hidden')
+        //     document.querySelector('.open').classList.remove('hidden')
+        // }else{
+        //     document.querySelector('.open').classList.add('hidden')
+        //     document.querySelector('.close').classList.remove('hidden')
+        // }
+        document.querySelector('.close').classList.toggle('hidden')
+        document.querySelector('.open').classList.toggle('hidden')
     }
 
     document.addEventListener('astro:after-swap', () => {

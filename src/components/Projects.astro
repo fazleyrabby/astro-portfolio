@@ -12,18 +12,21 @@ if (type == "home") {
   class="hover-parent mx-auto space-y-6 lg:space-y-0 lg:gap-6 lg:grid lg:grid-cols-2"
 >
   {
-    data.map((item) => (
+    data.map((item, index) => (
       // hover-child
       // hover:-translate-x-1
       //   hover:-translate-y-1
       //   hover:shadow-[6px_6px_0_1px_hsl(0,0%,60%)]
       // hover:shadow-md
       // hover:scale-105,dark:hover:shadow-slate-500
+      // data-aos={!(index == 0 || index == 1) && (index % 2 == 0 ? 'fade-right': 'fade-left')} 
+      // data-aos-easing="ease-in-sine"
+      // data-aos-offset="300"
       <div
       class="hover:z-5
-      transition-all"
+      transition-all "
       >
-        <div class="rounded-sm shadow-md transition-transform bg-white max-w-lg mx-auto overflow-hidden group relative">
+        <div class="rounded-sm shadow-md transition-transform bg-white max-w-lg mx-auto overflow-hidden group relative dark:border">
           <a
             href={item.live || item.github || "#!"}
             target="_blank"
@@ -43,14 +46,21 @@ if (type == "home") {
               data-thumbnail-dark={item?.thumbnail_dark}
             />
           </a>
-          <div class="p-3">
-            <h2 class="text-gray-900 text-xl md:text-2xl font-bold mb-2">
+          <div class="p-3 dark:bg-black">
+            <h2 class="text-gray-900 dark:text-gray-100 text-xl md:text-2xl font-bold mb-2"
+            data-aos="fade-up" data-aos-delay={100}
+            >
               {item.title}
             </h2>
-            <p class="text-gray-700 text-sm mb-4">{item.description}</p>
-            <div class="flex space-x-2 flex-wrap">
-                {item.tech?.map((each) => (
-                  <span class="px-3 py-1 mb-2 border rounded-sm text-slate-500 font-medium uppercase text-[11px]">
+            <p class="text-gray-700 dark:text-gray-100 text-sm mb-4"
+            data-aos="fade-up" data-aos-delay={200}
+            >{item.description}</p>
+            <div class="flex space-x-2 flex-wrap"
+            data-aos="fade-up" data-aos-delay={300}
+            >
+                {item.tech?.map((each, index) => (
+                  <span class="px-3 py-1 mb-2 border rounded-sm text-slate-500 dark:text-gray-100 font-medium uppercase text-[11px]"
+                  >
                     {each}
                   </span>
                 ))}

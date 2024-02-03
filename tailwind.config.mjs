@@ -13,7 +13,7 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-		  'sans' : ['Figtree','system-ui'], //Albert Sans
+		  'sans' : ['Sen','system-ui'], //Albert Sans
 		  'serif' : ['Lora','serif'],
 		  'logo' : ['Comforter Brush','system-ui'],
 		  'mono' : ['IBM Plex Mono','monospace'],
@@ -43,7 +43,8 @@ export default {
 			bounce: 'bounce 2s ease-in-out infinite',
 			fadein: 'fadein 200ms linear',
 			objtoright: 'objtoright 10s alternate infinite',
-			spin: 'spin 1s linear infinite'
+			spin: 'spin 1s linear infinite',
+			bgGradient: 'titleAnimate 5s ease infinite forwards',
 		  },
 		  keyframes: {
 			wiggle: {
@@ -61,7 +62,12 @@ export default {
 			spin:{
 				from: { transform: 'rotate(0deg)' },
 				to: { transform: 'rotate(360deg)'}
-			} 
+			},
+			titleAnimate: {
+				'0%': { 'background-position': '0% 50%' },
+				'50%': { 'background-position': '100% 50%' },
+				'100%': { 'background-position': '0% 50%' },
+			  },
 		  }
 		},
 	  },

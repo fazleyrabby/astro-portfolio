@@ -22,7 +22,7 @@ import MainLayout from "@layouts/MainLayout.astro";
         />
       </div>
       <h1 class="lg:text-5xl text-3xl font-extrabold mb-4">
-        <span class="custom-title"> I am Fazley Rabbi</span
+        I am <span class="bg-clip-text text-transparent bg-gradient-to-r from-slate-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% bg-[size:400%_400%] animate-bgGradient">Fazley Rabbi</span
         >
         <span class="animate-wiggle inline-flex origin-bottom">👋</span>
       </h1>
@@ -55,7 +55,7 @@ import MainLayout from "@layouts/MainLayout.astro";
     </div>
 
     {/* Projects  */}
-    <div class="lg:mb-48 mb-24 grid space-y-4" id="projects">
+    <div class="lg:mb-48 mb-24 grid space-y-4" id="projects" >
       <Projects type="home"/>
       <a href="/projects" class="fancy-text w-fit justify-self-center">Show All</a>
     </div>
@@ -73,6 +73,9 @@ import MainLayout from "@layouts/MainLayout.astro";
 </MainLayout>
 
 <script is:inline>
+
+AOS.init()
+  
   if (window.matchMedia("(max-width: 767px)").matches) {
     // The viewport is less than 768 pixels wide
     const resumeLink = document.getElementById("resume-link");

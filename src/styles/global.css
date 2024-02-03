@@ -2,13 +2,13 @@
   font-family: Sligoil-Micro;
   src: url('/public/fonts/Sligoil-Micro.woff2');
 } */
-@font-face {
+/* @font-face {
   font-family: InterVariable;
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
   src: url("../../public/fonts/Inter/InterVariable.woff2") format("woff2");
-}
+} */
 
 body::before {
   --line: hsla(0, 11%, 74%, 0.25);
@@ -29,7 +29,15 @@ html.dark body::before {
 }
 /* .custom-title{
   text-shadow: 2px 2px 0 hsl(0, 0%, 70%), 4px 4px 0 hsl(0, 0%, 80%);
+  background: linear-gradient(45deg, rgb(51 65 85), hsl(0, 0%, 70%));
+  background: linear-gradient(304deg, #8fe6d0, #243a34);
+  background-size: 400% 400%;
+  color: transparent;
+  background-clip: text;
+  animation: titleAnimate 5s ease infinite forwards;
+  @apply animate-bgGradient;
 } */
+
 .custom-readmore-button{
   @apply text-white bg-slate-700 hover:bg-slate-800 text-xs py-2 px-3 w-max flex justify-center items-center rounded-sm custom-box-shadow
 }

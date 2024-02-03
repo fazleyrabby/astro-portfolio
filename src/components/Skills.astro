@@ -6,7 +6,7 @@ import { skills } from "../../lib/static";
 <div class="mx-auto space-y-10 lg:space-y-0 lg:gap-10 lg:grid lg:grid-cols-2">
     <div class="mb-4">
         <h2 class="mb-4 font-bold">Tools & Languages I mostly work with</h2>
-        <ul class="flex gap-3 skill-items flex-wrap" data-aos="fade-right" data-aos-delay={100}>
+        <ul class="flex gap-3 skill-items flex-wrap">
             {skills.left.map((item, index) => 
                 <li>{item}</li>
             )}
@@ -14,7 +14,7 @@ import { skills } from "../../lib/static";
     </div>
     <div>
         <h2 class="mb-4 font-bold">Tools I try out as hobby</h2>
-        <ul class="flex gap-3 skill-items flex-wrap" data-aos="fade-left" data-aos-delay={200}> 
+        <ul class="flex gap-3 skill-items flex-wrap"> 
             {skills.right.map((item, index) => 
                 <li>{item}</li>
             )}

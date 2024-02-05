@@ -2,15 +2,19 @@
 <span class="loader border-violet-700 border-2 absolute top-4 right-4 z-10"></span>
 
 <script>
+  // document.addEventListener("astro:before-preparation", () => {
+  //   document.querySelector(".loader").style.visibility = "";
+  //   // simulateProgress(true);
+  // });
+  // document.addEventListener("astro:page-load", () => {
+  //   document.querySelector(".loader").style.visibility = "hidden";
+  //   // simulateProgress(false);
+  // });
 
-  document.addEventListener("astro:before-preparation", () => {
-    document.querySelector(".loader").style.visibility = "";
-    // simulateProgress(true);
-  });
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener("DOMContentLoaded", (event) => {
     document.querySelector(".loader").style.visibility = "hidden";
-    // simulateProgress(false);
   });
+  
 
 //   function simulateProgress(value) {
 //     console.log(value)

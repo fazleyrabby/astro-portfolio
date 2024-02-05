@@ -16,7 +16,7 @@ export default {
 		  'sans' : ['Sen','system-ui'], //Albert Sans
 		  'serif' : ['Lora','serif'],
 		  'logo' : ['Comforter Brush','system-ui'],
-		  'mono' : ['IBM Plex Mono','monospace'],
+		  'mono' : ['Jetbrains Mono','ui-monospace'],
 		},
 		fontSize: {
 			xs: '0.8rem',

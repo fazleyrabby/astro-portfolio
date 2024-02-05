@@ -10,6 +10,12 @@
   src: url("../../public/fonts/Inter/InterVariable.woff2") format("woff2");
 } */
 
+/* @font-face {
+  font-family: "GeistVariable";
+  src: url("/fonts/Geist/GeistVariableVF.woff2") format("woff2");
+  font-weight: 100 900;
+} */
+
 body::before {
   --line: hsla(0, 11%, 74%, 0.25);
   content: "";
@@ -98,8 +104,8 @@ html.dark body::before {
   }
   
   html {
-    font-variation-settings: normal;
-    font-feature-settings: "cv01", "cv02", "cv03", "cv04", "cv05", "cv06", "cv07", "cv08", "cv09", "cv10", "cv11", "cv12", "cv13", "ss02", "ss03", "ss04", "ss07", "ss08";
+    /* font-variation-settings: normal;
+    font-feature-settings: "cv01", "cv02", "cv03", "cv04", "cv05", "cv06", "cv07", "cv08", "cv09", "cv10", "cv11", "cv12", "cv13", "ss02", "ss03", "ss04", "ss07", "ss08"; */
     scroll-behavior: smooth;
     scroll-padding-top: 12rem;
   }

@@ -14,9 +14,9 @@ export default {
 	theme: {
 		fontFamily: {
 		  'sans' : ['Sen','system-ui'], //Albert Sans
-		  'serif' : ['Lora','serif'],
+		  'serif' : ['Young Serif','serif'],
 		  'logo' : ['Comforter Brush','system-ui'],
-		  'mono' : ['Jetbrains Mono','ui-monospace'],
+		  'mono' : ['Geist Mono','ui-monospace'],
 		},
 		fontSize: {
 			xs: '0.8rem',

@@ -10,11 +10,17 @@
   src: url("../../public/fonts/Inter/InterVariable.woff2") format("woff2");
 } */
 
-/* @font-face {
-  font-family: "GeistVariable";
+@font-face {
+  font-family: "Geist var";
   src: url("/fonts/Geist/GeistVariableVF.woff2") format("woff2");
   font-weight: 100 900;
-} */
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/fonts/Geist/GeistMonoVariableVF.woff2") format("woff2");
+  font-weight: 100 900;
+} 
 
 body::before {
   --line: hsla(0, 11%, 74%, 0.25);

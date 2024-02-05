@@ -53,11 +53,13 @@
   :global(.dark) .moon { fill: white; }
 </style> -->
 
-<script is:inline>
+<script>
   document.getElementById("sun").style.display = "none";
 
-  document.addEventListener("astro:page-load", () => {
-    const theme = (() => {
+  const darkModePreference = window.matchMedia("(prefers-color-scheme: dark)");
+  // darkModePreference.addEventListener("change", e => setIcon(theme == "dark"));
+  darkModePreference.addEventListener("change", e => handleToggleClick());
+  const theme = (() => {
       if (
         typeof localStorage !== "undefined" &&
         localStorage.getItem("theme")
@@ -69,6 +71,7 @@
       }
       return "light";
     })();
+
 
     setIcon(theme == "dark");
 
@@ -101,5 +104,7 @@
     document
       .getElementById("themeToggle")
       .addEventListener("click", handleToggleClick);
-  });
+  // document.addEventListener("astro:page-load", () => {
+    
+  // });
 </script>

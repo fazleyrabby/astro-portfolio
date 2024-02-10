@@ -13,7 +13,7 @@
     "@astrojs/tailwind": "^5.1.0",
     "@cloudinary/url-gen": "^1.14.0",
     "@unpic/astro": "^0.0.38",
-    "astro": "^4.2.1",
+    "astro": "^4.3.5",
     "cloudinary": "^1.41.1",
     "geist": "^1.2.1",
     "moment": "^2.30.1",

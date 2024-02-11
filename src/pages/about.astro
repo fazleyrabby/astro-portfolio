@@ -19,60 +19,7 @@ import { uses } from "lib/static";
         <AboutMarkdown />
       </div>
     </section>
-    <div>
-      {
-        uses.editor && (
-          <div class="mb-5">
-            <p class="text-xl font-bold">Editor</p>
-            <ul class="list-[square] pl-6">
-              {uses.editor.map((item, index) => (
-                <li>{item}</li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
-
-      {
-        uses.tools && (
-        <div class="mb-5">
-            <p class="text-xl font-bold">Tools</p>
-            <ul class="list-[square] pl-6">
-              {uses.tools.map((item, index) => (
-                <li>{item}</li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
-
-      {
-        uses.terminal && (
-          <div class="mb-5">
-            <p class="text-xl font-bold">Terminal</p>
-            <ul class="list-[square] pl-6">
-              {uses.terminal.map((item, index) => (
-                <li>{item}</li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
-
-      {
-        uses.setup && (
-        <div class="mb-5">
-            <p class="text-xl font-bold">Setup</p>
-            <ul class="list-[square] pl-6">
-              {uses.setup.map((item, index) => (
-                <li>{item}</li>
-              ))}
-            </ul>
-          </div>
-        )
-      }
-    </div>
-    <p class="mb-4 text-lg font-medium">Send me a message</p>
+    <p class="mb-4 text-xl font-medium">Send me a message</p>
     <div class="mb-8">
       <ContactForm />
     </div>

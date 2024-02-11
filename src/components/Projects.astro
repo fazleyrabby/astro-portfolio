@@ -19,11 +19,11 @@ if (type == "home") {
       //   hover:shadow-[6px_6px_0_1px_hsl(0,0%,60%)]
       // hover:shadow-md
       // hover:scale-105,dark:hover:shadow-slate-500
-      // data-aos={!(index == 0 || index == 1) && (index % 2 == 0 ? 'fade-right': 'fade-left')} 
+      // data-aos={!(index == 0 || index == 1) && (index % 2 == 0 ? 'fade-right': 'fade-left')}
       // data-aos-easing="ease-in-sine"
       // data-aos-offset="300"
       <div
-      class="hover:z-5
+        class="hover:z-5
       transition-all "
       >
         <div class="rounded-sm shadow-md transition-transform bg-white max-w-lg mx-auto overflow-hidden group relative dark:border">
@@ -46,36 +46,38 @@ if (type == "home") {
               data-thumbnail-dark={item?.thumbnail_dark}
             />
           </a>
-          <div class="p-3 dark:bg-black">
-            <h2 class="text-gray-900 dark:text-gray-100 text-xl md:text-2xl font-bold mb-2"
-            >
+          <div class="px-3 py-2 dark:bg-black">
+            <h2 class="text-gray-900 dark:text-gray-100 text-xl md:text-2xl font-bold mb-2">
               {item.title}
             </h2>
-            <p class="text-gray-700 dark:text-gray-100 text-sm mb-4"
-            >{item.description}</p>
-            <div class="flex space-x-2 flex-wrap"
-            >
-                {item.tech?.map((each, index) => (
-                  <span class="px-3 py-1 mb-2 border rounded-sm text-slate-500 dark:text-gray-100 font-medium uppercase text-[11px]"
-                  >
-                    {each}
-                  </span>
-                ))}
+            <p class="text-gray-700 dark:text-gray-100 text-sm mb-4">
+              {item.description}
+            </p>
+            <div class="flex space-x-2 flex-wrap">
+              {item.tech?.map((each, index) => (
+                <span class="px-3 py-1 mb-2 border rounded-sm text-slate-500 dark:text-gray-100 font-medium uppercase text-[11px]">
+                  {each}
+                </span>
+              ))}
             </div>
-            <div class="absolute inset-0 z-10 h-full w-full grid place-content-center links bg-black backdrop-blur-sm bg-opacity-60 text-white -translate-y-full group-hover:translate-y-0 transition-transform ease-in duration-75">
-              <div class="flex space-x-4">
-                {item.live && <a href={item?.live} target="_blank" class="px-4 py-2 rounded-sm border font-medium uppercase text-sm hover:scale-110 hover:bg-slate-700 transition-all">
-                  Live
-                </a>}
-                {item.github && <a href={item?.github} target="_blank" class="px-4 py-2 rounded-sm border font-medium uppercase text-sm hover:scale-110 hover:bg-slate-700 transition-all">
-                  Github
-                </a>}
-            </div>
-            </div>
-            
+          </div>
+          <div class="flex space-x-2 flex-wrap pt-3 px-3 border-t border-t-slate-100 dark:bg-black">
+            {item.live && <a class="transition flex-grow text-gray-900 hover:text-white border border-gray-200 hover:bg-gray-900 font-medium rounded-sm text-sm px-3 py-1.5 text-center mb-2 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 grid place-content-center" target="_blank" href={item?.live}>Preview</a>}
+            {item.github && <a class="transition flex-grow text-gray-900 hover:text-white border border-gray-200 hover:bg-gray-900  font-medium rounded-sm text-sm px-3 py-1.5 text-center mb-2 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-700  grid place-content-center" target="_blank" href={item?.github}>Github</a> }
           </div>
         </div>
       </div>
     ))
   }
 </div>
+
+<!-- <div class="absolute inset-0 z-10 h-full w-full grid place-content-center links bg-black backdrop-blur-sm bg-opacity-60 text-white -translate-y-full group-hover:translate-y-0 transition-transform ease-in duration-75">
+  <div class="flex space-x-4">
+    {item.live && <a href={item?.live} target="_blank" class="px-4 py-2 rounded-sm border font-medium uppercase text-sm hover:scale-110 hover:bg-slate-700 transition-all">
+      Live
+    </a>}
+    {item.github && <a href={item?.github} target="_blank" class="px-4 py-2 rounded-sm border font-medium uppercase text-sm hover:scale-110 hover:bg-slate-700 transition-all">
+      Github
+    </a>}
+</div>
+</div> -->

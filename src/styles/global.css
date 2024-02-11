@@ -105,10 +105,21 @@ html.dark body::before {
     @apply shadow-sm dark:shadow-md dark:border-r dark:border-b dark:border-l dark:lg:border-t rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal w-full;
   }
 
+  #nav:hover a
+  {
+    filter: blur(1px);
+    opacity: 0.8;
+  }
+
+  #nav a:hover
+  {
+    @apply blur-none opacity-100
+  }
+
   .nav-link{
     @apply lg:inline-flex lg:w-auto w-full px-3 py-2 rounded items-center justify-center hover:bg-gray-100 dark:hover:text-black;
   }
-  
+
   html {
     /* font-variation-settings: normal;
     font-feature-settings: "cv01", "cv02", "cv03", "cv04", "cv05", "cv06", "cv07", "cv08", "cv09", "cv10", "cv11", "cv12", "cv13", "ss02", "ss03", "ss04", "ss07", "ss08"; */

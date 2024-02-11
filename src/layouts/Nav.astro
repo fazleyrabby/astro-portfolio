@@ -1,11 +1,12 @@
 ---
 const pathname = new URL(Astro.request.url).pathname;
-const currentPath = pathname.slice(1); 
-import ThemeIcon from '@components/ThemeIcon.astro';
+const currentPath = pathname.slice(1);
+import ThemeIcon from "@components/ThemeIcon.astro";
 ---
+
 <div class="custom-navbar">
     <nav
-        class="container mx-auto flex items-center justify-items-center justify-between flex-wrap bg-transparent py-6 text-black dark:bg-transparent order-1 gap-4"
+        class="container mx-auto flex items-center justify-items-center justify-between flex-wrap bg-transparent py-6 text-black dark:bg-transparent order-1 gap-4 transition-all"
     >
         <a href="/" class="inline-flex items-center mr-4">
             <span
@@ -15,9 +16,9 @@ import ThemeIcon from '@components/ThemeIcon.astro';
             </span>
         </a>
 
-        <div id="nav" class='w-full lg:inline-flex lg:flex-grow lg:w-auto order-2 transition-all delay-150 duration-300 overflow-hidden'>
-            <div
-                class="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start flex flex-col lg:h-auto gap-4 font-semibold"
+        <div id="nav" class="w-full lg:inline-flex lg:flex-grow lg:w-auto order-2 transition-all delay-150 duration-300 overflow-hidden"
+        >
+            <div class="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start flex flex-col lg:h-auto gap-1 font-semibold"
             >
                 <a
                     href="/posts/"
@@ -31,7 +32,7 @@ import ThemeIcon from '@components/ThemeIcon.astro';
                 >
                     Projects
                 </a>
-                
+
                 <a
                     href="/about/"
                     class=`nav-link ${currentPath.includes('about') ? 'bg-slate-100': "dark:text-white"}`
@@ -47,50 +48,56 @@ import ThemeIcon from '@components/ThemeIcon.astro';
             </div>
         </div>
 
-
-        <div class='lg:order-3'>
+        <div class="lg:order-3 theme-icon">
             <button
-                        aria-label="Theme"
-                        class='inline-flex p-3 hover:bg-gray-100 rounded lg:hidden text-black ml-auto  outline-none dark:text-white dark:hover:text-black'
-                        onclick="handleClick()"
-                    >
-                        <svg
-                            class='w-6 h-6 dark:fill-white open'
-                            fill='none'
-                            stroke='currentColor'
-                            viewBox='0 0 24 24'
-                            xmlns='http://www.w3.org/2000/svg'
-                        >
-                            <path
-                                stroke-linecap='round'
-                                stroke-linejoin='round'
-                                stroke-width={2}
-                                d='M4 6h16M4 12h16M4 18h16'
-                            />
-                        </svg>
+                aria-label="Theme"
+                class="inline-flex p-3 hover:bg-gray-100 rounded lg:hidden text-black ml-auto outline-none dark:text-white dark:hover:text-black"
+                onclick="handleClick()"
+            >
+                <svg
+                    class="w-6 h-6 dark:fill-white open"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width={2}
+                        d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
 
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 close dark:fill-white hidden">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                          </svg>
-                          
-                        
-                    </button>
-                    <ThemeIcon />
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6 close dark:fill-white hidden"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6 18 18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <ThemeIcon />
         </div>
     </nav>
 </div>
 
 <script is:inline>
     const checkDeviceWidth = () => {
-        if(window.innerWidth <= 1025){
+        if (window.innerWidth <= 1025) {
             // nav.classList.add('opacity-0')
             // nav.classList.add('h-0')
-            nav.classList.add('hidden')
+            nav.classList.add("hidden");
         }
-    }
+    };
     const handleClick = () => {
-        const nav = document.getElementById('nav')
-        nav.classList.toggle('hidden')
+        const nav = document.getElementById("nav");
+        nav.classList.toggle("hidden");
         // if(nav.classList.contains('hidden')){
         //     document.querySelector('.close').classList.add('hidden')
         //     document.querySelector('.open').classList.remove('hidden')
@@ -98,17 +105,21 @@ import ThemeIcon from '@components/ThemeIcon.astro';
         //     document.querySelector('.open').classList.add('hidden')
         //     document.querySelector('.close').classList.remove('hidden')
         // }
-        document.querySelector('.close').classList.toggle('hidden')
-        document.querySelector('.open').classList.toggle('hidden')
-    }
+        document.querySelector(".close").classList.toggle("hidden");
+        document.querySelector(".open").classList.toggle("hidden");
+    };
 
-    document.addEventListener('astro:after-swap', () => {
-        checkDeviceWidth()
+    document.addEventListener("astro:after-swap", () => {
+        checkDeviceWidth();
     });
 
-    window.addEventListener('resize', function() {
-        checkDeviceWidth()
-    }, true);
+    window.addEventListener(
+        "resize",
+        function () {
+            checkDeviceWidth();
+        },
+        true,
+    );
 
-    checkDeviceWidth()
+    checkDeviceWidth();
 </script>

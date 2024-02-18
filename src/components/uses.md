@@ -2,7 +2,7 @@
 + <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a>
 + <a href="https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-material-theme" target="_blank">Material Ocean Theme</a>
 + <a href="https://vercel.com/font/mono" target="_blank">Geist Mono</a> Font 
-    + <small>Previously Tried ( Fira Code, Monaco, Dank Mono, SF Mono, Menlo, IBM Plex Mono )</small>
+    + <small>Previously tried ( Fira Code, Monaco, Dank Mono, SF Mono, Menlo, IBM Plex Mono )</small>
 + Also experimenting with <a href="https://zed.dev/" target="_blank">Zed</a> Editor
 
 ### Tools

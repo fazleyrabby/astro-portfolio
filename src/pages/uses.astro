@@ -1,13 +1,24 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
 import { uses } from "lib/static";
+import { Content as UsesMarkdown } from "@components/uses.md";
 ---
+<style>
+    /* .markdown{
+        background-color: black;
+    } */
+</style>
 
 <MainLayout title="Uses">
     <main>
         <h1 class="text-4xl font-bold m-6 text-center font-serif">Uses</h1>
         <div class="mb-20">
-            {
+            <section class="markdown text-center mb-4">
+                <div class="prose dark:prose-invert w-full text-justify mr-0 ml-0 inline prose-ul:mb-0 prose-ul:list-[square]">
+                  <UsesMarkdown />
+                </div>
+              </section>
+            <!-- {
                 uses.editor && (
                     <div class="mb-5">
                         <p class="text-xl font-bold">Editor</p>
@@ -57,7 +68,7 @@ import { uses } from "lib/static";
                         </ul>
                     </div>
                 )
-            }
+            } -->
         </div>
     </main>
 </MainLayout>

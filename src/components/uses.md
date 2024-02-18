@@ -25,7 +25,7 @@
 ### Setup
 + Apple <a href="https://www.amazon.com/Apple-MacBook-14-inch-8%E2%80%91core-14%E2%80%91core/dp/B09JQSLL92?th=1" target="_blank" title="Primary Work Laptop">Macbook Pro M1 14</a> with 16gb Ram and 512gb SSD
 + <a href="https://www.amazon.com/LG-32UN650-W-Compatibility-Borderless-Adjustable/dp/B08FQ42MN1/" target="_blank" title="4k Monitor">LG 32UN650</a>  32inch 4k Monitor
-+ Logitech <a href="https://www.amazon.com/Logitech-Master-Performance-Ultra-Fast-Scrolling/dp/B0BS9VVQPD/" target="_blank" title="Wireless Monitor">MX Master 3s</a> Mouse
++ Logitech <a href="https://www.amazon.com/Logitech-Master-Performance-Ultra-Fast-Scrolling/dp/B0BS9VVQPD/" target="_blank" title="Wireless Mouse">MX Master 3s</a> Mouse
 + <a href="https://www.amazon.in/Rapoo-Rechargeable-Bluetooth-Multi-Device-Smartphone/dp/B0C71DDZMB " target="_blank" title="Wireless Keyboard">Rapoo E9050</a> Wireless Keyboard
 + Orico USB-C Hub <small><a href="https://www.orico.cc/us/product/detail/3334.html" target="_blank" title="USB C HUB">(ORICO-TC4U-U3)</a></small>
 + Transcend 1TB Portable SSD <small><a href="https://www.amazon.com/Transcend-Type-C-ESD370C-Portable-TS1TESD370C/dp/B08P9MSSZP" target="_blank" title="1TB SSD">( TS1TESD370C )</a></small> 

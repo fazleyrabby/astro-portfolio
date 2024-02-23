@@ -41,25 +41,12 @@
   </svg>
 </button>
 
-<!-- <style>
-  #themeToggle {
-    border: 0;
-    background: none;
-  }
-  .sun { fill: black; }
-  .moon { fill: transparent; }
-
-
-  :global(.dark) .sun { fill: transparent; }
-  :global(.dark) .moon { fill: white; }
-</style> -->
 
 <script>
-  // document.getElementById("sun").style.display = "none";
-
   const darkModePreference = window.matchMedia("(prefers-color-scheme: dark)");
-  // darkModePreference.addEventListener("change", e => setIcon(theme == "dark"));
+
   darkModePreference.addEventListener("change", (e) => handleToggleClick());
+
   const theme = (() => {
     if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
       return localStorage.getItem("theme");
@@ -89,23 +76,18 @@
   };
 
   function setIcon(isDark) {
+    const moon = document.getElementById("moon");
+    const sun = document.getElementById("sun");
     if (isDark) {
-      // document.getElementById("sun").style.display = "none";
-      // document.getElementById("moon").style.display = "block";
-      document.getElementById("moon").classList.add("active");
-      document.getElementById("sun").classList.remove("active");
+      moon.classList.add("active");
+      sun.classList.remove("active");
     } else {
-      // document.getElementById("sun").style.display = "block";
-      // document.getElementById("moon").style.display = "none";
-      document.getElementById("moon").classList.remove("active");
-      document.getElementById("sun").classList.add("active");
+      moon.classList.remove("active");
+      sun.classList.add("active");
     }
   }
 
   document
     .getElementById("themeToggle")
     .addEventListener("click", handleToggleClick);
-  // document.addEventListener("astro:page-load", () => {
-
-  // });
 </script>

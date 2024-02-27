@@ -176,6 +176,32 @@ html.dark body::before {
       filter: none;
     }
   }
+
+  #themeToggle{
+    height: 48px;
+    width: 48px;
+  }
+
+  #themeToggle svg{
+    /* width: 100%;
+    height: 100%;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%,-50%); */
+    transform: scale(0.5);
+    /* width: 24px;
+    padding-block: 10px;
+    top: 12px; */
+  }
+  
+  #moon.active{
+    transform: translateX(-100%);
+  }
+
+  #sun.active{
+    transform: translateX(100%);
+  }
+
   
 
   .loader {

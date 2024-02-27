@@ -5,16 +5,16 @@
 <button
   id="themeToggle"
   aria-label="Theme toggle"
-  class="inline-flex hover:bg-gray-100 text-black dark:hover:text-black rounded ml-auto outline-none group"
+  class="inline-flex justify-center text-black dark:hover:text-black rounded ml-auto outline-none group relative overflow-hidden hover:outline-slate-300"
 >
   <svg
+    id="moon"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
-    view-box="0 0 24 24"
-    stroke-width="1.5"
+    viewBox="0 0 24 24"
+    stroke-width="1"
     stroke="currentColor"
-    id="moon"
-    class="h-6 w-6 m-2 dark:stroke-white dark:group:sroke-white dark:group-hover:stroke-black"
+    class=" dark:stroke-white dark:group:sroke-white dark:group-hover:stroke-black absolute transition-transform"
   >
     <path
       stroke-linecap="round"
@@ -23,14 +23,15 @@
     ></path>
   </svg>
 
+
   <svg
-    xmlns="http://www.w3.org/2000/svg"
     id="sun"
+    xmlns="http://www.w3.org/2000/svg"
     fill="none"
-    view-box="0 0 24 24"
-    stroke-width="1.5"
+    viewBox="0 0 24 24"
+    stroke-width="1"
     stroke="currentColor"
-    class="h-6 w-6 m-2 fill-yellow-400 dark:stroke-white"
+    class=" fill-yellow-400 dark:stroke-white transition-transform absolute"
   >
     <path
       stroke-linecap="round"
@@ -40,71 +41,53 @@
   </svg>
 </button>
 
-<!-- <style>
-  #themeToggle {
-    border: 0;
-    background: none;
-  }
-  .sun { fill: black; }
-  .moon { fill: transparent; }
-
-
-  :global(.dark) .sun { fill: transparent; }
-  :global(.dark) .moon { fill: white; }
-</style> -->
 
 <script>
-  document.getElementById("sun").style.display = "none";
-
   const darkModePreference = window.matchMedia("(prefers-color-scheme: dark)");
-  // darkModePreference.addEventListener("change", e => setIcon(theme == "dark"));
-  darkModePreference.addEventListener("change", e => handleToggleClick());
+
+  darkModePreference.addEventListener("change", (e) => handleToggleClick());
+
   const theme = (() => {
-      if (
-        typeof localStorage !== "undefined" &&
-        localStorage.getItem("theme")
-      ) {
-        return localStorage.getItem("theme");
-      }
-      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        return "dark";
-      }
-      return "light";
-    })();
+    if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+      return localStorage.getItem("theme");
+    }
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    return "light";
+  })();
 
+  setIcon(theme == "dark");
 
-    setIcon(theme == "dark");
+  if (theme === "light") {
+    document.documentElement.classList.remove("dark");
+  } else {
+    document.documentElement.classList.add("dark");
+  }
 
-    if (theme === "light") {
-      document.documentElement.classList.remove("dark");
+  window.localStorage.setItem("theme", theme);
+
+  const handleToggleClick = () => {
+    const element = document.documentElement;
+    element.classList.toggle("dark");
+    const isDark = element.classList.contains("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    setIcon(isDark);
+  };
+
+  function setIcon(isDark) {
+    const moon = document.getElementById("moon");
+    const sun = document.getElementById("sun");
+    if (isDark) {
+      moon.classList.add("active");
+      sun.classList.remove("active");
     } else {
-      document.documentElement.classList.add("dark");
+      moon.classList.remove("active");
+      sun.classList.add("active");
     }
+  }
 
-    window.localStorage.setItem("theme", theme);
-
-    const handleToggleClick = () => {
-      const element = document.documentElement;
-      element.classList.toggle("dark");
-      const isDark = element.classList.contains("dark");
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-      setIcon(isDark);
-    };
-
-    function setIcon(isDark) {
-      if (isDark) {
-        document.getElementById("sun").style.display = "none";
-        document.getElementById("moon").style.display = "block";
-      } else {
-        document.getElementById("sun").style.display = "block";
-        document.getElementById("moon").style.display = "none";
-      }
-    }
-
-    document
-      .getElementById("themeToggle")
-      .addEventListener("click", handleToggleClick);
-  // document.addEventListener("astro:page-load", () => {
-    
-  // });
+  document
+    .getElementById("themeToggle")
+    .addEventListener("click", handleToggleClick);
 </script>

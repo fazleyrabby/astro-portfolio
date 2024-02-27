@@ -15,7 +15,7 @@ export default {
 		fontFamily: {
 		  'sans' : ['Sen','system-ui'], //Albert Sans
 		  'serif' : ['Young Serif','serif'],
-		  'logo' : ['Comforter Brush','system-ui'],
+		  'logo' : ['Dawning of a New Day','system-ui'],
 		  'mono' : ['Geist Mono','ui-monospace'],
 		},
 		fontSize: {

@@ -13,16 +13,16 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-		  'sans' : ['Sen','system-ui'], //Albert Sans
+		  'sans' : ['Lexend Deca','system-ui'], //Albert Sans
 		  'serif' : ['Young Serif','serif'],
 		  'logo' : ['Dawning of a New Day','system-ui'],
 		  'mono' : ['Geist Mono','ui-monospace'],
 		},
 		fontSize: {
-			xs: '0.8rem',
+			xs: '0.9rem',
 			sm: '0.9rem',
 			base: '1rem',
-			xl: '1.15rem',
+			xl: '1.2rem',
 			'2xl': '1.563rem',
 			'3xl': '1.953rem',
 			'4xl': '2.441rem',

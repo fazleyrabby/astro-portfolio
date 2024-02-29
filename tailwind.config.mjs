@@ -13,7 +13,7 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-		  'sans' : ['Lexend Deca','system-ui'], //Albert Sans,Bricolage Grotesque
+		  'sans' : ['Outfit','system-ui'], //Albert Sans,Bricolage Grotesque
 		  'serif' : ['Young Serif','serif'],
 		  'logo' : ['Dawning of a New Day','system-ui'],
 		  'mono' : ['Geist Mono','ui-monospace'],

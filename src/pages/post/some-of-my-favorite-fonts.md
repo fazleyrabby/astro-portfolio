@@ -31,7 +31,6 @@ These are some of my personal favorite fonts that I have collected over the year
     <a href="https://fonts.google.com/specimen/Plus Jakarta Sans" target="_blank">Plus Jakarta Sans<img class="preview m-0" src="/images/uploads/Plus Jakarta Sans.png"></p></a>
     <a href="https://fonts.google.com/specimen/Be Vietnam Pro" target="_blank">Be Vietnam Pro<img class="preview m-0" src="/images/uploads/Be Vietnam Pro.png"></p></a>
     <a href="https://fonts.google.com/specimen/Rethink Sans" target="_blank">Rethink Sans<img class="preview m-0" src="/images/uploads/Rethink Sans.png"></p></a>
-    <a href="https://fonts.google.com/specimen/Plus Jakarta Sans" target="_blank">Plus Jakarta Sans<img class="preview m-0" src="/images/uploads/Plus Jakarta Sans.png"></p></a>
     <a href="https://fonts.google.com/specimen/Inclusive Sans" target="_blank">Inclusive Sans<img class="preview m-0" src="/images/uploads/Inclusive Sans.png"></p></a>
     <a href="https://fonts.google.com/specimen/Instrument Sans" target="_blank">Instrument Sans<img class="preview m-0" src="/images/uploads/Instrument Sans.png"></p></a>
     <a href="https://fonts.google.com/specimen/Commissioner" target="_blank">Commissioner<img class="preview m-0" src="/images/uploads/Commissioner.png"></p></a>

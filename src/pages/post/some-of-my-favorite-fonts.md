@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 thumbnail: /images/uploads/fonts-cover.png
 title: A Curated List of Personal Favorite fonts
-date: 2022-02-25T12:00:00.000Z
+date: 2024-03-01T17:50:00.000Z
 ---
 <style>
 .fonts a{font-size:1.1rem;text-align:center}.fonts a img{border:3px solid transparent}.fonts a:hover img{border:3px dashed}html.dark .fonts a:hover img{border:2px dashed;outline:transparent solid 1px}html.dark .fonts a img{border:2px solid transparent;outline:solid 1px}

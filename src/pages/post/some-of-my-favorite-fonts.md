@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 thumbnail: /images/uploads/fonts-cover.png
 title: A Curated List of Personal Favorite fonts
-date: 2024-03-01T17:50:00.000Z
+date: 2024-03-01T18:00:04.829Z
 ---
 <style>
 .fonts a{font-size:1.1rem;text-align:center}.fonts a img{border:3px solid transparent}.fonts a:hover img{border:3px dashed}html.dark .fonts a:hover img{border:2px dashed;outline:transparent solid 1px}html.dark .fonts a img{border:2px solid transparent;outline:solid 1px}
@@ -25,6 +25,7 @@ These are some of my personal favorite fonts that I have collected over the year
     <a href="https://fonts.google.com/specimen/Inter" target="_blank">Figtree<img class="preview m-0" src="/images/uploads/Figtree.png"></p></a>
     <a href="https://fonts.google.com/specimen/Albert Sans" target="_blank">Albert Sans<img class="preview m-0" src="/images/uploads/Albert Sans.png"></p></a>
     <a href="https://fonts.google.com/specimen/Overpass" target="_blank">Overpass<img class="preview m-0" src="/images/uploads/Overpass.png"></p></a>
+    <a href="https://fonts.google.com/specimen/Outfit" target="_blank">Outfit<img class="preview m-0" src="/images/uploads/Outfit.png"></p></a>
     <a href="https://fonts.google.com/specimen/Fira Sans" target="_blank">Fira Sans<img class="preview m-0" src="/images/uploads/Fira Sans.png"></p></a>
     <a href="https://fonts.google.com/specimen/IBM Plex Sans" target="_blank">IBM Plex Sans<img class="preview m-0" src="/images/uploads/IBM Plex Sans.png"></p></a>
     <a href="https://fonts.google.com/specimen/Hanken Grotesk" target="_blank">Hanken Grotesk<img class="preview m-0" src="/images/uploads/Hanken Grotesk.png"></p></a>

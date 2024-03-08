@@ -22,11 +22,12 @@ if (type == "home") {
       // data-aos={!(index == 0 || index == 1) && (index % 2 == 0 ? 'fade-right': 'fade-left')}
       // data-aos-easing="ease-in-sine"
       // data-aos-offset="300"
-      <div
+      <div //bg-pattern
         class="hover:z-5
-      transition-all bg-pattern"
+        transition-all max-lg:mx-auto"
       >
-        <div class="rounded-sm shadow-md transition-all  bg-white max-w-lg mx-auto overflow-hidden group relative dark:outline dark:outline-slate-400 content dark:hover:outline-none dark:bg-inherit">
+        <div //content
+        class="rounded-sm shadow-md bg-white max-w-lg mx-auto overflow-hidden group relative dark:bg-inherit dark:outline"> 
           <a
             href={item.live || item.github || "#!"}
             target="_blank"
@@ -37,7 +38,7 @@ if (type == "home") {
           >
             <Image
               src={item.thumbnail}
-              class="object-cover object-left-top hover:animate-objtoright w-full lg:h-48 thumbnail"
+              class="object-cover object-left-top hover:animate-objtoright w-full lg:h-48 thumbnail group-hover:scale-110 transition-all"
               alt={item.title}
               width="100"
               height="100"

@@ -225,13 +225,20 @@ html.dark body::before {
     } 
     
     .bg-pattern{
+      --pattern-radius: 5px;
+      --pattern-padding:2px;
       position: relative;
-      padding: 3px;
+      padding: var(--pattern-padding);
       /* box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); */
       overflow: hidden;
+      border-radius: var(--pattern-radius);
+      /* width: max-content; */
+      border: 2px solid transparent;
+      max-width: 450px;
+      /* max-height: max-content; */
     }
     .bg-pattern::before{
-      --pattern-color: #b3b3b3;
+      --pattern-color: #b1b1b1;
       content: "";
       width: 100%;
       aspect-ratio: 1/1;
@@ -239,14 +246,18 @@ html.dark body::before {
       top: 50%;
       left: 50%;
       transform: translate(-50% , -50%);
-      background: conic-gradient(transparent 45deg, var(--pattern-color), transparent);
+      /* background: var(--pattern-color); */
       animation: gradient-rotate 3s linear infinite;
       animation-play-state: paused;
-      opacity: 0;
+      /* opacity: 0; */
     }
-    .bg-pattern:hover::before{
+    html.dark .bg-pattern::before{
+      background: var(--pattern-color);
+    }
+    .bg-pattern:hover::before, 
+    html.dark .bg-pattern:hover::before{
       animation-play-state: running;
-      opacity: 1;
+      background: conic-gradient(transparent 45deg, var(--pattern-color), transparent);
     }
     .bg-pattern .content{
       position: relative;
@@ -255,6 +266,7 @@ html.dark body::before {
       border-radius: inherit;
       z-index: 1;
       /* @apply bg-white */
+      border-radius: calc(var(--pattern-radius) - var(--pattern-padding));
     }
 
     @keyframes gradient-rotate{

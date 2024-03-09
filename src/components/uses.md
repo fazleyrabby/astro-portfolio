@@ -33,6 +33,6 @@
 + <a class="hover:opacity-50" href="https://www.oneplus.com/ae/oneplus-bullets-wireless-z2" target="_blank" title="Primary headphone and Mic for calling">OnePlus Bullets Z2</a> Wireless Neckband
 
 ### Gaming 
-+ <a class="hover:opacity-50" href="https://ryujinx.org/" target="_blank" title="iTerm2">Ryujinx</a> Nintendo Switch Emulator for Mac
++ <a class="hover:opacity-50" href="https://ryujinx.org/" target="_blank" title="Gaming Emulator">Ryujinx</a> Nintendo Switch Emulator for Mac
 
 <small>Note: My workstation is based on MAC OS</small>

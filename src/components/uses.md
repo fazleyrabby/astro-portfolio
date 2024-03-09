@@ -20,7 +20,7 @@
 + <a class="hover:opacity-50" href="https://iterm2.com/" target="_blank" title="iTerm2">iTerm2</a>
 + <a class="hover:opacity-50" href="https://www.warp.dev/" target="_blank" title="Warp">Warp</a> 
 + <a class="hover:opacity-50" href="https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH" target="_blank" title="Zsh">Zsh</a> with <a class="hover:opacity-50" href="https://ohmyz.sh/" target="_blank" title="ohmyzsh">ohmyzsh</a> & "bira" theme
-+ Geist Mono Font (same as editor)
++ Maple Mono Font (same as editor)
 
 ### Setup
 + Apple <a class="hover:opacity-50" href="https://www.amazon.com/Apple-MacBook-14-inch-8%E2%80%91core-14%E2%80%91core/dp/B09JQSLL92?th=1" target="_blank" title="Primary Work Laptop">Macbook Pro M1 14</a> with 16gb Ram and 512gb SSD

@@ -17,7 +17,7 @@ These are some of my personal favorite fonts that I have collected over the year
 #### Sans Serif Fonts
 
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 fonts">
-    <a href="https://fonts.google.com/specimen/Inter" target="_blank">Inter<img class="preview m-0" src="/images/uploads/Inter.png"></p></a>
+    <a href="https://fonts.google.com/specimen/Inter" target="_blank">Inter<img class="preview m-0 card-gradient" src="/images/uploads/Inter.png"></p></a>
     <a href="https://vercel.com/font/sans" target="_blank">Geist Sans<img class="preview m-0" src="/images/uploads/Geist Sans.png"></p></a>
     <a href="https://fonts.google.com/specimen/Sen" target="_blank">Sen<img class="preview m-0" src="/images/uploads/Sen.png"></p></a>
     <a href="https://fonts.google.com/specimen/Jost" target="_blank">Jost<img class="preview m-0" src="/images/uploads/Jost.png"></p></a>

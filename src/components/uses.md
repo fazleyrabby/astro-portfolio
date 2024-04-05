@@ -1,8 +1,7 @@
 ### Editor 
 + <a class="hover:opacity-50" href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a>
 + <a class="hover:opacity-50" href="https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-material-theme" target="_blank">Material Ocean Theme</a>
-+ <a class="hover:opacity-50" href="https://github.com/subframe7536/maple-font/releases" target="_blank">Maple Mono</a> Font 
-    + <small>Previously tried (Geist Mono, Fira Code, Monaco, Dank Mono, SF Mono, Menlo, IBM Plex Mono )</small>
++ <a class="hover:opacity-50" href="https://fonts.google.com/specimen/JetBrains+Mono" target="_blank">Jetbrains Mono</a> Font 
 + Also experimenting with <a class="hover:opacity-50" href="https://zed.dev/" target="_blank">Zed</a> Editor
 
 ### Tools
@@ -20,7 +19,7 @@
 + <a class="hover:opacity-50" href="https://iterm2.com/" target="_blank" title="iTerm2">iTerm2</a>
 + <a class="hover:opacity-50" href="https://www.warp.dev/" target="_blank" title="Warp">Warp</a> 
 + <a class="hover:opacity-50" href="https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH" target="_blank" title="Zsh">Zsh</a> with <a class="hover:opacity-50" href="https://ohmyz.sh/" target="_blank" title="ohmyzsh">ohmyzsh</a> & "bira" theme
-+ Maple Mono Font (same as editor)
++ Font (same as editor)
 
 ### Setup
 + Apple <a class="hover:opacity-50" href="https://www.amazon.com/Apple-MacBook-14-inch-8%E2%80%91core-14%E2%80%91core/dp/B09JQSLL92?th=1" target="_blank" title="Primary Work Laptop">Macbook Pro M1 14</a> with 16gb Ram and 512gb SSD

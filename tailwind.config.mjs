@@ -14,7 +14,7 @@ export default {
 	theme: {
 		fontFamily: {
 		  'sans' : ['Outfit','system-ui'], //Albert Sans,Bricolage Grotesque
-		  'serif' : ['Young Serif','serif'],
+		  'serif' : ['Bricolage Grotesque','serif'],
 		  'logo' : ['Dawning of a New Day','system-ui'],
 		  'mono' : ['Geist Mono','ui-monospace'],
 		},

@@ -13,10 +13,10 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-		  'sans' : ['Sen','system-ui'], //Albert Sans,Bricolage Grotesque
-		  'serif' : ['Sen','serif'],
+		  'sans' : ['Overpass','system-ui'], //Albert Sans,Bricolage Grotesque
+		  'serif' : ['Overpass','serif'],
 		  'logo' : ['Dawning of a New Day','system-ui'],
-		  'mono' : ['Jetbrains Mono','ui-monospace'],
+		  'mono' : ['Geist Mono','ui-monospace'],
 		},
 		fontSize: {
 			xs: '0.9rem',

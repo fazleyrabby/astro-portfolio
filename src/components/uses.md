@@ -1,7 +1,7 @@
 ### Editor 
 + <a class="hover:opacity-50" href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a>
 + <a class="hover:opacity-50" href="https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-material-theme" target="_blank">Material Ocean Theme</a>
-+ <a class="hover:opacity-50" href="https://typeof.net/Iosevka/" target="_blank">Iosevka-Extended</a> Font 
++ <a class="hover:opacity-50" href="https://github.com/0xType/0xProto" target="_blank">0xProto</a> Font 
 
 ### Tools
 + <a class="hover:opacity-50" href="https://github.com/laravel/valet" target="_blank">Valet</a> / <a class="hover:opacity-50" href="https://www.docker.com/" target="_blank">Docker</a> for Dev Environment
@@ -18,7 +18,7 @@
 + <a class="hover:opacity-50" href="https://iterm2.com/" target="_blank" title="iTerm2">iTerm2</a>
 + <a class="hover:opacity-50" href="https://www.warp.dev/" target="_blank" title="Warp">Warp</a> 
 + <a class="hover:opacity-50" href="https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH" target="_blank" title="Zsh">Zsh</a> with <a class="hover:opacity-50" href="https://ohmyz.sh/" target="_blank" title="ohmyzsh">ohmyzsh</a> & "bira" theme
-+ Font (same as editor)
++ <a class="hover:opacity-50" href="https://fonts.google.com/specimen/Sometype+Mono" target="_blank" title="Monospace Font">Sometype mono</a> 
 
 ### Setup
 + Apple <a class="hover:opacity-50" href="https://www.amazon.com/Apple-MacBook-14-inch-8%E2%80%91core-14%E2%80%91core/dp/B09JQSLL92?th=1" target="_blank" title="Primary Work Laptop">Macbook Pro M1 14</a> with 16gb Ram and 512gb SSD

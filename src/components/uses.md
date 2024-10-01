@@ -1,7 +1,7 @@
 ### Editor 
 + <a class="hover:opacity-50" href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a>
-+ <a class="hover:opacity-50" href="https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-material-theme" target="_blank">Material Ocean Theme</a>
-+ <a class="hover:opacity-50" href="https://github.com/0xType/0xProto" target="_blank">0xProto</a> Font 
++ <a class="hover:opacity-50" href="https://marketplace.visualstudio.com/items?itemName=eserozvataf.one-dark-pro-monokai-darker" target="_blank">One Dark Pro Monokai Darker</a>
++ <a class="hover:opacity-50" href="https://github.com/kencrocken/FiraCodeiScript" target="_blank">Fira Code iScript</a> Font 
 
 ### Tools
 + <a class="hover:opacity-50" href="https://github.com/laravel/valet" target="_blank">Valet</a> / <a class="hover:opacity-50" href="https://www.docker.com/" target="_blank">Docker</a> for Dev Environment

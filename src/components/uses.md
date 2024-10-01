@@ -32,5 +32,6 @@
 
 ### Gaming 
 + <a class="hover:opacity-50" href="https://ryujinx.org/" target="_blank" title="Gaming Emulator">Ryujinx</a> Nintendo Switch Emulator for Mac
++ <a class="hover:opacity-50" href="https://getwhisky.app/" target="_blank" title="Gaming Emulator">Whisky</a> a wine wrapper
 
 <small>Note: My workstation is based on MAC OS</small>

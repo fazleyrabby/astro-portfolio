@@ -31,7 +31,11 @@
 + <a class="hover:opacity-50" href="https://www.oneplus.com/ae/oneplus-bullets-wireless-z2" target="_blank" title="Primary headphone and Mic for calling">OnePlus Bullets Z2</a> Wireless Neckband
 
 ### Gaming 
-+ <a class="hover:opacity-50" href="https://ryujinx.org/" target="_blank" title="Gaming Emulator">Ryujinx</a> Nintendo Switch Emulator for Mac
-+ <a class="hover:opacity-50" href="https://getwhisky.app/" target="_blank" title="Gaming Emulator">Whisky</a> a wine wrapper
++ <a class="hover:opacity-50" href="https://getwhisky.app/" target="_blank" title="Gaming Emulator">Whisky</a> a wine wrapper for windows apps
++ <a class="hover:opacity-50" href="https://rpcs3.net/" target="_blank" title="Gaming Emulator">RPCS3</a> for PS3 emulation
++ <a class="hover:opacity-50" href="https://pcsx2.net/" target="_blank" title="Gaming Emulator">PCSX2</a> for PS2 emulation
++ <a class="hover:opacity-50" href="https://cemu.info/" target="_blank" title="Gaming Emulator">Cemu</a> for Wii U emulation
++ <a class="hover:opacity-50" href="https://www.ppsspp.org/" target="_blank" title="Gaming Emulator">PPSSPP</a> for PSP emulation
+
 
 <small>Note: My workstation is based on MAC OS</small>

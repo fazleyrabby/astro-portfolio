@@ -19,14 +19,16 @@ export default {
 		  'mono' : ['Geist Mono','ui-monospace'],
 		},
 		fontSize: {
-			xs: '0.9rem',
-			sm: '0.9rem',
-			base: '1rem',
-			xl: '1.2rem',
-			'2xl': '1.563rem',
-			'3xl': '1.953rem',
-			'4xl': '2.441rem',
-			'5xl': '3.052rem',
+			xs: '0.8125rem',   // 13px
+			sm: '0.875rem',    // 14px
+			base: '0.875rem',  // 14px (default base)
+			lg: '1rem',        // 16px
+			xl: '1.125rem',    // 18px
+			'2xl': '1.25rem',  // 20px
+			'3xl': '1.5rem',   // 24px
+			'4xl': '1.875rem', // 30px
+			'5xl': '2.25rem',  // 36px
+			'6xl': '3rem',     // 48px
 		  },
 		container: {
 		  padding: {

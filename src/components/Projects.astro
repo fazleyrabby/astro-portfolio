@@ -3,32 +3,20 @@ import { Image } from "astro:assets";
 import { projects } from "../../lib/static";
 const { type } = Astro.props;
 let data = projects;
-if (type == "home") {
-  data = projects.slice(0, 4);
-}
 ---
 
-<h1 class="text-4xl font-bold m-6 text-center font-serif">Projects</h1>
+<h1 class="text-xl font-bold mt-6 font-serif">Projects</h1>
 <div
-  class="hover-parent mx-auto space-y-6 lg:space-y-0 lg:gap-6 lg:grid lg:grid-cols-2"
+  class="hover-parent mx-auto space-y-6 lg:space-y-0 lg:gap-6 lg:grid lg:grid-cols-3"
 >
   {
     data.map((item, index) => (
-      // hover-child
-      // hover:-translate-x-1
-      //   hover:-translate-y-1
-      //   hover:shadow-[6px_6px_0_1px_hsl(0,0%,60%)]
-      // hover:shadow-md
-      // hover:scale-105,dark:hover:shadow-slate-500
-      // data-aos={!(index == 0 || index == 1) && (index % 2 == 0 ? 'fade-right': 'fade-left')}
-      // data-aos-easing="ease-in-sine"
-      // data-aos-offset="300"
-      <div //bg-pattern
+      <div 
         class="hover:z-5
-        transition-all max-lg:mx-auto"
+        transition-all "
       >
-        <div //content
-        class="bg-white max-w-lg mx-auto group card-gradient dark:outline dark:hover:outline-none"> 
+        <div 
+        class="bg-white group hover:outline-dashed dark:outline dark:hover:outline-dashed outline-slate-600"> 
           <a
             href={item.live || item.github || "#!"}
             target="_blank"
@@ -49,7 +37,7 @@ if (type == "home") {
             />
           </a>
           <div class="px-3 py-2 dark:bg-black">
-            <h2 class="text-gray-900 dark:text-gray-100 text-xl md:text-2xl font-bold mb-2">
+            <h2 class="text-gray-900 dark:text-gray-100 text-lg font-bold mb-2">
               {item.title}
             </h2>
             <p class="text-gray-700 dark:text-gray-100 text-sm mb-4">

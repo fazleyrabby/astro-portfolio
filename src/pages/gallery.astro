@@ -20,19 +20,11 @@ const images = await cloudinary.search
     .sort_by("uploaded_at", "desc")
     .max_results(15)
     .execute();
-// const chunkSize = 3;
-// const chunk = [];
-// for (let i = 0; i < images.resources.length; i += chunkSize) {
-//     chunk.push(images.resources.slice(i, i + chunkSize));
-// }
-// console.log(chunk)
 ---
 
 <MainLayout title="Photography">
     <main>
-        <h1 class="text-4xl font-bold m-6 text-center font-serif">Gallery</h1>
         <p class="text-md text-center my-4">Some random shots I have taken on various trips. Mostly using my smart phone!</p>
-        
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
             {
                 images.total_count > 0 &&

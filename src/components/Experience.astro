@@ -7,39 +7,33 @@ experiences.sort(
 
 <!-- data-aos="fade-up" 
   data-aos-delay={100 * index} -->
-<h1 class="text-4xl font-bold m-6 text-center font-serif">Experience</h1>
+<h1 class="text-xl font-bold my-6 font-serif">Experience</h1>
 <div>
   <ol class="relative border-l border-gray-200 dark:border-gray-700">
     {
       experiences.map((item) => (
-        <li class="mb-10 ml-4">
+        <li class="mb-4 ml-4">
           <div class="absolute w-3 h-3 bg-gray-200 rounded-full -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700" />
-          <time class="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-            {item.from} - {item.to}
-          </time>
-          <h2 class="text-xl md:text-2xl font-bold">
-            <a
-              class="fancy-text"
-              href={item.link ?? "#"}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {item.name}
-            </a>
-          </h2>
-          <p class="mb-2 text-sm text-gray-500">{item.role}</p>
+          <div class="flex justify-between">
+            <h2 class="text-md font-bold">
+              <a
+                class="fancy-text"
+                href={item.link ?? "#"}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {item.name}
+              </a>
+            </h2>
+            <time class="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+              {item.from} - {item.to}
+            </time>
+          </div>
+          <p class="mb-2 text-xs text-gray-500">{item.role}</p>
 
-          {item.contributions.length > 1 ? (
-            <ul class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
-              {item.contributions?.map((each, index) => (
-                <li class="mb-1">- {each}</li>
-              ))}
-            </ul>
-          ) : (
-            <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
-              {item.contributions}
-            </p>
-          )}
+          <p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
+              {item.skills}
+          </p>
         </li>
       ))
     }

@@ -7,27 +7,30 @@ import Projects from "@components/Projects.astro";
 import Experience from "@components/Experience.astro";
 import Skills from "@components/Skills.astro";
 import MainLayout from "@layouts/MainLayout.astro";
+import { Content as AboutMarkdown } from "@components/about.md";
+import Github from "@components/Icons/Github.astro";
+import Linkedin from "@components/Icons/Linkedin.astro";
+import Youtube from "@components/Icons/Youtube.astro";
+import Email from "@components/Icons/Email.astro";
+import Codepen from "@components/Icons/Codepen.astro";
+import ContactForm from "@components/ContactForm.astro";
 ---
 
 <MainLayout title="Home">
   <main class="mb-auto">
     <div
-      class="mb-6 min-h-[calc(100vh-20rem)] flex flex-col justify-center items-center -mt-6 text-center"
+      class="flex flex-col justify-center mb-12"
     >
-      <div class="mb-4">
-        <img
-          src="/me.webp"
-          class="rounded-full overflow-hidden w-36 sm:w-52"
-          alt="profile img"
-        />
-      </div>
-      <h1 class="lg:text-5xl text-3xl font-extrabold font-serif mb-4">
-        I am <span class="bg-clip-text text-transparent bg-gradient-to-r from-slate-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% bg-[size:400%_400%] animate-bgGradient">Fazley Rabbi</span
-        >
-        <span class="animate-wiggle inline-flex origin-bottom">👋</span>
+      <h1 class="text-3xl font-extrabold font-serif mb-2">
+        I am Fazley Rabbi <span class="animate-wiggle inline-flex origin-bottom">👋</span>
       </h1>
-      <p class="mb-4">A Passionate Web Developer & Tech Enthusiast</p>
-      <p class="mb-4">Based on Bangladesh</p>
+      <section class="markdown text-center mb-4">
+        <div class="prose dark:prose-invert w-full text-justify mr-0 ml-0 inline">
+          <AboutMarkdown />
+        </div>
+      </section>
+      <!-- <p class="mb-4">A Passionate Web Developer & Tech Enthusiast</p>
+      <p class="mb-4">Based on Bangladesh</p> -->
       <a
         id="resume-link"
         href="/resume"
@@ -35,39 +38,32 @@ import MainLayout from "@layouts/MainLayout.astro";
       >
         Resume
       </a>
-      <a href="#projects" aria-label="projects" rel="noopener">
-        <!-- class="animate-[bounce_2s_ease-in-out_infinite]" -->
-        <svg
-          class="w-6 h-6 mt-12"
-          fill="none"
-          stroke="currentColor"
-          view-box="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z"
-          ></path>
-        </svg>
-      </a>
     </div>
 
     {/* Projects  */}
-    <div class="lg:mb-48 mb-24 grid space-y-4" id="projects" >
+    <div class="mb-12 grid space-y-4" id="projects" >
       <Projects type="home"/>
-      <a href="/projects" class="fancy-text w-fit justify-self-center">Show All</a>
     </div>
 
     {/* Skills */}
-    <div class="lg:mb-48 mb-24">
+    <div class="mb-12">
       <Skills />
     </div>
 
+    
+
     {/* Experience */}
-    <div class="lg:mb-48 mb-24">
+    <div class="mb-12">
       <Experience />
+    </div>
+
+    <p class="mb-4 text-md font-medium">Connect with me:</p>
+    <div class="flex gap-3 mb-6 icons">
+      <Github />
+      <Linkedin />
+      <Youtube />
+      <Email />
+      <Codepen />
     </div>
   </main>
 </MainLayout>

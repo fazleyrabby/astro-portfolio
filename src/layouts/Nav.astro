@@ -10,86 +10,48 @@ import ThemeIcon from "@components/ThemeIcon.astro";
     >
         <a href="/" class="inline-flex items-center mr-4">
             <span
-                class="text-2xl text-black dark:text-white font-bold tracking-tight font-logo"
+                class="text-2xl text-black dark:text-white font-medium font-logo"
             >
                 Fazley
             </span>
         </a>
 
-        <div id="nav" class="w-full lg:inline-flex lg:flex-grow lg:w-auto order-2 transition-all delay-150 duration-300 overflow-hidden"
+        <div class="items-start flex ml-auto lg:h-auto gap-1 font-medium"
         >
-            <div class="lg:inline-flex lg:flex-row lg:ml-auto lg:w-auto w-full lg:items-center items-start flex flex-col lg:h-auto gap-1 font-medium"
+            <a
+                href="/posts/"
+                class=`nav-link ${currentPath.includes('posts') ? 'bg-slate-100': "dark:text-white"}`
             >
-                <a
-                    href="/posts/"
-                    class=`nav-link ${currentPath.includes('posts') ? 'bg-slate-100': "dark:text-white"}`
-                >
-                    Posts
-                </a>
-                <!-- <a
-                    href="/projects/"
-                    class=`nav-link ${currentPath.includes('projects') ? 'bg-slate-100': "dark:text-white"}`
-                >
-                    Projects
-                </a>
+                Posts
+            </a>
+            <!-- <a
+                href="/projects/"
+                class=`nav-link ${currentPath.includes('projects') ? 'bg-slate-100': "dark:text-white"}`
+            >
+                Projects
+            </a>
 
-                <a
-                    href="/about/"
-                    class=`nav-link ${currentPath.includes('about') ? 'bg-slate-100': "dark:text-white"}`
-                >
-                    About
-                </a> -->
-                <a
-                    href="/uses/"
-                    class=`nav-link ${currentPath.includes('uses') ? 'bg-slate-100': "dark:text-white"}`
-                >
-                    Uses
-                </a>
-                <a
-                    href="/gallery/"
-                    class=`nav-link ${currentPath.includes('gallery') ? 'bg-slate-100': "dark:text-white"}`
-                >
-                    Gallery
-                </a>
-            </div>
+            <a
+                href="/about/"
+                class=`nav-link ${currentPath.includes('about') ? 'bg-slate-100': "dark:text-white"}`
+            >
+                About
+            </a> -->
+            <a
+                href="/uses/"
+                class=`nav-link ${currentPath.includes('uses') ? 'bg-slate-100': "dark:text-white"}`
+            >
+                Uses
+            </a>
+            <a
+                href="/gallery/"
+                class=`nav-link ${currentPath.includes('gallery') ? 'bg-slate-100': "dark:text-white"}`
+            >
+                Gallery
+            </a>
         </div>
 
-        <div class="flex gap-2 theme-icon lg:order-3">
-            <button
-                aria-label="Theme"
-                class="inline-flex p-3 hover:bg-gray-100 rounded lg:hidden text-black ml-auto outline-none dark:text-white dark:hover:text-black"
-                onclick="handleClick()"
-            >
-                <svg
-                    class="w-6 h-6 dark:fill-white open"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width={2}
-                        d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6 close dark:fill-white hidden"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M6 18 18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-            <ThemeIcon />
-        </div>
+        <ThemeIcon />
     </nav>
 </div>
 
@@ -104,13 +66,6 @@ import ThemeIcon from "@components/ThemeIcon.astro";
     const handleClick = () => {
         const nav = document.getElementById("nav");
         nav.classList.toggle("hidden");
-        // if(nav.classList.contains('hidden')){
-        //     document.querySelector('.close').classList.add('hidden')
-        //     document.querySelector('.open').classList.remove('hidden')
-        // }else{
-        //     document.querySelector('.open').classList.add('hidden')
-        //     document.querySelector('.close').classList.remove('hidden')
-        // }
         document.querySelector(".close").classList.toggle("hidden");
         document.querySelector(".open").classList.toggle("hidden");
     };

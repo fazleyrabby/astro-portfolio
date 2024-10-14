@@ -1,7 +1,7 @@
 #### Editor 
 + <a class="hover:opacity-50" href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a>
 + <a class="hover:opacity-50" href="https://marketplace.visualstudio.com/items?itemName=eserozvataf.one-dark-pro-monokai-darker" target="_blank">One Dark Pro Monokai Darker</a>
-+ <a class="hover:opacity-50" href="https://github.com/kencrocken/FiraCodeiScript" target="_blank">Fira Code iScript</a> Font 
++ Currently using <a class="hover:opacity-50" href="https://github.com/subframe7536/maple-font" target="_blank">Maple Mono</a> Font <small>(switch between Fira Code iScript, IBM Plex Mono, Jetbrains Mono)</small>
 
 #### Tools
 + <a class="hover:opacity-50" href="https://github.com/laravel/valet" target="_blank">Valet</a> / <a class="hover:opacity-50" href="https://www.docker.com/" target="_blank">Docker</a> for Dev Environment
@@ -30,7 +30,8 @@
 + Adata A680 1TB Portable HDD <small><a class="hover:opacity-50" href="https://www.amazon.com/ADATA-Military-Grade-Shock-Proof-External-AHD680-1TU31-CBK/dp/B07KK2RGHY/" target="_blank" title="1TB HDD">( AHD680-1TU31-CBK )</a></small> 
 + <a class="hover:opacity-50" href="https://www.oneplus.com/ae/oneplus-bullets-wireless-z2" target="_blank" title="Primary headphone and Mic for calling">OnePlus Bullets Z2</a> Wireless Neckband
 
-#### Gaming 
+#### Gaming, Emulation & VM's
++ <a class="hover:opacity-50" href="https://blogs.vmware.com/teamfusion/2024/05/fusion-pro-now-available-free-for-personal-use.html" target="_blank" title="Gaming Emulator">VMware Fusion Pro</a> for VM
 + <a class="hover:opacity-50" href="https://getwhisky.app/" target="_blank" title="Gaming Emulator">Whisky</a> a wine wrapper for windows apps
 + <a class="hover:opacity-50" href="https://rpcs3.net/" target="_blank" title="Gaming Emulator">RPCS3</a> for PS3 emulation
 + <a class="hover:opacity-50" href="https://pcsx2.net/" target="_blank" title="Gaming Emulator">PCSX2</a> for PS2 emulation

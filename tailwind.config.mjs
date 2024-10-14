@@ -15,7 +15,7 @@ export default {
 		fontFamily: {
 		  'sans' : ['Overpass','system-ui'], //Albert Sans,Bricolage Grotesque
 		  'serif' : ['Overpass','serif'],
-		  'logo' : ['Dawning of a New Day','system-ui'],
+		  'logo' : ['Patrick Hand','system-ui'],
 		  'mono' : ['Geist Mono','ui-monospace'],
 		},
 		fontSize: {

@@ -11,13 +11,11 @@ import moment from "moment";
 		<div class="space-y-10">
 			{
 				posts.map((post) => (
-					<div class="w-full lg:max-w-full lg:flex group cursor-pointer">
+					<div class="w-full lg:max-w-full lg:flex group cursor-pointer ">
 						<div class="blog-item space-y-3">
 							<div>
-								<a
-									href={post.url}
-									class="text-xl font-bold mb-2 w-fit capitalize fancy-text"
-								>
+								<a href={post.url} 
+								   class="text-xl font-bold mb-2 w-fit capitalize fancy-text">
 									{post.frontmatter.title}
 								</a>
 							</div>

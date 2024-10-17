@@ -13,8 +13,8 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-		  'sans' : ['Overpass','system-ui'], //Albert Sans,Bricolage Grotesque
-		  'serif' : ['Overpass','serif'],
+		  'sans' : ['Balsamiq Sans','system-ui'], //Albert Sans,Bricolage Grotesque,Signika Negative
+		  'serif' : ['Balsamiq Sans','system-ui'],
 		  'logo' : ['Patrick Hand','system-ui'],
 		  'mono' : ['Geist Mono','ui-monospace'],
 		},

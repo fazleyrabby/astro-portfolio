@@ -1,7 +1,6 @@
 ---
 import { Image } from "astro:assets";
 import { projects } from "../../lib/static";
-const { type } = Astro.props;
 let data = projects;
 ---
 
@@ -11,12 +10,11 @@ let data = projects;
 >
   {
     data.map((item, index) => (
-      <div 
+      <div
         class="hover:z-5
         transition-all "
       >
-        <div 
-        class="bg-white group hover:outline-dashed dark:outline dark:hover:outline-dashed outline-slate-600"> 
+        <div class="bg-white group hover:outline-dashed dark:outline dark:hover:outline-dashed outline-slate-600">
           <a
             href={item.live || item.github || "#!"}
             target="_blank"
@@ -52,8 +50,24 @@ let data = projects;
             </div>
           </div>
           <div class="flex space-x-2 flex-wrap pt-3 px-3 border-t border-t-slate-100 dark:bg-black">
-            {item.live && <a class="transition flex-grow text-gray-900 hover:text-white border border-gray-200 hover:bg-gray-900 font-medium rounded-sm text-sm px-3 py-1.5 text-center mb-2 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 grid place-content-center" target="_blank" href={item?.live}>Preview</a>}
-            {item.github && <a class="transition flex-grow text-gray-900 hover:text-white border border-gray-200 hover:bg-gray-900  font-medium rounded-sm text-sm px-3 py-1.5 text-center mb-2 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-700  grid place-content-center" target="_blank" href={item?.github}>Github</a> }
+            {item.live && (
+              <a
+                class="transition flex-grow text-gray-900 hover:text-white border border-gray-200 hover:bg-gray-900 font-medium rounded-sm text-sm px-3 py-1.5 text-center mb-2 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 grid place-content-center"
+                target="_blank"
+                href={item?.live}
+              >
+                Preview
+              </a>
+            )}
+            {item.github && (
+              <a
+                class="transition flex-grow text-gray-900 hover:text-white border border-gray-200 hover:bg-gray-900  font-medium rounded-sm text-sm px-3 py-1.5 text-center mb-2 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-700  grid place-content-center"
+                target="_blank"
+                href={item?.github}
+              >
+                Github
+              </a>
+            )}
           </div>
         </div>
       </div>

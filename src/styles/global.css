@@ -29,6 +29,16 @@
   font-weight: 100 900;
 }
 
+/* @font-face {
+  font-family: 'Satoshi-Variable';
+  src: url('/fonts/Satoshi-Variable.woff2') format('woff2'),
+       url('/fonts/Satoshi-Variable.woff') format('woff'),
+       url('/fonts/Satoshi-Variable.ttf') format('truetype');
+       font-weight: 300 900;
+       font-display: swap;
+       font-style: normal;
+} */
+
 @font-face {
   font-family: "Geist Mono";
   src: url("/fonts/Geist/GeistMonoVariableVF.woff2") format("woff2");
@@ -81,8 +91,8 @@ html.dark body::before {
   background-image: linear-gradient(45deg, rgb(51 65 85), hsl(0, 0%, 70%));
   background-size: 0% 4px;
   background-repeat: no-repeat;
-  background-position: left 1.9rem;
-  padding-block: .25em;
+  background-position: left 1.6rem;
+  padding-block: .45em;
   transition: background-size ease 200ms;
 }
 
@@ -127,7 +137,7 @@ html.dark body::before {
 }
 
 .blog-item {
-  @apply p-4 flex flex-col justify-between leading-normal w-full dark:outline rounded-sm;
+  @apply p-4 flex flex-col justify-between leading-normal w-full rounded-sm border-2 border-transparent hover:border-2 hover:border-dashed hover:border-black dark:hover:border-white dark:border-white;
 }
 
 /* #nav:hover a {

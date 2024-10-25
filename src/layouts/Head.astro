@@ -2,6 +2,7 @@
 // import { ViewTransitions } from "astro:transitions";
 const { title } = Astro.props;
 const isProduction = import.meta.env.NODE_ENV === 'production';
+const umamiID = import.meta.env.UMAMI_ID;
 ---
 <head>
     <meta charset="utf-8" />
@@ -23,7 +24,7 @@ const isProduction = import.meta.env.NODE_ENV === 'production';
     <script is:inline src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     
     {isProduction && (
-        <script async src="https://us.umami.is/script.js" data-website-id="f9c6850b-1fe6-44f1-853c-8d5e11ac73f4"></script>
+        <script async src="https://us.umami.is/script.js" data-website-id={umamiID}></script>
     )}
 </head>
 

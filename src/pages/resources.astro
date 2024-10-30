@@ -1,0 +1,67 @@
+---
+import MainLayout from "@layouts/MainLayout.astro";
+import { portfolios, phpLv,javascript, miscellaneous,youtubeChannels,externalArticles } from 'lib/resources';
+---
+
+<MainLayout title="Resources">
+  <main>
+    <div class="grid grid-cols-1 md:grid-cols-2">
+        <div>
+            <h2>PHP & Laravel</h2>
+            <ul class="list-decimal mb-4">
+                {phpLv && phpLv.map((item, index) =>
+                    <li class="text-blue-600 underline"> <a href={item.link} target="_blank">{item.text}</a> </li>
+                )}
+            </ul>
+        </div>
+
+        <div>
+            <h2>Blogs & Articles</h2>
+            <ul class="list-decimal mb-4">
+                {externalArticles && externalArticles.map((item, index) =>
+                    <li class="text-blue-600 underline"> <a href={item.link} target="_blank">{item.text}</a> </li>
+                )}
+            </ul>
+        </div>
+
+        <div>
+            <h2>Portfolio & UI Inspirations</h2>
+            <ul class="list-decimal mb-4">
+                {portfolios && portfolios.map((item, index) =>
+                    <li class="text-blue-600 underline"> <a href={item.link} target="_blank">{item.text}</a>
+                    </li>
+                )}
+            </ul>
+        </div>
+
+        
+
+        <div>
+            <h2>JS</h2>
+            <ul class="list-decimal mb-4">
+                {javascript && javascript.map((item, index) =>
+                    <li class="text-blue-600 underline"> <a href={item.link} target="_blank">{item.text}</a> </li>
+                )}
+            </ul>
+        </div>
+
+        <div>
+            <h2>Youtube & Tutorials</h2>
+            <ul class="list-decimal mb-4">
+                {youtubeChannels && youtubeChannels.map((item, index) =>
+                    <li class="text-blue-600 underline"> <a href={item.link} target="_blank">{item.text}</a> </li>
+                )}
+            </ul>
+        </div>
+
+        <div>
+            <h2>Miscellaneous</h2>
+            <ul class="list-decimal mb-4">
+                {miscellaneous && miscellaneous.map((item, index) =>
+                    <li class="text-blue-600 underline"> <a href={item.link} target="_blank">{item.text}</a> </li>
+                )}
+            </ul>
+        </div>
+    </div>
+  </main>
+</MainLayout>

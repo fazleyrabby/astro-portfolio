@@ -29,6 +29,19 @@
   font-weight: 100 900;
 }
 
+@font-face {
+  font-family: "Mona Sans";
+  src: url("/fonts/Mona/MonaSans[slnt,wdth,wght].woff2") format("woff2");
+  font-weight: 100 900;
+}
+
+@font-face {
+  font-family: "Hubot Sans";
+  src: url("/fonts/Hubot/HubotSans[slnt,wdth,wght].woff2") format("woff2");
+  font-weight: 100 900;
+}
+
+
 /* @font-face {
   font-family: 'Satoshi-Variable';
   src: url('/fonts/Satoshi-Variable.woff2') format('woff2'),

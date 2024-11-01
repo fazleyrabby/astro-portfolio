@@ -2,6 +2,7 @@
 const pathname = new URL(Astro.request.url).pathname;
 const currentPath = pathname.slice(1);
 import ThemeIcon from "@components/ThemeIcon.astro";
+const isProduction = import.meta.env.NODE_ENV === 'production';
 ---
 
 <div class="custom-navbar">
@@ -49,12 +50,12 @@ import ThemeIcon from "@components/ThemeIcon.astro";
             >
                 Gallery
             </a>
-            <a
-            href="/resources/"
-            class=`nav-link ${currentPath.includes('resources') ? 'bg-slate-100': "dark:text-white"}`
-            >
-                Resources
-            </a>
+            {isProduction && <a
+                href="/resources/"
+                class=`nav-link ${currentPath.includes('resources') ? 'bg-slate-100': "dark:text-white"}`
+                >
+                    Resources
+                </a>}
         </div>
 
         <ThemeIcon />

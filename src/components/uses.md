@@ -1,11 +1,11 @@
 #### Editor 
 + <a class="hover:opacity-50" href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a>
 + <a class="hover:opacity-50" href="https://marketplace.visualstudio.com/items?itemName=eserozvataf.one-dark-pro-monokai-darker" target="_blank">One Dark Pro Monokai Darker</a>
-+ Currently using <a class="hover:opacity-50" href="https://github.com/subframe7536/maple-font" target="_blank">Maple Mono</a> Font <small>(switch between Fira Code iScript, IBM Plex Mono, Jetbrains Mono)</small>
++ Currently using <a class="hover:opacity-50" href="https://fonts.google.com/specimen/Geist+Mono" target="_blank">Geist Mono</a> Font
 
 #### Tools
 + <a class="hover:opacity-50" href="https://github.com/laravel/valet" target="_blank">Valet</a> / <a class="hover:opacity-50" href="https://www.docker.com/" target="_blank">Docker</a> for Dev Environment
-+ <a class="hover:opacity-50" href="https://google.com/chrome/" target="_blank" title="Google Chrome">Chrome</a> / <a class="hover:opacity-50" href="https://arc.net/" target="_blank" title="Arc">Arc</a> Browser
++ <a class="hover:opacity-50" href="https://google.com/chrome/" target="_blank" title="Google Chrome">Chrome</a> / <a class="hover:opacity-50" href="https://zen-browser.app/" target="_blank" title="Zen">Zen</a> Browser
 + <a class="hover:opacity-50" href="https://clickup.com/" target="_blank" title="Clickup">Clickup</a> for Project Management
 + <a class="hover:opacity-50" href="https://discord.com/" target="_blank" title="Discord">Discord</a> for Communication
 + <a class="hover:opacity-50" href="https://www.skype.com/en/" target="_blank" title="Skype">Skype</a> for meetings
@@ -29,6 +29,10 @@
 + Transcend 1TB Portable SSD <small><a class="hover:opacity-50" href="https://www.amazon.com/Transcend-Type-C-ESD370C-Portable-TS1TESD370C/dp/B08P9MSSZP" target="_blank" title="1TB SSD">( TS1TESD370C )</a></small> 
 + Adata A680 1TB Portable HDD <small><a class="hover:opacity-50" href="https://www.amazon.com/ADATA-Military-Grade-Shock-Proof-External-AHD680-1TU31-CBK/dp/B07KK2RGHY/" target="_blank" title="1TB HDD">( AHD680-1TU31-CBK )</a></small> 
 + <a class="hover:opacity-50" href="https://www.oneplus.com/ae/oneplus-bullets-wireless-z2" target="_blank" title="Primary headphone and Mic for calling">OnePlus Bullets Z2</a> Wireless Neckband
++ <a class="hover:opacity-50" href="https://oricotechs.com/products/orico-detachable-laptop-stand" target="_blank" title="Primary headphone and Mic for calling">Orico Laptop Stand</a>
+
+
+
 
 #### Gaming, Emulation & VM's
 + <a class="hover:opacity-50" href="https://blogs.vmware.com/teamfusion/2024/05/fusion-pro-now-available-free-for-personal-use.html" target="_blank" title="Gaming Emulator">VMware Fusion Pro</a> for VM

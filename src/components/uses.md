@@ -1,7 +1,7 @@
 #### Editor 
 + <a class="hover:opacity-50" href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a>
 + <a class="hover:opacity-50" href="https://marketplace.visualstudio.com/items?itemName=eserozvataf.one-dark-pro-monokai-darker" target="_blank">One Dark Pro Monokai Darker</a>
-+ Currently using <a class="hover:opacity-50" href="https://fonts.google.com/specimen/Geist+Mono" target="_blank">Geist Mono</a> Font
++ Currently using Fira Code <br> <small>I switch between Geist Mono, Maple Mono or IBM Plex Mono</small>
 
 #### Tools
 + <a class="hover:opacity-50" href="https://github.com/laravel/valet" target="_blank">Valet</a> / <a class="hover:opacity-50" href="https://www.docker.com/" target="_blank">Docker</a> for Dev Environment
@@ -18,7 +18,7 @@
 + <a class="hover:opacity-50" href="https://iterm2.com/" target="_blank" title="iTerm2">iTerm2</a>
 + <a class="hover:opacity-50" href="https://www.warp.dev/" target="_blank" title="Warp">Warp</a> 
 + <a class="hover:opacity-50" href="https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH" target="_blank" title="Zsh">Zsh</a> with <a class="hover:opacity-50" href="https://ohmyz.sh/" target="_blank" title="ohmyzsh">ohmyzsh</a> & "bira" theme
-+ <a class="hover:opacity-50" href="https://fonts.google.com/specimen/Sometype+Mono" target="_blank" title="Monospace Font">Sometype mono</a> 
+<!-- + <a class="hover:opacity-50" href="https://fonts.google.com/specimen/Sometype+Mono" target="_blank" title="Monospace Font">Sometype mono</a>  -->
 
 #### Setup
 + Apple <a class="hover:opacity-50" href="https://www.amazon.com/Apple-MacBook-14-inch-8%E2%80%91core-14%E2%80%91core/dp/B09JQSLL92?th=1" target="_blank" title="Primary Work Laptop">Macbook Pro M1 14</a> with 16gb Ram and 512gb SSD

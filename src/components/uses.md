@@ -1,7 +1,7 @@
 #### Editor 
 + <a class="hover:opacity-50" href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a>
 + <a class="hover:opacity-50" href="https://marketplace.visualstudio.com/items?itemName=eserozvataf.one-dark-pro-monokai-darker" target="_blank">One Dark Pro Monokai Darker</a>
-+ Currently using Fira Code <br> <small>I switch between Geist Mono, Maple Mono or IBM Plex Mono</small>
++ Currently using Iosevka <br> <small>I switch between Fira Code or IBM Plex Mono</small>
 
 #### Tools
 + <a class="hover:opacity-50" href="https://github.com/laravel/valet" target="_blank">Valet</a> / <a class="hover:opacity-50" href="https://www.docker.com/" target="_blank">Docker</a> for Dev Environment
@@ -31,16 +31,21 @@
 + <a class="hover:opacity-50" href="https://www.oneplus.com/ae/oneplus-bullets-wireless-z2" target="_blank" title="Primary headphone and Mic for calling">OnePlus Bullets Z2</a> Wireless Neckband
 + <a class="hover:opacity-50" href="https://oricotechs.com/products/orico-detachable-laptop-stand" target="_blank" title="Primary headphone and Mic for calling">Orico Laptop Stand</a>
 
+#### Secondary Setup (Gaming and Experiments)
++ AMD Ryzen 5 8600G (RDNA3 760M iGPU) 
++ Gskill S5 32GB DDR5 5200Mhz Ram 
++ 256GB NVME SSD (Running Fedora)
++ 512GB SATA SSD (Running Windows 11) 
 
-
-
-#### Gaming, Emulation & VM's
-+ <a class="hover:opacity-50" href="https://blogs.vmware.com/teamfusion/2024/05/fusion-pro-now-available-free-for-personal-use.html" target="_blank" title="Gaming Emulator">VMware Fusion Pro</a> for VM
-+ <a class="hover:opacity-50" href="https://getwhisky.app/" target="_blank" title="Gaming Emulator">Whisky</a> a wine wrapper for windows apps
+#### Virtual Machines & Emulators
++ VMware Fusion Pro (Mac)
++ VMware Workstation (Secondary Setup)
++ KVM Qemu on Fedora (Secondary Setup)
++ <a class="hover:opacity-50" href="https://getwhisky.app/" target="_blank" title="Gaming Emulator">Whisky</a> a wine wrapper on mac to windows apps
 + <a class="hover:opacity-50" href="https://rpcs3.net/" target="_blank" title="Gaming Emulator">RPCS3</a> for PS3 emulation
 + <a class="hover:opacity-50" href="https://pcsx2.net/" target="_blank" title="Gaming Emulator">PCSX2</a> for PS2 emulation
 + <a class="hover:opacity-50" href="https://cemu.info/" target="_blank" title="Gaming Emulator">Cemu</a> for Wii U emulation
 + <a class="hover:opacity-50" href="https://www.ppsspp.org/" target="_blank" title="Gaming Emulator">PPSSPP</a> for PSP emulation
 
 
-<small>Note: My workstation is based on MAC OS</small>
+<small>Note: I use primarily MAC OS and experiemnting on Linux and Windows</small>

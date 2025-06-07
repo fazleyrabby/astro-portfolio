@@ -13,8 +13,8 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-		  'sans' : ['Readex Pro','system-ui'],
-		  'serif' : ['Readex Pro','system-ui'],
+		  'sans' : ['Atkinson Hyperlegible','system-ui'],
+		  'serif' : ['Atkinson Hyperlegible','system-ui'],
 		  'logo' : ['Patrick Hand','system-ui'],
 		  'mono' : ['Geist Mono','ui-monospace'],
 		},

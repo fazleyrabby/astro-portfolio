@@ -47,7 +47,6 @@
 </style>
 
 <script is:inline>
-        
         document.getElementById("contactForm").addEventListener("submit", (e) => {
             const form = document.getElementById("contactForm");
             e.preventDefault();
@@ -56,9 +55,8 @@
             let message = document.getElementById("message");
 
             if (email.value == "" || message.value == "") {
-                alert("Ensure you input a value in both fields!");
+                alert("Email and Message is required!");
             } else {
-                // perform operation with form input
                 form.submit();
                 email.value = "";
                 message.value = "";

@@ -7,8 +7,8 @@
 + <a class="hover:opacity-50" href="https://github.com/laravel/valet" target="_blank">Valet</a> / <a class="hover:opacity-50" href="https://www.docker.com/" target="_blank">Docker</a> for Dev Environment
 + <a class="hover:opacity-50" href="https://google.com/chrome/" target="_blank" title="Google Chrome">Chrome</a> / <a class="hover:opacity-50" href="https://zen-browser.app/" target="_blank" title="Zen">Zen</a> Browser
 + <a class="hover:opacity-50" href="https://clickup.com/" target="_blank" title="Clickup">Clickup</a> for Project Management
-+ <a class="hover:opacity-50" href="https://discord.com/" target="_blank" title="Discord">Discord</a> for Communication
-+ <a class="hover:opacity-50" href="https://www.skype.com/en/" target="_blank" title="Skype">Skype</a> for meetings
++ <a class="hover:opacity-50" href="https://discord.com/" target="_blank" title="Discord">Discord</a> for dev team communication
++ <a class="hover:opacity-50" href="https://slack.com/" target="_blank" title="Slack">Slack</a> for office communication
 + <a class="hover:opacity-50" href="https://www.postman.com/" target="_blank" title="Postman">Postman</a> for API testing
 + <a class="hover:opacity-50" href="https://sequel-ace.com/" target="_blank" title="Sequel Ace">Sequel Ace</a> for Database Management
 + <a class="hover:opacity-50" href="https://cleanshot.com/" target="_blank" title="Screenshot Tool">Cleanshot X</a> for Screen capturing
@@ -31,7 +31,7 @@
 + <a class="hover:opacity-50" href="https://www.oneplus.com/ae/oneplus-bullets-wireless-z2" target="_blank" title="Primary headphone and Mic for calling">OnePlus Bullets Z2</a> Wireless Neckband
 + <a class="hover:opacity-50" href="https://oricotechs.com/products/orico-detachable-laptop-stand" target="_blank" title="Primary headphone and Mic for calling">Orico Laptop Stand</a>
 
-#### Secondary Setup (Gaming and Experiments)
+#### Secondary Setup (light gaming and experiments)
 + AMD Ryzen 5 8600G (RDNA3 760M iGPU) 
 + Gskill S5 32GB DDR5 5200Mhz Ram 
 + 256GB NVME SSD (Running Fedora)
@@ -41,7 +41,7 @@
 + VMware Fusion Pro (Mac)
 + VMware Workstation (Secondary Setup)
 + KVM Qemu on Fedora (Secondary Setup)
-+ <a class="hover:opacity-50" href="https://getwhisky.app/" target="_blank" title="Gaming Emulator">Whisky</a> a wine wrapper on mac to windows apps
++ <a class="hover:opacity-50" href="https://getwhisky.app/" target="_blank" title="Gaming Emulator">Whisky</a> a wine wrapper on mac to run windows apps
 + <a class="hover:opacity-50" href="https://rpcs3.net/" target="_blank" title="Gaming Emulator">RPCS3</a> for PS3 emulation
 + <a class="hover:opacity-50" href="https://pcsx2.net/" target="_blank" title="Gaming Emulator">PCSX2</a> for PS2 emulation
 + <a class="hover:opacity-50" href="https://cemu.info/" target="_blank" title="Gaming Emulator">Cemu</a> for Wii U emulation

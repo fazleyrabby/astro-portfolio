@@ -29,7 +29,7 @@ export default {
 			'4xl': '1.875rem', // 30px
 			'5xl': '2.25rem',  // 36px
 			'6xl': '3rem',     // 48px
-		  },
+		},
 		container: {
 		  padding: {
 			DEFAULT: '1rem',

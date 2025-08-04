@@ -1,12 +1,15 @@
 ---
-import { skills } from "../../lib/static";
+// import { skills } from "../../lib/static";
+import { getSkills } from "../../lib/notion";
+let projects = [];
+const skills = await getSkills();
 ---
 
 <div class="">
     <h2 class="mb-4 font-bold">Skills</h2>
     <ul class="flex gap-3 skill-items flex-wrap">
-        {skills.left.map((item, index) => 
-            <li>{item}</li>
+        {skills.map((item, index) => 
+            <li>{item.title}</li>
         )}
     </ul>
     <!-- <div>

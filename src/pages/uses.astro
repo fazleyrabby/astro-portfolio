@@ -1,74 +1,15 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
-import { uses } from "lib/static";
-import { Content as UsesMarkdown } from "@components/uses.md";
+import { marked } from 'marked';
+import { getMarkdownFromPage } from '../../lib/notion';
+
+const pageId = import.meta.env.NOTION_USES_ID;
+const markdown = await getMarkdownFromPage(pageId);
+const htmlContent = marked.parse(markdown);
 ---
-<style>
-    /* .markdown{
-        background-color: black;
-    } */
-</style>
 
 <MainLayout title="Uses">
     <main>
-        <h1 class="text-2xl font-bold mb-3 font-serif">Things I use</h1>
-        <div>
-            <section class="markdown text-center mb-4">
-                <div class="prose dark:prose-invert w-full text-justify mr-0 ml-0 inline prose-ul:mb-0 prose-ul:list-[square]">
-                  <UsesMarkdown />
-                </div>
-              </section>
-            <!-- {
-                uses.editor && (
-                    <div class="mb-5">
-                        <p class="text-xl font-bold">Editor</p>
-                        <ul class="list-[square] pl-6 space-y-2">
-                            {uses.editor.map((item, index) => (
-                                <li>{item}</li>
-                            ))}
-                        </ul>
-                    </div>
-                )
-            }
-
-            {
-                uses.tools && (
-                    <div class="mb-5">
-                        <p class="text-xl font-bold">Tools</p>
-                        <ul class="list-[square] pl-6 space-y-2">
-                            {uses.tools.map((item, index) => (
-                                <li>{item}</li>
-                            ))}
-                        </ul>
-                    </div>
-                )
-            }
-
-            {
-                uses.terminal && (
-                    <div class="mb-5">
-                        <p class="text-xl font-bold">Terminal</p>
-                        <ul class="list-[square] pl-6 space-y-2">
-                            {uses.terminal.map((item, index) => (
-                                <li>{item}</li>
-                            ))}
-                        </ul>
-                    </div>
-                )
-            }
-
-            {
-                uses.setup && (
-                    <div class="mb-5">
-                        <p class="text-xl font-bold">Setup</p>
-                        <ul class="list-[square] pl-6 space-y-2">
-                            {uses.setup.map((item, index) => (
-                                <li>{item}</li>
-                            ))}
-                        </ul>
-                    </div>
-                )
-            } -->
-        </div>
+        <article class="prose dark:prose-invert" set:html={htmlContent} />
     </main>
 </MainLayout>

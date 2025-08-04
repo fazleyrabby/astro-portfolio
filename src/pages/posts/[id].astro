@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content'; // Astro content collection API
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts'); // Assumes collection is set up
+  return posts.map(post => ({
+    params: { id: post.id }, // Use post.id or slug
+    props: { content: post.body }, // Pass Markdown content
+  }));
+}
+
+const { id } = Astro.params;
+const post = await getCollection('posts').find(p => p.id === id);
+
+if (!post) {
+  return Astro.redirect('/404'); // Handle missing post
+}
+---
+
+<h1>{post.data.title || post.id}</h1>
+<p>Created: {new Date(post.data.created_at || '2025-08-05').toLocaleDateString()}</p>
+
+<!-- Render Markdown content -->
+<div set:html={post.body} />
+
+<style>
+  h1 {
+    margin-bottom: 1rem;
+  }
+  p {
+    color: #6c757d;
+    margin-bottom: 2rem;
+  }
+  div {
+    line-height: 1.6;
+  }
+</style>

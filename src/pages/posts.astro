@@ -1,9 +1,14 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
-const posts = await Astro.glob("../pages/post/*.md");
-posts.sort((a, b) => new Date(b.frontmatter.date).valueOf() - new Date(a.frontmatter.date).valueOf());
+// const posts = await Astro.glob("../pages/post/*.md");
+// posts.sort((a, b) => new Date(b.frontmatter.date).valueOf() - new Date(a.frontmatter.date).valueOf());
 import "../styles/global.css";
 import moment from "moment";
+
+
+import { getPosts } from '../../lib/notion'; // Adjust path to your script
+
+const posts = await getPosts('24548095bfe8802a801cf7e924d89b77');
 ---
 <MainLayout title="Posts">
 	<div class="mb-4">
@@ -16,13 +21,11 @@ import moment from "moment";
 							<div>
 								<a href={post.url} 
 								   class="text-xl font-bold mb-2 w-fit capitalize fancy-text">
-									{post.frontmatter.title}
+									{post.title}
 								</a>
 							</div>
 							<div class="text-sm">
-								{moment(post.frontmatter.date).format(
-									"Y-MM-DD hh:mm:s",
-								)}
+								<span>Created: {new Date(post.created_at).toLocaleDateString()}</span>
 							</div>
 							<div>
 								<div class="text-sm">

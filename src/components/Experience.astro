@@ -1,8 +1,11 @@
 ---
-import { experiences } from "../../lib/static";
-experiences.sort(
-  (a, b) => new Date(b.timeline).valueOf() - new Date(a.timeline).valueOf(),
-);
+// import { experiences } from "../../lib/static";
+// experiences.sort(
+//   (a, b) => new Date(b.timeline).valueOf() - new Date(a.timeline).valueOf(),
+// );
+import { getExperiences } from "../../lib/notion";
+let experiences = [];
+experiences = await getExperiences();
 ---
 
 <!-- data-aos="fade-up" 
@@ -22,7 +25,7 @@ experiences.sort(
                 target="_blank"
                 rel="noreferrer"
               >
-                {item.name}
+                {item.title}
               </a>
             </h2>
             <time class="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">

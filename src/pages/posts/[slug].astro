@@ -1,0 +1,33 @@
+---
+// src/pages/posts/[slug].astro
+
+import MainLayout from "@layouts/MainLayout.astro";
+import { getPosts, getMarkdownFromPage } from "../../../lib/notion";
+import { marked } from "marked";
+
+// Required for dynamic route pre-generation
+export async function getStaticPaths() {
+  const posts = await getPosts(import.meta.env.NOTION_BLOG_DB_ID); // Use import.meta.env
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { slug } = Astro.params;
+const { post } = Astro.props;
+
+// Get markdown content using Notion page ID
+const markdown = await getMarkdownFromPage(post.id);
+const htmlContent = marked.parse(markdown);
+---
+
+<MainLayout title="About">
+  <main>
+    <article class="prose mx-auto">
+      <h1>{post.title}</h1>
+      <p><small>{new Date(post.created_at).toLocaleDateString()}</small></p>
+      <article set:html={htmlContent} />
+    </article>
+  </main>
+</MainLayout>

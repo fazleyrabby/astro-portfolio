@@ -14,6 +14,15 @@ import Youtube from "@components/Icons/Youtube.astro";
 import Email from "@components/Icons/Email.astro";
 import Codepen from "@components/Icons/Codepen.astro";
 import ContactForm from "@components/ContactForm.astro";
+
+import { getMarkdownFromPage } from "../../lib/notion";
+import { marked } from "marked";
+
+// Required for dynamic route pre-generation
+
+// Get markdown content using Notion page ID
+const markdown = await getMarkdownFromPage(process.env.PUBLIC_NOTION_ABOUT_ID);
+const htmlContent = marked.parse(markdown);
 ---
 
 <MainLayout title="Home">
@@ -25,8 +34,7 @@ import ContactForm from "@components/ContactForm.astro";
         I am Fazley Rabbi <span class="animate-wiggle inline-flex origin-bottom">👋</span>
       </h1>
       <section class="markdown text-center mb-4">
-        <div class="prose dark:prose-invert w-full text-justify mr-0 ml-0 inline">
-          <AboutMarkdown />
+        <div class="prose prose-sm dark:prose-invert w-full text-justify mr-0 ml-0 inline" set:html={htmlContent}>
         </div>
       </section>
       <!-- <p class="mb-4">A Passionate Web Developer & Tech Enthusiast</p>

@@ -8,7 +8,7 @@ import moment from "moment";
 
 import { getPosts } from '../../lib/notion'; // Adjust path to your script
 
-const posts = await getPosts('24548095bfe8802a801cf7e924d89b77');
+const posts = await getPosts(process.env.NOTION_BLOG_DB_ID);
 ---
 <MainLayout title="Posts">
 	<div class="mb-4">

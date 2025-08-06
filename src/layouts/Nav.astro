@@ -6,9 +6,9 @@ import ThemeIcon from "@components/ThemeIcon.astro";
 
 <div class="custom-navbar">
     <nav
-        class="container mx-auto flex items-center justify-items-center justify-between flex-wrap bg-transparent py-2 text-black dark:bg-transparent order-1 transition-all"
+        class="container mx-auto flex flex-col lg:flex-row items-center justify-items-center justify-between flex-wrap bg-transparent py-2 text-black dark:bg-transparent order-1 transition-all"
     >
-        <a href="/" class="inline-flex items-center mr-4">
+        <a href="/" class="inline-flex items-center mr-4 lg:mr-0">
             <span
                 class="text-2xl text-black dark:text-white font-medium font-logo"
             >
@@ -16,8 +16,7 @@ import ThemeIcon from "@components/ThemeIcon.astro";
             </span>
         </a>
 
-        <div class="items-start flex ml-auto lg:h-auto gap-1 font-medium"
-        >
+        <div class="flex justify-center items-center gap-1 text-sm lg:h-auto">
             <a
                 href="/posts/"
                 class=`nav-link ${currentPath.includes('posts') ? 'bg-slate-100': "dark:text-white"}`
@@ -55,9 +54,10 @@ import ThemeIcon from "@components/ThemeIcon.astro";
                 >
                     Resources
                 </a>
+                <ThemeIcon />
         </div>
 
-        <ThemeIcon />
+        
     </nav>
 </div>
 

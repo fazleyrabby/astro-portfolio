@@ -24,7 +24,7 @@ const htmlContent = marked.parse(markdown);
 
 <MainLayout title="About">
   <main>
-    <article class="prose mx-auto">
+    <article class="prose dark:prose-invert mx-auto">
       <h1>{post.title}</h1>
       <p><small>{new Date(post.created_at).toLocaleDateString()}</small></p>
       <article set:html={htmlContent} />

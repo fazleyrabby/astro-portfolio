@@ -7,25 +7,36 @@
 
 /* Root variables for colors, shadows, and reusable styles */
 :root {
-  --clr-1: #020024; /* Dark blue */
-  --clr-2: #096679; /* Teal */
-  --clr-3: #00d4ff; /* Cyan */
-  --clr-4: #22c1c3; /* Light teal */
-  --clr-5: #ffffff; /* White */
-  --line-dark: hsl(0 0% 95% / 0.25); /* Dark mode grid line */
-  --box-shadow: 4px 4px 0 1px hsl(0, 0%, 70%); /* Default box shadow */
-  --box-shadow-hover: 6px 6px 0 1px hsl(0, 0%, 70%); /* Hover box shadow */
-  --transition-shadow: box-shadow ease-in 100ms, transform ease 400ms; /* Shadow transition */
-  --fancy-gradient: linear-gradient(45deg, rgb(51 65 85), hsl(0, 0%, 70%)); /* Text underline gradient */
-  --border-gray: border border-gray-700 dark:border-gray-100; /* Gray border with dark mode */
+  --clr-1: #020024;
+  /* Dark blue */
+  --clr-2: #096679;
+  /* Teal */
+  --clr-3: #00d4ff;
+  /* Cyan */
+  --clr-4: #22c1c3;
+  /* Light teal */
+  --clr-5: #ffffff;
+  /* White */
+  --line-dark: hsl(0 0% 95% / 0.25);
+  /* Dark mode grid line */
+  --box-shadow: 4px 4px 0 1px hsl(0, 0%, 70%);
+  /* Default box shadow */
+  --box-shadow-hover: 6px 6px 0 1px hsl(0, 0%, 70%);
+  /* Hover box shadow */
+  --transition-shadow: box-shadow ease-in 100ms, transform ease 400ms;
+  /* Shadow transition */
+  --fancy-gradient: linear-gradient(45deg, rgb(51 65 85), hsl(0, 0%, 70%));
+  /* Text underline gradient */
+  --border-gray: border border-gray-700 dark:border-gray-100;
+  /* Gray border with dark mode */
 }
 
 /* Font definitions */
 @font-face {
   font-family: 'Satoshi-Variable';
   src: url('/fonts/Satoshi-Variable.woff2') format('woff2'),
-       url('/fonts/Satoshi-Variable.woff') format('woff'),
-       url('/fonts/Satoshi-Variable.ttf') format('truetype');
+    url('/fonts/Satoshi-Variable.woff') format('woff'),
+    url('/fonts/Satoshi-Variable.ttf') format('truetype');
   font-weight: 300 900;
   font-display: swap;
   font-style: normal;
@@ -40,8 +51,10 @@
 
 /* Global HTML styles */
 html {
-  scroll-behavior: smooth; /* Smooth scrolling */
-  scroll-padding-top: 12rem; /* Offset for fixed navbar */
+  scroll-behavior: smooth;
+  /* Smooth scrolling */
+  scroll-padding-top: 12rem;
+  /* Offset for fixed navbar */
 }
 
 /* Dark mode background grid line */
@@ -66,7 +79,8 @@ a {
 }
 
 /* Shared button styles */
-.custom-button, .custom-readmore-button {
+.custom-button,
+.custom-readmore-button {
   @apply text-white text-xs bg-slate-700 hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-700 px-3 py-2 rounded-sm custom-box-shadow;
 }
 
@@ -119,11 +133,13 @@ a {
 
 /* Custom height utilities */
 .custom-height {
-  min-height: calc(100vh - 96px - 56px); /* Adjusted for header and footer */
+  min-height: calc(100vh - 96px - 56px);
+  /* Adjusted for header and footer */
 }
 
 .custom-section-height {
-  min-height: calc(100vh - 96px); /* Adjusted for header */
+  min-height: calc(100vh - 96px);
+  /* Adjusted for header */
 }
 
 /* Underline effect for sections */
@@ -172,5 +188,20 @@ a {
 
 /* Spinner animation */
 @keyframes rotation {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Prose code block styling */
+.prose pre {
+  @apply bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-800 dark:text-gray-200;
+}
+
+.prose code {
+  @apply bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm text-gray-800 dark:text-gray-200;
+}
+
+.prose pre code {
+  @apply bg-transparent p-0;
 }

@@ -2,91 +2,51 @@
 const pathname = new URL(Astro.request.url).pathname;
 const currentPath = pathname.slice(1);
 import ThemeIcon from "@components/ThemeIcon.astro";
+
+const navItems = [
+    { href: "/posts/", label: "Posts", path: "posts" },
+    { href: "/uses/", label: "Uses", path: "uses" },
+    { href: "/gallery/", label: "Gallery", path: "gallery" },
+    { href: "/resources/", label: "Resources", path: "resources" },
+];
 ---
 
-<div class="custom-navbar">
-    <nav
-        class="container mx-auto flex flex-col lg:flex-row items-center justify-items-center justify-between flex-wrap bg-transparent py-2 text-black dark:bg-transparent order-1 transition-all"
-    >
-        <a href="/" class="inline-flex items-center mr-4 lg:mr-0">
-            <span
-                class="text-2xl text-black dark:text-white font-medium font-logo"
-            >
-                Fazley
-            </span>
-        </a>
-
-        <div class="flex justify-center items-center gap-1 text-sm lg:h-auto">
-            <a
-                href="/posts/"
-                class=`nav-link ${currentPath.includes('posts') ? 'bg-slate-100': "dark:text-white"}`
-            >
-                Posts
-            </a>
-            <!-- <a
-                href="/projects/"
-                class=`nav-link ${currentPath.includes('projects') ? 'bg-slate-100': "dark:text-white"}`
-            >
-                Projects
-            </a>
-
-            <a
-                href="/about/"
-                class=`nav-link ${currentPath.includes('about') ? 'bg-slate-100': "dark:text-white"}`
-            >
-                About
-            </a> -->
-            <a
-                href="/uses/"
-                class=`nav-link ${currentPath.includes('uses') ? 'bg-slate-100': "dark:text-white"}`
-            >
-                Uses
-            </a>
-            <a
-                href="/gallery/"
-                class=`nav-link ${currentPath.includes('gallery') ? 'bg-slate-100': "dark:text-white"}`
-            >
-                Gallery
-            </a>
-            <a
-                href="/resources/"
-                class=`nav-link ${currentPath.includes('resources') ? 'bg-slate-100': "dark:text-white"}`
+<header
+    class="sticky top-0 z-50 w-full border-b border-gray-200/50 dark:border-gray-700/50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl"
+>
+    <nav class="container mx-auto py-4">
+        <div class="flex items-center justify-between">
+            <!-- Logo -->
+            <a href="/" class="flex items-center gap-2 group">
+                <span
+                    class="text-xl font-bold font-logo text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors"
                 >
-                    Resources
-                </a>
-                <ThemeIcon />
+                    Fazley
+                </span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <div class="flex items-center gap-1">
+                {
+                    navItems.map((item) => (
+                        <a
+                            href={item.href}
+                            class={`px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                                currentPath.includes(item.path)
+                                    ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30"
+                                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                            }`}
+                        >
+                            {item.label}
+                        </a>
+                    ))
+                }
+                <div
+                    class="ml-2 pl-2 border-l border-gray-200 dark:border-gray-700"
+                >
+                    <ThemeIcon />
+                </div>
+            </div>
         </div>
-
-        
     </nav>
-</div>
-
-<script is:inline>
-    const checkDeviceWidth = () => {
-        if (window.innerWidth <= 1025) {
-            // nav.classList.add('opacity-0')
-            // nav.classList.add('h-0')
-            nav.classList.add("hidden");
-        }
-    };
-    const handleClick = () => {
-        const nav = document.getElementById("nav");
-        nav.classList.toggle("hidden");
-        document.querySelector(".close").classList.toggle("hidden");
-        document.querySelector(".open").classList.toggle("hidden");
-    };
-
-    document.addEventListener("astro:after-swap", () => {
-        checkDeviceWidth();
-    });
-
-    window.addEventListener(
-        "resize",
-        function () {
-            checkDeviceWidth();
-        },
-        true,
-    );
-
-    checkDeviceWidth();
-</script>
+</header>

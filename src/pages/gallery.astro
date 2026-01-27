@@ -1,5 +1,5 @@
 ---
-Astro.response.headers.set('Cache-Control', 'max-age=604800');
+Astro.response.headers.set("Cache-Control", "max-age=604800");
 import { Image } from "@unpic/astro";
 import MainLayout from "@layouts/MainLayout.astro";
 import { v2 as cloudinary } from "cloudinary";
@@ -7,16 +7,14 @@ import ImagePopup from "@components/ImagePopup.astro";
 const env = import.meta.env;
 
 cloudinary.config({
-    cloud_name: env.CLOUDINARY_CLOUD_NAME, // add your cloud_name
-    api_key: env.CLOUDINARY_API_KEY, // add your api_key
-    api_secret: env.CLOUDINARY_API_SECRET, // add your api_secret
+    cloud_name: env.CLOUDINARY_CLOUD_NAME,
+    api_key: env.CLOUDINARY_API_KEY,
+    api_secret: env.CLOUDINARY_API_SECRET,
     secure: true,
 });
 
 const images = await cloudinary.search
-    .expression(
-        "folder:photography*", // add your folder
-    )
+    .expression("folder:photography*")
     .sort_by("uploaded_at", "desc")
     .max_results(15)
     .execute();
@@ -24,114 +22,37 @@ const images = await cloudinary.search
 
 <MainLayout title="Photography">
     <main>
-        <p class="text-md text-center my-4">Some random shots I have taken on various trips. Mostly using my smart phone!</p>
+        <p
+            class="text-lg text-center my-6 bg-gradient-to-r from-gray-600 to-gray-500 dark:from-gray-300 dark:to-gray-400 bg-clip-text text-transparent font-medium"
+        >
+            Some random shots I have taken on various trips. Mostly using my
+            smart phone!
+        </p>
+
+        <!-- Simple Grid Layout -->
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
             {
                 images.total_count > 0 &&
-                    images.resources.map(
-                        (img, idx) => (
-                            <div>
-                                <Image
-                                    height={400}
-                                    width={400}
-                                    loading="lazy"
-                                    layout="constrained"
-                                    class="rounded-lg object-cover aspect-video lightbox-image cursor-pointer hover:scale-105 transition-all"
-                                    data-img={img.secure_url}
-                                    src={img.secure_url}
-                                    alt=""
-                                />
-                            </div>
-                        ),
-                        // data.map((img) => (
-
-                        // )),
-                        // <div class="grid gap-4" style="grid-template-rows: max-content;">
-                        //     {}
-                        // </div>
-                    )
+                    images.resources.map((img) => (
+                        <div class="group relative overflow-hidden bg-gray-100 dark:bg-gray-800 aspect-square">
+                            <Image
+                                height={400}
+                                width={400}
+                                loading="lazy"
+                                layout="fullWidth"
+                                class="w-full h-full object-cover lightbox-image cursor-pointer group-hover:scale-105 transition-transform duration-300"
+                                data-img={img.secure_url}
+                                src={img.secure_url}
+                                alt="Photography"
+                            />
+                        </div>
+                    ))
             }
-
-            <ImagePopup/>
-
-            <!-- <div>
-                <img
-                    class="h-auto max-w-full rounded-lg"
-                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg"
-                    alt=""
-                />
-            </div>
-            <div>
-                <img
-                    class="h-auto max-w-full rounded-lg"
-                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg"
-                    alt=""
-                />
-            </div>
-            <div>
-                <img
-                    class="h-auto max-w-full rounded-lg"
-                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg"
-                    alt=""
-                />
-            </div>
-            <div>
-                <img
-                    class="h-auto max-w-full rounded-lg"
-                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg"
-                    alt=""
-                />
-            </div>
-            <div>
-                <img
-                    class="h-auto max-w-full rounded-lg"
-                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg"
-                    alt=""
-                />
-            </div>
-            <div>
-                <img
-                    class="h-auto max-w-full rounded-lg"
-                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-6.jpg"
-                    alt=""
-                />
-            </div>
-            <div>
-                <img
-                    class="h-auto max-w-full rounded-lg"
-                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-7.jpg"
-                    alt=""
-                />
-            </div>
-            <div>
-                <img
-                    class="h-auto max-w-full rounded-lg"
-                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-8.jpg"
-                    alt=""
-                />
-            </div>
-            <div>
-                <img
-                    class="h-auto max-w-full rounded-lg"
-                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-9.jpg"
-                    alt=""
-                />
-            </div>
-            <div>
-                <img
-                    class="h-auto max-w-full rounded-lg"
-                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-10.jpg"
-                    alt=""
-                />
-            </div>
-            <div>
-                <img
-                    class="h-auto max-w-full rounded-lg"
-                    src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-11.jpg"
-                    alt=""
-                />
-            </div> -->
         </div>
-        <p class="text-slate-400 my-4 text-xs">(These images are hosted on cloudinary)</p>
+
+        <ImagePopup />
+        <p class="text-gray-400 dark:text-gray-500 my-6 text-xs text-center">
+            (These images are hosted on Cloudinary)
+        </p>
     </main>
 </MainLayout>

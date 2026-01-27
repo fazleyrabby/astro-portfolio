@@ -1,58 +1,65 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
-// const posts = await Astro.glob("../pages/post/*.md");
-// posts.sort((a, b) => new Date(b.frontmatter.date).valueOf() - new Date(a.frontmatter.date).valueOf());
 import "../styles/global.css";
-import moment from "moment";
 
-
-import { getPosts } from '../../lib/notion'; // Adjust path to your script
+import { getPosts } from '../../lib/notion';
 
 const posts = await getPosts(process.env.NOTION_BLOG_DB_ID);
 ---
 <MainLayout title="Posts">
-	<div class="mb-4">
-		<!-- <h1 class="text-xl font-bold my-6 text-center font-serif">Posts</h1> -->
-		<div class="space-y-2">
-			{
-				posts.map((post) => (
-					<div class="w-full lg:max-w-full lg:flex group cursor-pointer ">
-						<div class="blog-item space-y-1">
-							<div>
-								<a href={post.url} 
-								   class="text-xl font-bold mb-2 w-fit capitalize fancy-text">
-									{post.title}
-								</a>
-							</div>
-							<div class="text-sm">
-								<span>Created: {new Date(post.created_at).toLocaleDateString()}</span>
-							</div>
-							<div>
-								<div class="text-sm">
-									<a
-										href={post.url}
-										class="custom-readmore-button"
-									>
-										<span>Read More</span>
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											fill="currentColor"
-											class="inline-block transition-transform ml-2 w-4 h-4"
-											viewBox="0 0 16 16"
-										>
-											<path
-												fill-rule="evenodd"
-												d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"
-											/>
-										</svg>
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				))
-			}
-		</div>
-	</div>
-	<ul></ul>
+  <section class="relative py-8">
+    <!-- Section Header -->
+    <div class="mb-12">
+      <span class="text-indigo-600 dark:text-indigo-400 text-sm font-semibold uppercase tracking-wider mb-2 block">Blog</span>
+      <h1 class="text-3xl md:text-4xl font-bold font-serif text-gray-900 dark:text-white mb-4">
+        Articles & Insights
+      </h1>
+      <p class="text-gray-600 dark:text-gray-400 max-w-2xl">
+        Thoughts on web development, programming, and things I've learned along the way.
+      </p>
+    </div>
+
+    <!-- Posts Grid -->
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {
+        posts.map((post, idx) => (
+          <article 
+            class="group relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10"
+          >
+            <a href={post.url} class="block p-6">
+              <!-- Date -->
+              <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <time>{new Date(post.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</time>
+              </div>
+              
+              <!-- Title -->
+              <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors capitalize line-clamp-2">
+                {post.title}
+              </h2>
+              
+              <!-- Read More -->
+              <div class="flex items-center gap-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:gap-3 transition-all">
+                Read article
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+              </div>
+            </a>
+            
+            <!-- Hover accent line -->
+            <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300" />
+          </article>
+        ))
+      }
+    </div>
+    
+    {posts.length === 0 && (
+      <div class="text-center py-16">
+        <p class="text-gray-500 dark:text-gray-400">No posts yet. Check back soon!</p>
+      </div>
+    )}
+  </section>
 </MainLayout>

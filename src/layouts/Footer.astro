@@ -1,15 +1,108 @@
 ---
-import ScrollToTop from "@components/ScrollToTop.astro";
-
+import Github from "@components/Icons/Github.astro";
+import Linkedin from "@components/Icons/Linkedin.astro";
+import Youtube from "@components/Icons/Youtube.astro";
+import Email from "@components/Icons/Email.astro";
 ---
-<footer class="bg-gray-200 text-center lg:text-left dark:bg-black dark:text-white dark:border-t-2 border-slate-300">
-    <div class="text-gray-700 text-center p-4 bg-gray-100 dark:bg-black dark:text-white">
-        <div class=" flex items-center justify-center gap-1.5 mb-2">
-            Build with 
-                </svg><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fill-red-600" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-                  </svg>by Fazley Rabbi 
+
+<footer
+    class="relative border-t border-gray-200/50 dark:border-gray-700/50 mt-20"
+>
+    <div class="container mx-auto px-6 py-12">
+        <div class="grid gap-8 md:grid-cols-3 mb-8">
+            <!-- Brand -->
+            <div>
+                <h3
+                    class="text-xl font-bold font-logo text-gray-900 dark:text-white mb-3"
+                >
+                    Fazley Rabbi
+                </h3>
+                <p
+                    class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed max-w-xs"
+                >
+                    Software Engineer crafting clean, efficient solutions for
+                    the web.
+                </p>
+            </div>
+
+            <!-- Quick Links -->
+            <div>
+                <h4
+                    class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4"
+                >
+                    Quick Links
+                </h4>
+                <nav class="space-y-2">
+                    <a
+                        href="/posts"
+                        class="block text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                        >Blog</a
+                    >
+                    <a
+                        href="/gallery"
+                        class="block text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                        >Gallery</a
+                    >
+                    <a
+                        href="/about"
+                        class="block text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                        >About</a
+                    >
+                </nav>
+            </div>
+
+            <!-- Connect -->
+            <div>
+                <h4
+                    class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4"
+                >
+                    Connect
+                </h4>
+                <div class="flex gap-4 icons mb-4">
+                    <Github />
+                    <Linkedin />
+                    <Youtube />
+                    <Email />
+                </div>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Open to opportunities and collaborations.
+                </p>
+            </div>
         </div>
-        <div class="text-sm text-stone-500 dark:text-white">Generated with <a href="https://astro.build/" class="text-blue-700 dark:text-slate-300" target="_blank">Astro</a></div>
+
+        <!-- Bottom Bar -->
+        <div
+            class="pt-8 border-t border-gray-200/50 dark:border-gray-700/50 flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
+            <div
+                class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+            >
+                <span>Built with</span>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4 fill-red-500 animate-pulse"
+                    viewBox="0 0 16 16"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+                    ></path>
+                </svg>
+                <span>by</span>
+                <span
+                    class="font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent"
+                >
+                    Fazley Rabbi
+                </span>
+            </div>
+            <div class="text-xs text-gray-500 dark:text-gray-500">
+                © {new Date().getFullYear()} • Powered by
+                <a
+                    href="https://astro.build/"
+                    class="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors font-medium"
+                    target="_blank">Astro</a
+                >
+            </div>
+        </div>
     </div>
 </footer>

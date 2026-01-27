@@ -13,10 +13,10 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-		  'sans' : ['Onest','system-ui'], // other font: Livvic
-		  'serif' : ['Onest','system-ui'],
-		  'logo' : ['Patrick Hand','system-ui'],
-		  'mono' : ['Geist Mono','ui-monospace'],
+			'sans': ['Google Sans', 'system-ui'],
+			'serif': ['Google Sans', 'system-ui'],
+			'logo': ['Pacifico', 'cursive'],
+			'mono': ['Geist Mono', 'ui-monospace'],
 		},
 		fontSize: {
 			xs: '0.8125rem',   // 13px
@@ -31,88 +31,88 @@ export default {
 			'6xl': '3rem',     // 48px
 		},
 		container: {
-		  padding: {
-			DEFAULT: '1rem',
-			sm: '2rem',
-			lg: '4rem',
-			xl: '5rem',
-			'2xl': '6rem',
-		  },
+			padding: {
+				DEFAULT: '1rem',
+				sm: '2rem',
+				lg: '4rem',
+				xl: '5rem',
+				'2xl': '6rem',
+			},
 		},
 		extend: {
-		  animation: {
-			wiggle: 'wiggle 3s ease-in-out infinite',
-			bounce: 'bounce 2s ease-in-out infinite',
-			fadein: 'fadein 200ms linear',
-			objtoright: 'objtoright 10s alternate infinite',
-			spin: 'spin 1s linear infinite',
-			bgGradient: 'titleAnimate 5s ease infinite forwards',
-		  },
-		  keyframes: {
-			wiggle: {
-			  '0%, 100%': { transform: 'rotate(-4deg)' },
-			  '50%': { transform: 'rotate(4deg)' },
+			animation: {
+				wiggle: 'wiggle 3s ease-in-out infinite',
+				bounce: 'bounce 2s ease-in-out infinite',
+				fadein: 'fadein 200ms linear',
+				objtoright: 'objtoright 10s alternate infinite',
+				spin: 'spin 1s linear infinite',
+				bgGradient: 'titleAnimate 5s ease infinite forwards',
 			},
-			fadein: {
-			  '0%': { transform: 'translateY(-100%)'},
-			  '100%': { transform: 'translateY(0)'},
-			},
-			objtoright: {
-			  '0%': { 'object-position': 'top left'},
-			  '100%': { 'object-position': 'top right'},
-			},
-			spin:{
-				from: { transform: 'rotate(0deg)' },
-				to: { transform: 'rotate(360deg)'}
-			},
-			titleAnimate: {
-				'0%': { 'background-position': '0% 50%' },
-				'50%': { 'background-position': '100% 50%' },
-				'100%': { 'background-position': '0% 50%' },
-			  },
-		  }
+			keyframes: {
+				wiggle: {
+					'0%, 100%': { transform: 'rotate(-4deg)' },
+					'50%': { transform: 'rotate(4deg)' },
+				},
+				fadein: {
+					'0%': { transform: 'translateY(-100%)' },
+					'100%': { transform: 'translateY(0)' },
+				},
+				objtoright: {
+					'0%': { 'object-position': 'top left' },
+					'100%': { 'object-position': 'top right' },
+				},
+				spin: {
+					from: { transform: 'rotate(0deg)' },
+					to: { transform: 'rotate(360deg)' }
+				},
+				titleAnimate: {
+					'0%': { 'background-position': '0% 50%' },
+					'50%': { 'background-position': '100% 50%' },
+					'100%': { 'background-position': '0% 50%' },
+				},
+			}
 		},
-	  },
-	  corePlugins: {
+	},
+	corePlugins: {
 		container: true
-	  },
-	  plugins: [
+	},
+	plugins: [
 		require('@tailwindcss/typography'),
 		require("tailwindcss-animation-delay"),
 		plugin(function ({ addVariant, e, postcss, addComponents }) {
-		  addComponents({
-			'.container': {
-			  maxWidth: '90%',
-			  '@screen sm': {
-				maxWidth: '640px',
-			  },
-			  '@screen md': {
-				maxWidth: '768px',
-			  },
-			  '@screen lg': {
-				maxWidth: '860px',
-			  },
-			  '@screen xl': {
-				maxWidth: '1100px',
-			  },
-			}
-		  }),
-	
-		  addVariant('firefox', ({ container, separator }) => {
-		  const isFirefoxRule = postcss.atRule({
-			name: '-moz-document',
-			params: 'url-prefix()',
-		  });
-	  
-		  isFirefoxRule.append(container.nodes);
-		  container.append(isFirefoxRule);
-	
-		  isFirefoxRule.walkRules((rule) => {
-			rule.selector = `.${e(
-			`firefox${separator}${rule.selector.slice(1)}`
-			)}`;
-		  });
-		  });
+			addComponents({
+				'.container': {
+					maxWidth: '90%',
+					'@screen sm': {
+						maxWidth: '640px',
+					},
+					'@screen md': {
+						maxWidth: '768px',
+					},
+					'@screen lg': {
+						maxWidth: '860px',
+					},
+					'@screen xl': {
+						maxWidth: '1100px',
+					},
+				}
+			}),
+
+				addVariant('firefox', ({ container, separator }) => {
+					const isFirefoxRule = postcss.atRule({
+						name: '-moz-document',
+						params: 'url-prefix()',
+					});
+
+					isFirefoxRule.append(container.nodes);
+					container.append(isFirefoxRule);
+
+					isFirefoxRule.walkRules((rule) => {
+						rule.selector = `.${e(
+							`firefox${separator}${rule.selector.slice(1)}`
+						)}`;
+					});
+				});
 		}),
-	  ],
+	],
 }

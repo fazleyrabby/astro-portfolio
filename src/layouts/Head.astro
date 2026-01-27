@@ -1,28 +1,47 @@
 ---
 // import { ViewTransitions } from "astro:transitions";
 const { title } = Astro.props;
-const isProduction = import.meta.env.NODE_ENV === 'production';
+const isProduction = import.meta.env.NODE_ENV === "production";
 const umamiID = import.meta.env.UMAMI_ID;
 ---
+
 <head>
     <meta charset="utf-8" />
     <title>{title}</title>
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <meta name="description" content="Fazley Rabbi Portfolio"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="description" content="Fazley Rabbi Portfolio" />
     <meta property="og:title" content="Fazley Rabbi Web Developer Portfolio" />
-    <meta property="og:description" content="Web developer portfolio laravel developer"/>
-    <meta property="og:image" content="https://fazleyrabbi.xyz/me.webp"/>
+    <meta
+        property="og:description"
+        content="Web developer portfolio laravel developer"
+    />
+    <meta property="og:image" content="https://fazleyrabbi.xyz/me.webp" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" cross-origin="true" />
-    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;700;800&family=Young+Serif&family=Patrick Hand:wght@200;400;800&display=swap" rel="stylesheet">
-    <script is:inline src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    {isProduction && (
-        <script async src="https://us.umami.is/script.js" data-website-id={umamiID}></script>
-    )}
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        cross-origin="true"
+    />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700;800&family=Pacifico&family=Young+Serif&display=swap"
+        rel="stylesheet"
+    />
+    <script
+        is:inline
+        src="https://identity.netlify.com/v1/netlify-identity-widget.js"
+    ></script>
+    {
+        isProduction && (
+            <script
+                async
+                src="https://us.umami.is/script.js"
+                data-website-id={umamiID}
+            />
+        )
+    }
 </head>
-

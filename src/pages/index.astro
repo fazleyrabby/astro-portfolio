@@ -27,61 +27,133 @@ const htmlContent = marked.parse(markdown);
 
 <MainLayout title="Home">
   <main class="mb-auto">
-    <div
-      class="flex flex-col justify-center mb-12"
-    >
-      <h1 class="text-2xl font-extrabold font-serif mb-2">
-        I am Fazley Rabbi <span class="animate-wiggle inline-flex origin-bottom">👋</span>
-      </h1>
-      <section class="markdown text-center mb-4">
-        <div class="prose prose-sm dark:prose-invert w-full text-justify mr-0 ml-0 inline" set:html={htmlContent}>
+    <!-- Modern Hero Section -->
+    <section class="relative py-12 md:py-20 mb-16">
+      <!-- Content -->
+      <div class="relative z-10 max-w-3xl">
+        <!-- Status Badge -->
+        <div class="animate-fade-in-up mb-6">
+          <span
+            class="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 text-sm font-medium text-gray-700 dark:text-gray-300"
+          >
+            <span class="relative flex h-2 w-2">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full bg-green-400 opacity-75"
+              ></span>
+              <span class="relative inline-flex h-2 w-2 bg-green-500"></span>
+            </span>
+            Available for freelance & collaboration
+          </span>
         </div>
-      </section>
-      <!-- <p class="mb-4">A Passionate Web Developer & Tech Enthusiast</p>
-      <p class="mb-4">Based on Bangladesh</p> -->
-      <a
-        id="resume-link"
-        href="/resume"
-        class="custom-button"
-      >
-        Resume
-      </a>
-    </div>
+
+        <!-- Headline -->
+        <h1
+          class="animate-fade-in-up text-4xl sm:text-5xl md:text-6xl font-extrabold font-serif mb-6 leading-tight"
+          style="animation-delay: 0.1s;"
+        >
+          <span class="block text-gray-900 dark:text-white">Hi, I'm</span>
+          <span
+            class="block bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent animate-gradient-x"
+          >
+            Fazley Rabbi
+          </span>
+        </h1>
+
+        <!-- Description -->
+        <div class="animate-fade-in-up mb-8" style="animation-delay: 0.3s;">
+          <div
+            class="prose prose-lg dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed"
+            set:html={htmlContent}
+          />
+        </div>
+
+        <!-- CTA Buttons -->
+        <div
+          class="animate-fade-in-up flex flex-wrap gap-4 mb-8"
+          style="animation-delay: 0.4s;"
+        >
+          <a
+            id="resume-link"
+            href="/resume"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-indigo-500/25"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+            Resume
+          </a>
+          <a
+            href="#projects"
+            class="inline-flex items-center gap-2 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 hover:-translate-y-1"
+          >
+            View Projects
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Social Links -->
+        <div
+          class="animate-fade-in-up flex items-center gap-4"
+          style="animation-delay: 0.5s;"
+        >
+          <span class="text-sm text-gray-500 dark:text-gray-400">Connect:</span>
+          <div class="flex gap-3 icons">
+            <Github />
+            <Linkedin />
+            <Youtube />
+            <Email />
+            <Codepen />
+          </div>
+        </div>
+      </div>
+    </section>
 
     {/* Projects  */}
-    <div class="mb-12 grid space-y-4" id="projects" >
-      <Projects type="home"/>
+    <div class="mb-16 grid space-y-4" id="projects">
+      <Projects type="home" />
     </div>
 
     {/* Skills */}
-    <div class="mb-12">
+    <div class="mb-16">
       <Skills />
     </div>
 
-    
-
     {/* Experience */}
-    <div class="mb-12">
+    <div class="mb-16">
       <Experience />
-    </div>
-
-    <p class="mb-4 text-md font-medium">Connect with me:</p>
-    <div class="flex gap-3 mb-6 icons">
-      <Github />
-      <Linkedin />
-      <Youtube />
-      <Email />
-      <Codepen />
     </div>
   </main>
 </MainLayout>
 
 <script is:inline>
-  
   if (window.matchMedia("(max-width: 767px)").matches) {
     // The viewport is less than 768 pixels wide
     const resumeLink = document.getElementById("resume-link");
     resumeLink.setAttribute("target", "_blank");
-    resumeLink.setAttribute("href","https://drive.google.com/file/d/1OKkIKXabCV5AZidDxPnoERFfPsiLoSqK/view");
+    resumeLink.setAttribute(
+      "href",
+      "https://drive.google.com/file/d/1OKkIKXabCV5AZidDxPnoERFfPsiLoSqK/view",
+    );
   }
 </script>

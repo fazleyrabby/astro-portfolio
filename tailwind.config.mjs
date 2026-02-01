@@ -82,7 +82,7 @@ export default {
 		plugin(function ({ addVariant, e, postcss, addComponents }) {
 			addComponents({
 				'.container': {
-					maxWidth: '90%',
+					maxWidth: '100%',
 					'@screen sm': {
 						maxWidth: '640px',
 					},

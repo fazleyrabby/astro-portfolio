@@ -320,9 +320,23 @@ a {
   }
 }
 
-/* Prose code block styling */
+/* Prose code block styling - Shiki dual theme support */
 .prose pre {
-  @apply bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-800 dark:text-gray-200;
+  @apply border border-gray-200 dark:border-gray-700 rounded-md overflow-x-auto;
+  padding: 1rem 1.25rem;
+}
+
+/* Shiki dual theme: use .dark class to toggle (Tailwind class strategy) */
+.astro-code,
+.astro-code span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+}
+
+html.dark .astro-code,
+html.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
 }
 
 .prose code {
@@ -330,7 +344,7 @@ a {
 }
 
 .prose pre code {
-  @apply bg-transparent p-0;
+  @apply bg-transparent p-0 text-sm;
 }
 
 /* ============================================

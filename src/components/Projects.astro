@@ -1,8 +1,9 @@
 ---
 import { Image } from "astro:assets";
-import { getProjects } from "../../lib/notion";
-let projects = [];
-projects = await getProjects();
+import { getCollection } from 'astro:content';
+const projects = await getCollection('projects');
+projects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
+
 ---
 
 <!-- Projects Section -->
@@ -22,18 +23,18 @@ projects = await getProjects();
         <article class="group flex flex-col bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10">
           <!-- Thumbnail -->
           <a
-            href={item.live || item.github || "#"}
+            href={item.data.live || item.data.github || "#"}
             target="_blank"
             rel="noreferrer"
-            aria-label={item.title}
+            aria-label={item.data.title}
             class="block relative overflow-hidden aspect-video flex-shrink-0"
           >
-            {item.thumbnail && (
+            {item.data.thumbnail && (
               <>
                 <Image
-                  src={item.thumbnail}
+                  src={item.data.thumbnail}
                   class="object-cover object-left-top w-full h-full transition-transform duration-500 group-hover:scale-105"
-                  alt={item.title}
+                  alt={item.data.title}
                   width={600}
                   height={300}
                   loading="lazy"
@@ -46,32 +47,32 @@ projects = await getProjects();
           <!-- Content -->
           <div class="flex flex-col flex-grow p-5">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-              {item.title}
+              {item.data.title}
             </h3>
             <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2 flex-grow">
-              {item.description}
+              {item.data.description}
             </p>
             
             <!-- Tech Stack -->
             <div class="flex gap-1.5 flex-wrap mb-4">
-              {item.tech?.slice(0, 3).map((tech) => (
+              {item.data.tech?.slice(0, 3).map((tech) => (
                 <span class="py-0.5 px-2 text-[10px] font-medium uppercase tracking-wider bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
                   {tech}
                 </span>
               ))}
-              {item.tech?.length > 3 && (
+              {item.data.tech?.length > 3 && (
                 <span class="py-0.5 px-2 text-[10px] text-gray-400">
-                  +{item.tech.length - 3}
+                  +{item.data.tech.length - 3}
                 </span>
               )}
             </div>
             
             <!-- Actions -->
             <div class="flex gap-2 mt-auto">
-              {item.live && (
+              {item.data.live && (
                 <a
                   class="flex-1 inline-flex items-center justify-center gap-1.5 py-2 text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
-                  href={item.live}
+                  href={item.data.live}
                   target="_blank"
                 >
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,10 +82,10 @@ projects = await getProjects();
                   Demo
                 </a>
               )}
-              {item.github && (
+              {item.data.github && (
                 <a
                   class="flex-1 inline-flex items-center justify-center gap-1.5 py-2 text-xs font-semibold border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                  href={item.github}
+                  href={item.data.github}
                   target="_blank"
                 >
                   <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">

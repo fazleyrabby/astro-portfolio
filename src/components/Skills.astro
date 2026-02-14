@@ -1,13 +1,8 @@
 ---
-import { getSkills } from "../../lib/notion";
-const skills = await getSkills();
-
-// Group skills by category for better organization
-const categories = {
-  "Languages": ["PHP", "JavaScript", "TypeScript", "Python", "SQL"],
-  "Frameworks": ["Laravel", "React", "Vue.js", "Next.js", "Astro"],
-  "Tools & Others": ["Docker", "Git", "MySQL", "PostgreSQL", "Redis", "Linux"]
-};
+const skills = [
+  "Docker", "Tailwind CSS", "Rest API", "Javascript", "Bootstrap", 
+  "Laravel", "PHP", "Github", "Astro", "MySQL", "Markdown", "Netlify"
+];
 ---
 
 <!-- Skills Section -->
@@ -25,14 +20,15 @@ const categories = {
 
   <!-- Skills Grid -->
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-    {skills.map((item, idx) => (
+    {skills.map((skill, idx) => (
       <div 
         class="group relative p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-indigo-500/10 hover:border-indigo-300 dark:hover:border-indigo-700"
         style={`animation-delay: ${idx * 0.05}s;`}
       >
         <span class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-          {item.title}
+          {skill}
         </span>
+
         <!-- Hover accent line -->
         <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300" />
       </div>

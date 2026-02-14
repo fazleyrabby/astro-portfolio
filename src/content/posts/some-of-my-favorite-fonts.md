@@ -1,9 +1,10 @@
 ---
-layout: ../../layouts/BlogLayout.astro
-thumbnail: /images/uploads/fonts-cover.png
-title: A Curated List of Personal Favorite fonts
-date: 2024-03-01T18:00:04.829Z
+title: "Some of my favorite fonts"
+date: 2024-03-15
+description: "A list of free fonts for developers and designers"
 ---
+
+
 <style>
 .fonts a{font-size:1.1rem;text-align:center}.fonts a img{border:3px solid transparent}.fonts a:hover img{border:3px dashed}html.dark .fonts a:hover img{border:2px dashed;outline:transparent solid 1px}html.dark .fonts a img{border:2px solid transparent;outline:solid 1px}
 </style>
@@ -55,3 +56,6 @@ These are some of my personal favorite fonts that I have collected over the year
     <a href="https://github.com/subframe7536/maple-font/releases" target="_blank">Maple Mono<img class="preview m-0" src="/images/uploads/Maple Mono.png"></p></a>
     <a href="https://input.djr.com/download/" target="_blank">Input<img class="preview m-0" src="/images/uploads/Input.png"></p></a>
 </div>
+
+
+

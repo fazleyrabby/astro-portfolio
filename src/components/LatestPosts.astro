@@ -1,0 +1,77 @@
+---
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const latestPosts = allPosts.slice(0, 3);
+---
+
+<!-- Latest Posts Section -->
+<section class="relative">
+  <!-- Section Header -->
+  <div class="mb-10">
+    <span class="text-indigo-600 dark:text-indigo-400 text-sm font-semibold uppercase tracking-wider mb-2 block">Blog</span>
+    <h2 class="text-3xl md:text-4xl font-bold font-serif text-gray-900 dark:text-white">
+      Latest Posts
+    </h2>
+  </div>
+
+  <!-- Posts Grid -->
+  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    {
+      latestPosts.map((post) => (
+        <article 
+          class="group relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10"
+        >
+          <a href={`/posts/${post.slug}`} class="block p-6">
+            <!-- Date -->
+            <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              <time>{post.data.date ? new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Unknown'}</time>
+            </div>
+            
+            <!-- Title -->
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors capitalize line-clamp-2">
+              {post.data.title}
+            </h3>
+
+            <!-- Read More -->
+            <div class="flex items-center gap-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:gap-3 transition-all">
+              Read article
+              <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+              </svg>
+            </div>
+          </a>
+          
+          <!-- Hover accent line -->
+          <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300" />
+        </article>
+      ))
+    }
+  </div>
+
+  {latestPosts.length === 0 && (
+    <div class="text-center py-16">
+      <p class="text-gray-500 dark:text-gray-400">No posts yet. Check back soon!</p>
+    </div>
+  )}
+
+  <!-- Show More Button -->
+  {latestPosts.length > 0 && (
+    <div class="mt-10 text-center">
+      <a
+        href="/posts"
+        class="inline-flex items-center gap-2 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 hover:-translate-y-1 hover:border-indigo-300 dark:hover:border-indigo-700"
+      >
+        Show More Posts
+        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+        </svg>
+      </a>
+    </div>
+  )}
+</section>

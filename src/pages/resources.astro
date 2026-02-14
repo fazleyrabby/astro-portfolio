@@ -1,13 +1,19 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
-import {
-    portfolios,
-    phpLv,
-    javascript,
-    miscellaneous,
-    youtubeChannels,
-    externalArticles,
-} from "lib/resources";
+import { getCollection } from "astro:content";
+
+const allResources = await getCollection("resources");
+
+const sections = [
+    { id: "php-laravel", title: "PHP & Laravel" },
+    { id: "blogs-articles", title: "Blogs & Articles" },
+    { id: "portfolios", title: "Portfolio & UI Inspirations" },
+    { id: "javascript", title: "JavaScript" },
+    { id: "youtube-tutorials", title: "Youtube & Tutorials" },
+    { id: "miscellaneous", title: "Miscellaneous" },
+];
+
+const getResources = (id) => allResources.find((r) => r.id === id)?.data || [];
 ---
 
 <MainLayout title="Resources">
@@ -24,18 +30,14 @@ import {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div
-                class="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-200/50 dark:border-gray-700/50"
-            >
-                <h2
-                    class="text-2xl font-bold text-gray-900 dark:text-white mb-4"
-                >
-                    PHP & Laravel
-                </h2>
-                <ul class="list-decimal list-inside space-y-2">
-                    {
-                        phpLv &&
-                            phpLv.map((item, index) => (
+            {
+                sections.map((section) => (
+                    <div class="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-200/50 dark:border-gray-700/50">
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                            {section.title}
+                        </h2>
+                        <ul class="list-decimal list-inside space-y-2">
+                            {getResources(section.id).map((item) => (
                                 <li class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
                                     <a
                                         href={item.link}
@@ -45,140 +47,11 @@ import {
                                         {item.text}
                                     </a>
                                 </li>
-                            ))
-                    }
-                </ul>
-            </div>
-
-            <div
-                class="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-200/50 dark:border-gray-700/50"
-            >
-                <h2
-                    class="text-2xl font-bold text-gray-900 dark:text-white mb-4"
-                >
-                    Blogs & Articles
-                </h2>
-                <ul class="list-decimal list-inside space-y-2">
-                    {
-                        externalArticles &&
-                            externalArticles.map((item, index) => (
-                                <li class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
-                                    <a
-                                        href={item.link}
-                                        target="_blank"
-                                        class="underline"
-                                    >
-                                        {item.text}
-                                    </a>
-                                </li>
-                            ))
-                    }
-                </ul>
-            </div>
-
-            <div
-                class="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-200/50 dark:border-gray-700/50"
-            >
-                <h2
-                    class="text-2xl font-bold text-gray-900 dark:text-white mb-4"
-                >
-                    Portfolio & UI Inspirations
-                </h2>
-                <ul class="list-decimal list-inside space-y-2">
-                    {
-                        portfolios &&
-                            portfolios.map((item, index) => (
-                                <li class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
-                                    <a
-                                        href={item.link}
-                                        target="_blank"
-                                        class="underline"
-                                    >
-                                        {item.text}
-                                    </a>
-                                </li>
-                            ))
-                    }
-                </ul>
-            </div>
-
-            <div
-                class="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-200/50 dark:border-gray-700/50"
-            >
-                <h2
-                    class="text-2xl font-bold text-gray-900 dark:text-white mb-4"
-                >
-                    JavaScript
-                </h2>
-                <ul class="list-decimal list-inside space-y-2">
-                    {
-                        javascript &&
-                            javascript.map((item, index) => (
-                                <li class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
-                                    <a
-                                        href={item.link}
-                                        target="_blank"
-                                        class="underline"
-                                    >
-                                        {item.text}
-                                    </a>
-                                </li>
-                            ))
-                    }
-                </ul>
-            </div>
-
-            <div
-                class="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-200/50 dark:border-gray-700/50"
-            >
-                <h2
-                    class="text-2xl font-bold text-gray-900 dark:text-white mb-4"
-                >
-                    Youtube & Tutorials
-                </h2>
-                <ul class="list-decimal list-inside space-y-2">
-                    {
-                        youtubeChannels &&
-                            youtubeChannels.map((item, index) => (
-                                <li class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
-                                    <a
-                                        href={item.link}
-                                        target="_blank"
-                                        class="underline"
-                                    >
-                                        {item.text}
-                                    </a>
-                                </li>
-                            ))
-                    }
-                </ul>
-            </div>
-
-            <div
-                class="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-200/50 dark:border-gray-700/50"
-            >
-                <h2
-                    class="text-2xl font-bold text-gray-900 dark:text-white mb-4"
-                >
-                    Miscellaneous
-                </h2>
-                <ul class="list-decimal list-inside space-y-2">
-                    {
-                        miscellaneous &&
-                            miscellaneous.map((item, index) => (
-                                <li class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
-                                    <a
-                                        href={item.link}
-                                        target="_blank"
-                                        class="underline"
-                                    >
-                                        {item.text}
-                                    </a>
-                                </li>
-                            ))
-                    }
-                </ul>
-            </div>
+                            ))}
+                        </ul>
+                    </div>
+                ))
+            }
         </div>
     </main>
 </MainLayout>

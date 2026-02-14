@@ -1,9 +1,11 @@
 ---
-layout: ../../layouts/BlogLayout.astro
-thumbnail: /images/uploads/markus-winkler-hxcifi47fgq-unsplash-2-.jpg
-title: Dynamic Fullcalender with Laravel & FetchAPI
-date: 2022-02-25T12:00:00.000Z
+title: "Dynamic Fullcalender Laravel Fetch API"
+date: 2024-05-10
+description: "How to implement a dynamic fullcalender with Laravel and Fetch API"
 ---
+
+<img src="/images/uploads/markus-winkler-hxcifi47fgq-unsplash-2-.jpg" alt="" width="100%"/>
+
 
 ## This is applicable on existing or a fresh laravel project
 

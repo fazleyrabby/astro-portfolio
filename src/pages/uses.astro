@@ -1,15 +1,12 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
-import { marked } from 'marked';
-import { getMarkdownFromPage } from '../../lib/notion';
-
-const pageId = import.meta.env.NOTION_USES_ID;
-const markdown = await getMarkdownFromPage(pageId);
-const htmlContent = marked.parse(markdown);
+import { Content as UsesMarkdown } from "../content/uses.md";
 ---
 
 <MainLayout title="Uses">
     <main>
-        <article class="prose dark:prose-invert" set:html={htmlContent} />
+        <article class="prose dark:prose-invert">
+            <UsesMarkdown />
+        </article>
     </main>
 </MainLayout>

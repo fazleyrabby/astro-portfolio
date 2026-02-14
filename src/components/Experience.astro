@@ -1,7 +1,12 @@
 ---
-import { getExperiences } from "../../lib/notion";
-let experiences = [];
-experiences = await getExperiences();
+import { getCollection } from 'astro:content';
+const experiences = await getCollection('experiences');
+experiences.sort((a, b) => {
+  const dateA = a.data.timeline ? new Date(a.data.timeline) : new Date(0);
+  const dateB = b.data.timeline ? new Date(b.data.timeline) : new Date(0);
+  return dateB.getTime() - dateA.getTime();
+});
+
 ---
 
 <!-- Experience Section -->
@@ -37,27 +42,27 @@ experiences = await getExperiences();
                   <h3 class="text-lg font-bold text-gray-900 dark:text-white">
                     <a
                       class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                      href={item.link ?? "#"}
+                      href={item.data.link ?? "#"}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      {item.title}
+                      {item.data.title}
                     </a>
                   </h3>
-                  <p class="text-indigo-600 dark:text-indigo-400 font-medium text-sm">{item.role}</p>
+                  <p class="text-indigo-600 dark:text-indigo-400 font-medium text-sm">{item.data.role}</p>
                 </div>
                 <!-- Date Badge -->
                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/40 dark:to-purple-900/40 text-indigo-600 dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800/50 whitespace-nowrap">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                   </svg>
-                  {item.from} - {item.to}
-                </span>
+                  {item.data.from} - {item.data.to}
+</span>
               </div>
               
               <!-- Description -->
               <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                {item.skills}
+                {item.data.skills}
               </p>
             </article>
           </div>

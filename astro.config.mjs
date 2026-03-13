@@ -1,15 +1,20 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig, passthroughImageService } from "astro/config";
 import tailwind from "@astrojs/tailwind";
+import netlify from "@astrojs/netlify";
 
-
-// https://astro.build/config
 export default defineConfig({
+  adapter: netlify(),
   integrations: [tailwind()],
+
+  image: {
+    service: passthroughImageService(),
+  },
+
   markdown: {
     shikiConfig: {
       themes: {
-        light: 'github-light',
-        dark: 'github-dark',
+        light: "github-light",
+        dark: "github-dark",
       },
     },
   },

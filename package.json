@@ -10,11 +10,12 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/netlify": "^5.5.4",
     "@astrojs/tailwind": "^5.1.2",
     "@cloudinary/url-gen": "^1.14.0",
     "@tailwindcss/typography": "^0.5.15",
     "@unpic/astro": "^1.0.0",
-    "astro": "^5.5.5",
+    "astro": "5.13.5",
     "cloudinary": "^1.41.1",
     "geist": "^1.2.1",
     "gray-matter": "^4.0.3",

@@ -1,5 +1,6 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
+export const prerender = true;
 
 import { getCollection } from 'astro:content';
 
@@ -27,7 +28,7 @@ posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
           <article 
             class="group relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10"
           >
-            <a href={`/posts/${post.slug}`} class="block p-6">
+            <a href={`/posts/${post.id}`} class="block p-6">
               <!-- Date -->
               <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

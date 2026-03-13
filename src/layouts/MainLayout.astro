@@ -72,5 +72,23 @@ const { title } = Astro.props;
       //   }
       // });
     </script>
+
+    <script>
+      if (!sessionStorage.getItem("tracked")) {
+        fetch("/api/track", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            screen: window.screen.width + "x" + window.screen.height,
+            language: navigator.language,
+            platform: navigator.platform,
+          }),
+        });
+
+        sessionStorage.setItem("tracked", "1");
+      }
+    </script>
   </body>
 </html>

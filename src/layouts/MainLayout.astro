@@ -74,20 +74,26 @@ const { title } = Astro.props;
     </script>
 
     <script>
-      if (!sessionStorage.getItem("tracked")) {
+      if (!sessionStorage.getItem("visitor_ip")) {
         fetch("/api/track", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            screen: window.screen.width + "x" + window.screen.height,
-            language: navigator.language,
             platform: navigator.platform,
+            language: navigator.language,
+            screen: window.screen.width + "x" + window.screen.height,
           }),
-        });
-
-        sessionStorage.setItem("tracked", "1");
+          keepalive: true,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.ip) {
+              sessionStorage.setItem("visitor_ip", data.ip);
+            }
+          })
+          .catch(() => {});
       }
     </script>
   </body>

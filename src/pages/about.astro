@@ -9,33 +9,43 @@ import { Content as AboutMarkdown } from "../content/about.md";
 import ContactForm from "@components/ContactForm.astro";
 ---
 
-<MainLayout title="About">
-  <main class="container mx-auto px-4 md:px-8 py-8 max-w-[800px]">
-    <div class="section-label">About</div>
-    <h1 class="page-heading">About Fazley Rabbi</h1>
-
-    <section class="mb-12 text-[var(--text-secondary)] leading-[1.8]">
-      <div class="prose w-full">
-        <AboutMarkdown />
+<MainLayout title="About — Fazley Rabbi">
+  <main class="py-10">
+    <div class="max-w-3xl mx-auto px-6">
+      <div class="mb-8">
+        <span class="section-label">About</span>
+        <h1 class="font-display font-bold text-[clamp(2.5rem,6vw,4rem)] text-[var(--text-primary)] leading-tight">Fazley Rabbi</h1>
+        <p class="font-serif italic text-[1.2rem] text-[var(--text-secondary)] mt-4">Backend architecture & efficient web solutions.</p>
       </div>
-    </section>
 
-    <div id="contact" class="mt-12">
-      <h2 class="font-serif font-bold text-2xl text-[var(--text-primary)] mb-6">Send me a message</h2>
-      <div class="card p-6 rounded mb-8">
-        <ContactForm />
+      <section class="mb-8">
+        <div class="prose prose-neutral dark:prose-invert max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)]">
+          <AboutMarkdown />
+        </div>
+      </section>
+
+      <div id="contact" class="mt-8 pt-8 border-t border-[var(--border)]">
+        <div class="mb-6">
+          <span class="section-label">Contact</span>
+          <h2 class="font-display font-bold text-3xl text-[var(--text-primary)]">Get in touch</h2>
+          <p class="text-[0.95rem] text-[var(--text-muted)] mt-2">Open for freelance opportunities and meaningful collaborations.</p>
+        </div>
+        
+        <div class="bg-[var(--bg-card)] border border-[var(--border)] p-6 rounded-sm">
+          <ContactForm />
+        </div>
       </div>
-    </div>
 
-    <hr class="border-none border-t border-[var(--border)] my-12" />
-
-    <p class="text-xs text-[var(--text-muted)] text-center mb-4">Or Connect with me on</p>
-    <div class="flex gap-4 icons justify-center mb-6">
-      <Github />
-      <Linkedin />
-      <Youtube />
-      <Email />
-      <Codepen />
+      <div class="mt-8 text-center">
+        <p class="text-xs font-mono uppercase tracking-[0.2em] text-[var(--text-muted)] mb-6">Or connect via social channels</p>
+        <div class="flex gap-6 justify-center">
+          <a href="https://github.com/fazleyrabby" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors"><Github /></a>
+          <a href="https://linkedin.com/in/fazley-rabby" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors"><Linkedin /></a>
+          <a href="https://youtube.com/@fazleyrabby" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors"><Youtube /></a>
+          <a href="mailto:fazley111@gmail.com" class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors"><Email /></a>
+          <a href="https://codepen.io/fazleyrabby" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors"><Codepen /></a>
+        </div>
+      </div>
     </div>
   </main>
 </MainLayout>

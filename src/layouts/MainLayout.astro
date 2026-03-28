@@ -11,14 +11,61 @@ const { title } = Astro.props;
 <html lang="en">
   <Head title={title} />
   <body class="font-sans min-h-screen relative overflow-x-hidden">
-    <Cursor />
+    <div class="page-gradient-layer" aria-hidden="true"></div>
+    <div class="cursor" aria-hidden="true"></div>
     <Nav />
-    <div class="w-full">
+    <div class="w-full relative z-10">
       <slot />
     </div>
     <Footer />
     <ScrollToTop />
     <script>
+      import Lenis from 'lenis';
+      import { gsap } from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Initialize Lenis
+      const lenis = new Lenis({ 
+        duration: 1.2, 
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) 
+      });
+
+      lenis.on('scroll', ScrollTrigger.update);
+
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+
+      gsap.ticker.lagSmoothing(0);
+
+      // Custom Cursor Logic
+      const cursor = document.querySelector('.cursor') as HTMLElement;
+      if (cursor && window.matchMedia('(pointer: fine)').matches) {
+        document.addEventListener('mousemove', (e) => {
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+        });
+
+        document.querySelectorAll('a, button, .btn-magnetic').forEach((el) => {
+          el.addEventListener('mouseenter', () => cursor.classList.add('cursor--hover'));
+          el.addEventListener('mouseleave', () => cursor.classList.remove('cursor--hover'));
+        });
+      }
+
+      // Hero Cursor Light
+      const cursorLight = document.querySelector('.hero-cursor-light') as HTMLElement;
+      if (cursorLight && window.matchMedia('(pointer: fine)').matches) {
+        document.addEventListener('mousemove', (e) => {
+          gsap.to(cursorLight, {
+            left: e.clientX,
+            top: e.clientY,
+            duration: 0.6,
+            ease: 'power2.out'
+          });
+        });
+      }
+
       import "../scripts/animations.js";
     </script>
     <script>

@@ -2,31 +2,38 @@
 import { getCollection } from 'astro:content';
 import ProjectCard from "./ProjectCard.astro";
 
-const { type } = Astro.props;
-const projects = await getCollection('projects');
-projects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
+const { type = "home" } = Astro.props;
+const allProjects = await getCollection('projects');
+allProjects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
 
-const displayProjects = type === "home"
-  ? projects.filter(p => p.data.featured)
-  : projects;
+const projects = type === "home" 
+  ? allProjects.slice(0, 4) 
+  : allProjects;
 ---
 
-<section class="py-20" id={type === "home" ? "projects" : ""}>
-  <div class="mb-12">
-    <div class="section-label">02 / PROJECTS</div>
-    <div class="section-header-row">
-      <h2 class="section-heading">Featured Projects</h2>
-      <div class="section-rule"></div>
+<section id="projects" class="py-10">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex items-center gap-6 mb-8">
+      <div>
+        <span class="section-label">02 / Projects</span>
+        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(2rem,5vw,3rem)] leading-tight">Featured Projects</h2>
+      </div>
+      <div class="flex-1 hidden md:block h-[1px] bg-[var(--accent)] opacity-20 dark:opacity-30"></div>
     </div>
-  </div>
 
-  <div class={`grid gap-8 ${type === "home" ? "md:grid-cols-2" : "md:grid-cols-2 lg:grid-cols-3"}`}>
-    {displayProjects.map((item) => <ProjectCard project={item} />)}
-  </div>
-
-  {type === "home" && (
-    <div class="mt-12 text-center">
-      <a href="/projects" class="show-more">View all projects</a>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {projects.map((project) => (
+        <ProjectCard project={project} />
+      ))}
     </div>
-  )}
+
+    {type === "home" && allProjects.length > 4 && (
+      <div class="mt-8 text-center">
+        <a href="/projects" class="btn-ghost group">
+          View All Projects
+          <span class="inline-block transition-transform group-hover:translate-x-1 ml-1">→</span>
+        </a>
+      </div>
+    )}
+  </div>
 </section>

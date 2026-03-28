@@ -4,25 +4,38 @@ import MainLayout from '@layouts/MainLayout.astro';
 import ProjectCard from '@components/ProjectCard.astro';
 
 const projects = await getCollection('projects');
+// Sort by position
 projects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
+
+const caseStudies = projects.filter(p => p.data.problem);
+const otherWork = projects.filter(p => !p.data.problem);
 ---
 
-<MainLayout title="Projects">
-  <main class="container mx-auto px-4 md:px-8 py-12">
-    <div class="section-label">Projects</div>
-    <h1 class="page-heading">Projects</h1>
-    <h2 class="font-serif text-[var(--text-muted)] text-sm mb-10">Case Studies</h2>
-
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {projects.filter(p => p.data.problem).map(p => <ProjectCard project={p} />)}
-    </div>
-
-    <div class="mt-16 pt-10 border-t border-[var(--border)]">
-      <h2 class="font-serif font-bold text-xl text-[var(--text-primary)] mb-2">Other Work</h2>
-      <p class="text-xs text-[var(--text-muted)] mb-6">Earlier frontend experiments.</p>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {projects.filter(p => !p.data.problem).map(p => <ProjectCard project={p} />)}
+<MainLayout title="Projects — Fazley Rabbi">
+  <main class="py-20">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="mb-14">
+        <span class="section-label">Case Studies</span>
+        <h1 class="font-display font-bold text-[clamp(2.5rem,6vw,4rem)] text-[var(--text-primary)] leading-tight">Projects</h1>
+        <p class="font-serif italic text-[1.2rem] text-[var(--text-secondary)] mt-4">Selected work and experimental labs.</p>
       </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {caseStudies.map(p => <ProjectCard project={p} />)}
+      </div>
+
+      {otherWork.length > 0 && (
+        <div class="mt-24 pt-16 border-t border-[var(--border)]">
+          <div class="mb-10">
+            <span class="section-label">Archives</span>
+            <h2 class="font-display font-bold text-3xl text-[var(--text-primary)]">Other Work</h2>
+            <p class="text-sm text-[var(--text-muted)] mt-2 font-mono uppercase tracking-widest">Earlier frontend experiments & modules.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {otherWork.map(p => <ProjectCard project={p} />)}
+          </div>
+        </div>
+      )}
     </div>
   </main>
 </MainLayout>

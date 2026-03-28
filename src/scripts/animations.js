@@ -1,78 +1,122 @@
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 
-if (!prefersReducedMotion) {
-
-  // Nav entrance
-  gsap.from("nav", { y: -80, opacity: 0, duration: 0.7, ease: "power3.out", delay: 0.1 });
-
-  // Hero word stagger
-  gsap.from(".hero-word", {
-    y: 70, opacity: 0, duration: 0.9,
-    stagger: 0.07, ease: "power4.out", delay: 0.3
+  // ── Hero word stagger ──────────────────────────────────────────────────────
+  gsap.from('.hero-word', {
+    y: 80, opacity: 0, duration: 0.9,
+    stagger: 0.08, ease: 'power3.out', delay: 0.2,
   });
 
-  // Hero supporting elements
-  gsap.from(".hero-tagline", { opacity: 0, y: 20, duration: 0.7, delay: 0.9,  ease: "power2.out" });
-  gsap.from(".hero-body",    { opacity: 0, y: 20, duration: 0.7, delay: 1.1,  ease: "power2.out" });
-  gsap.from(".hero-ctas",   { opacity: 0, y: 20, duration: 0.7, delay: 1.3,  ease: "power2.out" });
-
-  // Section headings
-  gsap.utils.toArray("h1, h2, .section-label").forEach(el => {
+  // ── Section heading reveals ────────────────────────────────────────────────
+  gsap.utils.toArray('.reveal-heading').forEach(el => {
     gsap.from(el, {
-      scrollTrigger: { trigger: el, start: "top 90%", toggleActions: "play none none none" },
-      y: 20, opacity: 0, duration: 0.5, ease: "power2.out"
+      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' },
+      y: 40, opacity: 0, duration: 0.7, ease: 'power2.out',
     });
   });
 
-  // Project cards
-  gsap.utils.toArray(".project-card").forEach((card, i) => {
+  // ── Editorial break phrases ────────────────────────────────────────────────
+  gsap.utils.toArray('.editorial-phrase').forEach(el => {
+    gsap.from(el, {
+      scrollTrigger: { trigger: el, start: 'top 80%', toggleActions: 'play none none none' },
+      y: 50, opacity: 0, duration: 0.9, ease: 'power3.out',
+    });
+  });
+
+  // ── Project cards stagger ──────────────────────────────────────────────────
+  gsap.utils.toArray('.project-card').forEach((card, i) => {
     gsap.from(card, {
-      scrollTrigger: { trigger: card, start: "top 90%", toggleActions: "play none none none" },
-      y: 30, opacity: 0, duration: 0.5, delay: i * 0.1, ease: "power2.out"
+      scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none none' },
+      y: 50, opacity: 0, duration: 0.7, delay: i * 0.08, ease: 'power2.out',
     });
   });
 
-  // Timeline entries
-  gsap.utils.toArray(".timeline-entry").forEach(entry => {
+  // ── Timeline entries ───────────────────────────────────────────────────────
+  gsap.utils.toArray('.timeline-entry').forEach(entry => {
     gsap.from(entry, {
-      scrollTrigger: { trigger: entry, start: "top 90%", toggleActions: "play none none none" },
-      x: -20, opacity: 0, duration: 0.5, ease: "power2.out"
+      scrollTrigger: { trigger: entry, start: 'top 88%', toggleActions: 'play none none none' },
+      x: -24, opacity: 0, duration: 0.6, ease: 'power2.out',
+    });
+    const dot = entry.querySelector('.timeline-dot');
+    if (dot) gsap.from(dot, {
+      scrollTrigger: { trigger: entry, start: 'top 88%' },
+      scale: 0, duration: 0.4, ease: 'back.out(2)', delay: 0.15,
     });
   });
 
-  // Post rows
-  gsap.utils.toArray(".post-row").forEach((row, i) => {
+  // ── Blog post rows ─────────────────────────────────────────────────────────
+  gsap.utils.toArray('.post-row').forEach((row, i) => {
     gsap.from(row, {
-      scrollTrigger: { trigger: row, start: "top 92%", toggleActions: "play none none none" },
-      x: -10, opacity: 0, duration: 0.4, delay: i * 0.05, ease: "power2.out"
+      scrollTrigger: { trigger: row, start: 'top 92%', toggleActions: 'play none none none' },
+      y: 20, opacity: 0, duration: 0.45, delay: i * 0.06, ease: 'power1.out',
     });
   });
 
-  // Skills matrix rows
-  gsap.utils.toArray(".skills-row").forEach((row, i) => {
-    gsap.from(row, {
-      scrollTrigger: { trigger: row, start: "top 90%", toggleActions: "play none none none" },
-      x: -10, opacity: 0, duration: 0.4, delay: i * 0.08, ease: "power2.out"
+  // ── Marquee hover pause ────────────────────────────────────────────────────
+  document.querySelectorAll('.marquee-track').forEach(track => {
+    const inner = track.querySelector('.marquee-inner');
+    if (!inner) return;
+    track.addEventListener('mouseenter', () => inner.style.animationPlayState = 'paused');
+    track.addEventListener('mouseleave', () => inner.style.animationPlayState = 'running');
+  });
+
+  // ── Magnetic buttons (desktop only) ───────────────────────────────────────
+  if (!('ontouchstart' in window)) {
+    document.querySelectorAll('.btn-magnetic').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width  / 2) * 0.18;
+        const y = (e.clientY - r.top  - r.height / 2) * 0.18;
+        btn.style.transform = `translate(${x}px, ${y}px) scale(1.04)`;
+      });
+      btn.addEventListener('mouseleave', () => { 
+        gsap.to(btn, {
+          x: 0, y: 0, scale: 1,
+          duration: 0.6, ease: 'elastic.out(1, 0.4)'
+        });
+      });
     });
-  });
 
-  // Marquee (just fade in)
-  gsap.from(".marquee-track", {
-    scrollTrigger: { trigger: ".marquee-track", start: "top 95%", toggleActions: "play none none none" },
-    y: 20, opacity: 0, duration: 0.6, ease: "power2.out"
-  });
-
-  // Section containers fade in
-  gsap.utils.toArray("section").forEach(section => {
-    gsap.from(section, {
-      scrollTrigger: { trigger: section, start: "top 85%", toggleActions: "play none none none" },
-      y: 15, opacity: 0, duration: 0.5, ease: "power2.out"
+    // ── Project card 3D tilt ─────────────────────────────────────────────────
+    document.querySelectorAll('.project-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width  - 0.5;
+        const y = (e.clientY - r.top)  / r.height - 0.5;
+        card.style.transform = `translateY(-6px) rotateX(${-y * 7}deg) rotateY(${x * 7}deg)`;
+      });
+      card.addEventListener('mouseleave', () => { 
+        gsap.to(card, {
+          y: 0, rotateX: 0, rotateY: 0,
+          duration: 0.6, ease: 'power2.out'
+        });
+      });
     });
-  });
+  }
 
+  // ── Active nav on scroll ───────────────────────────────────────────────────
+  const navLinks = document.querySelectorAll('nav a[href^="#"], nav a[href*="/#"]');
+  const sections = document.querySelectorAll('section[id]');
+  
+  if (sections.length > 0) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        navLinks.forEach(link => {
+          const href = link.getAttribute('href');
+          if (href && (href === `#${entry.target.id}` || href.includes(`/#${entry.target.id}`))) {
+            link.classList.add('nav-active');
+          } else {
+            link.classList.remove('nav-active');
+          }
+        });
+      });
+    }, { threshold: 0.45 });
+
+    sections.forEach(section => observer.observe(section));
+  }
 }

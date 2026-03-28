@@ -25,10 +25,10 @@ const { frontmatter } = Astro.props;
                 )}
                 <div class="prose w-full mx-auto max-w-[720px]">
                     <div class="text-center mb-8">
-                        <h2 class="font-serif font-extrabold text-3xl text-[var(--text-primary)] mb-2">
+                        <h2 class="font-display font-extrabold text-3xl text-[var(--text-primary)] mb-2">
                             {frontmatter.title}
                         </h2>
-                        <p class="font-serif text-xs text-[var(--text-muted)]">
+                        <p class="font-mono text-xs text-[var(--text-muted)]">
                             {moment(frontmatter.date).format("D MMMM YYYY")}
                         </p>
                     </div>

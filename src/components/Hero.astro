@@ -1,134 +1,127 @@
 ---
 ---
 
-<section class="hero relative min-h-[100svh] flex items-center overflow-hidden py-20">
-  <!-- Section Index -->
-  <div class="absolute top-20 right-5 text-[0.6rem] text-[var(--text-muted)]">01</div>
+<section id="hero" class="hero-section min-h-[85svh] relative flex items-center overflow-hidden pt-12 pb-32">
 
-  <div class="container mx-auto px-4 md:px-8 relative z-10 w-full">
-    <!-- Status Badge -->
-    <div class="hero-badge mb-8">
-      <span class="relative flex h-2 w-2">
-        <span class="animate-ping absolute inline-flex h-full w-full bg-[var(--accent)] opacity-75 rounded-full"></span>
-        <span class="relative inline-flex h-2 w-2 bg-[var(--accent)] rounded-full"></span>
-      </span>
-      Available for freelance & collaboration
-    </div>
+  <!-- Cursor-reactive light -->
+  <div class="hero-cursor-light" aria-hidden="true"></div>
 
-    <!-- Headline -->
-    <h1 class="font-serif font-extrabold text-[clamp(2.5rem,6vw,5rem)] mb-6 leading-[1.05] tracking-tight text-[var(--text-primary)]">
-      <span class="hero-word">Hi,</span>
-      <span class="hero-word">I'm</span>
-      <span class="hero-word hero-name">Fazley</span>
-      <span class="hero-word">Rabbi</span>
-    </h1>
+  <!-- Breathing glow -->
+  <div class="hero-breathe" aria-hidden="true"></div>
 
-    <!-- Tagline -->
-    <p class="italic text-xl md:text-2xl mb-8 text-[var(--text-secondary)]">
-      A passionate web developer & tech enthusiast from Bangladesh.
-    </p>
+  <!-- Diagonal grid - subtle -->
+  <div class="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
+    style="background-image:linear-gradient(var(--text-primary) 1px,transparent 1px),linear-gradient(90deg,var(--text-primary) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);"
+    aria-hidden="true"></div>
 
-    <!-- Description -->
-    <p class="text-sm mb-10 leading-[1.85] max-w-[520px] text-[var(--text-secondary)]">
-      I build backend systems that scale — REST APIs, SaaS platforms, payment
-      integrations, and Docker-deployed Laravel applications. Based in Bangladesh,
-      working with clients globally.
-    </p>
+  <!-- Smooth merge fade at bottom -->
+  <div class="absolute bottom-0 left-0 right-0 h-56 pointer-events-none z-20"
+    style="background: linear-gradient(to bottom, transparent 0%, var(--bg-base) 100%);"
+  ></div>
 
-    <!-- CTA Buttons -->
-    <div class="flex flex-wrap gap-4 mb-10">
-      <a href="/about#contact" class="btn-primary">Hire Me</a>
-      <a href="#projects" class="btn-ghost">View Work</a>
-    </div>
+  <div class="relative z-10 w-full max-w-6xl mx-auto px-6">
+    <div class="max-w-2xl">
+      <div class="badge-pill">
+        <span class="badge-dot"></span>
+        Available for freelance & collaboration
+      </div>
 
-    <!-- Connect Links -->
-    <div class="flex flex-wrap gap-6 text-[0.72rem] uppercase">
-      <a href="https://github.com/fazleyrabby" target="_blank" class="connect-link text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors">GitHub</a>
-      <a href="https://www.linkedin.com/in/fazley-rabby/" target="_blank" class="connect-link text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors">LinkedIn</a>
-      <a href="mailto:fazley111@gmail.com" class="connect-link text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors">Email</a>
+      <h1 class="mb-4">
+        <span class="hero-word block font-display">Hi, I'm</span>
+        <span class="hero-word hero-name block font-display">Fazley Rabbi</span>
+      </h1>
+
+      <p class="hero-tagline font-serif italic">
+        A passionate web developer & tech enthusiast from Bangladesh.
+      </p>
+
+      <p class="hero-body max-w-[550px] font-sans">
+        With over three years of professional experience, I've built a variety
+        of client projects and contributed on several projects for CodeCanyon.
+        I enjoy crafting clean, efficient solutions — whether it's a full-scale
+        web app or a tiny helper module. Currently working on Larabrix, a modular
+        Laravel-based framework.
+      </p>
+
+      <div class="flex gap-3 flex-wrap mt-8">
+        <a href="/resume" class="btn-primary btn-magnetic">Resume</a>
+        <a href="#projects" class="btn-ghost">View Projects</a>
+      </div>
+
+      <div class="connect-block mt-8">
+        <span class="section-label font-mono" style="margin-bottom:0.4rem;">Connect</span>
+        <div class="flex gap-5">
+          <a href="https://github.com/fazleyrabby" target="_blank" class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider">GitHub</a>
+          <a href="https://www.linkedin.com/in/fazley-rabby/" target="_blank" class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider">LinkedIn</a>
+          <a href="mailto:fazley111@gmail.com" class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider">Email</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <style>
-  .hero {
-    background:
-      radial-gradient(ellipse 65% 55% at 15% 110%, rgba(232,130,58,0.09) 0%, transparent 65%),
-      radial-gradient(ellipse 40% 40% at 85% -10%, rgba(232,130,58,0.05) 0%, transparent 60%),
-      var(--bg-base);
+  .hero-section {
+    background: var(--bg-base);
   }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(128,128,128,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(128,128,128,0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
-    pointer-events: none;
-  }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 14px;
-    border-left: 3px solid var(--accent);
-    background: var(--accent-dim);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--text-secondary);
-  }
-
-  .hero-word {
-    display: inline-block;
-    overflow: hidden;
-  }
-
-  .hero-name {
-    text-decoration: underline;
-    text-decoration-color: var(--accent);
-    text-underline-offset: 10px;
-  }
-
-  .btn-primary {
-    background: var(--accent);
-    color: #080808;
-    font-weight: 700;
-    font-size: 0.85rem;
-    padding: 12px 28px;
-    border-radius: 2px;
-    transition: transform 0.2s var(--ease-out-expo), filter 0.2s ease;
-  }
-
-  .btn-primary:hover {
-    filter: brightness(1.1);
-  }
-
-  .btn-ghost {
-    background: transparent;
+  
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.05;
     color: var(--text-primary);
-    border: 1px solid var(--border);
-    font-weight: 600;
-    font-size: 0.85rem;
-    padding: 12px 28px;
-    border-radius: 2px;
-    transition: border-color 0.2s ease, color 0.2s ease;
   }
 
-  .btn-ghost:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+  .hero-tagline {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
   }
 
-  .connect-link::after {
-    content: ' \2192';
-    transition: padding-left 0.2s ease;
+  .hero-body {
+    font-size: clamp(0.92rem, 1.8vw, 1rem);
+    color: var(--text-secondary);
+    line-height: 1.7;
   }
 
-  .connect-link:hover::after {
-    padding-left: 4px;
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse-dot 2s ease infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero-breathe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 500px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232, 130, 58, 0.04) 0%, transparent 70%);
+    pointer-events: none;
+    animation: breathe 10s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+    50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.5; }
+  }
+
+  .hero-cursor-light {
+    position: fixed;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232, 130, 58, 0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: plus-lighter;
   }
 </style>

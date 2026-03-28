@@ -13,9 +13,10 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
+			display: ['Instrument Serif', 'serif'],
 			'sans': ['DM Sans', 'system-ui'],
 			'serif': ['Instrument Serif', 'serif'],
-			'logo': ['Pacifico', 'cursive'],
+			'logo': ['Instrument Serif', 'cursive'],
 			'mono': ['DM Mono', 'ui-monospace'],
 		},
 		fontSize: {
@@ -40,6 +41,11 @@ export default {
 			},
 		},
 		extend: {
+			colors: {
+				accent: '#E8823A',
+				surface: '#0f0f0f',
+				card: '#141414',
+			},
 			animation: {
 				wiggle: 'wiggle 3s ease-in-out infinite',
 				bounce: 'bounce 2s ease-in-out infinite',

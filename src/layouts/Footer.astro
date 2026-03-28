@@ -1,100 +1,89 @@
 ---
-import Github from "@components/Icons/Github.astro";
-import Linkedin from "@components/Icons/Linkedin.astro";
-import Youtube from "@components/Icons/Youtube.astro";
-import Email from "@components/Icons/Email.astro";
+const primaryNav = [
+    { href: "/", label: "Home" },
+    { href: "/#projects", label: "Work" },
+    { href: "/posts", label: "Blog" },
+    { href: "/about", label: "About" },
+];
+
+const secondaryNav = [
+    { href: "/uses", label: "Uses" },
+    { href: "/gallery", label: "Gallery" },
+    { href: "/resources", label: "Resources" },
+    { href: "/resume", label: "Resume" },
+];
 ---
 
-<footer class="border-t border-[var(--border)] pt-[60px] pb-8">
-    <div class="container mx-auto px-4 md:px-8">
-        <div class="footer-top">
-            <div class="footer-name-watermark">Fazley Rabbi</div>
-
-            <div class="grid gap-8 md:grid-cols-3 mb-8 -mt-10">
-                <!-- Brand -->
-                <div>
-                    <h3 class="font-serif font-bold text-xl text-[var(--text-primary)] mb-3">Fazley Rabbi</h3>
-                    <p class="text-sm text-[var(--text-secondary)] leading-relaxed max-w-[280px]">
-                        Laravel & Backend Engineer — SaaS platforms, REST APIs, and scalable systems.
+<footer class="py-12 border-t border-[var(--border)] bg-[var(--bg-base)]">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="footer-grid grid grid-cols-1 md:grid-cols-12 gap-12 mb-12 relative">
+            
+            <!-- Left Side: Brand & Tagline -->
+            <div class="footer-left md:col-span-6 relative">
+                <div class="footer-watermark font-display font-bold text-[clamp(2.5rem,8vw,6rem)] text-white/[0.03] dark:text-white/[0.02] leading-none absolute -top-6 -left-2 pointer-events-none select-none">
+                    Fazley Rabbi
+                </div>
+                <div class="relative z-10 pt-6">
+                    <h3 class="font-display font-bold text-2xl text-[var(--text-primary)] mb-4">
+                        Fazley<span class="text-[var(--accent)]">.</span>
+                    </h3>
+                    <p class="footer-tagline font-serif italic text-[1.1rem] text-[var(--text-secondary)] mb-4">
+                        Building scalable systems, not just interfaces.
+                    </p>
+                    <p class="text-[0.88rem] text-[var(--text-muted)] max-w-sm leading-relaxed">
+                        Laravel & Backend Engineer specializing in SaaS platforms, REST APIs, and high-performance applications.
                     </p>
                 </div>
+            </div>
 
-                <!-- Quick Links -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <h4 class="footer-col-heading">Nav</h4>
-                        <nav class="space-y-2">
-                            <a href="/" class="footer-link block text-sm">Home</a>
-                            <a href="/#projects" class="footer-link block text-sm">Work</a>
-                            <a href="/posts" class="footer-link block text-sm">Blog</a>
-                            <a href="/about" class="footer-link block text-sm">About</a>
-                        </nav>
+            <!-- Right Side: Split Navigation -->
+            <div class="md:col-span-6 grid grid-cols-2 gap-8 md:justify-items-end">
+                <!-- Column 1: Main -->
+                <nav class="footer-nav flex flex-col gap-3">
+                    <span class="section-label mb-1">Navigation</span>
+                    <div class="flex flex-col gap-2">
+                        {primaryNav.map(item => (
+                            <a href={item.href} class="font-mono text-[0.68rem] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
+                                {item.label}
+                            </a>
+                        ))}
                     </div>
-                    <div>
-                        <h4 class="footer-col-heading">More</h4>
-                        <nav class="space-y-2">
-                            <a href="/uses" class="footer-link block text-sm">Uses</a>
-                            <a href="/gallery" class="footer-link block text-sm">Gallery</a>
-                            <a href="/resources" class="footer-link block text-sm">Resources</a>
-                        </nav>
-                    </div>
-                </div>
+                </nav>
 
-                <!-- Connect -->
-                <div>
-                    <h4 class="footer-col-heading">Connect</h4>
-                    <div class="flex gap-4 icons mb-4">
-                        <Github />
-                        <Linkedin />
-                        <Youtube />
-                        <Email />
+                <!-- Column 2: Explore -->
+                <nav class="footer-nav flex flex-col gap-3">
+                    <span class="section-label mb-1">Explore</span>
+                    <div class="flex flex-col gap-2">
+                        {secondaryNav.map(item => (
+                            <a href={item.href} class="font-mono text-[0.68rem] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
+                                {item.label}
+                            </a>
+                        ))}
                     </div>
-                    <p class="text-sm text-[var(--text-secondary)]">Open to opportunities and collaborations.</p>
-                </div>
+                </nav>
             </div>
         </div>
 
         <!-- Bottom Bar -->
-        <div class="flex items-center gap-3 text-[0.68rem] text-[var(--text-muted)] border-t border-[var(--border)] pt-5 mt-10">
-            <span>&#169; {new Date().getFullYear()}</span>
-            <span class="footer-dot"></span>
-            <span>Powered by <a href="https://astro.build/" class="footer-link" target="_blank">Astro</a></span>
-            <span class="footer-dot"></span>
-            <span>Built with love by Fazley Rabbi</span>
+        <div class="footer-bottom border-t border-[var(--border)] pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex flex-wrap items-center justify-center gap-3 font-mono text-[0.62rem] text-[var(--text-muted)] uppercase tracking-widest">
+                <span>&copy; {new Date().getFullYear()}</span>
+                <span class="text-[var(--accent)] opacity-50">·</span>
+                <span>Powered by <a href="https://astro.build" target="_blank" class="hover:text-[var(--accent)] transition-colors">Astro</a></span>
+                <span class="text-[var(--accent)] opacity-50">·</span>
+                <span>Built with ❤ by <span class="text-[var(--text-secondary)]">Fazley Rabbi</span></span>
+            </div>
+            
+            <div class="flex gap-5">
+                <a href="https://github.com/fazleyrabby" target="_blank" class="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors group">
+                    <span class="sr-only">GitHub</span>
+                    <svg class="w-4 h-4 transform group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                </a>
+                <a href="https://linkedin.com/in/fazley-rabby" target="_blank" class="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors group">
+                    <span class="sr-only">LinkedIn</span>
+                    <svg class="w-4 h-4 transform group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+            </div>
         </div>
     </div>
 </footer>
-
-<style>
-    .footer-name-watermark {
-        font-family: 'Instrument Serif', serif;
-        font-weight: 800;
-        font-size: clamp(3rem, 8vw, 6rem);
-        color: rgba(255,255,255,0.04);
-        pointer-events: none;
-        user-select: none;
-        line-height: 1;
-    }
-    .footer-col-heading {
-        font-size: 0.68rem;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        margin-bottom: 16px;
-    }
-    .footer-link {
-        color: var(--text-secondary);
-        transition: color 0.2s ease;
-    }
-    .footer-link:hover {
-        color: var(--accent);
-    }
-    .footer-dot {
-        width: 4px;
-        height: 4px;
-        border-radius: 50%;
-        background: var(--accent);
-        display: inline-block;
-        flex-shrink: 0;
-    }
-</style>

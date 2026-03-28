@@ -7,24 +7,28 @@ import MainLayout from "@layouts/MainLayout.astro";
 import Hero from "@components/Hero.astro";
 ---
 
-<MainLayout title="Home">
-  <main class="mb-auto">
+<MainLayout title="Fazley Rabbi — Laravel & Backend Engineer">
+  <main>
     <Hero />
 
-    <div class="container mx-auto w-full px-4 md:px-8">
-      {/* Projects  */}
-      <div id="projects">
-        <Projects type="home" />
-      </div>
-
-      {/* Skills */}
-      <Skills />
-
-      {/* Experience */}
-      <Experience />
-
-      {/* Latest Posts */}
-      <LatestPosts />
+    <div class="editorial-break">
+      <p class="editorial-phrase">
+        Building scalable systems,<br />not just interfaces.
+      </p>
     </div>
+
+    <Projects />
+
+    <Skills />
+
+    <Experience />
+
+    <div class="editorial-break">
+      <p class="editorial-phrase">
+        Three years of real-world code.<br />Built to ship.
+      </p>
+    </div>
+
+    <LatestPosts />
   </main>
 </MainLayout>

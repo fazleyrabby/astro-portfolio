@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 const { project } = Astro.props;
-const { title, type, problem, solution, tech, live, github, thumbnail, description } = project.data;
+const { title, tech, live, github, thumbnail, description, type } = project.data;
 ---
 
 <article class="project-card group flex flex-col bg-[var(--bg-card)] border border-[var(--border)] overflow-hidden h-full">
@@ -12,11 +12,11 @@ const { title, type, problem, solution, tech, live, github, thumbnail, descripti
       <>
         <Image
           src={thumbnail}
-          class="object-cover object-left-top w-full h-full transition-all duration-500 grayscale-[25%]"
-          alt={`${title} — ${type ?? "project"} screenshot`}
+          class="object-cover object-left-top w-full h-full transition-all duration-700 grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105"
+          alt={`${title} screenshot`}
           width={600} height={300} loading="lazy"
         />
-        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
       </>
     )}
     {type && <span class="tag absolute top-3 right-3">{type}</span>}
@@ -24,42 +24,27 @@ const { title, type, problem, solution, tech, live, github, thumbnail, descripti
 
   <!-- Content -->
   <div class="flex flex-col flex-grow p-6">
-    <h3 class="font-serif font-bold text-xl text-[var(--text-primary)] mb-4 group-hover:text-[var(--accent)] transition-colors">
+    <h3 class="font-display font-bold text-xl text-[var(--text-primary)] mb-3 group-hover:text-[var(--accent)] transition-colors">
       {title}
     </h3>
 
-    <div class="space-y-4">
-      {problem && (
-        <div>
-          <p class="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-1">Problem</p>
-          <p class="text-sm text-[var(--text-secondary)] leading-relaxed italic line-clamp-2">"{problem}"</p>
-        </div>
-      )}
-      {solution && (
-        <div>
-          <p class="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider mb-1">Solution</p>
-          <p class="text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-3">{solution}</p>
-        </div>
-      )}
-    </div>
-
-    {!problem && !solution && description && (
-      <p class="text-sm text-[var(--text-secondary)] mb-6 line-clamp-3">{description}</p>
-    )}
+    <p class="text-[0.9rem] text-[var(--text-secondary)] mb-6 line-clamp-3 leading-relaxed">
+      {description}
+    </p>
 
     <!-- Tech Stack -->
-    <div class="flex gap-1.5 flex-wrap pt-4 mb-4">
-      {tech?.map((t) => <span class="tag">{t}</span>)}
+    <div class="flex gap-2 flex-wrap mb-8 mt-auto">
+      {tech?.map((t: string) => <span class="tag">{t}</span>)}
     </div>
 
     <!-- Actions -->
-    <div class="flex gap-3 mt-auto">
+    <div class="flex gap-4">
       {live && (
-        <a class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 text-xs font-semibold bg-[var(--accent)] text-[#080808] rounded transition-all hover:brightness-110 active:scale-95"
+        <a class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 text-xs font-bold uppercase tracking-wider bg-[var(--accent)] text-[#080808] rounded-[2px] transition-all hover:brightness-110 active:scale-95 btn-magnetic"
            href={live} target="_blank">Live Demo</a>
       )}
       {github && (
-        <a class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 text-xs font-semibold border border-[var(--border)] text-[var(--text-primary)] rounded transition-all hover:border-[var(--accent)] hover:text-[var(--accent)] active:scale-95"
+        <a class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 text-xs font-bold uppercase tracking-wider border border-[var(--border)] text-[var(--text-primary)] rounded-[2px] transition-all hover:border-[var(--accent)] hover:text-[var(--accent)] active:scale-95 btn-magnetic"
            href={github} target="_blank">Repo</a>
       )}
     </div>
@@ -68,24 +53,11 @@ const { title, type, problem, solution, tech, live, github, thumbnail, descripti
 
 <style>
   .project-card {
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s var(--ease-out-expo);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.4s var(--ease-out-expo);
   }
   .project-card:hover {
     border-color: var(--border-hover);
-    box-shadow: var(--shadow-glow);
+    box-shadow: var(--accent-glow);
     transform: translateY(-5px);
-  }
-  .project-card:hover img {
-    filter: grayscale(0%);
-    transform: scale(1.03);
-  }
-  .tag {
-    display: inline-block;
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    padding: 2px 8px;
-    border-radius: 2px;
   }
 </style>

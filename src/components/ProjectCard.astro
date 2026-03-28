@@ -1,0 +1,98 @@
+---
+import { Image } from "astro:assets";
+const { project } = Astro.props;
+const { title, type, problem, solution, tech, live, github, thumbnail, description } = project.data;
+---
+
+<article class="group flex flex-col bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10 h-full rounded-2xl">
+  <!-- Thumbnail -->
+  <a
+    href={live || github || "#"}
+    target="_blank"
+    rel="noreferrer"
+    aria-label={title}
+    class="block relative overflow-hidden aspect-video flex-shrink-0"
+  >
+    {thumbnail && (
+      <>
+        <Image
+          src={thumbnail}
+          class="object-cover object-left-top w-full h-full transition-transform duration-500 group-hover:scale-105"
+          alt={`${title} — ${type ?? "project"} screenshot`}
+          width={600}
+          height={300}
+          loading="lazy"
+        />
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+      </>
+    )}
+    {type && (
+      <span class="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest px-2 py-1 bg-white/90 dark:bg-gray-800/90 text-indigo-600 dark:text-indigo-400 rounded-lg shadow-sm backdrop-blur-md">
+        {type}
+      </span>
+    )}
+  </a>
+  
+  <!-- Content -->
+  <div class="flex flex-col flex-grow p-6">
+    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+      {title}
+    </h3>
+
+      <!-- Details -->
+      <div class="space-y-4">
+        <div>
+          <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1">Problem</p>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed italic line-clamp-2">“{problem}”</p>
+        </div>
+        <div>
+          <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1">Solution</p>
+          <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3">{solution}</p>
+        </div>
+      </div>
+
+    {!problem && !solution && description && (
+      <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-6 line-clamp-3">
+        {description}
+      </p>
+    )}
+    
+    <!-- Tech Stack -->
+    <div class="flex gap-1.5 flex-wrap mb-6 mt-auto">
+      {tech?.map((t) => (
+        <span class="py-1 px-2 text-[10px] font-medium bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-md">
+          {t}
+        </span>
+      ))}
+    </div>
+    
+    <!-- Actions -->
+    <div class="flex gap-3">
+      {live && (
+        <a
+          class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 text-xs font-bold bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95"
+          href={live}
+          target="_blank"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+          </svg>
+          Live Demo
+        </a>
+      )}
+      {github && (
+        <a
+          class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 text-xs font-bold border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all active:scale-95"
+          href={github}
+          target="_blank"
+        >
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          Repo
+        </a>
+      )}
+    </div>
+  </div>
+</article>

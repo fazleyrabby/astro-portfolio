@@ -4,10 +4,9 @@ const currentPath = pathname.slice(1);
 import ThemeIcon from "@components/ThemeIcon.astro";
 
 const navItems = [
-    { href: "/posts/", label: "Posts", path: "posts" },
-    { href: "/uses/", label: "Uses", path: "uses" },
-    { href: "/gallery/", label: "Gallery", path: "gallery" },
-    { href: "/resources/", label: "Resources", path: "resources" },
+    { href: "/#projects", label: "Work", path: "#projects" },
+    { href: "/posts/", label: "Blog", path: "posts" },
+    { href: "/about/", label: "About", path: "about" },
 ];
 ---
 
@@ -31,8 +30,8 @@ const navItems = [
                     navItems.map((item) => (
                         <a
                             href={item.href}
-                            class={`px-4 py-2 text-sm font-medium transition-all duration-200 ${
-                                currentPath.includes(item.path)
+                            class={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                                (item.path !== "/" && item.path !== "#projects" && currentPath.includes(item.path))
                                     ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30"
                                     : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50"
                             }`}
@@ -41,6 +40,10 @@ const navItems = [
                         </a>
                     ))
                 }
+                <a href="/about#contact"
+                   class="ml-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-bold hover:opacity-80 transition-all hover:scale-105 active:scale-95 shadow-sm">
+                  Hire Me
+                </a>
                 <div
                     class="ml-2 pl-2 border-l border-gray-200 dark:border-gray-700"
                 >
@@ -73,13 +76,13 @@ const navItems = [
         </div>
 
         <!-- Mobile Navigation Menu -->
-        <div id="mobile-menu" class="hidden md:hidden mt-4 pb-2">
+        <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 space-y-2">
             {
                 navItems.map((item) => (
                     <a
                         href={item.href}
-                        class={`block px-4 py-2 text-sm font-medium transition-all duration-200 ${
-                            currentPath.includes(item.path)
+                        class={`block px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                            (item.path !== "/" && item.path !== "#projects" && currentPath.includes(item.path))
                                 ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30"
                                 : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50"
                         }`}
@@ -88,6 +91,10 @@ const navItems = [
                     </a>
                 ))
             }
+            <a href="/about#contact"
+               class="block px-4 py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-bold text-center">
+              Hire Me
+            </a>
         </div>
     </nav>
 </header>

@@ -1,7 +1,10 @@
 ---
-
 ---
 
-<p class="text-base">A passionate web developer & tech enthusiast from Bangladesh.</p>
-<p class="text-base">With over three years of professional experience, I’ve built a variety of client projects and contributed on several projects for CodeCanyon. I enjoy crafting clean, efficient solutions — whether it’s a full-scale web app or a tiny helper module.
-I’m also big on experimenting and building for fun. Currently, I’m working on Larabrix, a modular Laravel-based framework to make web development faster and more flexible.</p>
+I'm a software engineer focused on backend systems built with Laravel and PHP. Over the past 4+ years I've worked across freelance, CodeCanyon product development, and full-time employment — building everything from multi-tenant SaaS platforms to REST APIs to internal tooling.
+
+At Electronic First, I work on a production Laravel codebase: handling version upgrades, query optimization, web automation, and REST API integrations.
+
+Outside of client work, I build open-source tools like Larabrix — a modular Laravel module system — and write technical posts about real-world problems.
+
+If you need a backend engineer who understands systems end-to-end and ships clean, maintainable code, let's talk.

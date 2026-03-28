@@ -19,4 +19,9 @@ export default defineConfig({
       },
     },
   },
+  vite: {
+    server: {
+      allowedHosts: ["dry-moose-build.loca.lt"],
+    },
+  },
 });

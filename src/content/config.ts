@@ -13,6 +13,10 @@ const projectsCollection = defineCollection({
     schema: z.object({
         title: z.string(),
         description: z.string(),
+        type: z.string().optional(),
+        featured: z.boolean().default(false),
+        problem: z.string().optional(),
+        solution: z.string().optional(),
         thumbnail: z.string().optional(),
         live: z.string().url().optional().nullable(),
         github: z.string().url().optional().nullable(),

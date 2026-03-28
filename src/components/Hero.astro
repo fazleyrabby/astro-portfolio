@@ -1,0 +1,61 @@
+---
+const stack = ["PHP", "Laravel", "MySQL", "Docker", "REST API"]
+---
+
+<section class="relative py-12 md:py-20 mb-16 overflow-hidden">
+  <div class="relative z-10 max-w-3xl">
+    <!-- Status Badge -->
+    <div class="animate-fade-up mb-6">
+      <span class="inline-flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-full shadow-sm">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full bg-green-400 opacity-75 rounded-full"></span>
+          <span class="relative inline-flex h-2 w-2 bg-green-500 rounded-full"></span>
+        </span>
+        Available for freelance & collaboration
+      </span>
+    </div>
+
+    <!-- Headline -->
+    <h1 class="animate-fade-up text-4xl sm:text-5xl md:text-7xl font-bold mb-6 leading-[1.1] tracking-tight text-gray-900 dark:text-white">
+      Laravel & Backend Engineer<br />
+      <span class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+        for SaaS products and APIs
+      </span>
+    </h1>
+
+    <!-- Description -->
+    <p class="animate-fade-up text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-10 leading-relaxed max-w-2xl" style="animation-delay: 100ms;">
+      I build backend systems that scale — REST APIs, SaaS platforms, payment
+      integrations, and Docker-deployed Laravel applications. Based in Bangladesh,
+      working with clients globally.
+    </p>
+
+    <!-- CTA Buttons -->
+    <div class="animate-fade-up flex flex-wrap gap-4 mb-10" style="animation-delay: 200ms;">
+      <a href="/about#contact" class="btn-primary inline-flex items-center justify-center px-8 py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-semibold rounded-xl transition-all hover:scale-105 active:scale-95 shadow-lg shadow-zinc-900/10 dark:shadow-white/10">
+        Hire Me
+      </a>
+      <a href="#projects" class="btn-secondary inline-flex items-center justify-center px-8 py-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-white font-semibold rounded-xl transition-all hover:scale-105 active:scale-95 shadow-sm">
+        View Work
+      </a>
+    </div>
+
+    <!-- Primary Stack Tags -->
+    <div class="animate-fade-up flex flex-wrap gap-2 mb-4" style="animation-delay: 300ms;">
+      {stack.map(t => (
+        <span class="px-3 py-1 bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 text-sm font-medium rounded-lg border border-zinc-200/50 dark:border-zinc-800/50">
+          {t}
+        </span>
+      ))}
+    </div>
+
+    <p class="animate-fade-up text-sm text-zinc-500 dark:text-zinc-500" style="animation-delay: 400ms;">
+      Or email directly:
+      <a href="mailto:fazleyrabbisunny@gmail.com" class="text-indigo-600 dark:text-indigo-400 underline decoration-indigo-200 dark:decoration-indigo-800 underline-offset-4 hover:decoration-indigo-600 transition-all">
+        fazleyrabbisunny@gmail.com
+      </a>
+    </p>
+  </div>
+</section>
+
+

@@ -1,0 +1,37 @@
+---
+const services = [
+  {
+    title: "Laravel Development",
+    desc: "Custom Laravel applications, SaaS platforms, admin panels, and modular backend systems."
+  },
+  {
+    title: "REST API Development",
+    desc: "Designing and building clean, versioned REST APIs for web and mobile clients."
+  },
+  {
+    title: "Payment Integration",
+    desc: "Integrating payment gateways into Laravel apps — multi-gateway abstraction, webhooks, transaction management."
+  },
+  {
+    title: "Performance & Optimization",
+    desc: "Query optimization, version upgrades, and caching strategies for production Laravel codebases."
+  }
+]
+---
+<section id="services" class="reveal py-16">
+  <div class="mb-10">
+    <span class="text-indigo-600 dark:text-indigo-400 text-sm font-semibold uppercase tracking-wider mb-2 block">What I Offer</span>
+    <h2 class="text-3xl md:text-5xl font-bold font-serif text-gray-900 dark:text-white mb-2">Services</h2>
+    <p class="text-zinc-500 dark:text-zinc-400 max-w-xl">What I build and how I can help your project.</p>
+  </div>
+
+  <div class="grid sm:grid-cols-2 gap-4">
+    {services.map(s => (
+      <div class="border border-zinc-200 dark:border-zinc-800 rounded-xl p-5
+                  hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors">
+        <h3 class="font-medium mb-2 text-gray-900 dark:text-white">{s.title}</h3>
+        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">{s.desc}</p>
+      </div>
+    ))}
+  </div>
+</section>

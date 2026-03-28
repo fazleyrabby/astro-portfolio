@@ -49,17 +49,13 @@
 <script is:inline>
         document.getElementById("contactForm").addEventListener("submit", (e) => {
             const form = document.getElementById("contactForm");
-            e.preventDefault();
 
             let email = document.getElementById("email");
             let message = document.getElementById("message");
 
             if (email.value == "" || message.value == "") {
+                e.preventDefault();
                 alert("Email and Message is required!");
-            } else {
-                form.submit();
-                email.value = "";
-                message.value = "";
             }
         });
 </script>

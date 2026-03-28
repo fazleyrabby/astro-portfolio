@@ -1,9 +1,12 @@
 ---
 title: "Lenden"
-live: "https://codecanyon.net/item/lenden-multipurpose-payment-gateway-system-saas/32131005?s_rank=3"
-github: null
+type: "SaaS"
+featured: true
+problem: "Businesses needed one platform to manage multiple payment gateways without building separate integrations."
+solution: "Multi-tenant SaaS with Laravel that abstracts gateway complexity — merchants configure via UI, not code."
+live: "https://codecanyon.net/item/lenden-multipurpose-payment-gateway-system-saas/32131005"
 thumbnail: "/projects/2.webp"
-description: "Multipurpose Payment Gateway System (SAAS)"
-tech: ["php", "laravel 8", "javascript"]
-position: 4
+description: "Multi-purpose payment gateway system built with Laravel 8"
+tech: ["PHP", "Laravel 8", "JavaScript", "Multi-tenancy"]
+position: 2
 ---

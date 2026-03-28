@@ -1,26 +1,28 @@
 ---
-// import { ViewTransitions } from "astro:transitions";
-const { title } = Astro.props;
+const { title, description } = Astro.props;
+const defaultTitle = "Fazley Rabbi — Laravel & Backend Engineer";
+const defaultDesc = "Laravel and backend engineer specializing in SaaS platforms, REST APIs, and payment integrations. Based in Bangladesh, available globally.";
 const isProduction = import.meta.env.NODE_ENV === "production";
 const umamiID = import.meta.env.UMAMI_ID;
 ---
 
 <head>
     <meta charset="utf-8" />
-    <title>{title}</title>
+    <title>{title ?? defaultTitle}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="description" content="Fazley Rabbi Portfolio" />
-    <meta property="og:title" content="Fazley Rabbi Web Developer Portfolio" />
-    <meta
-        property="og:description"
-        content="Web developer portfolio laravel developer"
-    />
-    <meta property="og:image" content="https://fazleyrabbi.xyz/me.webp" />
+    <meta name="description" content={description ?? defaultDesc} />
+    <meta property="og:title" content={title ?? defaultTitle} />
+    <meta property="og:description" content={description ?? defaultDesc} />
+    <meta property="og:url" content={`https://fazleyrabbi.xyz${Astro.url.pathname}`} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="canonical" href={`https://fazleyrabbi.xyz${Astro.url.pathname}`} />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
         rel="preconnect"

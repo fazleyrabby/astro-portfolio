@@ -6,43 +6,27 @@ const { type } = Astro.props;
 const projects = await getCollection('projects');
 projects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
 
-const displayProjects = type === "home" 
+const displayProjects = type === "home"
   ? projects.filter(p => p.data.featured)
   : projects;
 ---
 
-<!-- Projects Section -->
-<section class="reveal py-16" id={type === "home" ? "projects" : ""}>
-  <!-- Section Header -->
-  <div class="mb-10">
-    <span class="text-indigo-600 dark:text-indigo-400 text-sm font-semibold uppercase tracking-wider mb-2 block">Portfolio</span>
-    <h2 class="text-3xl md:text-5xl font-bold font-serif text-gray-900 dark:text-white mb-2">
-      {type === "home" ? "Featured Work" : "All Projects"}
-    </h2>
-    {type === "home" && (
-      <p class="text-zinc-500 dark:text-zinc-400 max-w-xl">
-        Selected projects that represent my backend and SaaS experience.
-      </p>
-    )}
+<section class="py-20" id={type === "home" ? "projects" : ""}>
+  <div class="mb-12">
+    <div class="section-label">02 / PROJECTS</div>
+    <div class="section-header-row">
+      <h2 class="section-heading">Featured Projects</h2>
+      <div class="section-rule"></div>
+    </div>
   </div>
 
-  <!-- Projects Grid -->
   <div class={`grid gap-8 ${type === "home" ? "md:grid-cols-2" : "md:grid-cols-2 lg:grid-cols-3"}`}>
-    {
-      displayProjects.map((item) => (
-        <ProjectCard project={item} />
-      ))
-    }
+    {displayProjects.map((item) => <ProjectCard project={item} />)}
   </div>
-  
+
   {type === "home" && (
     <div class="mt-12 text-center">
-      <a href="/projects" class="inline-flex items-center gap-2 text-zinc-500 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors">
-        View all projects
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-        </svg>
-      </a>
+      <a href="/projects" class="show-more">View all projects</a>
     </div>
   )}
 </section>

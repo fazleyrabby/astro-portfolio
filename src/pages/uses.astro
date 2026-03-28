@@ -4,8 +4,10 @@ import { Content as UsesMarkdown } from "../content/uses.md";
 ---
 
 <MainLayout title="Uses">
-    <main>
-        <article class="prose dark:prose-invert">
+    <main class="container mx-auto px-4 md:px-8 py-8 max-w-[800px]">
+        <div class="section-label">Uses</div>
+        <h1 class="page-heading">Uses</h1>
+        <article class="prose w-full text-[var(--text-secondary)] leading-[1.8]">
             <UsesMarkdown />
         </article>
     </main>

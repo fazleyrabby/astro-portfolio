@@ -1,0 +1,180 @@
+<!-- Custom cursor + magnetic button effect (desktop only) -->
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+
+<style>
+  #cursor-dot,
+  #cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    z-index: 9999;
+    will-change: transform;
+  }
+
+  #cursor-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    transform: translate(-50%, -50%);
+    transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+  }
+
+  #cursor-ring {
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid var(--accent);
+    opacity: 0.55;
+    transform: translate(-50%, -50%);
+    transition: width 0.25s ease, height 0.25s ease, opacity 0.25s ease, border-color 0.25s ease;
+  }
+
+  /* Hover states applied via JS class */
+  #cursor-dot.is-hovering {
+    width: 10px;
+    height: 10px;
+    background: var(--accent);
+    opacity: 1;
+  }
+
+  #cursor-ring.is-hovering {
+    width: 52px;
+    height: 52px;
+    opacity: 0.85;
+    border-color: var(--accent);
+  }
+
+  /* Magnetic button hover – ring blends into button */
+  #cursor-dot.is-magnetic {
+    width: 8px;
+    height: 8px;
+    opacity: 0.9;
+  }
+
+  #cursor-ring.is-magnetic {
+    width: 60px;
+    height: 60px;
+    opacity: 0.35;
+    border-color: var(--accent);
+  }
+
+  /* Hide on touch devices */
+  @media (hover: none) {
+    #cursor-dot,
+    #cursor-ring {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Only run on non-touch devices
+  const hasHover = window.matchMedia("(hover: hover)").matches;
+
+  if (!prefersReducedMotion && hasHover) {
+    const dot  = document.getElementById("cursor-dot")!;
+    const ring = document.getElementById("cursor-ring")!;
+
+    // Hide native cursor globally
+    document.documentElement.style.cursor = "none";
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+
+    // QuickTo for smooth ring following
+    const ringX = gsap.quickTo(ring, "x", { duration: 0.55, ease: "power3.out" });
+    const ringY = gsap.quickTo(ring, "y", { duration: 0.55, ease: "power3.out" });
+
+    // Dot follows immediately
+    const dotX = gsap.quickTo(dot, "x", { duration: 0.12, ease: "power2.out" });
+    const dotY = gsap.quickTo(dot, "y", { duration: 0.12, ease: "power2.out" });
+
+    window.addEventListener("mousemove", (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dotX(mouseX);
+      dotY(mouseY);
+      ringX(mouseX);
+      ringY(mouseY);
+    });
+
+    // ── Hover state on interactive elements ──────────────────────────────
+    const interactiveSelectors = "a, button, [role='button'], input, textarea, select, label";
+
+    document.addEventListener("mouseover", (e) => {
+      if ((e.target as HTMLElement).closest(interactiveSelectors)) {
+        dot.classList.add("is-hovering");
+        ring.classList.add("is-hovering");
+      }
+    });
+
+    document.addEventListener("mouseout", (e) => {
+      if ((e.target as HTMLElement).closest(interactiveSelectors)) {
+        dot.classList.remove("is-hovering");
+        ring.classList.remove("is-hovering");
+      }
+    });
+
+    // ── Magnetic effect ───────────────────────────────────────────────────
+    const MAGNETIC_STRENGTH = 0.42; // how far the button moves (0–1)
+    const MAGNETIC_RADIUS   = 90;   // px — activation zone around button edges
+
+    function setupMagnetic(el: HTMLElement) {
+      el.addEventListener("mousemove", (e) => {
+        const rect   = el.getBoundingClientRect();
+        const cx     = rect.left + rect.width  / 2;
+        const cy     = rect.top  + rect.height / 2;
+        const dx     = e.clientX - cx;
+        const dy     = e.clientY - cy;
+        const dist   = Math.sqrt(dx * dx + dy * dy);
+        const radius = Math.max(rect.width, rect.height) / 2 + MAGNETIC_RADIUS;
+
+        if (dist < radius) {
+          const pull = (1 - dist / radius) * MAGNETIC_STRENGTH;
+          gsap.to(el, {
+            x: dx * pull,
+            y: dy * pull,
+            duration: 0.4,
+            ease: "power2.out",
+            overwrite: true,
+          });
+          dot.classList.add("is-magnetic");
+          ring.classList.add("is-magnetic");
+        }
+      });
+
+      el.addEventListener("mouseleave", () => {
+        gsap.to(el, {
+          x: 0,
+          y: 0,
+          duration: 0.6,
+          ease: "elastic.out(1, 0.4)",
+          overwrite: true,
+        });
+        dot.classList.remove("is-magnetic");
+        ring.classList.remove("is-magnetic");
+      });
+    }
+
+    // Apply to primary/ghost CTAs and any element with data-magnetic
+    document.querySelectorAll<HTMLElement>(
+      ".btn-primary, .btn-ghost, [data-magnetic]"
+    ).forEach(setupMagnetic);
+
+    // Also pick up any dynamically-added magnetic elements
+    const mo = new MutationObserver(() => {
+      document.querySelectorAll<HTMLElement>(
+        ".btn-primary:not([data-mag-init]), .btn-ghost:not([data-mag-init]), [data-magnetic]:not([data-mag-init])"
+      ).forEach((el) => {
+        el.dataset.magInit = "1";
+        setupMagnetic(el);
+      });
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+  }
+</script>

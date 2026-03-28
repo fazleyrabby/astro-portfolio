@@ -1,109 +1,106 @@
 ---
-const pathname = new URL(Astro.request.url).pathname;
-const currentPath = pathname.slice(1);
 import ThemeIcon from "@components/ThemeIcon.astro";
 
 const navItems = [
-    { href: "/#projects", label: "Work", path: "#projects" },
-    { href: "/posts/", label: "Blog", path: "posts" },
-    { href: "/about/", label: "About", path: "about" },
+    { href: "/#projects", label: "Work" },
+    { href: "/posts/", label: "Blog" },
+    { href: "/about/", label: "About" },
 ];
 ---
 
-<header
-    class="sticky top-0 z-50 w-full border-b border-gray-200/50 dark:border-gray-700/50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl"
->
-    <nav class="container mx-auto py-4 px-4">
+<header id="main-nav" class="sticky top-0 z-50 w-full transition-all duration-300" style="background: transparent; border-color: transparent;">
+    <nav class="container mx-auto px-4 md:px-8 py-4">
         <div class="flex items-center justify-between">
             <!-- Logo -->
             <a href="/" class="flex items-center gap-2 group">
-                <span
-                    class="text-xl font-bold font-logo text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors"
-                >
+                <span class="text-xl font-bold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
                     Fazley
                 </span>
             </a>
 
             <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center gap-1">
-                {
-                    navItems.map((item) => (
-                        <a
-                            href={item.href}
-                            class={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-                                (item.path !== "/" && item.path !== "#projects" && currentPath.includes(item.path))
-                                    ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30"
-                                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                            }`}
-                        >
-                            {item.label}
-                        </a>
-                    ))
-                }
-                <a href="/about#contact"
-                   class="ml-2 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-bold hover:opacity-80 transition-all hover:scale-105 active:scale-95 shadow-sm">
-                  Hire Me
+                {navItems.map((item) => (
+                    <a href={item.href} class="nav-item px-4 py-2 text-[0.72rem] font-medium tracking-[0.08em] uppercase text-[var(--text-secondary)] transition-all duration-200">
+                        {item.label}
+                    </a>
+                ))}
+                <a href="/about#contact" class="ml-2 px-5 py-2.5 bg-[var(--accent)] text-[#080808] text-[0.72rem] font-bold hover:brightness-110 transition-all hover:scale-105 active:scale-95">
+                    HIRE ME
                 </a>
-                <div
-                    class="ml-2 pl-2 border-l border-gray-200 dark:border-gray-700"
-                >
+                <div class="nav-available ml-4">
+                    <span class="nav-available-dot"></span>
+                    <span>Available</span>
+                </div>
+                <div class="ml-2 pl-2 border-l border-[var(--border)]">
                     <ThemeIcon />
                 </div>
             </div>
 
-            <!-- Mobile Menu Button & Theme Toggle -->
+            <!-- Mobile -->
             <div class="flex md:hidden items-center gap-2">
                 <ThemeIcon />
-                <button
-                    id="mobile-menu-button"
-                    class="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                    aria-label="Toggle menu"
-                >
-                    <svg
-                        class="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16"></path>
+                <a href="/about#contact" class="px-4 py-2 bg-[var(--accent)] text-[#080808] text-sm font-bold">Hire Me</a>
+                <button id="mobile-menu-button" class="p-2 text-[var(--text-secondary)] hover:text-[var(--accent)]" aria-label="Toggle menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
             </div>
         </div>
 
-        <!-- Mobile Navigation Menu -->
+        <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 space-y-2">
-            {
-                navItems.map((item) => (
-                    <a
-                        href={item.href}
-                        class={`block px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-                            (item.path !== "/" && item.path !== "#projects" && currentPath.includes(item.path))
-                                ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30"
-                                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                        }`}
-                    >
-                        {item.label}
-                    </a>
-                ))
-            }
-            <a href="/about#contact"
-               class="block px-4 py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg text-sm font-bold text-center">
-              Hire Me
-            </a>
+            {navItems.map((item) => (
+                <a href={item.href} class="block px-4 py-2 text-sm font-medium text-[var(--text-secondary)]">
+                    {item.label}
+                </a>
+            ))}
         </div>
     </nav>
 </header>
 
+<style>
+    .nav-available {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.68rem;
+        color: var(--text-secondary);
+    }
+    .nav-available-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: pulse-dot 2s ease infinite;
+    }
+    @keyframes pulse-dot {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(0.7); }
+    }
+</style>
+
 <script>
     const mobileMenuButton = document.getElementById("mobile-menu-button");
     const mobileMenu = document.getElementById("mobile-menu");
-
     mobileMenuButton?.addEventListener("click", () => {
         mobileMenu?.classList.toggle("hidden");
     });
+
+    // Scroll handling for nav background
+    const nav = document.getElementById("main-nav");
+    const updateNav = () => {
+        if (window.scrollY > 50) {
+            nav.style.background = "var(--glass-bg)";
+            nav.style.backdropFilter = "blur(16px)";
+            nav.style.borderColor = "var(--border)";
+        } else {
+            nav.style.background = "transparent";
+            nav.style.backdropFilter = "none";
+            nav.style.borderColor = "transparent";
+        }
+    };
+    window.addEventListener("scroll", updateNav);
+    updateNav(); // Check on load
 </script>

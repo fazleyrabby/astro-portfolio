@@ -2,16 +2,18 @@
 
 ---
 
-<div class="fixed bottom-6 right-6">
+<div class="fixed bottom-6 right-6 z-50">
     <div
         onclick="scrollToTop()"
-        class="p-2 rounded-md bg-black dark:bg-white cursor-pointer group scrollTop"
+        class="p-3 rounded cursor-pointer group scrollTop bg-[var(--accent)] hover:brightness-110 transition-all"
+        style="display: none;"
     >
         <svg xmlns="http://www.w3.org/2000/svg" 
-        class="h-5 w-5 fill-white dark:fill-black group-hover:-translate-y-0.5 transition-transform"
-        fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
+        class="h-5 w-5 transition-transform group-hover:-translate-y-0.5"
+        style="fill: #080808;"
+        viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
-          </svg>
+        </svg>
     </div>
 </div>
 

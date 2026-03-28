@@ -10,24 +10,27 @@ import ContactForm from "@components/ContactForm.astro";
 ---
 
 <MainLayout title="About">
-  <main>
-    <h1 class="text-3xl font-semibold tracking-tight mb-6">About Fazley Rabbi</h1>
+  <main class="container mx-auto px-4 md:px-8 py-8 max-w-[800px]">
+    <div class="section-label">About</div>
+    <h1 class="page-heading">About Fazley Rabbi</h1>
 
-    <section class="markdown text-justify mb-4">
-      <div class="prose dark:prose-invert w-full inline">
+    <section class="mb-12 text-[var(--text-secondary)] leading-[1.8]">
+      <div class="prose w-full">
         <AboutMarkdown />
       </div>
     </section>
-    
-    <div id="contact">
-      <p class="mb-4 text-xl font-medium">Send me a message</p>
-      <div class="mb-8">
+
+    <div id="contact" class="mt-12">
+      <h2 class="font-serif font-bold text-2xl text-[var(--text-primary)] mb-6">Send me a message</h2>
+      <div class="card p-6 rounded mb-8">
         <ContactForm />
       </div>
     </div>
-    <hr class="my-16 w-3/4 mx-auto" />
-    <p class="mb-4 text-lg font-medium text-center">Or Connect with me on</p>
-    <div class="flex gap-3 mb-6 icons justify-center">
+
+    <hr class="border-none border-t border-[var(--border)] my-12" />
+
+    <p class="text-xs text-[var(--text-muted)] text-center mb-4">Or Connect with me on</p>
+    <div class="flex gap-4 icons justify-center mb-6">
       <Github />
       <Linkedin />
       <Youtube />

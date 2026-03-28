@@ -1,80 +1,79 @@
 ---
 import { getCollection } from 'astro:content';
-
 const allPosts = await getCollection('posts');
 allPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-
 const latestPosts = allPosts.slice(0, 3);
 ---
 
-<!-- Latest Posts Section -->
-<section class="relative reveal">
-  <!-- Section Header -->
-  <div class="mb-10">
-    <span class="text-indigo-600 dark:text-indigo-400 text-sm font-semibold uppercase tracking-wider mb-2 block">Blog</span>
-    <h2 class="text-3xl md:text-5xl font-bold font-serif text-gray-900 dark:text-white mb-2">
-      Writing
-    </h2>
-    <p class="text-zinc-500 dark:text-zinc-400 max-w-xl">
-      Production problems, Laravel patterns, and things I'm actually building.
-    </p>
+<section class="py-20">
+  <div class="mb-12">
+    <div class="section-label">05 / WRITING</div>
+    <div class="section-header-row">
+      <h2 class="section-heading">Latest Posts</h2>
+      <div class="section-rule"></div>
+    </div>
   </div>
 
-  <!-- Posts Grid -->
-  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-    {
-      latestPosts.map((post) => (
-        <article 
-          class="group relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10"
-        >
-          <a href={`/posts/${post.slug}`} class="block p-6">
-            <!-- Date -->
-            <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-              </svg>
-              <time>{post.data.date ? new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Unknown'}</time>
-            </div>
-            
-            <!-- Title -->
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors capitalize line-clamp-2">
-              {post.data.title}
-            </h3>
-
-            <!-- Read More -->
-            <div class="flex items-center gap-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400 group-hover:gap-3 transition-all">
-              Read article
-              <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-              </svg>
-            </div>
-          </a>
-          
-          <!-- Hover accent line -->
-          <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 group-hover:w-full transition-all duration-300" />
-        </article>
-      ))
-    }
+  <div class="posts-list">
+    {latestPosts.map((post, index) => (
+      <a href={`/posts/${post.slug}`} class="post-row">
+        <span class="post-num">{String(index + 1).padStart(2, '0')}</span>
+        <span class="post-date">
+          {post.data.date ? new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Unknown'}
+        </span>
+        <span class="post-title">{post.data.title}</span>
+        <span class="post-arrow">&#8594;</span>
+      </a>
+    ))}
   </div>
 
   {latestPosts.length === 0 && (
     <div class="text-center py-16">
-      <p class="text-gray-500 dark:text-gray-400">No posts yet. Check back soon!</p>
+      <p class="text-[var(--text-muted)]">No posts yet. Check back soon!</p>
     </div>
   )}
 
-  <!-- Show More Button -->
   {latestPosts.length > 0 && (
     <div class="mt-10 text-center">
-      <a
-        href="/posts"
-        class="inline-flex items-center gap-2 px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 hover:-translate-y-1 hover:border-indigo-300 dark:hover:border-indigo-700"
-      >
-        Show More Posts
-        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-        </svg>
-      </a>
+      <a href="/posts" class="show-more">Show More Posts</a>
     </div>
   )}
 </section>
+
+<style>
+  .post-row {
+    display: grid;
+    grid-template-columns: 36px 110px 1fr 24px;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 8px;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    transition: background 0.2s ease, padding-left 0.2s ease;
+  }
+  .post-row:hover {
+    background: var(--accent-dim);
+    padding-left: 16px;
+  }
+  .post-num {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+  }
+  .post-row:hover .post-num { color: var(--accent); }
+  .post-date {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+  .post-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+  .post-arrow {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    transition: transform 0.2s ease;
+  }
+  .post-row:hover .post-arrow { transform: translateX(5px); }
+</style>

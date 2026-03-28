@@ -1,38 +1,110 @@
 ---
-const skillGroups = [
-  { label: "Backend",  skills: ["PHP", "Laravel", "MySQL", "REST API", "Database Design"] },
-  { label: "DevOps",   skills: ["Docker", "Netlify", "GitHub", "CI/CD", "VPS Management"] },
-  { label: "Frontend", skills: ["JavaScript", "Tailwind CSS", "Bootstrap", "jQuery"] },
-  { label: "Tooling",  skills: ["Astro", "Markdown", "Postman", "Git"] }
+const marqueeItems = [
+  "PHP", "Laravel", "MySQL", "REST API", "Docker", "Netlify", "GitHub", "CI/CD",
+  "JavaScript", "Tailwind CSS", "Bootstrap", "Astro", "Linux", "VPS", "API Design"
 ];
 ---
 
-<!-- Skills Section -->
-<section id="skills" class="reveal py-16">
-  <!-- Section Header -->
-  <div class="mb-10">
-    <span class="text-indigo-600 dark:text-indigo-400 text-sm font-semibold uppercase tracking-wider mb-2 block">Expertise</span>
-    <h2 class="text-3xl md:text-5xl font-bold font-serif text-gray-900 dark:text-white mb-2">
-      Skills & Technologies
-    </h2>
-    <p class="text-zinc-500 dark:text-zinc-400 max-w-xl">
-      Technologies I work with to bring ideas to life.
-    </p>
+<section id="skills" class="py-20">
+  <div class="mb-12">
+    <div class="section-label">03 / SKILLS</div>
+    <div class="section-header-row">
+      <h2 class="section-heading">Skills & Technologies</h2>
+      <div class="section-rule"></div>
+    </div>
   </div>
 
-  <!-- Skills Grid -->
-  <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 stagger">
-    {skillGroups.map(group => (
-      <div class="space-y-4">
-        <p class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.2em] mb-4">{group.label}</p>
-        <div class="flex flex-wrap gap-2">
-          {group.skills.map(s => (
-            <span class="text-sm px-3 py-1.5 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm text-zinc-700 dark:text-zinc-300 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-indigo-400 dark:hover:border-indigo-500 transition-colors shadow-sm">
-              {s}
-            </span>
-          ))}
+  <!-- Marquee Row 1 -->
+  <div class="marquee-track overflow-hidden mb-4">
+    <div class="marquee-inner marquee-left flex">
+      {[...marqueeItems, ...marqueeItems].map(item => (
+        <div class="marquee-item flex-shrink-0">
+          <span class="marquee-item-dot"></span>
+          {item}
         </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Marquee Row 2 (reverse) -->
+  <div class="marquee-track overflow-hidden mb-16">
+    <div class="marquee-inner marquee-right flex">
+      {[...marqueeItems.reverse(), ...marqueeItems.reverse()].map(item => (
+        <div class="marquee-item flex-shrink-0">
+          <span class="marquee-item-dot"></span>
+          {item}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Skills Matrix -->
+  <div class="skills-matrix">
+    {[
+      { label: "Backend",     values: "PHP, Laravel, MySQL, REST API, Docker" },
+      { label: "Frontend",    values: "JavaScript, TailwindCSS, Bootstrap, Astro" },
+      { label: "DevOps / Infra", values: "Netlify, GitHub, VPS, Linux" },
+      { label: "Tools",       values: "Git, Markdown, Composer, NPM" },
+    ].map(row => (
+      <div class="skills-row">
+        <span class="skills-category">{row.label}</span>
+        <span class="skills-values">{row.values}</span>
       </div>
     ))}
   </div>
 </section>
+
+<style>
+  .marquee-inner {
+    width: max-content;
+  }
+  .marquee-left  { animation: marquee-left  40s linear infinite; }
+  .marquee-right { animation: marquee-right 40s linear infinite; }
+
+  @keyframes marquee-left {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes marquee-right {
+    0%   { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 10px 28px 10px 0;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .marquee-item-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    opacity: 0.85;
+  }
+
+  .skills-matrix {
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+  }
+  .skills-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .skills-category {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .skills-values {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+</style>

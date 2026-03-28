@@ -21,37 +21,27 @@ const images = await cloudinary.search
 ---
 
 <MainLayout title="Photography">
-    <main>
-        <p
-            class="text-lg text-center my-6 bg-gradient-to-r from-gray-600 to-gray-500 dark:from-gray-300 dark:to-gray-400 bg-clip-text text-transparent font-medium"
-        >
-            Some random shots I have taken on various trips. Mostly using my
-            smart phone!
+    <main class="container mx-auto px-4 md:px-8 py-8">
+        <p class="text-sm text-[var(--text-secondary)] text-center mb-8 leading-relaxed">
+            Some random shots I have taken on various trips. Mostly using my smart phone!
         </p>
 
-        <!-- Simple Grid Layout -->
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {
-                images.total_count > 0 &&
-                    images.resources.map((img) => (
-                        <div class="group relative overflow-hidden bg-gray-100 dark:bg-gray-800 aspect-square">
-                            <Image
-                                height={400}
-                                width={400}
-                                loading="lazy"
-                                layout="fullWidth"
-                                class="w-full h-full object-cover lightbox-image cursor-pointer group-hover:scale-105 transition-transform duration-300"
-                                data-img={img.secure_url}
-                                src={img.secure_url}
-                                alt="Photography"
-                            />
-                        </div>
-                    ))
-            }
+            {images.total_count > 0 && images.resources.map((img) => (
+                <div class="group relative overflow-hidden bg-[var(--bg-card)] aspect-square border border-[var(--border)]">
+                    <Image
+                        height={400} width={400} loading="lazy" layout="fullWidth"
+                        class="w-full h-full object-cover cursor-pointer transition-transform duration-300"
+                        data-img={img.secure_url}
+                        src={img.secure_url}
+                        alt="Photography"
+                    />
+                </div>
+            ))}
         </div>
 
         <ImagePopup />
-        <p class="text-gray-400 dark:text-gray-500 my-6 text-xs text-center">
+        <p class="text-[0.7rem] text-[var(--text-muted)] text-center mt-6">
             (These images are hosted on Cloudinary)
         </p>
     </main>

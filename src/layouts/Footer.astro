@@ -5,106 +5,96 @@ import Youtube from "@components/Icons/Youtube.astro";
 import Email from "@components/Icons/Email.astro";
 ---
 
-<footer
-    class="relative border-t border-gray-200/50 dark:border-gray-700/50 mt-20"
->
-    <div class="container mx-auto px-6 py-12">
-        <div class="grid gap-8 md:grid-cols-3 mb-8">
-            <!-- Brand -->
-            <div>
-                <h3
-                    class="text-xl font-bold font-logo text-gray-900 dark:text-white mb-3"
-                >
-                    Fazley Rabbi
-                </h3>
-                <p
-                    class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed max-w-xs"
-                >
-                    Laravel & Backend Engineer — SaaS platforms, REST APIs, and scalable systems.
-                </p>
-            </div>
+<footer class="border-t border-[var(--border)] pt-[60px] pb-8">
+    <div class="container mx-auto px-4 md:px-8">
+        <div class="footer-top">
+            <div class="footer-name-watermark">Fazley Rabbi</div>
 
-            <!-- Quick Links -->
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid gap-8 md:grid-cols-3 mb-8 -mt-10">
+                <!-- Brand -->
                 <div>
-                    <h4
-                        class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4"
-                    >
-                        Nav
-                    </h4>
-                    <nav class="space-y-2">
-                        <a href="/" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Home</a>
-                        <a href="/#projects" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Work</a>
-                        <a href="/posts" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Blog</a>
-                        <a href="/about" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">About</a>
-                    </nav>
+                    <h3 class="font-serif font-bold text-xl text-[var(--text-primary)] mb-3">Fazley Rabbi</h3>
+                    <p class="text-sm text-[var(--text-secondary)] leading-relaxed max-w-[280px]">
+                        Laravel & Backend Engineer — SaaS platforms, REST APIs, and scalable systems.
+                    </p>
                 </div>
-                <div>
-                    <h4
-                        class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4"
-                    >
-                        More
-                    </h4>
-                    <nav class="space-y-2">
-                        <a href="/uses" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Uses</a>
-                        <a href="/gallery" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Gallery</a>
-                        <a href="/resources" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Resources</a>
-                    </nav>
-                </div>
-            </div>
 
-            <!-- Connect -->
-            <div>
-                <h4
-                    class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4"
-                >
-                    Connect
-                </h4>
-                <div class="flex gap-4 icons mb-4">
-                    <Github />
-                    <Linkedin />
-                    <Youtube />
-                    <Email />
+                <!-- Quick Links -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="footer-col-heading">Nav</h4>
+                        <nav class="space-y-2">
+                            <a href="/" class="footer-link block text-sm">Home</a>
+                            <a href="/#projects" class="footer-link block text-sm">Work</a>
+                            <a href="/posts" class="footer-link block text-sm">Blog</a>
+                            <a href="/about" class="footer-link block text-sm">About</a>
+                        </nav>
+                    </div>
+                    <div>
+                        <h4 class="footer-col-heading">More</h4>
+                        <nav class="space-y-2">
+                            <a href="/uses" class="footer-link block text-sm">Uses</a>
+                            <a href="/gallery" class="footer-link block text-sm">Gallery</a>
+                            <a href="/resources" class="footer-link block text-sm">Resources</a>
+                        </nav>
+                    </div>
                 </div>
-                <p class="text-sm text-gray-600 dark:text-gray-400">
-                    Open to opportunities and collaborations.
-                </p>
+
+                <!-- Connect -->
+                <div>
+                    <h4 class="footer-col-heading">Connect</h4>
+                    <div class="flex gap-4 icons mb-4">
+                        <Github />
+                        <Linkedin />
+                        <Youtube />
+                        <Email />
+                    </div>
+                    <p class="text-sm text-[var(--text-secondary)]">Open to opportunities and collaborations.</p>
+                </div>
             </div>
         </div>
 
         <!-- Bottom Bar -->
-        <div
-            class="pt-8 border-t border-gray-200/50 dark:border-gray-700/50 flex flex-col sm:flex-row items-center justify-between gap-4"
-        >
-            <div
-                class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
-            >
-                <span>Built with</span>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4 fill-red-500 animate-pulse"
-                    viewBox="0 0 16 16"
-                >
-                    <path
-                        fill-rule="evenodd"
-                        d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
-                    ></path>
-                </svg>
-                <span>by</span>
-                <span
-                    class="font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent"
-                >
-                    Fazley Rabbi
-                </span>
-            </div>
-            <div class="text-xs text-gray-500 dark:text-gray-500">
-                © {new Date().getFullYear()} • Powered by
-                <a
-                    href="https://astro.build/"
-                    class="hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors font-medium"
-                    target="_blank">Astro</a
-                >
-            </div>
+        <div class="flex items-center gap-3 text-[0.68rem] text-[var(--text-muted)] border-t border-[var(--border)] pt-5 mt-10">
+            <span>&#169; {new Date().getFullYear()}</span>
+            <span class="footer-dot"></span>
+            <span>Powered by <a href="https://astro.build/" class="footer-link" target="_blank">Astro</a></span>
+            <span class="footer-dot"></span>
+            <span>Built with love by Fazley Rabbi</span>
         </div>
     </div>
 </footer>
+
+<style>
+    .footer-name-watermark {
+        font-family: 'Instrument Serif', serif;
+        font-weight: 800;
+        font-size: clamp(3rem, 8vw, 6rem);
+        color: rgba(255,255,255,0.04);
+        pointer-events: none;
+        user-select: none;
+        line-height: 1;
+    }
+    .footer-col-heading {
+        font-size: 0.68rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 16px;
+    }
+    .footer-link {
+        color: var(--text-secondary);
+        transition: color 0.2s ease;
+    }
+    .footer-link:hover {
+        color: var(--accent);
+    }
+    .footer-dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: inline-block;
+        flex-shrink: 0;
+    }
+</style>

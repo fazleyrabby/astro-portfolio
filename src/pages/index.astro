@@ -1,65 +1,30 @@
 ---
-import { Content as AboutMarkdown } from "../content/about.md";
 import Projects from "@components/Projects.astro";
 import Experience from "@components/Experience.astro";
 import LatestPosts from "@components/LatestPosts.astro";
 import Skills from "@components/Skills.astro";
 import MainLayout from "@layouts/MainLayout.astro";
-import Github from "@components/Icons/Github.astro";
-import Linkedin from "@components/Icons/Linkedin.astro";
-import Youtube from "@components/Icons/Youtube.astro";
-import Email from "@components/Icons/Email.astro";
-import Codepen from "@components/Icons/Codepen.astro";
 import Hero from "@components/Hero.astro";
-import Services from "@components/Services.astro";
-import CurrentFocus from "@components/CurrentFocus.astro";
 ---
 
 <MainLayout title="Home">
   <main class="mb-auto">
     <Hero />
 
+    <div class="container mx-auto w-full px-4 md:px-8">
+      {/* Projects  */}
+      <div id="projects">
+        <Projects type="home" />
+      </div>
 
-    {/* Projects  */}
-    <div class="mb-16 grid space-y-4" id="projects">
-      <Projects type="home" />
-    </div>
-
-    {/* Services */}
-    <div class="mb-16">
-      <Services />
-    </div>
-
-    {/* Current Focus */}
-    <div class="mb-16">
-      <CurrentFocus />
-    </div>
-
-    {/* Skills */}
-    <div class="mb-16">
+      {/* Skills */}
       <Skills />
-    </div>
 
-    {/* Experience */}
-    <div class="mb-16">
+      {/* Experience */}
       <Experience />
-    </div>
 
-    {/* Latest Posts */}
-    <div class="mb-16">
+      {/* Latest Posts */}
       <LatestPosts />
     </div>
   </main>
 </MainLayout>
-
-<script is:inline>
-  if (window.matchMedia("(max-width: 767px)").matches) {
-    // The viewport is less than 768 pixels wide
-    const resumeLink = document.getElementById("resume-link");
-    resumeLink.setAttribute("target", "_blank");
-    resumeLink.setAttribute(
-      "href",
-      "https://drive.google.com/file/d/1-Z5hS-F8pjFAzKvGB2P51-dVarFPL9V3/view",
-    );
-  }
-</script>

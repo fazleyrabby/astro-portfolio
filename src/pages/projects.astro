@@ -8,26 +8,20 @@ projects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
 ---
 
 <MainLayout title="Projects">
-  <main class="py-12">
-    <!-- Fix 7: Add H1 -->
-    <h1 class="text-3xl font-semibold tracking-tight mb-2">Projects</h1>
-    <h2 class="text-lg text-zinc-500 mb-10">Case Studies</h2>
+  <main class="container mx-auto px-4 md:px-8 py-12">
+    <div class="section-label">Projects</div>
+    <h1 class="page-heading">Projects</h1>
+    <h2 class="font-serif text-[var(--text-muted)] text-sm mb-10">Case Studies</h2>
 
-    <!-- Fix 6: Main projects list (Case Studies) -->
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {projects.filter(p => p.data.problem).map(p => (
-        <ProjectCard project={p} />
-      ))}
+      {projects.filter(p => p.data.problem).map(p => <ProjectCard project={p} />)}
     </div>
 
-    <!-- Fix 6: Other Work separator -->
-    <div class="mt-16 pt-10 border-t border-zinc-200 dark:border-zinc-800">
-      <h2 class="text-lg font-medium mb-1">Other Work</h2>
-      <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-6">Earlier frontend experiments.</p>
+    <div class="mt-16 pt-10 border-t border-[var(--border)]">
+      <h2 class="font-serif font-bold text-xl text-[var(--text-primary)] mb-2">Other Work</h2>
+      <p class="text-xs text-[var(--text-muted)] mb-6">Earlier frontend experiments.</p>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {projects.filter(p => !p.data.problem).map(p => (
-          <ProjectCard project={p} />
-        ))}
+        {projects.filter(p => !p.data.problem).map(p => <ProjectCard project={p} />)}
       </div>
     </div>
   </main>

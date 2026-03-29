@@ -2,6 +2,10 @@
     class="max-w-full"
     id="contactForm"
 >
+    <!-- Honeypot - hidden from humans, bots fill it -->
+    <div class="absolute opacity-0 -z-10 pointer-events-none" aria-hidden="true">
+        <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" />
+    </div>
     <div class="relative z-0 w-full mb-6 group">
         <input
             type="email"
@@ -94,6 +98,7 @@
             body: JSON.stringify({
                 email: email.value,
                 message: message.value,
+                website: document.getElementById("website").value,
             }),
         })
         .then((res) => {

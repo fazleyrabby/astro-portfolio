@@ -1,4 +1,5 @@
 ---
+import AsciiAvatar from './AsciiAvatar.astro';
 ---
 
 <section id="hero" class="hero-section min-h-[85svh] relative flex items-center overflow-hidden pt-12 pb-32">
@@ -20,41 +21,47 @@
   ></div>
 
   <div class="relative z-10 w-full max-w-6xl mx-auto px-6">
-    <div class="max-w-2xl">
-      <div class="badge-pill">
-        <span class="badge-dot"></span>
-        Available for freelance & collaboration
-      </div>
-
-      <h1 class="mb-4">
-        <span class="hero-word block font-display">Hi, I'm</span>
-        <span class="hero-word hero-name block font-display">Fazley Rabbi</span>
-      </h1>
-
-      <p class="hero-tagline font-serif italic">
-        A passionate web developer & tech enthusiast from Bangladesh.
-      </p>
-
-      <p class="hero-body max-w-[550px] font-sans">
-        With over three years of professional experience, I've built a variety
-        of client projects and contributed on several projects for CodeCanyon.
-        I enjoy crafting clean, efficient solutions — whether it's a full-scale
-        web app or a tiny helper module. Currently working on Larabrix, a modular
-        Laravel-based framework.
-      </p>
-
-      <div class="flex gap-3 flex-wrap mt-8">
-        <a href="/resume" class="btn-primary btn-magnetic">Resume</a>
-        <a href="#projects" class="btn-ghost">View Projects</a>
-      </div>
-
-      <div class="connect-block mt-8">
-        <span class="section-label font-mono" style="margin-bottom:0.4rem;">Connect</span>
-        <div class="flex gap-5">
-          <a href="https://github.com/fazleyrabby" target="_blank" class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider">GitHub</a>
-          <a href="https://www.linkedin.com/in/fazley-rabby/" target="_blank" class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider">LinkedIn</a>
-          <a href="mailto:fazley111@gmail.com" class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider">Email</a>
+    <div class="hero-grid">
+      <div class="max-w-2xl">
+        <div class="badge-pill">
+          <span class="badge-dot"></span>
+          Available for freelance & collaboration
         </div>
+
+        <h1 class="mb-4">
+          <span class="hero-word block font-display">Hi, I'm</span>
+          <span class="hero-word hero-name block font-display">Fazley Rabbi</span>
+        </h1>
+
+        <p class="hero-tagline font-serif italic">
+          A passionate web developer & tech enthusiast from Bangladesh.
+        </p>
+
+        <p class="hero-body max-w-[550px] font-sans">
+          With over three years of professional experience, I've built a variety
+          of client projects and contributed on several projects for CodeCanyon.
+          I enjoy crafting clean, efficient solutions — whether it's a full-scale
+          web app or a tiny helper module. Currently working on Larabrix, a modular
+          Laravel-based framework.
+        </p>
+
+        <div class="flex gap-3 flex-wrap mt-8">
+          <a href="/resume" class="btn-primary btn-magnetic">Resume</a>
+          <a href="#projects" class="btn-ghost">View Projects</a>
+        </div>
+
+        <div class="connect-block mt-8">
+          <span class="section-label font-mono" style="margin-bottom:0.4rem;">Connect</span>
+          <div class="flex gap-5">
+            <a href="https://github.com/fazleyrabby" target="_blank" class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider">GitHub</a>
+            <a href="https://www.linkedin.com/in/fazley-rabby/" target="_blank" class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider">LinkedIn</a>
+            <a href="mailto:fazley111@gmail.com" class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider">Email</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-avatar-col">
+        <AsciiAvatar />
       </div>
     </div>
   </div>
@@ -64,7 +71,35 @@
   .hero-section {
     background: var(--bg-base);
   }
-  
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  @media (min-width: 1025px) {
+    .hero-grid {
+      grid-template-columns: 1fr 1.2fr;
+    }
+  }
+
+  .hero-avatar-col {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    min-height: 550px;
+    margin-left: -8rem;
+    margin-right: -3rem;
+  }
+
+  @media (min-width: 1025px) {
+    .hero-avatar-col {
+      display: flex;
+    }
+  }
+
   h1 {
     font-size: clamp(2.5rem, 6vw, 4.5rem);
     line-height: 1.05;

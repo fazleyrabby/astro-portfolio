@@ -22,8 +22,8 @@ These are some of my personal favorite fonts that I have collected over the year
     <a href="https://vercel.com/font/sans" target="_blank">Geist Sans<img class="preview m-0" src="/images/uploads/Geist Sans.png"></p></a>
     <a href="https://fonts.google.com/specimen/Sen" target="_blank">Sen<img class="preview m-0" src="/images/uploads/Sen.png"></p></a>
     <a href="https://fonts.google.com/specimen/Jost" target="_blank">Jost<img class="preview m-0" src="/images/uploads/Jost.png"></p></a>
-    <a href="https://fonts.google.com/specimen/Inter" target="_blank">Lexend<img class="preview m-0" src="/images/uploads/Lexend.png"></p></a>
-    <a href="https://fonts.google.com/specimen/Inter" target="_blank">Figtree<img class="preview m-0" src="/images/uploads/Figtree.png"></p></a>
+    <a href="https://fonts.google.com/specimen/Lexend" target="_blank">Lexend<img class="preview m-0" src="/images/uploads/Lexend.png"></p></a>
+    <a href="https://fonts.google.com/specimen/Figtree" target="_blank">Figtree<img class="preview m-0" src="/images/uploads/Figtree.png"></p></a>
     <a href="https://fonts.google.com/specimen/Albert Sans" target="_blank">Albert Sans<img class="preview m-0" src="/images/uploads/Albert Sans.png"></p></a>
     <a href="https://fonts.google.com/specimen/Overpass" target="_blank">Overpass<img class="preview m-0" src="/images/uploads/Overpass.png"></p></a>
     <a href="https://fonts.google.com/specimen/Outfit" target="_blank">Outfit<img class="preview m-0" src="/images/uploads/Outfit.png"></p></a>

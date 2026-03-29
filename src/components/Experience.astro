@@ -1,11 +1,15 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 const experiences = await getCollection('experiences');
 experiences.sort((a, b) => {
   const dateA = a.data.timeline ? new Date(a.data.timeline) : new Date(0);
   const dateB = b.data.timeline ? new Date(b.data.timeline) : new Date(0);
   return dateB.getTime() - dateA.getTime();
 });
+const renderedExperiences = await Promise.all(experiences.map(async (exp) => {
+  const { Content } = await render(exp);
+  return { ...exp, Content };
+}));
 ---
 
 <section id="experience" class="py-8">
@@ -19,7 +23,7 @@ experiences.sort((a, b) => {
     </div>
 
     <div class="timeline relative ml-3">
-      {experiences.map((item) => (
+      {renderedExperiences.map((item) => (
         <div class="timeline-entry relative pl-10 pb-8 last:pb-0 group">
           <div class="timeline-dot absolute left-[-4.5px] top-2"></div>
           <div class="timeline-date font-mono text-[0.68rem] text-[var(--text-muted)] mb-1 uppercase tracking-widest">
@@ -32,7 +36,7 @@ experiences.sort((a, b) => {
             {item.data.role}
           </div>
           <div class="timeline-desc font-sans text-[0.92rem] text-[var(--text-secondary)] leading-relaxed max-w-2xl opacity-90">
-            {item.body}
+            <item.Content />
           </div>
         </div>
       ))}

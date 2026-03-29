@@ -1,11 +1,7 @@
 <form
     class="max-w-full"
     id="contactForm"
-    name="contact"
-    method="POST"
-    data-netlify="true"
 >
-    <input type="hidden" name="form-name" value="contact" />
     <div class="relative z-0 w-full mb-6 group">
         <input
             type="email"
@@ -84,7 +80,6 @@
 <script is:inline>
     document.getElementById("contactForm").addEventListener("submit", (e) => {
         e.preventDefault();
-        const form = e.target;
         const email = document.getElementById("email");
         const message = document.getElementById("message");
 
@@ -93,15 +88,16 @@
             return;
         }
 
-        const formData = new URLSearchParams(new FormData(form)).toString();
-
-        fetch("/", {
+        fetch("/api/contact", {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: formData,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: email.value,
+                message: message.value,
+            }),
         })
         .then((res) => {
-            if (res.ok) {
+            if (res.ok || res.status === 201) {
                 window.location.href = "/contact-success";
             } else {
                 alert("Something went wrong. Please try again.");

@@ -2,6 +2,7 @@
 title: "Dynamic Fullcalender Laravel Fetch API"
 date: 2024-05-10
 description: "How to implement a dynamic fullcalender with Laravel and Fetch API"
+draft: false
 ---
 
 <img src="/images/uploads/markus-winkler-hxcifi47fgq-unsplash-2-.jpg" alt="" width="100%"/>

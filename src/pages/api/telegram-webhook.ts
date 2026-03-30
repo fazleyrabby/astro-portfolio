@@ -2,8 +2,10 @@ import type { APIRoute } from "astro";
 
 const TELEGRAM_TOKEN = import.meta.env.TELEGRAM_TOKEN;
 const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN;
+const GROQ_API_KEY = import.meta.env.GROQ_API_KEY;
 const GITHUB_REPOSITORY = import.meta.env.GITHUB_REPOSITORY || "fazleyrabby/astro-portfolio";
 const DRAFTS_BRANCH = "drafts";
+const CONTEXT_PATH = "data/blog-context.json";
 
 const ghHeaders = {
   Authorization: `Bearer ${GITHUB_TOKEN}`,
@@ -14,108 +16,73 @@ const ghHeaders = {
 export const POST: APIRoute = async ({ request }) => {
   try {
     const update = await request.json();
-    const callback = update.callback_query;
-    if (!callback?.data) {
+
+    // Handle callback queries (approve/reject buttons)
+    if (update.callback_query) {
+      await handleCallback(update.callback_query);
       return new Response("OK", { status: 200 });
     }
 
-    const [action, slug] = callback.data.split(":");
-    if (!action || !slug) {
+    // Handle bot commands
+    const message = update.message;
+    if (!message?.text) return new Response("OK", { status: 200 });
+
+    const chatId = message.chat.id;
+    const text = message.text.trim();
+
+    if (text.startsWith("/topic")) {
+      const value = text.slice(6).trim();
+      if (!value) return reply(chatId, "Usage: /topic <text>");
+      const ctx = await loadContext();
+      ctx.topic = value;
+      await saveContext(ctx);
+      return reply(chatId, `Topic set: ${value}`);
+    }
+
+    if (text.startsWith("/category")) {
+      const value = text.slice(9).trim();
+      const ctx = await loadContext();
+      ctx.category = value || "";
+      await saveContext(ctx);
+      return reply(chatId, `Category set: ${value || "general"}`);
+    }
+
+    if (text.startsWith("/context")) {
+      const value = text.slice(8).trim();
+      const ctx = await loadContext();
+      ctx.context = value || "";
+      await saveContext(ctx);
+      return reply(chatId, `Context set: ${value || "cleared"}`);
+    }
+
+    if (text.startsWith("/note")) {
+      const value = text.slice(5).trim();
+      const ctx = await loadContext();
+      ctx.notes = value || "";
+      await saveContext(ctx);
+      return reply(chatId, `Note set: ${value || "none"}`);
+    }
+
+    if (text.startsWith("/status")) {
+      const ctx = await loadContext();
+      return reply(chatId, `📝 Context:\nTopic: ${ctx.topic || "none"}\nCategory: ${ctx.category || "general"}\nContext: ${ctx.context || "none"}\nNotes: ${ctx.notes || "none"}`);
+    }
+
+    if (text.startsWith("/reset")) {
+      await saveContext({});
+      return reply(chatId, "Context reset.");
+    }
+
+    if (text.startsWith("/generate")) {
+      await sendTelegram(chatId, "⏳ Generating post...");
+      try {
+        const result = await generateAndCommit();
+        await sendTelegramWithButtons(chatId, result.title, result.slug, result.preview);
+      } catch (e: any) {
+        await sendTelegram(chatId, `Generate failed: ${e.message}`);
+      }
       return new Response("OK", { status: 200 });
     }
-
-    const [owner, repo] = GITHUB_REPOSITORY.split("/");
-    const mdPath = `src/content/posts/${slug}.md`;
-    let resultText: string;
-
-    if (action === "approve") {
-      // Get file from drafts branch
-      const ghRes = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}?ref=${DRAFTS_BRANCH}`,
-        { headers: ghHeaders }
-      );
-
-      if (!ghRes.ok) {
-        await answerCallback(callback.id, `File not found on drafts branch: ${slug}`);
-        return new Response("OK", { status: 200 });
-      }
-
-      const file = await ghRes.json();
-      const content = atob(file.content);
-      const published = content.replace(/\ndraft:\s*true/, "\ndraft: false");
-
-      // Commit to main with draft: false
-      // Check if file exists on main first
-      let mainSha: string | undefined;
-      const mainRes = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}?ref=main`,
-        { headers: ghHeaders }
-      );
-      if (mainRes.ok) {
-        const mainFile = await mainRes.json();
-        mainSha = mainFile.sha;
-      }
-
-      await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}`,
-        {
-          method: "PUT",
-          headers: ghHeaders,
-          body: JSON.stringify({
-            message: `Publish: ${slug}`,
-            content: btoa(published),
-            branch: "main",
-            ...(mainSha ? { sha: mainSha } : {}),
-          }),
-        }
-      );
-
-      // Delete from drafts branch
-      await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}`,
-        {
-          method: "DELETE",
-          headers: ghHeaders,
-          body: JSON.stringify({
-            message: `Clean draft: ${slug}`,
-            sha: file.sha,
-            branch: DRAFTS_BRANCH,
-          }),
-        }
-      );
-
-      resultText = `✅ Published: ${slug}`;
-    } else {
-      // Reject — delete from drafts branch
-      const ghRes = await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}?ref=${DRAFTS_BRANCH}`,
-        { headers: ghHeaders }
-      );
-
-      if (!ghRes.ok) {
-        await answerCallback(callback.id, `File not found: ${slug}`);
-        return new Response("OK", { status: 200 });
-      }
-
-      const file = await ghRes.json();
-      await fetch(
-        `https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}`,
-        {
-          method: "DELETE",
-          headers: ghHeaders,
-          body: JSON.stringify({
-            message: `Reject: ${slug}`,
-            sha: file.sha,
-            branch: DRAFTS_BRANCH,
-          }),
-        }
-      );
-
-      resultText = `❌ Deleted: ${slug}`;
-    }
-
-    await answerCallback(callback.id, resultText);
-    await editMessage(callback.message.chat.id, callback.message.message_id, resultText);
 
     return new Response("OK", { status: 200 });
   } catch (e: any) {
@@ -123,6 +90,285 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response("OK", { status: 200 });
   }
 };
+
+// --- Context helpers (read/write blog-context.json via GitHub API) ---
+
+async function loadContext() {
+  const [owner, repo] = GITHUB_REPOSITORY.split("/");
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/${CONTEXT_PATH}?ref=main`,
+      { headers: ghHeaders }
+    );
+    if (!res.ok) return {};
+    const file = await res.json();
+    return JSON.parse(Buffer.from(file.content, "base64").toString("utf8"));
+  } catch {
+    return {};
+  }
+}
+
+async function saveContext(ctx: Record<string, string>) {
+  const [owner, repo] = GITHUB_REPOSITORY.split("/");
+
+  // Get current sha if file exists
+  let sha: string | undefined;
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/${CONTEXT_PATH}?ref=main`,
+      { headers: ghHeaders }
+    );
+    if (res.ok) {
+      const file = await res.json();
+      sha = file.sha;
+    }
+  } catch {}
+
+  await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/contents/${CONTEXT_PATH}`,
+    {
+      method: "PUT",
+      headers: ghHeaders,
+      body: JSON.stringify({
+        message: `Update blog context`,
+        content: Buffer.from(JSON.stringify(ctx, null, 2)).toString("base64"),
+        branch: "main",
+        ...(sha ? { sha } : {}),
+      }),
+    }
+  );
+}
+
+// --- Generate + Commit to drafts branch ---
+
+async function generateAndCommit() {
+  const contextRaw = await loadContext();
+  const context = {
+    topic: contextRaw.topic?.split("\n")[0] || "",
+    category: contextRaw.category || "",
+    context: contextRaw.context || "",
+    notes: contextRaw.notes || "",
+  };
+
+  if (!context.topic) throw new Error("No topic set. Use /topic first.");
+
+  const prompt = `Write a blog post as a backend engineer working with Laravel in production.
+
+Topic: ${context.topic}
+
+Category: ${context.category || "general"}
+
+Context: ${context.context || ""}
+
+Notes: ${context.notes || ""}
+
+Requirements:
+- Avoid generic advice
+- Focus on real-world problems
+- Include practical examples
+- Write in first-person
+- Include code snippets
+- Structure: intro → problem → solution → code → conclusion
+
+Output ONLY JSON:
+{
+  "title": "Post title",
+  "content": "Markdown content"
+}`;
+
+  const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${GROQ_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+    }),
+  });
+
+  if (!groqRes.ok) throw new Error(`Groq API error: ${groqRes.status}`);
+  const groqData = await groqRes.json();
+
+  let response = groqData.choices[0].message.content.trim();
+  response = response.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/, "");
+
+  let post: { title: string; content: string };
+  try {
+    post = JSON.parse(response);
+  } catch {
+    const titleMatch = response.match(/"title"\s*:\s*"([^"]+)"/);
+    const contentMatch = response.match(/"content"\s*:\s*"([\s\S]*)"\s*\}?\s*$/);
+    if (!titleMatch || !contentMatch) throw new Error("Could not parse AI response");
+    post = {
+      title: titleMatch[1],
+      content: contentMatch[1].replace(/\\n/g, "\n").replace(/\\t/g, "\t"),
+    };
+  }
+
+  const slug = post.title
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 50);
+
+  const date = new Date().toISOString().split("T")[0];
+  const fileContent = `---\ntitle: "${post.title}"\ndate: ${date}\ndraft: true\n---\n\n${post.content}`;
+
+  // Ensure drafts branch exists
+  const [owner, repo] = GITHUB_REPOSITORY.split("/");
+  try {
+    await fetch(`https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${DRAFTS_BRANCH}`, {
+      headers: ghHeaders,
+    }).then((r) => {
+      if (!r.ok) throw new Error("not found");
+    });
+  } catch {
+    const mainRef = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/ref/heads/main`, {
+      headers: ghHeaders,
+    }).then((r) => r.json());
+    await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs`, {
+      method: "POST",
+      headers: ghHeaders,
+      body: JSON.stringify({ ref: `refs/heads/${DRAFTS_BRANCH}`, sha: mainRef.object.sha }),
+    });
+  }
+
+  // Commit to drafts branch
+  const mdPath = `src/content/posts/${slug}.md`;
+  await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}`, {
+    method: "PUT",
+    headers: ghHeaders,
+    body: JSON.stringify({
+      message: `Draft: ${slug}`,
+      content: Buffer.from(fileContent).toString("base64"),
+      branch: DRAFTS_BRANCH,
+    }),
+  });
+
+  const preview = post.content.replace(/<[^>]*>/g, "").slice(0, 500) + "...";
+  return { title: post.title, slug, preview };
+}
+
+// --- Callback handler (approve/reject) ---
+
+async function handleCallback(callback: any) {
+  const [action, slug] = callback.data.split(":");
+  if (!action || !slug) return;
+
+  const [owner, repo] = GITHUB_REPOSITORY.split("/");
+  const mdPath = `src/content/posts/${slug}.md`;
+  let resultText: string;
+
+  if (action === "approve") {
+    const ghRes = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}?ref=${DRAFTS_BRANCH}`,
+      { headers: ghHeaders }
+    );
+
+    if (!ghRes.ok) {
+      await answerCallback(callback.id, `File not found on drafts: ${slug}`);
+      return;
+    }
+
+    const file = await ghRes.json();
+    const content = atob(file.content);
+    const published = content.replace(/\ndraft:\s*true/, "\ndraft: false");
+
+    // Check if exists on main
+    let mainSha: string | undefined;
+    const mainRes = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}?ref=main`,
+      { headers: ghHeaders }
+    );
+    if (mainRes.ok) {
+      mainSha = (await mainRes.json()).sha;
+    }
+
+    // Commit to main
+    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}`, {
+      method: "PUT",
+      headers: ghHeaders,
+      body: JSON.stringify({
+        message: `Publish: ${slug}`,
+        content: btoa(published),
+        branch: "main",
+        ...(mainSha ? { sha: mainSha } : {}),
+      }),
+    });
+
+    // Delete from drafts
+    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}`, {
+      method: "DELETE",
+      headers: ghHeaders,
+      body: JSON.stringify({ message: `Clean draft: ${slug}`, sha: file.sha, branch: DRAFTS_BRANCH }),
+    });
+
+    resultText = `✅ Published: ${slug}`;
+  } else {
+    const ghRes = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}?ref=${DRAFTS_BRANCH}`,
+      { headers: ghHeaders }
+    );
+
+    if (!ghRes.ok) {
+      await answerCallback(callback.id, `File not found: ${slug}`);
+      return;
+    }
+
+    const file = await ghRes.json();
+    await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}`, {
+      method: "DELETE",
+      headers: ghHeaders,
+      body: JSON.stringify({ message: `Reject: ${slug}`, sha: file.sha, branch: DRAFTS_BRANCH }),
+    });
+
+    resultText = `❌ Deleted: ${slug}`;
+  }
+
+  await answerCallback(callback.id, resultText);
+  await editMessage(callback.message.chat.id, callback.message.message_id, resultText);
+}
+
+// --- Telegram helpers ---
+
+async function reply(chatId: number, text: string) {
+  await sendTelegram(chatId, text);
+  return new Response("OK", { status: 200 });
+}
+
+async function sendTelegram(chatId: number, text: string) {
+  await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: chatId, text }),
+  });
+}
+
+function escapeMarkdown(text: string) {
+  return text.replace(/([_*\[\]()~`>#+\-=|{}.!\\])/g, "\\$1");
+}
+
+async function sendTelegramWithButtons(chatId: number, title: string, slug: string, preview: string) {
+  const text = `📝 New draft: *${escapeMarkdown(title)}*\n\n${escapeMarkdown(preview)}`;
+  await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text,
+      parse_mode: "MarkdownV2",
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "✅ Approve Publish", callback_data: `approve:${slug}` }],
+          [{ text: "❌ Reject Delete", callback_data: `reject:${slug}` }],
+        ],
+      },
+    }),
+  });
+}
 
 async function answerCallback(callbackId: string, text: string) {
   await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/answerCallbackQuery`, {

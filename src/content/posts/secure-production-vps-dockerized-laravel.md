@@ -2,6 +2,7 @@
 title: "How I Set Up a Secure Production VPS for a Dockerized Laravel App"
 date: 2025-01-31
 description: "A guide on setting up a secure production VPS for a Dockerized Laravel app"
+draft: false
 ---
 
 > [!tip] 💡

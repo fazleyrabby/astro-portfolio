@@ -73,6 +73,51 @@ export const POST: APIRoute = async ({ request }) => {
       return reply(chatId, "Context reset.");
     }
 
+    if (text.startsWith("/list")) {
+      const [owner, repo] = GITHUB_REPOSITORY.split("/");
+      try {
+        const res = await fetch(
+          `https://api.github.com/repos/${owner}/${repo}/contents/src/content/posts?ref=main`,
+          { headers: ghHeaders }
+        );
+        if (!res.ok) return reply(chatId, "No posts found.");
+        const files = (await res.json()) as any[];
+        const posts = files
+          .filter((f: any) => f.name.endsWith(".md"))
+          .map((f: any, i: number) => `${i + 1}. ${f.name.replace(".md", "")}`)
+          .join("\n");
+        return reply(chatId, `📋 Posts on main:\n\n${posts}\n\nUse /delete <slug> to remove.`);
+      } catch {
+        return reply(chatId, "Failed to fetch posts.");
+      }
+    }
+
+    if (text.startsWith("/delete")) {
+      const slug = text.slice(7).trim();
+      if (!slug) return reply(chatId, "Usage: /delete <slug>");
+      const [owner, repo] = GITHUB_REPOSITORY.split("/");
+      const mdPath = `src/content/posts/${slug}.md`;
+      try {
+        const res = await fetch(
+          `https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}?ref=main`,
+          { headers: ghHeaders }
+        );
+        if (!res.ok) return reply(chatId, `Post not found: ${slug}`);
+        const file = await res.json();
+        await fetch(
+          `https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}`,
+          {
+            method: "DELETE",
+            headers: ghHeaders,
+            body: JSON.stringify({ message: `Delete: ${slug}`, sha: file.sha, branch: "main" }),
+          }
+        );
+        return reply(chatId, `🗑 Deleted: ${slug}`);
+      } catch (e: any) {
+        return reply(chatId, `Delete failed: ${e.message}`);
+      }
+    }
+
     if (text.startsWith("/generate")) {
       await sendTelegram(chatId, "⏳ Generating post...");
       try {

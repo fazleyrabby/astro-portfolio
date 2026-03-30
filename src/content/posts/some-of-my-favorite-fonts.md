@@ -2,6 +2,7 @@
 title: "Some of my favorite fonts"
 date: 2024-03-15
 description: "A list of free fonts for developers and designers"
+draft: false
 ---
 
 
@@ -56,6 +57,3 @@ These are some of my personal favorite fonts that I have collected over the year
     <a href="https://github.com/subframe7536/maple-font/releases" target="_blank">Maple Mono<img class="preview m-0" src="/images/uploads/Maple Mono.png"></p></a>
     <a href="https://input.djr.com/download/" target="_blank">Input<img class="preview m-0" src="/images/uploads/Input.png"></p></a>
 </div>
-
-
-

@@ -1,0 +1,3 @@
+{
+  "topic": "Real-world Laravel queue scaling with Redis failed jobs\n/category backend\n/context production monitoring, retries, Horizon dashboard\n/note include Redis pub/sub code + supervisor config\n/status"
+}

@@ -2,6 +2,7 @@
 title: "System stats on terminal (debian - ubuntu)"
 date: 2024-02-10
 description: "How to view system stats on terminal for Debian and Ubuntu"
+draft: false
 ---
 
 This document explains how to install prerequisites, create the script, fix permissions, and run it safely on a **Proxmox host**, including with:

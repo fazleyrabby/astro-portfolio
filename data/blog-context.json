@@ -1,3 +1,3 @@
 {
-  "topic": "Why most Laravel APIs break at scale and how I fix them in production\n/category backend\n/context slow endpoints, large datasets, bad pagination, N+1 queries, lack of caching\n/note include eager loading, cursor pagination, Redis caching layer, API resource optimization, and rate limiting strategies"
+  "topic": "Running Laravel in production with Docker: what actually breaks\n/category devops\n/context containerization issues, queue workers, cron jobs, environment configs, deployment pitfalls\n/note include docker-compose setup, queue worker containers, scheduler setup, env handling, and common production mistakes\n/status"
 }

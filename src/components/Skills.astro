@@ -12,9 +12,9 @@ const skillsMatrix = [
 ];
 ---
 
-<section id="skills" class="py-8 overflow-hidden">
+<section id="skills" class="py-16 overflow-hidden">
   <div class="max-w-6xl mx-auto px-6">
-    <div class="flex items-center gap-6 mb-6">
+    <div class="flex items-center gap-6 mb-12">
       <div>
         <span class="section-label">03 / Skills</span>
         <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.8rem,5vw,2.5rem)] leading-tight">Expertise & Stack</h2>
@@ -34,7 +34,7 @@ const skillsMatrix = [
     </div>
   </div>
 
-  <div class="marquee-track -mt-4">
+  <div class="marquee-track">
     <div class="marquee-inner marquee-inner--right">
       {[...marqueeItems.slice().reverse(), ...marqueeItems.slice().reverse()].map(item => (
         <div class="marquee-item">

@@ -205,7 +205,7 @@
   }
 
   .editorial-break {
-    padding: clamp(1.25rem, 3vw, 2rem) 0;
+    padding: clamp(4rem, 8vw, 7rem) 0;
     text-align: center;
     position: relative;
     z-index: 1;

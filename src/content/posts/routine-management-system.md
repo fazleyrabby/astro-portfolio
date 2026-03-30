@@ -2,6 +2,7 @@
 title: "Routine Management System"
 date: 2024-04-20
 description: "A deep dive into the Routine Management System project"
+draft: false
 ---
 
 ### Project Overview

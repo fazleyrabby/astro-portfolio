@@ -1,3 +1,3 @@
 {
-  "topic": "Running Laravel in production with Docker: what actually breaks\n/category devops\n/context containerization issues, queue workers, cron jobs, environment configs, deployment pitfalls\n/note include docker-compose setup, queue worker containers, scheduler setup, env handling, and common production mistakes\n/status"
+  "topic": "Building a reliable webhook system in Laravel for third-party integrations\n/category backend\n/context handling webhook retries, idempotency, signature verification, queue processing, and failure handling in production\n/note include webhook signature validation (HMAC), idempotency keys, storing webhook logs, retry strategies, queueing webhooks, and handling duplicate events safely\n/status"
 }

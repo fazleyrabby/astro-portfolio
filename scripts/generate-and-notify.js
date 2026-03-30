@@ -19,20 +19,21 @@ async function loadTopics() {
   try {
     const { data } = await octokit.repos.getContent({ owner, repo, path: 'data/blog-context.json' });
     const parsed = JSON.parse(Buffer.from(data.content, 'base64').toString('utf8'));
-    return { topics: parsed.topics || [], sha: data.sha };
+    return parsed.topics || [];
   } catch {
-    return { topics: [], sha: null };
+    return [];
   }
 }
 
-async function removeUsedTopic(remainingTopics, sha) {
+async function removeUsedTopic(remainingTopics) {
+  const { data } = await octokit.repos.getContent({ owner, repo, path: 'data/blog-context.json' });
   const content = JSON.stringify({ topics: remainingTopics }, null, 2) + '\n';
   await octokit.repos.createOrUpdateFileContents({
     owner, repo,
     path: 'data/blog-context.json',
     message: 'Remove used topic from queue',
     content: Buffer.from(content).toString('base64'),
-    sha,
+    sha: data.sha,
   });
 }
 
@@ -151,7 +152,7 @@ async function main() {
   if (!TELEGRAM_TOKEN) throw new Error('TELEGRAM_TOKEN must be set');
   if (!CHAT_ID) throw new Error('TELEGRAM_CHAT_ID must be set');
 
-  const { topics, sha } = await loadTopics();
+  const topics = await loadTopics();
 
   if (!topics.length) {
     console.log('No topics in queue. Skipping generation.');
@@ -179,7 +180,7 @@ async function main() {
   const preview = post.content.replace(/<[^>]*>/g, '').slice(0, 500) + '...';
   await sendTelegram(post.title, slug, preview);
 
-  await removeUsedTopic(remainingTopics, sha);
+  await removeUsedTopic(remainingTopics);
   console.log(`Done — draft committed, topic removed from queue (${remainingTopics.length} left).`);
 }
 

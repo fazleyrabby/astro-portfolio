@@ -16,69 +16,82 @@ const REPO = process.env.GITHUB_REPOSITORY || 'rabbi/astro-portfolio';
 
 let pendingSlug = null;
 
-async function loadContext() {
+async function loadQueue() {
   try {
     const data = await fs.readFile(contextPath, 'utf8');
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    return parsed.topics || [];
   } catch {
-    return {};
+    return [];
   }
 }
 
-async function saveContext(context) {
-  await fs.writeFile(contextPath, JSON.stringify(context, null, 2));
+async function saveQueue(topics) {
+  await fs.writeFile(contextPath, JSON.stringify({ topics }, null, 2));
 }
 
 // Commands
 
-bot.command('topic', async (ctx) => {
-  const text = ctx.message.text.slice(7).trim(); // /topic + space
-  if (!text) return ctx.reply('Usage: /topic <text>');
-  const context = await loadContext();
-  context.topic = text;
-  await saveContext(context);
-  ctx.reply(`Topic set: ${text}`);
+bot.command('add', async (ctx) => {
+  const text = ctx.message.text.slice(5).trim();
+  if (!text) return ctx.reply('Usage: /add <topic>');
+  const topics = await loadQueue();
+  topics.push({ topic: text, category: 'backend', context: '', notes: '' });
+  await saveQueue(topics);
+  ctx.reply(`Topic added (#${topics.length} in queue): ${text}`);
 });
 
-
+bot.command('topic', async (ctx) => {
+  const text = ctx.message.text.slice(7).trim();
+  if (!text) return ctx.reply('Usage: /topic <topic>\nAdds a full topic. Use /category, /context, /note to set details on the last added topic.');
+  const topics = await loadQueue();
+  topics.push({ topic: text, category: 'backend', context: '', notes: '' });
+  await saveQueue(topics);
+  ctx.reply(`Topic added (#${topics.length} in queue): ${text}`);
+});
 
 bot.command('context', async (ctx) => {
-  const text = ctx.message.text.slice(9).trim(); // /context + space
-  const context = await loadContext();
-  context.context = text || '';
-  await saveContext(context);
-  ctx.reply(`Context set: ${text || 'cleared'}`);
+  const text = ctx.message.text.slice(9).trim();
+  const topics = await loadQueue();
+  if (!topics.length) return ctx.reply('No topics in queue. Add one first with /topic');
+  topics[topics.length - 1].context = text || '';
+  await saveQueue(topics);
+  ctx.reply(`Context set on last topic: ${text || 'cleared'}`);
 });
-
-
 
 bot.command('category', async (ctx) => {
-  const text = ctx.message.text.slice(10).trim(); // /category + space
-  const context = await loadContext();
-  context.category = text || '';
-  await saveContext(context);
-  ctx.reply(`Category set: ${text || 'general'}`);
+  const text = ctx.message.text.slice(10).trim();
+  const topics = await loadQueue();
+  if (!topics.length) return ctx.reply('No topics in queue. Add one first with /topic');
+  topics[topics.length - 1].category = text || 'general';
+  await saveQueue(topics);
+  ctx.reply(`Category set on last topic: ${text || 'general'}`);
 });
-
-
 
 bot.command('note', async (ctx) => {
-  const text = ctx.message.text.slice(6).trim(); // /note + space
-  const context = await loadContext();
-  context.notes = text || '';
-  await saveContext(context);
-  ctx.reply(`Note set: ${text || 'none'}`);
+  const text = ctx.message.text.slice(6).trim();
+  const topics = await loadQueue();
+  if (!topics.length) return ctx.reply('No topics in queue. Add one first with /topic');
+  topics[topics.length - 1].notes = text || '';
+  await saveQueue(topics);
+  ctx.reply(`Note set on last topic: ${text || 'none'}`);
 });
 
-
 bot.command('status', async (ctx) => {
-  const context = await loadContext();
-  ctx.reply(`📝 Context:\nTopic: ${context.topic || 'none'}\nCategory: ${context.category || 'general'}\nContext: ${context.context || 'none'}\nNotes: ${context.notes || 'none'}`);
+  const topics = await loadQueue();
+  if (!topics.length) return ctx.reply('📝 Queue is empty. Add topics with /topic');
+  const next = topics[0];
+  let msg = `📝 Queue: ${topics.length} topic(s)\n\nNext up:\n• Topic: ${next.topic}\n• Category: ${next.category || 'general'}\n• Context: ${next.context || 'none'}\n• Notes: ${next.notes || 'none'}`;
+  if (topics.length > 1) {
+    msg += '\n\nUpcoming:';
+    topics.slice(1).forEach((t, i) => { msg += `\n${i + 2}. ${t.topic}`; });
+  }
+  ctx.reply(msg);
 });
 
 bot.command('reset', async (ctx) => {
-  await saveContext({});
-  ctx.reply('Context reset.');
+  await saveQueue([]);
+  ctx.reply('Queue cleared.');
 });
 
 bot.command('generate', async (ctx) => {

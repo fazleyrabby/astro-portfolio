@@ -15,13 +15,25 @@ const [owner, repo] = (process.env.GITHUB_REPOSITORY || '').split('/');
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-async function loadContext() {
+async function loadTopics() {
   try {
     const { data } = await octokit.repos.getContent({ owner, repo, path: 'data/blog-context.json' });
-    return JSON.parse(Buffer.from(data.content, 'base64').toString('utf8'));
+    const parsed = JSON.parse(Buffer.from(data.content, 'base64').toString('utf8'));
+    return { topics: parsed.topics || [], sha: data.sha };
   } catch {
-    return {};
+    return { topics: [], sha: null };
   }
+}
+
+async function removeUsedTopic(remainingTopics, sha) {
+  const content = JSON.stringify({ topics: remainingTopics }, null, 2) + '\n';
+  await octokit.repos.createOrUpdateFileContents({
+    owner, repo,
+    path: 'data/blog-context.json',
+    message: 'Remove used topic from queue',
+    content: Buffer.from(content).toString('base64'),
+    sha,
+  });
 }
 
 async function generatePost(context) {
@@ -36,12 +48,7 @@ Context: ${context.context || ''}
 Notes: ${context.notes || ''}
 
 Requirements:
-- Avoid generic advice
-- Focus on real-world problems
-- Include practical examples
-- Write in first-person
-- Include code snippets
-- Structure: intro → problem → solution → code → conclusion
+Write as an experienced Laravel backend engineer describing a real production problem and solution; avoid beginner explanations and generic phrases; focus on what breaks in production, include trade-offs, edge cases (retries, race conditions, scaling), use concise first-person tone, add at least one realistic code example, follow structure (intro → problem → solution → code → conclusion), go deep on one issue only, output clean Markdown.
 
 Output ONLY JSON:
 {
@@ -144,20 +151,17 @@ async function main() {
   if (!TELEGRAM_TOKEN) throw new Error('TELEGRAM_TOKEN must be set');
   if (!CHAT_ID) throw new Error('TELEGRAM_CHAT_ID must be set');
 
-  const contextRaw = await loadContext();
-  const context = {
-    topic: contextRaw.topic?.split('\n')[0] || '',
-    category: contextRaw.category || '',
-    context: contextRaw.context || '',
-    notes: contextRaw.notes || '',
-  };
+  const { topics, sha } = await loadTopics();
 
-  if (!context.topic) {
-    console.log('No topic set. Skipping generation.');
+  if (!topics.length) {
+    console.log('No topics in queue. Skipping generation.');
     process.exit(0);
   }
 
-  console.log(`Generating post for topic: ${context.topic}`);
+  const context = topics[0];
+  const remainingTopics = topics.slice(1);
+
+  console.log(`Generating post for topic: ${context.topic} (${remainingTopics.length} remaining)`);
   const post = await generatePost(context);
 
   const slug = post.title.toLowerCase()
@@ -175,7 +179,8 @@ async function main() {
   const preview = post.content.replace(/<[^>]*>/g, '').slice(0, 500) + '...';
   await sendTelegram(post.title, slug, preview);
 
-  console.log('Done — draft committed and Telegram notification sent.');
+  await removeUsedTopic(remainingTopics, sha);
+  console.log(`Done — draft committed, topic removed from queue (${remainingTopics.length} left).`);
 }
 
 main().catch((e) => {

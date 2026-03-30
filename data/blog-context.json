@@ -1,3 +1,64 @@
 {
-  "topic": "Building a reliable webhook system in Laravel for third-party integrations\n/category backend\n/context handling webhook retries, idempotency, signature verification, queue processing, and failure handling in production\n/note include webhook signature validation (HMAC), idempotency keys, storing webhook logs, retry strategies, queueing webhooks, and handling duplicate events safely\n/status"
+  "topics": [
+    {
+      "topic": "Handling race conditions in Laravel applications",
+      "category": "backend",
+      "context": "concurrent requests updating the same data, database locking issues, and inconsistent state in production systems",
+      "notes": "include pessimistic vs optimistic locking, transactions, unique constraints, and queue-based serialization strategies"
+    },
+    {
+      "topic": "Designing a scalable notification system in Laravel",
+      "category": "backend",
+      "context": "sending notifications via email, SMS, and push with high throughput and reliability",
+      "notes": "include queueing notifications, channel separation, retry handling, rate limiting, and user preference management"
+    },
+    {
+      "topic": "Preventing duplicate payments and transactions in Laravel",
+      "category": "backend",
+      "context": "handling double submissions, retry requests, and payment gateway callbacks safely",
+      "notes": "include idempotency keys, database constraints, transaction handling, and webhook validation"
+    },
+    {
+      "topic": "Building a dynamic feature flag system in Laravel",
+      "category": "backend",
+      "context": "enabling or disabling features without deployments and managing feature rollout",
+      "notes": "include database-driven flags, caching, user targeting, percentage rollout, and fallback strategies"
+    },
+    {
+      "topic": "Designing a scalable search system in Laravel applications",
+      "category": "backend",
+      "context": "handling full-text search, filtering, and performance issues with large datasets",
+      "notes": "include MySQL full-text search vs external tools, indexing strategies, caching results, and pagination optimization"
+    },
+    {
+      "topic": "Handling file uploads at scale in Laravel applications",
+      "category": "backend",
+      "context": "large file uploads, network failures, and storage management in production systems",
+      "notes": "include chunked uploads, presigned URLs, queue-based processing, and cleaning orphaned files"
+    },
+    {
+      "topic": "Implementing audit logs for critical actions in Laravel",
+      "category": "backend",
+      "context": "tracking user actions and system changes for debugging and compliance",
+      "notes": "include activity logging, storing changes, database structure, and querying logs efficiently"
+    },
+    {
+      "topic": "Designing a scalable caching strategy in Laravel",
+      "category": "backend",
+      "context": "reducing database load and improving response time in high-traffic applications",
+      "notes": "include Redis caching patterns, cache invalidation, tagging, and handling stale data"
+    },
+    {
+      "topic": "Handling scheduled tasks and cron jobs reliably in Laravel",
+      "category": "backend",
+      "context": "running recurring jobs, avoiding overlaps, and ensuring execution reliability",
+      "notes": "include Laravel scheduler, without overlapping, distributed locks, and monitoring failed tasks"
+    },
+    {
+      "topic": "Building a modular architecture in Laravel applications",
+      "category": "backend",
+      "context": "structuring large codebases into reusable and maintainable modules",
+      "notes": "include module separation, service providers, dependency management, and integration between modules"
+    }
+  ]
 }

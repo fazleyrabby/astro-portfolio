@@ -86,12 +86,38 @@ const navItems = [
         0%, 100% { opacity: 1; transform: scale(1); }
         50% { opacity: 0.5; transform: scale(0.8); }
     }
+
+    #mobile-menu {
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #mobile-menu.menu-open {
+        opacity: 1;
+        transform: translateY(0);
+    }
 </style>
 
 <script>
     const mobileMenuButton = document.getElementById("mobile-menu-button");
     const mobileMenu = document.getElementById("mobile-menu");
+    
     mobileMenuButton?.addEventListener("click", () => {
-        mobileMenu?.classList.toggle("hidden");
+        if (!mobileMenu) return;
+        
+        if (mobileMenu.classList.contains("hidden")) {
+            mobileMenu.classList.remove("hidden");
+            // Trigger reflow to apply the transition
+            void mobileMenu.offsetWidth;
+            mobileMenu.classList.add("menu-open");
+        } else {
+            mobileMenu.classList.remove("menu-open");
+            // Wait for transition to finish before hiding display
+            setTimeout(() => {
+                if (!mobileMenu.classList.contains("menu-open")) {
+                    mobileMenu.classList.add("hidden");
+                }
+            }, 300);
+        }
     });
 </script>

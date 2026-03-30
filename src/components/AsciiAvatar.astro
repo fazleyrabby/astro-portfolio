@@ -1,4 +1,5 @@
 ---
+
 ---
 
 <div class="ascii-avatar" aria-hidden="true">
@@ -28,7 +29,11 @@
     position: absolute;
     inset: -20%;
     opacity: 0;
-    background: radial-gradient(circle at 50% 50%, rgba(232, 130, 58, 0.06) 0%, transparent 65%);
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(232, 130, 58, 0.06) 0%,
+      transparent 65%
+    );
     transition: opacity 0.8s ease;
     pointer-events: none;
   }
@@ -39,14 +44,14 @@
 
   @media (max-width: 1024px) {
     .ascii-avatar {
-      display: none;
+      opacity: 1;
     }
   }
 </style>
 
 <script is:inline>
-(function () {
-  const DARK_ART = `$&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&$
+  (function () {
+    const DARK_ART = `$&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&$
 $&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 $&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 $&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -111,7 +116,7 @@ $&&&$$$$$$$$$$&&&$$$X:..         .. ..                       :.                 
 $&&&&$$$$$$$$$&&&&$$x           .:.. .             .....   ...   ...       ..                                +X$$$$$$X
 $&&&&&&$$$$$$$$$$$$$+..         :....            .....:. .:::.  .. .     ...                                 ;X$$$$$$X`;
 
-  const LIGHT_ART = `:...............................::::::::::::::::::::::::::::::::::::::::...........................:
+    const LIGHT_ART = `:...............................::::::::::::::::::::::::::::::::::::::::...........................:
 :..............................:::::::::::::::::::::::::::::::::::::::::::::.......................:
 :......::::::..::...::::::::::::::::::::::::::...:::::::::::::::::::::::::::.......................:
 :.................:::::::::::::::::::::::::.................::::::::::::::.........................:
@@ -166,223 +171,276 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
 ;::::::;:;;::::::+$$$$$$&&$$X$X$$$$$$$$$$$$$XX$$$$$X$$$$X$$$$$$$$$$$$$$$$$$&&&&&&&$$$$$$$$$$X;;;;;;;
 :::::::;;;;:::::;x$$$$$$&&&X$$$$$$$$$$$$$$$$$XX$$XXX$$$$$$$$$$$$$$$$$$$$$$&&&&&&$&$$$$$$$$$$X+;;;;;+`;
 
-  const cnv = document.getElementById('ascii-smoke-canvas');
-  if (!cnv) return;
-  const ctx = cnv.getContext('2d');
+    const cnv = document.getElementById("ascii-smoke-canvas");
+    if (!cnv) return;
+    const ctx = cnv.getContext("2d");
 
-  function isDark() {
-    return document.documentElement.classList.contains('dark');
-  }
-
-  function buildParticles(art) {
-    const lines = art.split('\n');
-    const rows = lines.length;
-    const cols = Math.max(...lines.map(l => l.length));
-    const CELL_W = 4.2;
-    const CELL_H = 7;
-    const particles = [];
-
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < lines[r].length; c++) {
-        const ch = lines[r][c];
-        if (ch === ' ') continue;
-        particles.push({
-          ch,
-          homeX: c * CELL_W,
-          homeY: r * CELL_H,
-          x: c * CELL_W,
-          y: r * CELL_H,
-          vx: 0,
-          vy: 0,
-          opacity: 1,
-          homeOpacity: 1,
-        });
-      }
+    function isDark() {
+      return document.documentElement.classList.contains("dark");
     }
 
-    const artW = cols * CELL_W;
-    const artH = rows * CELL_H;
-    const cx = artW / 2;
-    const cy = artH / 2;
+    function buildParticles(art) {
+      const lines = art.split("\n");
+      const rows = lines.length;
+      const cols = Math.max(...lines.map((l) => l.length));
+      const CELL_W = 4.2;
+      const CELL_H = 7;
+      const particles = [];
 
-    for (const p of particles) {
-      const dx = (p.homeX - cx) / (artW * 0.48);
-      const dy = (p.homeY - cy) / (artH * 0.48);
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const angle = Math.atan2(dy, dx);
-      const noiseVal = pseudoNoise(angle * 3, dist * 5) * 0.3;
-      const edgeThreshold = 0.7 + noiseVal;
-
-      if (dist > edgeThreshold) {
-        const fade = 1 - ((dist - edgeThreshold) / (0.4 + noiseVal * 0.2));
-        p.homeOpacity = Math.max(0, Math.min(1, fade));
-        p.opacity = p.homeOpacity;
-      }
-    }
-
-    return {
-      visible: particles.filter(p => p.homeOpacity > 0.01),
-      artW,
-      artH,
-      CELL_H,
-    };
-  }
-
-  function pseudoNoise(x, y) {
-    const n = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453;
-    return n - Math.floor(n);
-  }
-
-  let currentTheme = isDark() ? 'dark' : 'light';
-  let data = buildParticles(currentTheme === 'dark' ? DARK_ART : LIGHT_ART);
-
-  let width, height, offsetX, offsetY, scale;
-  let mouseX = -9999, mouseY = -9999;
-  let isHovering = false;
-  let animating = false;
-  let dpr = 1;
-
-  function resize() {
-    const rect = cnv.parentElement.getBoundingClientRect();
-    dpr = window.devicePixelRatio || 1;
-    width = rect.width;
-    height = rect.height;
-    cnv.width = width * dpr;
-    cnv.height = height * dpr;
-    cnv.style.width = width + 'px';
-    cnv.style.height = height + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    scale = Math.min(width / data.artW, height / data.artH) * 1.05;
-    offsetX = (width - data.artW * scale) / 2;
-    offsetY = (height - data.artH * scale) / 2;
-  }
-
-  function getStyle(prop) {
-    return getComputedStyle(document.documentElement).getPropertyValue(prop).trim();
-  }
-
-  function draw() {
-    // Check for theme change
-    const nowTheme = isDark() ? 'dark' : 'light';
-    if (nowTheme !== currentTheme) {
-      currentTheme = nowTheme;
-      data = buildParticles(currentTheme === 'dark' ? DARK_ART : LIGHT_ART);
-      resize();
-    }
-
-    ctx.clearRect(0, 0, width, height);
-
-    const mutedColor = getStyle('--text-muted') || '#57534E';
-    const accentColor = getStyle('--accent') || '#E8823A';
-
-    ctx.save();
-    ctx.translate(offsetX, offsetY);
-    ctx.scale(scale, scale);
-
-    const fontSize = data.CELL_H * 0.95;
-    ctx.font = `${fontSize}px "DM Mono", monospace`;
-    ctx.textBaseline = 'top';
-
-    const baseRadius = 90;
-    const pushStrength = 22;
-    const frameTime = performance.now() * 0.001;
-
-    for (const p of data.visible) {
-      if (isHovering) {
-        const localMX = (mouseX - offsetX) / scale;
-        const localMY = (mouseY - offsetY) / scale;
-        const ddx = p.x - localMX;
-        const ddy = p.y - localMY;
-        const dist = Math.sqrt(ddx * ddx + ddy * ddy);
-
-        const n = pseudoNoise(p.homeX * 0.07 + frameTime * 0.4, p.homeY * 0.07);
-        const smokeRadius = baseRadius * (0.55 + n * 0.9);
-
-        if (dist < smokeRadius && dist > 0) {
-          const force = (1 - dist / smokeRadius) * pushStrength;
-          const angle = Math.atan2(ddy, ddx);
-          const jitter = 0.7 + pseudoNoise(p.homeX * 0.13, p.homeY * 0.13 + frameTime) * 0.6;
-          p.vx += Math.cos(angle) * force * 0.3 * jitter;
-          p.vy += (Math.sin(angle) * force - force * 0.12) * 0.3 * jitter;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < lines[r].length; c++) {
+          const ch = lines[r][c];
+          if (ch === " ") continue;
+          particles.push({
+            ch,
+            homeX: c * CELL_W,
+            homeY: r * CELL_H,
+            x: c * CELL_W,
+            y: r * CELL_H,
+            vx: 0,
+            vy: 0,
+            opacity: 1,
+            homeOpacity: 1,
+          });
         }
       }
 
-      const springK = isHovering ? 0.02 : 0.06;
-      p.vx += (p.homeX - p.x) * springK;
-      p.vy += (p.homeY - p.y) * springK;
-      p.vx *= 0.88;
-      p.vy *= 0.88;
-      p.x += p.vx;
-      p.y += p.vy;
+      const artW = cols * CELL_W;
+      const artH = rows * CELL_H;
+      const cx = artW / 2;
+      const cy = artH / 2;
 
-      const dispDist = Math.sqrt((p.x - p.homeX) ** 2 + (p.y - p.homeY) ** 2);
-      const dispFade = Math.max(0.08, 1 - dispDist / 80);
-      p.opacity += (p.homeOpacity * dispFade - p.opacity) * 0.1;
+      for (const p of particles) {
+        const dx = (p.homeX - cx) / (artW * 0.48);
+        const dy = (p.homeY - cy) / (artH * 0.48);
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx);
+        const noiseVal = pseudoNoise(angle * 3, dist * 5) * 0.3;
+        const edgeThreshold = 0.7 + noiseVal;
 
-      let color = mutedColor;
-      if (isHovering) {
-        const localMX2 = (mouseX - offsetX) / scale;
-        const localMY2 = (mouseY - offsetY) / scale;
-        const md = Math.sqrt((p.x - localMX2) ** 2 + (p.y - localMY2) ** 2);
-        const colorNoise = pseudoNoise(p.homeX * 0.09 + frameTime * 0.3, p.homeY * 0.09);
-        const colorRadius = baseRadius * (0.8 + colorNoise * 1.2);
-        if (md < colorRadius) {
-          color = accentColor;
+        if (dist > edgeThreshold) {
+          const fade = 1 - (dist - edgeThreshold) / (0.4 + noiseVal * 0.2);
+          p.homeOpacity = Math.max(0, Math.min(1, fade));
+          p.opacity = p.homeOpacity;
         }
       }
 
-      // Idle twinkle: gentle slow breathing on scattered characters
-      let alpha = p.opacity;
-      if (!isHovering) {
-        const twinkle = pseudoNoise(p.homeX * 0.05 + frameTime * 0.08, p.homeY * 0.07 + frameTime * 0.06);
-        if (twinkle > 0.96) {
-          const pulse = Math.sin(frameTime * 0.8 + p.homeX * 0.2 + p.homeY * 0.15);
-          alpha *= 0.55 + 0.45 * ((pulse + 1) * 0.5);
-        }
-      }
-
-      ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
-      ctx.fillStyle = color;
-      ctx.fillText(p.ch, p.x, p.y);
+      return {
+        visible: particles.filter((p) => p.homeOpacity > 0.01),
+        artW,
+        artH,
+        CELL_H,
+      };
     }
 
-    ctx.restore();
+    function pseudoNoise(x, y) {
+      const n = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453;
+      return n - Math.floor(n);
+    }
 
-    // Always keep animating for the idle twinkle
-    animating = true;
-    requestAnimationFrame(draw);
-  }
+    let currentTheme = isDark() ? "dark" : "light";
+    let data = buildParticles(currentTheme === "dark" ? DARK_ART : LIGHT_ART);
 
-  function startAnim() {
-    if (!animating) {
+    let width, height, offsetX, offsetY, scale;
+    let mouseX = -9999,
+      mouseY = -9999;
+    let isHovering = false;
+    let animating = false;
+    let dpr = 1;
+
+    function resize() {
+      const rect = cnv.parentElement.getBoundingClientRect();
+      dpr = window.devicePixelRatio || 1;
+      width = rect.width;
+      height = rect.height;
+      cnv.width = width * dpr;
+      cnv.height = height * dpr;
+      cnv.style.width = width + "px";
+      cnv.style.height = height + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      scale = Math.min(width / data.artW, height / data.artH) * 1.05;
+      offsetX = (width - data.artW * scale) / 2;
+      offsetY = (height - data.artH * scale) / 2;
+    }
+
+    function getStyle(prop) {
+      return getComputedStyle(document.documentElement)
+        .getPropertyValue(prop)
+        .trim();
+    }
+
+    function draw() {
+      // Check for theme change
+      const nowTheme = isDark() ? "dark" : "light";
+      if (nowTheme !== currentTheme) {
+        currentTheme = nowTheme;
+        data = buildParticles(currentTheme === "dark" ? DARK_ART : LIGHT_ART);
+        resize();
+      }
+
+      ctx.clearRect(0, 0, width, height);
+
+      const mutedColor = getStyle("--text-muted") || "#57534E";
+      const accentColor = getStyle("--accent") || "#E8823A";
+
+      ctx.save();
+      ctx.translate(offsetX, offsetY);
+      ctx.scale(scale, scale);
+
+      const fontSize = data.CELL_H * 0.95;
+      ctx.font = `${fontSize}px "DM Mono", monospace`;
+      ctx.textBaseline = "top";
+
+      const baseRadius = 90;
+      const pushStrength = 22;
+      const frameTime = performance.now() * 0.001;
+
+      for (const p of data.visible) {
+        if (isHovering) {
+          const localMX = (mouseX - offsetX) / scale;
+          const localMY = (mouseY - offsetY) / scale;
+          const ddx = p.x - localMX;
+          const ddy = p.y - localMY;
+          const dist = Math.sqrt(ddx * ddx + ddy * ddy);
+
+          const n = pseudoNoise(
+            p.homeX * 0.07 + frameTime * 0.4,
+            p.homeY * 0.07,
+          );
+          const smokeRadius = baseRadius * (0.55 + n * 0.9);
+
+          if (dist < smokeRadius && dist > 0) {
+            const force = (1 - dist / smokeRadius) * pushStrength;
+            const angle = Math.atan2(ddy, ddx);
+            const jitter =
+              0.7 +
+              pseudoNoise(p.homeX * 0.13, p.homeY * 0.13 + frameTime) * 0.6;
+            p.vx += Math.cos(angle) * force * 0.3 * jitter;
+            p.vy += (Math.sin(angle) * force - force * 0.12) * 0.3 * jitter;
+          }
+        }
+
+        const springK = isHovering ? 0.02 : 0.06;
+        p.vx += (p.homeX - p.x) * springK;
+        p.vy += (p.homeY - p.y) * springK;
+        p.vx *= 0.88;
+        p.vy *= 0.88;
+        p.x += p.vx;
+        p.y += p.vy;
+
+        const dispDist = Math.sqrt((p.x - p.homeX) ** 2 + (p.y - p.homeY) ** 2);
+        const dispFade = Math.max(0.08, 1 - dispDist / 80);
+        p.opacity += (p.homeOpacity * dispFade - p.opacity) * 0.1;
+
+        let color = mutedColor;
+        if (isHovering) {
+          const localMX2 = (mouseX - offsetX) / scale;
+          const localMY2 = (mouseY - offsetY) / scale;
+          const md = Math.sqrt((p.x - localMX2) ** 2 + (p.y - localMY2) ** 2);
+          const colorNoise = pseudoNoise(
+            p.homeX * 0.09 + frameTime * 0.3,
+            p.homeY * 0.09,
+          );
+          const colorRadius = baseRadius * (0.8 + colorNoise * 1.2);
+          if (md < colorRadius) {
+            color = accentColor;
+          }
+        }
+
+        // Idle twinkle: gentle slow breathing on scattered characters
+        let alpha = p.opacity;
+        if (!isHovering) {
+          const twinkle = pseudoNoise(
+            p.homeX * 0.05 + frameTime * 0.08,
+            p.homeY * 0.07 + frameTime * 0.06,
+          );
+          if (twinkle > 0.96) {
+            const pulse = Math.sin(
+              frameTime * 0.8 + p.homeX * 0.2 + p.homeY * 0.15,
+            );
+            alpha *= 0.55 + 0.45 * ((pulse + 1) * 0.5);
+          }
+        }
+
+        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+        ctx.fillStyle = color;
+        ctx.fillText(p.ch, p.x, p.y);
+      }
+
+      ctx.restore();
+
+      // Always keep animating for the idle twinkle
       animating = true;
       requestAnimationFrame(draw);
     }
-  }
 
-  resize();
-  draw();
+    function startAnim() {
+      if (!animating) {
+        animating = true;
+        requestAnimationFrame(draw);
+      }
+    }
 
-  // Watch for theme toggles
-  const observer = new MutationObserver(() => startAnim());
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    resize();
+    draw();
 
-  window.addEventListener('resize', () => { resize(); startAnim(); });
+    // Watch for theme toggles
+    const observer = new MutationObserver(() => startAnim());
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
 
-  const avatar = cnv.closest('.ascii-avatar');
-  avatar.addEventListener('mouseenter', () => { isHovering = true; startAnim(); });
-  avatar.addEventListener('mousemove', (e) => {
-    const rect = cnv.getBoundingClientRect();
-    mouseX = e.clientX - rect.left;
-    mouseY = e.clientY - rect.top;
-    startAnim();
-  });
-  avatar.addEventListener('mouseleave', () => {
-    isHovering = false;
-    mouseX = -9999;
-    mouseY = -9999;
-    startAnim();
-  });
-})();
+    window.addEventListener("resize", () => {
+      resize();
+      startAnim();
+    });
+
+    const avatar = cnv.closest(".ascii-avatar");
+    avatar.addEventListener("mouseenter", () => {
+      isHovering = true;
+      startAnim();
+    });
+    avatar.addEventListener("mousemove", (e) => {
+      const rect = cnv.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+      startAnim();
+    });
+    avatar.addEventListener("mouseleave", () => {
+      isHovering = false;
+      mouseX = -9999;
+      mouseY = -9999;
+      startAnim();
+    });
+
+    avatar.addEventListener(
+      "touchstart",
+      (e) => {
+        isHovering = true;
+        const rect = cnv.getBoundingClientRect();
+        mouseX = e.touches[0].clientX - rect.left;
+        mouseY = e.touches[0].clientY - rect.top;
+        startAnim();
+      },
+      { passive: true }
+    );
+    avatar.addEventListener(
+      "touchmove",
+      (e) => {
+        const rect = cnv.getBoundingClientRect();
+        mouseX = e.touches[0].clientX - rect.left;
+        mouseY = e.touches[0].clientY - rect.top;
+        startAnim();
+      },
+      { passive: true }
+    );
+    avatar.addEventListener("touchend", () => {
+      isHovering = false;
+      mouseX = -9999;
+      mouseY = -9999;
+      startAnim();
+    });
+  })();
 </script>

@@ -11,6 +11,42 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     stagger: 0.08, ease: 'power3.out', delay: 0.2,
   });
 
+  // ── Decipher text effect on hero name ─────────────────────────────────────
+  const decipherEl = document.querySelector('[data-decipher]');
+  if (decipherEl) {
+    const finalText = decipherEl.getAttribute('data-decipher');
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?<>';
+    const totalFrames = 25;
+    const staggerFrames = 3; // frames between each letter locking in
+    let frame = 0;
+
+    // Start with scrambled text after the slide-up animation finishes
+    const startDelay = 0.2 + 0.9 + 0.08; // hero-word delay + duration + stagger
+    setTimeout(() => {
+      decipherEl.style.fontVariantNumeric = 'tabular-nums';
+      const interval = setInterval(() => {
+        let result = '';
+        for (let i = 0; i < finalText.length; i++) {
+          if (finalText[i] === ' ') {
+            result += ' ';
+          } else if (frame >= i * staggerFrames + totalFrames) {
+            result += finalText[i];
+          } else {
+            result += chars[Math.floor(Math.random() * chars.length)];
+          }
+        }
+        decipherEl.textContent = result;
+        frame++;
+
+        // All letters resolved
+        if (frame >= (finalText.length - 1) * staggerFrames + totalFrames) {
+          decipherEl.textContent = finalText;
+          clearInterval(interval);
+        }
+      }, 30);
+    }, startDelay * 1000);
+  }
+
   // ── Section heading reveals ────────────────────────────────────────────────
   gsap.utils.toArray('.reveal-heading').forEach(el => {
     gsap.from(el, {

@@ -19,7 +19,7 @@ const { Content } = await render(post);
 ---
 
 <MainLayout title={post.data.title}>
-  <main class="max-w-6xl mx-auto px-6">
+  <main class="max-w-6xl mx-auto px-6 py-16">
     <article class="prose prose-neutral dark:prose-invert max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-li:text-[var(--text-secondary)] prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)]">
       <h1 class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-[var(--text-primary)] mb-4">{post.data.title}</h1>
       <p class="mb-10">

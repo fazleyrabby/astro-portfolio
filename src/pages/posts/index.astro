@@ -17,7 +17,7 @@ publishedPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
     </p>
 
     <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {posts.map((post) => (
+      {publishedPosts.map((post) => (
         <article class="post-card group card">
           <a href={`/posts/${post.id.replace(/\.mdx?$/, '')}`} class="block p-6 no-underline">
             <div class="font-mono text-[0.72rem] text-[var(--text-muted)] mb-3">
@@ -34,7 +34,7 @@ publishedPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
       ))}
     </div>
 
-    {posts.length === 0 && (
+    {publishedPosts.length === 0 && (
       <div class="text-center py-16">
         <p class="text-[var(--text-muted)]">No posts yet. Check back soon!</p>
       </div>

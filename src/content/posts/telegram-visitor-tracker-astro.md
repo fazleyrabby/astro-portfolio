@@ -2,6 +2,7 @@
 title: "Tracking Website Visitors with a Telegram Bot (Astro)"
 date: 2026-03-14
 description: "How to implement a telegram bot with js in Astro"
+draft: false
 ---
 
 A simple way to get notified whenever someone visits your website is by

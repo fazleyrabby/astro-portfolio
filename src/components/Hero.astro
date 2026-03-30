@@ -1,9 +1,11 @@
 ---
-import AsciiAvatar from './AsciiAvatar.astro';
+import AsciiAvatar from "./AsciiAvatar.astro";
 ---
 
-<section id="hero" class="hero-section min-h-[85svh] relative flex items-center overflow-hidden pt-12 pb-32">
-
+<section
+  id="hero"
+  class="hero-section min-h-[85svh] relative flex items-center overflow-hidden pt-12 pb-32"
+>
   <!-- Cursor-reactive light -->
   <div class="hero-cursor-light" aria-hidden="true"></div>
 
@@ -11,18 +13,23 @@ import AsciiAvatar from './AsciiAvatar.astro';
   <div class="hero-breathe" aria-hidden="true"></div>
 
   <!-- Diagonal grid - subtle -->
-  <div class="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
+  <div
+    class="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
     style="background-image:linear-gradient(var(--text-primary) 1px,transparent 1px),linear-gradient(90deg,var(--text-primary) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);"
-    aria-hidden="true"></div>
+    aria-hidden="true"
+  >
+  </div>
 
   <!-- Smooth merge fade at bottom -->
-  <div class="absolute bottom-0 left-0 right-0 h-56 pointer-events-none z-20"
+  <div
+    class="absolute bottom-0 left-0 right-0 h-56 pointer-events-none z-20"
     style="background: linear-gradient(to bottom, transparent 0%, var(--bg-base) 100%);"
-  ></div>
+  >
+  </div>
 
   <div class="relative z-10 w-full max-w-6xl mx-auto px-6">
     <div class="hero-grid">
-      <div class="max-w-2xl">
+      <div class="max-w-2xl relative z-10">
         <div class="badge-pill">
           <span class="badge-dot"></span>
           Available for freelance & collaboration
@@ -30,7 +37,10 @@ import AsciiAvatar from './AsciiAvatar.astro';
 
         <h1 class="mb-4">
           <span class="hero-word block font-display">Hi, I'm</span>
-          <span class="hero-word hero-name block font-display">Fazley Rabbi</span>
+          <span class="hero-word hero-name block font-display"
+            >Fazley Rabbi</span
+          >
+          <!-- data-decipher="Fazley Rabbi" -->
         </h1>
 
         <p class="hero-tagline font-serif italic">
@@ -40,9 +50,9 @@ import AsciiAvatar from './AsciiAvatar.astro';
         <p class="hero-body max-w-[550px] font-sans">
           With over three years of professional experience, I've built a variety
           of client projects and contributed on several projects for CodeCanyon.
-          I enjoy crafting clean, efficient solutions — whether it's a full-scale
-          web app or a tiny helper module. Currently working on Larabrix, a modular
-          Laravel-based framework.
+          I enjoy crafting clean, efficient solutions — whether it's a
+          full-scale web app or a tiny helper module. Currently working on
+          Larabrix, a modular Laravel-based framework.
         </p>
 
         <div class="flex gap-3 flex-wrap mt-8">
@@ -51,11 +61,27 @@ import AsciiAvatar from './AsciiAvatar.astro';
         </div>
 
         <div class="connect-block mt-8">
-          <span class="section-label font-mono" style="margin-bottom:0.4rem;">Connect</span>
+          <span class="section-label font-mono" style="margin-bottom:0.4rem;"
+            >Connect</span
+          >
           <div class="flex gap-5">
-            <a href="https://github.com/fazleyrabby" target="_blank" class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider">GitHub</a>
-            <a href="https://www.linkedin.com/in/fazley-rabby/" target="_blank" class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider">LinkedIn</a>
-            <a href="mailto:fazley111@gmail.com" class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider">Email</a>
+            <a
+              href="https://github.com/fazleyrabby"
+              target="_blank"
+              class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider"
+              >GitHub</a
+            >
+            <a
+              href="https://www.linkedin.com/in/fazley-rabby/"
+              target="_blank"
+              class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider"
+              >LinkedIn</a
+            >
+            <a
+              href="mailto:fazley111@gmail.com"
+              class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider"
+              >Email</a
+            >
           </div>
         </div>
       </div>
@@ -86,17 +112,23 @@ import AsciiAvatar from './AsciiAvatar.astro';
   }
 
   .hero-avatar-col {
-    display: none;
+    display: flex;
+    position: absolute;
+    inset: 0;
     justify-content: center;
     align-items: center;
-    min-height: 550px;
-    margin-left: -8rem;
-    margin-right: -3rem;
+    opacity: 0.45;
+    z-index: 0;
   }
 
   @media (min-width: 1025px) {
     .hero-avatar-col {
-      display: flex;
+      position: relative;
+      opacity: 1;
+      inset: auto;
+      min-height: 550px;
+      margin-left: -8rem;
+      margin-right: -3rem;
     }
   }
 
@@ -126,8 +158,15 @@ import AsciiAvatar from './AsciiAvatar.astro';
     animation: pulse-dot 2s ease infinite;
   }
   @keyframes pulse-dot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(0.8);
+    }
   }
 
   .hero-breathe {
@@ -138,14 +177,25 @@ import AsciiAvatar from './AsciiAvatar.astro';
     height: 500px;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(232, 130, 58, 0.04) 0%, transparent 70%);
+    background: radial-gradient(
+      circle,
+      rgba(232, 130, 58, 0.04) 0%,
+      transparent 70%
+    );
     pointer-events: none;
     animation: breathe 10s ease-in-out infinite;
   }
 
   @keyframes breathe {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
-    50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.5; }
+    0%,
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.3;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.1);
+      opacity: 0.5;
+    }
   }
 
   .hero-cursor-light {
@@ -153,7 +203,11 @@ import AsciiAvatar from './AsciiAvatar.astro';
     width: 350px;
     height: 350px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(232, 130, 58, 0.03) 0%, transparent 70%);
+    background: radial-gradient(
+      circle,
+      rgba(232, 130, 58, 0.03) 0%,
+      transparent 70%
+    );
     pointer-events: none;
     z-index: 0;
     transform: translate(-50%, -50%);

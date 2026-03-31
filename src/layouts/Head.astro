@@ -39,4 +39,17 @@ const umamiID = import.meta.env.UMAMI_ID;
             />
         )
     }
+    {
+        isProduction && (
+            <Fragment>
+                <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-0LV5YH8TE8"></script>
+                <script is:inline>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                    gtag('config', 'G-0LV5YH8TE8');
+                </script>
+            </Fragment>
+        )
+    }
 </head>

@@ -54,5 +54,6 @@
       "context": "structuring large codebases into reusable and maintainable modules",
       "notes": "include module separation, service providers, dependency management, and integration between modules"
     }
-  ]
+  ],
+  "topic": "Building a scalable API rate limiting system in Laravel (real-world strategies)\n/category backend\n/context handling burst traffic, per-user and per-IP rate limiting, Redis-based throttling, sliding window vs token bucket algorithms, and protecting APIs in production SaaS systems\n/note include Laravel throttle middleware vs custom implementation, Redis examples, distributed rate limiting, handling abuse and bot traffic, queue-based fallback strategies, and monitoring rate limits in production\n/status"
 }

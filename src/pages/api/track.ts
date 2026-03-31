@@ -1,5 +1,36 @@
 export const prerender = false;
 
+function isBot(userAgent: string): boolean {
+    const ua = userAgent.toLowerCase();
+    const botPatterns = [
+        "googlebot", "bingbot", "yandexbot", "duckduckbot", "baiduspider",
+        "slurp", "sogou", "exabot", "facebot", "ia_archiver",
+        "facebookexternalhit", "twitterbot", "telegrambot", "whatsapp",
+        "linkedinbot", "pinterestbot",
+        "uptimerobot", "pingdom", "statuscake", "site24x7",
+        "nessus", "openvas", "nmap", "sqlmap", "nikto",
+        "gptbot", "chatgpt", "claudebot", "anthropic", "applebot",
+        "headlesschrome", "phantomjs", "selenium", "puppeteer",
+        "bot", "crawler", "spider", "scraper", "wget", "curl",
+    ];
+    return botPatterns.some(pattern => ua.includes(pattern));
+}
+
+function isPrivateIP(ip: string): boolean {
+    const cleanIP = ip.split(":")[0];
+    const privateRanges = [
+        /^127\.0\.0\.1$/,
+        /^::1$/,
+        /^10\./,
+        /^192\.168\./,
+        /^172\.(1[6-9]|2[0-9]|3[01])\./,
+        /^169\.254\./,
+        /^fc00:/i,
+        /^fe80:/i,
+    ];
+    return privateRanges.some(pattern => pattern.test(cleanIP));
+}
+
 export async function POST({ request, clientAddress }) {
     const headers = request.headers;
 
@@ -10,27 +41,28 @@ export async function POST({ request, clientAddress }) {
         "Unknown";
 
     const userAgent = headers.get("user-agent") || "Unknown";
+
+    if (isBot(userAgent) || isPrivateIP(ip)) {
+        return new Response(JSON.stringify({ ok: true, ip, skipped: true }), {
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+
     const body = await request.json().catch(() => ({}));
 
     let geo = {};
 
-    // 1️⃣ Try ipapi
     try {
         const res = await fetch(`https://ipapi.co/${ip}/json/`);
-
         if (res.ok) {
             geo = await res.json();
         } else {
             throw new Error("ipapi failed");
         }
-    } catch (e) {
-        console.log("ipapi failed, trying ipinfo");
-
-        // 2️⃣ fallback to ipinfo
+    } catch {
         try {
             const res = await fetch(`https://ipinfo.io/${ip}/json`);
             const data = await res.json();
-            console.log(data)
             geo = {
                 country_name: data.country,
                 region: data.region,
@@ -39,7 +71,7 @@ export async function POST({ request, clientAddress }) {
                 asn: data.org
             };
         } catch {
-            console.log("ipinfo fallback failed");
+            // silent fallback
         }
     }
 

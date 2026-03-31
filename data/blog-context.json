@@ -1,12 +1,6 @@
 {
   "topics": [
     {
-      "topic": "Handling race conditions in Laravel applications",
-      "category": "backend",
-      "context": "concurrent requests updating the same data, database locking issues, and inconsistent state in production systems",
-      "notes": "include pessimistic vs optimistic locking, transactions, unique constraints, and queue-based serialization strategies"
-    },
-    {
       "topic": "Designing a scalable notification system in Laravel",
       "category": "backend",
       "context": "sending notifications via email, SMS, and push with high throughput and reliability",

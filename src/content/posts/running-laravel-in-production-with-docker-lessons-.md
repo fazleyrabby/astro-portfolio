@@ -1,6 +1,6 @@
 ---
 title: "Running Laravel in Production with Docker: Lessons Learned"
-date: 2026-03-30
+date: 2026-03-30T14:00:00
 draft: false
 ---
 

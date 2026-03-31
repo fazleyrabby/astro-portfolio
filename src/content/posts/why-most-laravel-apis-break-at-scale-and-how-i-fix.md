@@ -1,6 +1,6 @@
 ---
 title: "Why most Laravel APIs break at scale and how I fix them in production"
-date: 2026-03-30
+date: 2026-03-30T10:00:00
 draft: false
 ---
 

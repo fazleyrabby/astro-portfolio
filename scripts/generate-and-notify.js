@@ -171,7 +171,8 @@ async function main() {
     .replace(/-+/g, '-')
     .slice(0, 50);
 
-  const date = new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const date = now.toISOString().replace(/\.\d{3}Z$/, '');
   const fileContent = `---\ntitle: "${post.title}"\ndate: ${date}\ndraft: true\n---\n\n${post.content}`;
 
   console.log(`Committing draft: ${slug}.md`);

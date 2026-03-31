@@ -90,7 +90,8 @@ Output ONLY JSON:
     process.exit(1);
   } catch {}
 
-  const date = new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const date = now.toISOString().replace(/\.\d{3}Z$/, '');
   const frontmatter = `---
 title: "${post.title}"
 date: ${date}

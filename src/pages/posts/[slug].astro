@@ -21,6 +21,9 @@ const { Content } = await render(post);
 <MainLayout title={post.data.title}>
   <main class="max-w-6xl mx-auto px-6 py-16">
     <article class="prose prose-neutral dark:prose-invert max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-li:text-[var(--text-secondary)] prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)]">
+      {post.data.thumbnail && (
+        <img data-thumb src={post.data.thumbnail} alt={post.data.title} class="rounded-lg mb-8 max-h-[400px] w-full object-contain" loading="lazy" />
+      )}
       <h1 class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-[var(--text-primary)] mb-4">{post.data.title}</h1>
       <p class="mb-10">
         <small class="font-mono text-xs text-[var(--text-muted)] uppercase tracking-widest"
@@ -33,3 +36,51 @@ const { Content } = await render(post);
     </article>
   </main>
 </MainLayout>
+
+<script>
+  const img = document.querySelector('img[data-thumb]') as HTMLImageElement | null;
+  if (img) {
+    const cacheKey = `thumb-bg:${img.src}`;
+    const cached = sessionStorage.getItem(cacheKey);
+
+    if (cached) {
+      img.style.backgroundColor = cached;
+    } else {
+      const detectBg = () => {
+        const proxy = new Image();
+        proxy.crossOrigin = 'anonymous';
+        proxy.src = `/api/image-proxy?url=${encodeURIComponent(img.src)}`;
+        proxy.onload = () => {
+          try {
+            const c = document.createElement('canvas');
+            const ctx = c.getContext('2d');
+            if (!ctx) return;
+            const w = proxy.naturalWidth;
+            const h = proxy.naturalHeight;
+            c.width = w;
+            c.height = h;
+            ctx.drawImage(proxy, 0, 0);
+
+            let r = 0, g = 0, b = 0, count = 0;
+            const sample = (x: number, y: number) => {
+              const d = ctx.getImageData(x, y, 1, 1).data;
+              r += d[0]; g += d[1]; b += d[2]; count++;
+            };
+            const step = Math.max(1, Math.floor(Math.max(w, h) / 20));
+            for (let x = 0; x < w; x += step) { sample(x, 0); sample(x, h - 1); }
+            for (let y = 0; y < h; y += step) { sample(0, y); sample(w - 1, y); }
+
+            const color = `rgb(${Math.round(r / count)}, ${Math.round(g / count)}, ${Math.round(b / count)})`;
+            img.style.backgroundColor = color;
+            sessionStorage.setItem(cacheKey, color);
+          } catch {
+            img.style.backgroundColor = '#000';
+          }
+        };
+        proxy.onerror = () => { img.style.backgroundColor = '#000'; };
+      };
+      if (img.complete) detectBg();
+      else img.addEventListener('load', detectBg);
+    }
+  }
+</script>

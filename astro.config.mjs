@@ -18,10 +18,5 @@ export default defineConfig({
         dark: "github-dark",
       },
     },
-  },
-  vite: {
-    server: {
-      allowedHosts: ["dry-moose-build.loca.lt"],
-    },
-  },
+  }
 });

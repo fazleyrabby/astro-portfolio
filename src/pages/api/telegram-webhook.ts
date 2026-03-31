@@ -259,7 +259,7 @@ Output ONLY JSON:
     .replace(/-+/g, "-")
     .slice(0, 50);
 
-  const date = new Date().toISOString().split("T")[0];
+  const date = new Date().toISOString().replace(/\.\d{3}Z$/, "");
   const fileContent = `---\ntitle: "${post.title}"\ndate: ${date}\ndraft: true\n---\n\n${post.content}`;
 
   // Ensure drafts branch exists

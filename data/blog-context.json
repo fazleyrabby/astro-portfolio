@@ -54,5 +54,6 @@
       "context": "structuring large codebases into reusable and maintainable modules",
       "notes": "include module separation, service providers, dependency management, and integration between modules"
     }
-  ]
+  ],
+  "topic": "this is a new blog post testing from telegram bot"
 }

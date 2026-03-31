@@ -4,6 +4,7 @@
  */
 import OpenAI from 'openai';
 import { Octokit } from '@octokit/rest';
+import { slug } from 'github-slugger';
 
 const openai = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
@@ -165,21 +166,17 @@ async function main() {
   console.log(`Generating post for topic: ${context.topic} (${remainingTopics.length} remaining)`);
   const post = await generatePost(context);
 
-  const slug = post.title.toLowerCase()
-    .replace(/[^a-z0-9 ]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .slice(0, 50);
+  const slugValue = slug(post.title);
 
   const now = new Date();
   const date = now.toISOString().replace(/\.\d{3}Z$/, '');
   const fileContent = `---\ntitle: "${post.title}"\ndate: ${date}\ndraft: true\n---\n\n${post.content}`;
 
-  console.log(`Committing draft: ${slug}.md`);
-  await commitDraft(slug, fileContent);
+  console.log(`Committing draft: ${slugValue}.md`);
+  await commitDraft(slugValue, fileContent);
 
   const preview = post.content.replace(/<[^>]*>/g, '').slice(0, 500) + '...';
-  await sendTelegram(post.title, slug, preview);
+  await sendTelegram(post.title, slugValue, preview);
 
   await removeUsedTopic(remainingTopics);
   console.log(`Done — draft committed, topic removed from queue (${remainingTopics.length} left).`);

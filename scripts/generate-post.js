@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { slug } from 'github-slugger';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -76,13 +77,9 @@ Output ONLY JSON:
     post = { title: titleMatch[1], content: contentMatch[1].replace(/\\n/g, '\n').replace(/\\t/g, '\t') };
   }
 
-  const slug = post.title.toLowerCase()
-    .replace(/[^a-z0-9 ]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .slice(0, 50);
+  const slugValue = slug(post.title);
 
-  const mdPath = path.join(__dirname, '../src/content/posts', `${slug}.md`);
+  const mdPath = path.join(__dirname, '../src/content/posts', `${slugValue}.md`);
 
   try {
     await fs.access(mdPath);
@@ -102,7 +99,7 @@ draft: true
   const content = frontmatter + '\n\n' + post.content;
 
   await fs.writeFile(mdPath, content);
-  console.log(`Generated draft: ${slug}.md`);
+  console.log(`Generated draft: ${slugValue}.md`);
 }
 
 generatePost().catch(console.error);

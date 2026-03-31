@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { slug } from "github-slugger";
 
 const TELEGRAM_TOKEN = import.meta.env.TELEGRAM_TOKEN;
 const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN;
@@ -252,12 +253,7 @@ Output ONLY JSON:
     };
   }
 
-  const slug = post.title
-    .toLowerCase()
-    .replace(/[^a-z0-9 ]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-    .slice(0, 50);
+  const slugValue = slug(post.title);
 
   const date = new Date().toISOString().replace(/\.\d{3}Z$/, "");
   const fileContent = `---\ntitle: "${post.title}"\ndate: ${date}\ndraft: true\n---\n\n${post.content}`;
@@ -282,19 +278,19 @@ Output ONLY JSON:
   }
 
   // Commit to drafts branch
-  const mdPath = `src/content/posts/${slug}.md`;
+  const mdPath = `src/content/posts/${slugValue}.md`;
   await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${mdPath}`, {
     method: "PUT",
     headers: ghHeaders,
     body: JSON.stringify({
-      message: `Draft: ${slug}`,
+      message: `Draft: ${slugValue}`,
       content: Buffer.from(fileContent).toString("base64"),
       branch: DRAFTS_BRANCH,
     }),
   });
 
   const preview = post.content.replace(/<[^>]*>/g, "").slice(0, 500) + "...";
-  return { title: post.title, slug, preview };
+  return { title: post.title, slug: slugValue, preview };
 }
 
 // --- Callback handler (approve/reject) ---

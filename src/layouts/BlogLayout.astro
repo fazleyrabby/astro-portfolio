@@ -10,7 +10,16 @@ const { frontmatter } = Astro.props;
 ---
 
 <html lang="en">
-    <Head title={frontmatter.title} />
+    <Head 
+      title={frontmatter.title} 
+      ogTitle={frontmatter.title}
+      ogDescription={frontmatter.title}
+      ogImage={frontmatter.thumbnail}
+      ogUrl={`https://fazleyrabbi.xyz/posts/${frontmatter.slug}`}
+      ogType="article"
+      twitterCard="summary_large_image"
+      twitterImage={frontmatter.thumbnail}
+    />
     <body class="min-h-screen relative overflow-x-hidden">
         <Nav />
         <div class="container mx-auto w-full px-4 md:px-8 py-8">

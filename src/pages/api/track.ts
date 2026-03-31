@@ -1,4 +1,10 @@
+import { supabase } from "../../lib/supabase";
+
 export const prerender = false;
+
+// In-memory deduplication: track last notification time per IP hash
+const lastNotified = new Map<string, number>();
+const NOTIFY_COOLDOWN = 30 * 60 * 1000; // 30 minutes
 
 function isBot(userAgent: string): boolean {
     const ua = userAgent.toLowerCase();
@@ -32,26 +38,83 @@ function isPrivateIP(ip: string): boolean {
     return privateRanges.some(pattern => pattern.test(cleanIP));
 }
 
+async function hashIP(ip: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(ip + (import.meta.env.TELEGRAM_TOKEN || ""));
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
+}
+
+async function storeVisit(data: {
+    ipHash: string;
+    country: string;
+    region: string;
+    city: string;
+    isp: string;
+    platform: string;
+    language: string;
+    userAgent: string;
+    path: string;
+}) {
+    try {
+        await supabase.from("visitors").insert({
+            ip_hash: data.ipHash,
+            country: data.country,
+            region: data.region,
+            city: data.city,
+            isp: data.isp,
+            platform: data.platform,
+            language: data.language,
+            user_agent: data.userAgent,
+            path: data.path,
+        });
+    } catch (err) {
+        console.error("Failed to store visit in Supabase:", err);
+    }
+}
+
+async function sendTelegramNotification(message: string) {
+    const token = import.meta.env.TELEGRAM_TOKEN;
+    const chatId = import.meta.env.TELEGRAM_CHAT_ID;
+
+    try {
+        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: message,
+                parse_mode: "HTML",
+            }),
+        });
+    } catch {
+        console.error("Telegram notification failed");
+    }
+}
+
 export async function POST({ request, clientAddress }) {
     const headers = request.headers;
 
     const ip = headers.get("cf-connecting-ip") ||
-        headers.get("x-forwarded-for") ||
+        headers.get("x-forwarded-for")?.split(",")[0].trim() ||
         headers.get("x-real-ip") ||
         clientAddress ||
         "Unknown";
 
     const userAgent = headers.get("user-agent") || "Unknown";
+    const path = new URL(request.url).pathname;
 
     if (isBot(userAgent) || isPrivateIP(ip)) {
-        return new Response(JSON.stringify({ ok: true, ip, skipped: true }), {
+        return new Response(JSON.stringify({ ok: true }), {
             headers: { "Content-Type": "application/json" }
         });
     }
 
     const body = await request.json().catch(() => ({}));
+    const ipHash = await hashIP(ip);
 
-    let geo = {};
+    let geo: Record<string, string> = {};
 
     try {
         const res = await fetch(`https://ipapi.co/${ip}/json/`);
@@ -69,18 +132,34 @@ export async function POST({ request, clientAddress }) {
                 region: data.region,
                 city: data.city,
                 org: data.org,
-                asn: data.org
+                asn: data.org,
             };
         } catch {
             // silent fallback
         }
     }
 
-    const message = `
-🚨 <b>NEW VISITOR DETECTED</b>
+    await storeVisit({
+        ipHash,
+        country: geo.country_name ?? "Unknown",
+        region: geo.region ?? "Unknown",
+        city: geo.city ?? "Unknown",
+        isp: geo.org ?? "Unknown",
+        platform: body.platform ?? "Unknown",
+        language: body.language ?? "Unknown",
+        userAgent,
+        path,
+    });
 
-🌍 <b>IP Address</b>
-<code>${ip}</code>
+    const now = Date.now();
+    const lastTime = lastNotified.get(ipHash) || 0;
+    const shouldNotify = now - lastTime > NOTIFY_COOLDOWN;
+
+    if (shouldNotify) {
+        lastNotified.set(ipHash, now);
+
+        const message = `
+🚨 <b>NEW VISITOR DETECTED</b>
 
 📍 <b>Location</b>
 • Country: ${geo.country_name ?? "Unknown"}
@@ -89,38 +168,20 @@ export async function POST({ request, clientAddress }) {
 
 🌐 <b>Network</b>
 • ISP: ${geo.org ?? "Unknown"}
-• ASN: ${geo.asn ?? "Unknown"}
 
 💻 <b>Device</b>
 • Platform: ${body.platform ?? "Unknown"}
 • Language: ${body.language ?? "Unknown"}
-
-🧠 <b>User Agent</b>
-<code>${userAgent}</code>
 
 🕒 <b>Time</b>
 • ${new Date().toLocaleString()}
 
 ━━━━━━━━━━━━━━━━━━
 `;
+        sendTelegramNotification(message);
+    }
 
-    const token = import.meta.env.TELEGRAM_TOKEN;
-    const chatId = import.meta.env.TELEGRAM_CHAT_ID;
-
-    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            chat_id: chatId,
-            text: message,
-            parse_mode: "HTML"
-        })
-    });
-
-    return new Response(JSON.stringify({
-        ok: true,
-        ip
-    }), {
+    return new Response(JSON.stringify({ ok: true }), {
         headers: { "Content-Type": "application/json" }
     });
 }

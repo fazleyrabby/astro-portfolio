@@ -58,16 +58,16 @@ async function storeVisit(data: {
     path: string;
 }) {
     try {
-        await supabase.from("visitors").insert({
-            ip_hash: data.ipHash,
-            country: data.country,
-            region: data.region,
-            city: data.city,
-            isp: data.isp,
-            platform: data.platform,
-            language: data.language,
-            user_agent: data.userAgent,
-            path: data.path,
+        await supabase.rpc("record_visit", {
+            p_ip_hash: data.ipHash,
+            p_country: data.country,
+            p_region: data.region,
+            p_city: data.city,
+            p_isp: data.isp,
+            p_platform: data.platform,
+            p_language: data.language,
+            p_user_agent: data.userAgent,
+            p_path: data.path,
         });
     } catch (err) {
         console.error("Failed to store visit in Supabase:", err);

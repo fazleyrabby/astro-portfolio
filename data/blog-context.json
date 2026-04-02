@@ -53,6 +53,72 @@
       "category": "backend",
       "context": "structuring large codebases into reusable and maintainable modules",
       "notes": "include module separation, service providers, dependency management, and integration between modules"
+    },
+    {
+      "topic": "Designing multi-tenant data isolation in Laravel SaaS",
+      "category": "backend",
+      "context": "serving multiple tenants securely while keeping query performance predictable",
+      "notes": "include tenant resolution, row-level isolation vs schema-per-tenant, global scopes, and cross-tenant data leak prevention"
+    },
+    {
+      "topic": "Building resilient webhook consumers in Laravel",
+      "category": "backend",
+      "context": "processing webhook storms from payment and third-party providers without data corruption",
+      "notes": "include signature verification, idempotent processing, queue buffering, retry backoff, and dead-letter handling"
+    },
+    {
+      "topic": "Running zero-downtime database migrations in Laravel",
+      "category": "backend",
+      "context": "deploying schema changes safely under live traffic with backward compatibility",
+      "notes": "include expand-contract migration strategy, long-running lock avoidance, phased rollout, and rollback planning"
+    },
+    {
+      "topic": "Designing event-driven workflows in Laravel",
+      "category": "backend",
+      "context": "decoupling business processes with events and listeners while keeping consistency guarantees",
+      "notes": "include domain events, outbox pattern, eventual consistency trade-offs, and replay-safe consumers"
+    },
+    {
+      "topic": "Managing distributed locks and concurrency control in Laravel",
+      "category": "backend",
+      "context": "preventing race conditions across multiple workers and application instances",
+      "notes": "include Redis locks, lock expiration pitfalls, optimistic vs pessimistic locking, and contention monitoring"
+    },
+    {
+      "topic": "Implementing secure API authentication at scale in Laravel",
+      "category": "backend",
+      "context": "handling token issuance, rotation, and compromised credential scenarios in production",
+      "notes": "include Sanctum/Passport trade-offs, token scoping, refresh strategies, revocation, and audit trails"
+    },
+    {
+      "topic": "Building a robust background job architecture in Laravel",
+      "category": "backend",
+      "context": "processing high-volume asynchronous tasks with predictable latency and failure recovery",
+      "notes": "include queue partitioning, job prioritization, idempotent handlers, retry policies, and worker autoscaling"
+    },
+    {
+      "topic": "Designing observability and tracing for Laravel APIs",
+      "category": "backend",
+      "context": "debugging latency spikes and production incidents across services",
+      "notes": "include structured logging, correlation IDs, metrics dashboards, distributed tracing, and SLO-based alerts"
+    },
+    {
+      "topic": "Hardening rate limiting and abuse prevention in Laravel",
+      "category": "backend",
+      "context": "protecting APIs from bot abuse, brute force attempts, and cost amplification attacks",
+      "notes": "include per-user and per-IP throttles, adaptive limits, circuit breakers, and trusted proxy considerations"
+    },
+    {
+      "topic": "Designing reliable read/write database splitting in Laravel",
+      "category": "backend",
+      "context": "scaling reads with replicas while avoiding stale-read consistency bugs",
+      "notes": "include read-after-write consistency, sticky sessions, replication lag handling, and query routing strategies"
+    },
+    {
+      "topic": "Implementing soft delete retention and data lifecycle policies in Laravel",
+      "category": "backend",
+      "context": "balancing recovery needs, legal retention requirements, and storage costs",
+      "notes": "include archival workflows, delayed hard deletes, GDPR deletion requests, and restoring relational integrity"
     }
   ]
 }

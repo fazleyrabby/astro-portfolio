@@ -1,24 +1,6 @@
 {
   "topics": [
     {
-      "topic": "Preventing duplicate payments and transactions in Laravel",
-      "category": "backend",
-      "context": "handling double submissions, retry requests, and payment gateway callbacks safely",
-      "notes": "include idempotency keys, database constraints, transaction handling, and webhook validation"
-    },
-    {
-      "topic": "Building a dynamic feature flag system in Laravel",
-      "category": "backend",
-      "context": "enabling or disabling features without deployments and managing feature rollout",
-      "notes": "include database-driven flags, caching, user targeting, percentage rollout, and fallback strategies"
-    },
-    {
-      "topic": "Designing a scalable search system in Laravel applications",
-      "category": "backend",
-      "context": "handling full-text search, filtering, and performance issues with large datasets",
-      "notes": "include MySQL full-text search vs external tools, indexing strategies, caching results, and pagination optimization"
-    },
-    {
       "topic": "Handling file uploads at scale in Laravel applications",
       "category": "backend",
       "context": "large file uploads, network failures, and storage management in production systems",

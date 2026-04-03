@@ -1,12 +1,6 @@
 {
   "topics": [
     {
-      "topic": "Building a dynamic feature flag system in Laravel",
-      "category": "backend",
-      "context": "enabling or disabling features without deployments and managing feature rollout",
-      "notes": "include database-driven flags, caching, user targeting, percentage rollout, and fallback strategies"
-    },
-    {
       "topic": "Designing a scalable search system in Laravel applications",
       "category": "backend",
       "context": "handling full-text search, filtering, and performance issues with large datasets",

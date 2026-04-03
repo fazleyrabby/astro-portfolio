@@ -1,12 +1,6 @@
 {
   "topics": [
     {
-      "topic": "Designing a scalable notification system in Laravel",
-      "category": "backend",
-      "context": "sending notifications via email, SMS, and push with high throughput and reliability",
-      "notes": "include queueing notifications, channel separation, retry handling, rate limiting, and user preference management"
-    },
-    {
       "topic": "Preventing duplicate payments and transactions in Laravel",
       "category": "backend",
       "context": "handling double submissions, retry requests, and payment gateway callbacks safely",

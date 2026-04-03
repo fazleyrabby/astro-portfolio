@@ -95,6 +95,66 @@
       "category": "backend",
       "context": "balancing recovery needs, legal retention requirements, and storage costs",
       "notes": "include archival workflows, delayed hard deletes, GDPR deletion requests, and restoring relational integrity"
+    },
+    {
+      "topic": "Scaling Laravel with Microservices and gRPC Communication",
+      "category": "backend",
+      "context": "building high-performance, low-latency inter-service communication in distributed systems",
+      "notes": "include Protobuf contracts, service discovery, error handling in gRPC, and comparing with REST overhead"
+    },
+    {
+      "topic": "Implementing Advanced Circuit Breakers for Resilient API Integrations",
+      "category": "backend",
+      "context": "preventing cascading failures when third-party services go down under heavy load",
+      "notes": "include open/closed/half-open states, fallbacks, timeout management, and integrating with Guzzle middleware"
+    },
+    {
+      "topic": "Mastering Eloquent Performance: Advanced Query Optimization and Indexing",
+      "category": "backend",
+      "context": "squeezing peak performance out of the ORM when dealing with millions of records",
+      "notes": "include composite indexes, selective loading, subquery joins, and analyzing EXPLAIN plans for Eloquent queries"
+    },
+    {
+      "topic": "Designing Distributed Transactions and the Saga Pattern in Laravel",
+      "category": "backend",
+      "context": "maintaining data consistency across multiple microservices without distributed locks",
+      "notes": "include choreographing events, compensating transactions, state management, and failure recovery strategies"
+    },
+    {
+      "topic": "Building a High-Performance Real-Time Engine with Laravel and WebSockets",
+      "category": "backend",
+      "context": "scaling real-time notifications to thousands of concurrent users effectively",
+      "notes": "include Reverb vs Pusher, horizontal scaling with Redis, presence channels, and secure broadcasting"
+    },
+    {
+      "topic": "Implementing Zero-Knowledge Data Encryption for Sensitive User Data",
+      "category": "backend",
+      "context": "protecting user privacy such that even database admins cannot read sensitive fields",
+      "notes": "include envelope encryption, key management with AWS KMS/HashiCorp Vault, and performance trade-offs"
+    },
+    {
+      "topic": "Designing a Robust Multi-Environment Content Delivery System",
+      "category": "backend",
+      "context": "orchestrating static and dynamic assets across staging, production, and edge locations",
+      "notes": "include CDN cache invalidation strategies, blue-green asset deployment, and origin shielding"
+    },
+    {
+      "topic": "Advanced Database Partitioning and Sharding Strategies in Laravel",
+      "category": "backend",
+      "context": "scaling horizontal write throughput when a single database server hits its hardware limits",
+      "notes": "include vertical vs horizontal partitioning, hash-based sharding, cross-shard query pitfalls, and migration paths"
+    },
+    {
+      "topic": "Implementing Secure OAuth2 and OpenID Connect Flows in Laravel APIs",
+      "category": "backend",
+      "context": "building professional-grade identity providers for third-party integrations",
+      "notes": "include authorization codes, client credentials, PKCE for mobile, and handling scope-based permissions"
+    },
+    {
+      "topic": "Designing an Advanced Analytics and Reporting Engine for SaaS",
+      "category": "backend",
+      "context": "providing real-time insights on massive datasets without slowing down the core application",
+      "notes": "include read-optimized schemas, pre-aggregations, using ClickHouse/Snowflake, and decoupled report generation"
     }
   ]
 }

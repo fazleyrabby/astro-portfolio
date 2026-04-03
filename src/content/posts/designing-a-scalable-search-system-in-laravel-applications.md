@@ -1,7 +1,7 @@
 ---
 title: "Designing a Scalable Search System in Laravel Applications"
 date: 2026-04-03T17:26:25
-draft: true
+draft: false
 ---
 
 # Designing a Scalable Search System in Laravel Applications

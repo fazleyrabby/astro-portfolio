@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import OpenAI from 'openai';
 import fs from 'fs/promises';
 import path from 'path';
@@ -100,6 +101,10 @@ draft: true
 
   await fs.writeFile(mdPath, content);
   console.log(`Generated draft: ${slugValue}.md`);
+
+  // Remove used topic
+  const remainingTopics = contextRaw.topics.slice(1);
+  await fs.writeFile(contextPath, JSON.stringify({ topics: remainingTopics }, null, 2) + '\n');
 }
 
 generatePost().catch(console.error);

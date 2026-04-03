@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { Telegraf } from 'telegraf';
 import { execSync } from 'child_process';
 import fs from 'fs/promises';
@@ -12,7 +13,7 @@ const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 const contextPath = path.join(__dirname, '../data/blog-context.json');
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-const REPO = process.env.GITHUB_REPOSITORY || 'rabbi/astro-portfolio';
+const REPO = process.env.GITHUB_REPOSITORY || 'fazleyrabby/astro-portfolio';
 
 let pendingSlug = null;
 
@@ -114,8 +115,8 @@ bot.command('generate', async (ctx) => {
       .replace(/<[^>]*>/g, '')
       .replace(/([_*\[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
     pendingSlug = slug;
-    // Commit and push so GitHub API can find the file for approve/reject
-    execSync(`git add "${path.relative(path.join(__dirname, '..'), path.join(postsDir, latest))}" && git commit -m "Draft: ${slug}" && git push`, {
+    // Pull, commit and push
+    execSync(`git pull && git add "${path.relative(path.join(__dirname, '..'), path.join(postsDir, latest))}" && git commit -m "Draft: ${slug}" && git push`, {
       cwd: path.join(__dirname, '..'),
       env: process.env,
       stdio: 'pipe',
@@ -142,7 +143,7 @@ bot.on('callback_query', async (ctx) => {
     const { data: file } = await octokit.repos.getContent({ owner, repo, path: mdPath });
     if (action === 'approve') {
       const content = Buffer.from(file.content, 'base64').toString('utf8');
-      const newContent = content.replace(/\ndraft:\s*true/, '\ndraft: false');
+      const newContent = content.replace(/\ndraft:\s*(true|false)/, '\ndraft: false');
       await octokit.repos.createOrUpdateFileContents({
         owner, repo, path: mdPath, message: `Publish: ${slug}`,
         content: Buffer.from(newContent).toString('base64'), sha: file.sha

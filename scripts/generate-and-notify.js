@@ -2,6 +2,7 @@
  * One-shot CI script: generate a blog post via AI, commit as draft to GitHub, notify via Telegram.
  * Designed for GitHub Actions (no polling, runs and exits).
  */
+import 'dotenv/config';
 import OpenAI from 'openai';
 import { Octokit } from '@octokit/rest';
 import { slug } from 'github-slugger';
@@ -81,28 +82,12 @@ Output ONLY JSON:
   }
 }
 
-const DRAFTS_BRANCH = 'drafts';
-
-async function ensureDraftsBranch() {
-  try {
-    await octokit.git.getRef({ owner, repo, ref: `heads/${DRAFTS_BRANCH}` });
-  } catch (e) {
-    if (e.status !== 404) throw e;
-    // Create drafts branch from main
-    const { data: main } = await octokit.git.getRef({ owner, repo, ref: 'heads/main' });
-    await octokit.git.createRef({ owner, repo, ref: `refs/heads/${DRAFTS_BRANCH}`, sha: main.object.sha });
-    console.log(`Created ${DRAFTS_BRANCH} branch from main.`);
-  }
-}
-
 async function commitDraft(slug, fileContent) {
   const path = `src/content/posts/${slug}.md`;
 
-  await ensureDraftsBranch();
-
-  // Check if file already exists on drafts branch
+  // Check if file already exists
   try {
-    await octokit.repos.getContent({ owner, repo, path, ref: DRAFTS_BRANCH });
+    await octokit.repos.getContent({ owner, repo, path });
     throw new Error(`Post already exists: ${slug}`);
   } catch (e) {
     if (e.status !== 404) throw e;
@@ -112,7 +97,6 @@ async function commitDraft(slug, fileContent) {
     owner, repo, path,
     message: `Draft: ${slug}`,
     content: Buffer.from(fileContent).toString('base64'),
-    branch: DRAFTS_BRANCH,
   });
 
   return path;

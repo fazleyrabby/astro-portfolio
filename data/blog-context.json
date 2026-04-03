@@ -1,12 +1,6 @@
 {
   "topics": [
     {
-      "topic": "Designing a scalable search system in Laravel applications",
-      "category": "backend",
-      "context": "handling full-text search, filtering, and performance issues with large datasets",
-      "notes": "include MySQL full-text search vs external tools, indexing strategies, caching results, and pagination optimization"
-    },
-    {
       "topic": "Handling file uploads at scale in Laravel applications",
       "category": "backend",
       "context": "large file uploads, network failures, and storage management in production systems",

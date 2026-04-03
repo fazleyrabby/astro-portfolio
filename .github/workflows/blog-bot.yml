@@ -2,7 +2,7 @@ name: AI Blog Bot
 
 on:
   schedule:
-    - cron: '*/2 * * * *' # Every 2 minutes for testing
+    - cron: '0 0 */2 * *' # Every 48 hours (every 2nd day at midnight)
   workflow_dispatch: # Manual trigger
 
 permissions:

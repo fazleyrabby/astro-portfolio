@@ -1,12 +1,6 @@
 {
   "topics": [
     {
-      "topic": "Preventing duplicate payments and transactions in Laravel",
-      "category": "backend",
-      "context": "handling double submissions, retry requests, and payment gateway callbacks safely",
-      "notes": "include idempotency keys, database constraints, transaction handling, and webhook validation"
-    },
-    {
       "topic": "Building a dynamic feature flag system in Laravel",
       "category": "backend",
       "context": "enabling or disabling features without deployments and managing feature rollout",

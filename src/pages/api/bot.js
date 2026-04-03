@@ -6,9 +6,16 @@ import { Octokit } from '@octokit/rest';
 const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 const REPO = process.env.GITHUB_REPOSITORY || 'fazleyrabby/astro-portfolio';
+const ALLOWED_USER_ID = parseInt(process.env.TELEGRAM_CHAT_ID);
 
 // 2. The Bot Callback Query Handler (Approval logic)
 bot.on('callback_query', async (ctx) => {
+  // --- SECURITY CHECK ---
+  if (ctx.from.id !== ALLOWED_USER_ID) {
+    console.warn(`Unauthorized access attempt from user: ${ctx.from.id}`);
+    return ctx.answerCbQuery('⛔ Error: Unauthorized user.');
+  }
+
   const [tag, slug] = ctx.callbackQuery.data.split(':');
   const action = (tag === 'a' || tag === 'approve') ? 'approve' : 'reject';
   const [owner, repo] = REPO.split('/');

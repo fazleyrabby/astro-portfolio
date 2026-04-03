@@ -125,8 +125,8 @@ bot.command('generate', async (ctx) => {
       parse_mode: 'MarkdownV2',
       reply_markup: {
         inline_keyboard: [
-          [{ text: '✅ Approve Publish', callback_data: `approve:${slug}` }],
-          [{ text: '❌ Reject Delete', callback_data: `reject:${slug}` }]
+          [{ text: '✅ Approve Publish', callback_data: `a:${slug}` }],
+          [{ text: '❌ Reject Delete', callback_data: `r:${slug}` }]
         ]
       }
     });
@@ -136,28 +136,58 @@ bot.command('generate', async (ctx) => {
 });
 
 bot.on('callback_query', async (ctx) => {
-  const [, action, slug] = ctx.callbackQuery.data.split(':');
+  const [tag, slug] = ctx.callbackQuery.data.split(':');
+  const action = (tag === 'a' || tag === 'approve') ? 'approve' : 'reject';
   const [owner, repo] = REPO.split('/');
   const mdPath = `src/content/posts/${slug}.md`;
+
+  console.log(`Bot received click: ${action} for ${slug}`);
+  
+  // 1. Answer immediately to stop the Telegram spinner
   try {
+    await ctx.answerCbQuery(action === 'approve' ? 'Publishing...' : 'Deleting...');
+  } catch (e) {
+    console.warn(`Could not answer callback: ${e.message}`);
+  }
+
+  try {
+    // 2. Fetch fresh content
     const { data: file } = await octokit.repos.getContent({ owner, repo, path: mdPath });
+
     if (action === 'approve') {
       const content = Buffer.from(file.content, 'base64').toString('utf8');
+      
+      // If it's already published, don't do it again
+      if (!content.includes('draft: true')) {
+        console.log(`${slug} is already published.`);
+        await ctx.editMessageText(`✅ Successfully Published: ${slug}`);
+        return;
+      }
+
       const newContent = content.replace(/\ndraft:\s*(true|false)/, '\ndraft: false');
+      console.log(`Pushing publish commit for ${slug}...`);
       await octokit.repos.createOrUpdateFileContents({
         owner, repo, path: mdPath, message: `Publish: ${slug}`,
         content: Buffer.from(newContent).toString('base64'), sha: file.sha
       });
-      ctx.answerCbQuery('✅ Published!');
     } else {
+      console.log(`Pushing delete commit for ${slug}...`);
       await octokit.repos.deleteFile({
         owner, repo, path: mdPath, message: `Reject: ${slug}`, sha: file.sha
       });
-      ctx.answerCbQuery('❌ Deleted!');
     }
+    
+    // 3. Final UI Update
     await ctx.editMessageText(`${action === 'approve' ? '✅ Published' : '❌ Deleted'}: ${slug}`);
+    console.log(`Successfully ${action === 'approve' ? 'published' : 'deleted'} ${slug}`);
   } catch (e) {
-    ctx.answerCbQuery(`Error: ${e.message}`, { show_alert: true });
+    console.error(`Callback Error: ${e.message}`);
+    // If it's a conflict (usually means it's already updated), just update the UI
+    if (e.status === 409 || e.message.includes('expected')) {
+       await ctx.editMessageText(`✅ Published (sync): ${slug}`);
+    } else {
+       await ctx.reply(`Error performing ${action}: ${e.message}`);
+    }
   }
 });
 

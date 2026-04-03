@@ -115,17 +115,18 @@ async function sendTelegram(title, slug, preview) {
       parse_mode: 'MarkdownV2',
       reply_markup: {
         inline_keyboard: [
-          [{ text: '✅ Approve Publish', callback_data: `approve:${slug}` }],
-          [{ text: '❌ Reject Delete', callback_data: `reject:${slug}` }],
+          [{ text: '✅ Approve Publish', callback_data: `a:${slug}` }],
+          [{ text: '❌ Reject Delete', callback_data: `r:${slug}` }],
         ],
       },
     }),
   });
 
+  const result = await res.json();
   if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Telegram API error: ${err}`);
+    throw new Error(`Telegram API error: ${JSON.stringify(result)}`);
   }
+  console.log(`Telegram Bot says: Message Sent! ✅ (ID: ${result.result.message_id})`);
 }
 
 function escapeMarkdown(text) {

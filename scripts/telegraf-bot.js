@@ -33,8 +33,8 @@ async function saveQueue(topics) {
 
 // Commands
 
-bot.command('add', async (ctx) => {
-  const text = ctx.message.text.slice(5).trim();
+bot.hears(/^\s*\/add(?:\s+|$)(.*)/s, async (ctx) => {
+  const text = (ctx.match[1] || '').trim();
   if (!text) return ctx.reply('Usage: /add <topic>');
   const topics = await loadQueue();
   topics.push({ topic: text, category: 'backend', context: '', notes: '' });
@@ -42,8 +42,8 @@ bot.command('add', async (ctx) => {
   ctx.reply(`Topic added (#${topics.length} in queue): ${text}`);
 });
 
-bot.command('topic', async (ctx) => {
-  const text = ctx.message.text.slice(7).trim();
+bot.hears(/^\s*\/topic(?:\s+|$)(.*)/s, async (ctx) => {
+  const text = (ctx.match[1] || '').trim();
   if (!text) return ctx.reply('Usage: /topic <topic>\nAdds a full topic. Use /category, /context, /note to set details on the last added topic.');
   const topics = await loadQueue();
   topics.push({ topic: text, category: 'backend', context: '', notes: '' });
@@ -51,8 +51,8 @@ bot.command('topic', async (ctx) => {
   ctx.reply(`Topic added (#${topics.length} in queue): ${text}`);
 });
 
-bot.command('context', async (ctx) => {
-  const text = ctx.message.text.slice(9).trim();
+bot.hears(/^\s*\/context(?:\s+|$)(.*)/s, async (ctx) => {
+  const text = (ctx.match[1] || '').trim();
   const topics = await loadQueue();
   if (!topics.length) return ctx.reply('No topics in queue. Add one first with /topic');
   topics[topics.length - 1].context = text || '';
@@ -60,8 +60,8 @@ bot.command('context', async (ctx) => {
   ctx.reply(`Context set on last topic: ${text || 'cleared'}`);
 });
 
-bot.command('category', async (ctx) => {
-  const text = ctx.message.text.slice(10).trim();
+bot.hears(/^\s*\/category(?:\s+|$)(.*)/s, async (ctx) => {
+  const text = (ctx.match[1] || '').trim();
   const topics = await loadQueue();
   if (!topics.length) return ctx.reply('No topics in queue. Add one first with /topic');
   topics[topics.length - 1].category = text || 'general';
@@ -69,8 +69,8 @@ bot.command('category', async (ctx) => {
   ctx.reply(`Category set on last topic: ${text || 'general'}`);
 });
 
-bot.command('note', async (ctx) => {
-  const text = ctx.message.text.slice(6).trim();
+bot.hears(/^\s*\/note(?:\s+|$)(.*)/s, async (ctx) => {
+  const text = (ctx.match[1] || '').trim();
   const topics = await loadQueue();
   if (!topics.length) return ctx.reply('No topics in queue. Add one first with /topic');
   topics[topics.length - 1].notes = text || '';
@@ -78,24 +78,25 @@ bot.command('note', async (ctx) => {
   ctx.reply(`Note set on last topic: ${text || 'none'}`);
 });
 
-bot.command('status', async (ctx) => {
+bot.hears(/^\s*\/status(?:\s+|$)/, async (ctx) => {
   const topics = await loadQueue();
   if (!topics.length) return ctx.reply('📝 Queue is empty. Add topics with /topic');
-  const next = topics[0];
-  let msg = `📝 Queue: ${topics.length} topic(s)\n\nNext up:\n• Topic: ${next.topic}\n• Category: ${next.category || 'general'}\n• Context: ${next.context || 'none'}\n• Notes: ${next.notes || 'none'}`;
+  const next = topics[topics.length - 1]; // Show the last added one by default for status
+  let msg = `📝 Queue: ${topics.length} topic(s)\n\nLatest topic:\n• Topic: ${next.topic}\n• Category: ${next.category || 'general'}\n• Context: ${next.context || 'none'}\n• Notes: ${next.notes || 'none'}`;
   if (topics.length > 1) {
-    msg += '\n\nUpcoming:';
-    topics.slice(1).forEach((t, i) => { msg += `\n${i + 2}. ${t.topic}`; });
+    msg += '\n\nFull Queue:';
+    topics.forEach((t, i) => { msg += `\n${i + 1}. ${t.topic}`; });
   }
   ctx.reply(msg);
 });
 
-bot.command('reset', async (ctx) => {
+bot.hears(/^\s*\/reset(?:\s+|$)/, async (ctx) => {
   await saveQueue([]);
   ctx.reply('Queue cleared.');
 });
 
-bot.command('generate', async (ctx) => {
+
+bot.hears(/^\s*\/generate(?:\s+|$)/, async (ctx) => {
   try {
     execSync('node scripts/generate-post.js', { stdio: 'inherit', env: process.env });
     const postsDir = path.join(__dirname, '../src/content/posts');
@@ -134,6 +135,7 @@ bot.command('generate', async (ctx) => {
     ctx.reply(`Generate failed: ${e.message}`);
   }
 });
+
 
 bot.on('callback_query', async (ctx) => {
   const [tag, slug] = ctx.callbackQuery.data.split(':');

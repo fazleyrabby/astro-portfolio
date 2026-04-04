@@ -16,21 +16,22 @@ async function generatePost() {
   const contextPath = path.join(__dirname, '../data/blog-context.json');
 
   const contextStr = await fs.readFile(contextPath, 'utf8');
-  const contextRaw = JSON.parse(contextStr);
+  let contextRaw;
+  try {
+    contextRaw = JSON.parse(contextStr);
+  } catch {
+    contextRaw = { topics: [] };
+  }
 
-  // Clean malformed data from multi-command
-  const context = {
-    topic: contextRaw.topic?.split('\n')[0] || '',
-    category: contextRaw.category || '',
-    context: contextRaw.context || '',
-    notes: contextRaw.notes || ''
-  };
-
-  if (!context.topic) {
-    console.error('No topic. Run /topic first.');
+  // Use the first topic from the queue
+  const topics = contextRaw.topics || [];
+  if (!topics.length) {
+    console.error('No topics in queue. Run /topic first.');
     process.exit(1);
   }
 
+  const context = topics[0];
+  const remainingTopics = topics.slice(1);
 
   const prompt = `Write a blog post as a backend engineer working with Laravel in production.
 
@@ -103,7 +104,6 @@ draft: true
   console.log(`Generated draft: ${slugValue}.md`);
 
   // Remove used topic
-  const remainingTopics = contextRaw.topics.slice(1);
   await fs.writeFile(contextPath, JSON.stringify({ topics: remainingTopics }, null, 2) + '\n');
 }
 

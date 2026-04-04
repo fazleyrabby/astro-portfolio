@@ -3,6 +3,7 @@ title: "Best Free AI Models in 2026 (Tested for Coding & Real Use)"
 date: 2026-03-31T14:00:00
 thumbnail: "https://i.ibb.co/27vzC28C/image.webp"
 draft: false
+featured: true
 ---
 
 ## Introduction

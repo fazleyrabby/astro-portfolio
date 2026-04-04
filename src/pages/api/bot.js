@@ -114,6 +114,43 @@ bot.hears(/^\s*\/generate(?:\s+|$)/, async (ctx) => {
   ctx.reply('⏳ This command usually runs via the scripts/generate-post.js script.\nFor serverless generation, please use /topic first to set details.');
 });
 
+bot.hears(/^\s*\/feature(?:\s+|$)(.*)/s, async (ctx) => {
+  const input = (ctx.match[1] || '').trim();
+  if (!input) return ctx.reply('Usage: /feature <slug>');
+  
+  const [owner, repo] = REPO.split('/');
+  const mdPath = `src/content/posts/${input}.md`;
+  
+  try {
+     const { data: file } = await octokit.repos.getContent({ owner, repo, path: mdPath });
+     let content = Buffer.from(file.content, 'base64').toString('utf8');
+     
+     if (content.includes('featured: true')) {
+       content = content.replace('\nfeatured: true', '\nfeatured: false');
+       ctx.reply(`Un-featured: ${input}`);
+     } else {
+       if (content.includes('featured:')) {
+         content = content.replace(/\nfeatured:\s*(true|false)/, '\nfeatured: true');
+       } else {
+         content = content.replace('---\n', '---\nfeatured: true\n');
+       }
+       ctx.reply(`🌟 Featured: ${input}`);
+     }
+     
+     await octokit.repos.createOrUpdateFileContents({
+       owner, repo, path: mdPath, message: `Toggle featured: ${input}`,
+       content: Buffer.from(content).toString('base64'), sha: file.sha
+     });
+     
+     // After update, if we were in a full CI environment we could trigger the README update.
+     // For now, this ensures the property is set in the repo.
+     
+  } catch (e) {
+    ctx.reply(`Error: ${e.message}`);
+  }
+});
+
+
 
 // 3. The Bot Callback Query Handler (Approval logic)
 bot.on('callback_query', async (ctx) => {

@@ -10,7 +10,8 @@
     "astro": "astro",
     "bot": "node scripts/telegraf-bot.js",
     "generate": "node scripts/generate-post.js",
-    "generate:ci": "node scripts/generate-and-notify.js"
+    "generate:ci": "node scripts/generate-and-notify.js",
+    "update-readme": "node scripts/update-github-readme.js"
   },
   "dependencies": {
     "@astrojs/netlify": "^5.5.4",

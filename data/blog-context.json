@@ -1,3 +1,34 @@
 {
-  "topics": []
+  "topics": [
+    {
+      "topic": "Solving the Read-After-Write Consistency Problem in Laravel with Replicas",
+      "category": "backend",
+      "context": "scaling reads with database replicas in production while avoiding stale data UI glitches",
+      "notes": "include sticky sessions, manual connection switching, and trade-offs of eventually consistent reads"
+    },
+    {
+      "topic": "Implementing Distributed Locking for Multi-Server Laravel Workers",
+      "category": "backend",
+      "context": "preventing race conditions when multiple horizontal application servers run overlapping scheduled tasks",
+      "notes": "include Redis-based AtomLock, lock expiration pitfalls, and handling stale lock cleanup"
+    },
+    {
+      "topic": "Building Zero-Downtime Data Migrations with the Expand-Contract Pattern",
+      "category": "backend",
+      "context": "deploying schema changes to high-traffic tables without locking or breaking the live app",
+      "notes": "include 3-phase migrations (expand, sync, contract), background worker data filling, and rollback safety"
+    },
+    {
+      "topic": "Architecting High-Performance API Observability with Structured Logging",
+      "category": "backend",
+      "context": "debugging production failures in distributed Laravel systems using Correlation IDs and Context",
+      "notes": "include Logstage/Monolog customization, tracing request lifecycles across queues, and integrating with Datadog/ELK"
+    },
+    {
+      "topic": "Hardening Laravel Webhook Consumers Against Distributed Denial of Service",
+      "category": "backend",
+      "context": "processing massive spikes in payment/event webhooks without overwhelming DB connections",
+      "notes": "include rapid signature verification, queue-first processing, idempotent handlers, and dynamic rate limiting"
+    }
+  ]
 }

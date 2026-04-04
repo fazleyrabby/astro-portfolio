@@ -70,7 +70,14 @@ async function updateReadme() {
 
     console.log(`Successfully updated GitHub profile README with: ${featured.title} ✅`);
   } catch (e) {
-    console.error(`Error updating README: ${e.message}`);
+    if (e.status === 403) {
+      console.error(`❌ Permission Denied: The GITHUB_TOKEN does not have write access to ${PROFILE_REPO}.
+      Please create a Personal Access Token (PAT) with 'repo' scope and add it as 'PROFILE_README_TOKEN' to your repository secrets.`);
+    } else if (e.status === 404) {
+      console.error(`❌ Repo Not Found: Could not find ${PROFILE_REPO} (where your profile README lives).`);
+    } else {
+      console.error(`❌ Unexpected Error updating README: ${e.message}`);
+    }
   }
 }
 

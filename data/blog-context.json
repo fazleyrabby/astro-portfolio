@@ -29,6 +29,12 @@
       "category": "backend",
       "context": "processing massive spikes in payment/event webhooks without overwhelming DB connections",
       "notes": "include rapid signature verification, queue-first processing, idempotent handlers, and dynamic rate limiting"
+    },
+    {
+      "topic": "Beating the N+1 Query Problem in Laravel using Eager Loading\nCategory: backend\nContext: We noticed huge DB spikes when loading relations.\nNotes: Keep it focused on the With() method and index optimization.",
+      "category": "backend",
+      "context": "",
+      "notes": ""
     }
   ]
 }

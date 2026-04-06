@@ -1,18 +1,6 @@
 {
   "topics": [
     {
-      "topic": "Solving the Read-After-Write Consistency Problem in Laravel with Replicas",
-      "category": "backend",
-      "context": "scaling reads with database replicas in production while avoiding stale data UI glitches",
-      "notes": "include sticky sessions, manual connection switching, and trade-offs of eventually consistent reads"
-    },
-    {
-      "topic": "Implementing Distributed Locking for Multi-Server Laravel Workers",
-      "category": "backend",
-      "context": "preventing race conditions when multiple horizontal application servers run overlapping scheduled tasks",
-      "notes": "include Redis-based AtomLock, lock expiration pitfalls, and handling stale lock cleanup"
-    },
-    {
       "topic": "Building Zero-Downtime Data Migrations with the Expand-Contract Pattern",
       "category": "backend",
       "context": "deploying schema changes to high-traffic tables without locking or breaking the live app",

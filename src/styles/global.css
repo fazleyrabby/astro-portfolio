@@ -396,4 +396,94 @@
         transparent 60%
       );
   }
+
+  /* Heading scroll offset for sticky nav */
+  #article-content h2,
+  #article-content h3,
+  #article-content h4 {
+    scroll-margin-top: 100px;
+  }
+
+  /* ------------------------- */
+  /* Premium Code Block Styling */
+  /* ------------------------- */
+  
+  /* Inline code highlighting */
+  #article-content p > code,
+  #article-content li > code {
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    background: var(--bg-surface);
+    color: var(--accent);
+    padding: 0.15rem 0.35rem;
+    border-radius: 0.3rem;
+    border: 1px solid var(--border);
+    word-break: break-word;
+  }
+
+  /* Code blocks (macOS window style) */
+  #article-content pre {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 2.5rem 1.25rem 1.25rem 1.25rem !important; /* Force top padding for buttons */
+    margin: 2rem 0;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02), 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Override structural syntax coloring in dark mode for maximum contrast */
+  .dark #article-content pre .line,
+  .dark #article-content pre span {
+    filter: brightness(1.7) contrast(1.15);
+  }
+
+  /* macOS traffic lights */
+  #article-content pre::before {
+    content: '';
+    position: absolute;
+    top: 0.85rem;
+    left: 1rem;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: #FF5F56; /* Red */
+    box-shadow: 1.2rem 0 0 #FFBD2E, 2.4rem 0 0 #27C93F; /* Yellow & Green */
+    opacity: 0.8;
+  }
+
+  /* Language Badge overlay */
+  #article-content pre[data-language]::after {
+    content: attr(data-language);
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--bg-base);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Custom Shiki Scrollbar */
+  #article-content pre::-webkit-scrollbar {
+    height: 0.4rem;
+  }
+  #article-content pre::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  #article-content pre::-webkit-scrollbar-thumb {
+    background: var(--border-hover);
+    border-radius: 1rem;
+  }
+  #article-content pre::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
 }

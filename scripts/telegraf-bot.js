@@ -33,23 +33,38 @@ async function saveQueue(topics) {
 
 // Commands
 
-bot.hears(/^\s*\/add(?:\s+|$)(.*)/s, async (ctx) => {
+const handleAddTopic = async (ctx) => {
   const text = (ctx.match[1] || '').trim();
-  if (!text) return ctx.reply('Usage: /add <topic>');
-  const topics = await loadQueue();
-  topics.push({ topic: text, category: 'backend', context: '', notes: '' });
-  await saveQueue(topics);
-  ctx.reply(`Topic added (#${topics.length} in queue): ${text}`);
-});
+  if (!text) return ctx.reply('Usage: /topic (or /add) <Topic Name>\nTip: You can use multiple lines! Add "Category: x", "Context: y", or "Notes: z" on new lines.');
+  
+  let topicStr = text.split('\n')[0].replace(/^(topic|title):\s*/i, '').trim();
+  let categoryStr = 'general';
+  let contextStr = '';
+  let notesStr = '';
+  let currentKey = 'topic';
 
-bot.hears(/^\s*\/topic(?:\s+|$)(.*)/s, async (ctx) => {
-  const text = (ctx.match[1] || '').trim();
-  if (!text) return ctx.reply('Usage: /topic <topic>\nAdds a full topic. Use /category, /context, /note to set details on the last added topic.');
+  const lines = text.split('\n').slice(1);
+  for (const line of lines) {
+    if (line.match(/^category:/i)) { currentKey = 'category'; categoryStr = line.replace(/^category:\s*/i, '').trim(); }
+    else if (line.match(/^context:/i)) { currentKey = 'context'; contextStr = line.replace(/^context:\s*/i, '').trim(); }
+    else if (line.match(/^(note|notes):/i)) { currentKey = 'notes'; notesStr = line.replace(/^(note|notes):\s*/i, '').trim(); }
+    else {
+      if (currentKey === 'category') categoryStr += ' ' + line.trim();
+      else if (currentKey === 'context') contextStr += '\n' + line.trim();
+      else if (currentKey === 'notes') notesStr += '\n' + line.trim();
+      else topicStr += ' ' + line.trim();
+    }
+  }
+
   const topics = await loadQueue();
-  topics.push({ topic: text, category: 'backend', context: '', notes: '' });
+  topics.push({ topic: topicStr, category: categoryStr, context: contextStr, notes: notesStr });
   await saveQueue(topics);
-  ctx.reply(`Topic added (#${topics.length} in queue): ${text}`);
-});
+  
+  ctx.reply(`✅ Topic added (#${topics.length} in queue):\n**${topicStr}**\n\nCategory: ${categoryStr}\nContext: ${contextStr ? 'Yes' : 'No'}\nNotes: ${notesStr ? 'Yes' : 'No'}`, { parse_mode: 'Markdown' });
+};
+
+bot.hears(/^\s*\/add(?:\s+|$)(.*)/s, handleAddTopic);
+bot.hears(/^\s*\/topic(?:\s+|$)(.*)/s, handleAddTopic);
 
 bot.hears(/^\s*\/context(?:\s+|$)(.*)/s, async (ctx) => {
   const text = (ctx.match[1] || '').trim();
@@ -81,13 +96,20 @@ bot.hears(/^\s*\/note(?:\s+|$)(.*)/s, async (ctx) => {
 bot.hears(/^\s*\/status(?:\s+|$)/, async (ctx) => {
   const topics = await loadQueue();
   if (!topics.length) return ctx.reply('📝 Queue is empty. Add topics with /topic');
-  const next = topics[topics.length - 1]; // Show the last added one by default for status
-  let msg = `📝 Queue: ${topics.length} topic(s)\n\nLatest topic:\n• Topic: ${next.topic}\n• Category: ${next.category || 'general'}\n• Context: ${next.context || 'none'}\n• Notes: ${next.notes || 'none'}`;
+  const next = topics[topics.length - 1]; 
+  
+  let msg = `📝 Queue: ${topics.length} topic(s)\n\n` +
+            `*Latest added:*\n` +
+            `• Topic: ${next.topic}\n` +
+            `• Category: ${next.category || 'general'}\n` +
+            `• Context: ${next.context ? '✅ Set' : '❌ None'}\n` +
+            `• Notes: ${next.notes ? '✅ Set' : '❌ None'}`;
+
   if (topics.length > 1) {
-    msg += '\n\nFull Queue:';
+    msg += '\n\n*Full Queue:*';
     topics.forEach((t, i) => { msg += `\n${i + 1}. ${t.topic}`; });
   }
-  ctx.reply(msg);
+  ctx.reply(msg, { parse_mode: 'Markdown' });
 });
 
 bot.hears(/^\s*\/reset(?:\s+|$)/, async (ctx) => {

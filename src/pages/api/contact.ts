@@ -90,13 +90,20 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const token = import.meta.env.TELEGRAM_TOKEN;
   const chatId = import.meta.env.TELEGRAM_CHAT_ID;
 
+  const escapeHtml = (unsafe: string) => unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
   const telegramMsg = `
 📩 <b>NEW CONTACT FORM SUBMISSION</b>
 
-📧 <b>Email:</b> <code>${email}</code>
+📧 <b>Email:</b> <code>${escapeHtml(email)}</code>
 
 💬 <b>Message:</b>
-${message}
+${escapeHtml(message)}
 
 🕒 <b>Time:</b> ${new Date().toLocaleString()}
 ━━━━━━━━━━━━━━━━━━`;

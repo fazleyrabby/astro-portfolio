@@ -1,0 +1,323 @@
+---
+// TableOfContents.astro — Sticky sidebar TOC with scroll-spy
+// Auto-populates from h2–h4 in #article-content
+---
+
+<button id="mobile-toc-btn" class="lg:hidden fixed bottom-20 right-6 z-50 bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--accent)] rounded-full p-3 shadow-lg flex items-center justify-center transition-transform active:scale-95" aria-label="Toggle Table of Contents">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+</button>
+
+<aside id="toc-sidebar" class="toc-sidebar hidden lg:block lg:col-span-4">
+  <nav id="toc" class="toc-nav" aria-label="Table of Contents">
+    <span class="toc-label">On this page</span>
+    <div id="toc-links" class="toc-links"></div>
+    <div class="toc-progress">
+      <div id="toc-progress-bar" class="toc-progress-bar"></div>
+    </div>
+  </nav>
+</aside>
+
+<style>
+  .toc-sidebar {
+    position: relative;
+  }
+
+  /* Mobile TOC Modal overlay mode */
+  :global(.toc-mobile-open) {
+    display: block !important;
+    position: fixed !important;
+    bottom: 5rem;
+    right: 1.5rem;
+    width: 250px;
+    max-height: 400px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    padding-bottom: 0.5rem;
+    z-index: 49;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    animation: slideUp 0.3s var(--ease-out-expo) forwards;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (min-width: 1024px) {
+    :global(.toc-mobile-open) {
+      position: relative !important;
+      background: none;
+      border: none;
+      padding: 0;
+      box-shadow: none;
+      bottom: auto;
+      right: auto;
+      width: auto;
+      max-height: none;
+      animation: none;
+    }
+  }
+
+  :global(.toc-mobile-open) .toc-nav {
+    position: relative !important;
+    top: 0 !important;
+    max-height: calc(400px - 3rem) !important;
+  }
+
+  .toc-nav {
+    position: sticky;
+    top: 6rem;
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+    overscroll-behavior: contain; /* Prevent scroll momentum from leaking to background page */
+    padding-right: 0.5rem;
+
+    /* Sleek thin scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .toc-nav::-webkit-scrollbar {
+    width: 3px;
+  }
+  .toc-nav::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .toc-nav::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+
+  .toc-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .toc-links {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  /* Injected via JS */
+  .toc-links :global(a) {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 0.35rem 0.6rem;
+    border-left: 2px solid transparent;
+    border-radius: 0 4px 4px 0;
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease,
+      background 0.2s ease,
+      opacity 0.2s ease;
+    opacity: 0.65;
+  }
+
+  .toc-links :global(a:hover) {
+    color: var(--text-secondary);
+    opacity: 0.85;
+    background: var(--accent-dim);
+  }
+
+  .toc-links :global(a.toc-active) {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    opacity: 1;
+    font-weight: 600;
+    background: var(--accent-dim);
+  }
+
+  /* Indentation levels */
+  .toc-links :global(a[data-level="3"]) {
+    padding-left: 1.2rem;
+    font-size: 0.74rem;
+  }
+  .toc-links :global(a[data-level="4"]) {
+    padding-left: 1.8rem;
+    font-size: 0.7rem;
+  }
+
+  /* Reading progress bar */
+  .toc-progress {
+    margin-top: 1rem;
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .toc-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.15s ease;
+  }
+</style>
+
+<script>
+  function initTOC() {
+    const article = document.getElementById('article-content');
+    const tocLinks = document.getElementById('toc-links');
+    const progressBar = document.getElementById('toc-progress-bar');
+    const mobileBtn = document.getElementById('mobile-toc-btn');
+    const sidebar = document.getElementById('toc-sidebar');
+
+    if (!article || !tocLinks || !sidebar) return;
+
+    // Singleton lock: Prevent double-binding event listeners due to Astro page-loads!
+    if (sidebar.getAttribute('data-toc-init') === 'true') return;
+    sidebar.setAttribute('data-toc-init', 'true');
+
+    const headings = [...article.querySelectorAll('h2, h3, h4')] as HTMLElement[];
+    if (headings.length === 0) {
+      sidebar.style.display = 'none';
+      if(mobileBtn) mobileBtn.style.display = 'none';
+      return;
+    }
+
+    // Mobile Toggle Logic
+    if (mobileBtn) {
+      mobileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isCurrentlyOpen = sidebar.classList.contains('toc-mobile-open');
+        if (isCurrentlyOpen) {
+          sidebar.style.display = '';
+          sidebar.classList.remove('toc-mobile-open');
+        } else {
+          sidebar.style.setProperty('display', 'block', 'important');
+          sidebar.classList.add('toc-mobile-open');
+        }
+      });
+      
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth < 1024 && sidebar.classList.contains('toc-mobile-open')) {
+          if (!sidebar.contains(e.target as Node) && !mobileBtn.contains(e.target as Node)) {
+            sidebar.style.display = '';
+            sidebar.classList.remove('toc-mobile-open');
+          }
+        }
+      });
+    }
+
+    // Build TOC links
+    tocLinks.innerHTML = headings.map(h => {
+      const level = Number(h.tagName[1]);
+      return `<a href="#${h.id}" data-id="${h.id}" data-level="${level}">${h.textContent?.trim() || ''}</a>`;
+    }).join('');
+
+    let currentActive: string | null = null;
+    let isClickScrolling = false;
+
+    // Smooth scroll on click (works with Lenis)
+    tocLinks.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'A') {
+        e.preventDefault();
+        const id = target.getAttribute('data-id');
+        if (!id) return;
+        const el = document.getElementById(id);
+        if (el) {
+          isClickScrolling = true;
+          
+          currentActive = id;
+          tocLinks.querySelectorAll('a').forEach(a => a.classList.remove('toc-active'));
+          target.classList.add('toc-active');
+
+          // Auto-close on mobile after link click
+          if (window.innerWidth < 1024) {
+            sidebar.style.display = '';
+            sidebar.classList.remove('toc-mobile-open');
+          }
+
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          history.replaceState(null, '', `#${id}`);
+          
+          setTimeout(() => { isClickScrolling = false; }, 1200);
+        }
+      }
+    });
+
+    // Scroll spy & reading progress via scroll listener
+    const updateScrollSpyAndProgress = () => {
+      // 1. Progress Bar
+      if (progressBar) {
+        const articleRect = article.getBoundingClientRect();
+        const articleTop = articleRect.top + window.scrollY;
+        const articleHeight = articleRect.height;
+        const scrollY = window.scrollY;
+        const windowHeight = window.innerHeight;
+
+        const progress = Math.min(1, Math.max(0,
+          (scrollY - articleTop + windowHeight * 0.3) / (articleHeight - windowHeight * 0.5)
+        ));
+
+        progressBar.style.width = `${Math.round(progress * 100)}%`;
+      }
+
+      // 2. Scroll Spy
+      if (isClickScrolling) return;
+
+      const scrollOffset = 150; // pixels from the top
+      let activeHeading: HTMLElement | null = null;
+
+      for (const h of headings) {
+        const rect = h.getBoundingClientRect();
+        if (rect.top <= scrollOffset) {
+          activeHeading = h;
+        } else {
+          break;
+        }
+      }
+
+      if (!activeHeading && headings.length > 0) {
+        activeHeading = headings[0];
+      }
+
+      if (activeHeading) {
+        const id = activeHeading.id;
+        if (id !== currentActive) {
+          currentActive = id;
+          tocLinks.querySelectorAll('a').forEach(a => a.classList.remove('toc-active'));
+          const link = tocLinks.querySelector(`[data-id="${id}"]`);
+          link?.classList.add('toc-active');
+
+          link?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+      }
+    };
+
+    window.addEventListener('scroll', updateScrollSpyAndProgress, { passive: true });
+    updateScrollSpyAndProgress();
+
+    // Highlight heading from URL hash on load
+    if (window.location.hash) {
+      const hashId = window.location.hash.slice(1);
+      const link = tocLinks.querySelector(`[data-id="${hashId}"]`);
+      link?.classList.add('toc-active');
+    }
+  }
+
+  // Run on page load and after Astro page transitions
+  document.addEventListener('DOMContentLoaded', initTOC);
+  document.addEventListener('astro:page-load', initTOC);
+
+  // Fallback: if DOM is already loaded
+  if (document.readyState !== 'loading') {
+    initTOC();
+  }
+</script>

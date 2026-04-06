@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fazleyrabbi.xyz/sitemap-index.xml

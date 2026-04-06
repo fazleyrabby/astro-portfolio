@@ -40,24 +40,30 @@ async function removeUsedTopic(remainingTopics) {
 }
 
 async function generatePost(context) {
-  const prompt = `Write a blog post as a backend engineer working with Laravel in production.
+  const prompt = `You are a senior backend engineer (expert in Laravel, Node.js, and Systems Design). Write a technical, portfolio-grade blog post.
 
-Topic: ${context.topic || ''}
+TOPIC: ${context.topic || ''}
+CATEGORY: ${context.category || 'general'}
+CONTEXT / BACKGROUND: ${context.context || 'None provided. Focus on real-world best practices.'}
+SPECIFIC NOTES: ${context.notes || 'None provided. Fill in with practical scenarios.'}
 
-Category: ${context.category || 'general'}
+REQUIREMENTS:
+- Tone: Professional, first-person, insightful (like a 10x engineer's case study). Avoid beginner explanations. Give deep insights into trade-offs and edge cases.
+- Density: Keep it extremely concise and dense with value (around 600-800 words max) to respect token limits. NO fluff.
+- Structure: Start with a strong intro/problem statement. Move into architectural decisions, the solution, code snippets, and finally key takeaways.
+- Code: Include practical, real-world code snippets demonstrating the solution.
+- Formatting: Use proper markdown headings (##, ###), lists, and code blocks.
 
-Context: ${context.context || ''}
+OUTPUT FORMAT:
+Do NOT output JSON. Output raw Markdown only.
+Begin your response EXACTLY with a YAML frontmatter block containing ONLY a "title" field and a "tags" field (an array of 3-5 concise technical tags).
 
-Notes: ${context.notes || ''}
-
-Requirements:
-Write as an experienced Laravel backend engineer describing a real production problem and solution; avoid beginner explanations and generic phrases; focus on what breaks in production, include trade-offs, edge cases (retries, race conditions, scaling), use concise first-person tone, add at least one realistic code example, follow structure (intro → problem → solution → code → conclusion), go deep on one issue only, output clean Markdown.
-
-Output ONLY JSON:
-{
-  "title": "Post title",
-  "content": "Markdown content"
-}`;
+Example:
+---
+title: "Your High-Quality Post Title"
+tags: ["Laravel", "Database", "Scale"]
+---
+Your article content starts here...`;
 
   const completion = await openai.chat.completions.create({
     model: 'llama-3.3-70b-versatile',
@@ -65,21 +71,24 @@ Output ONLY JSON:
   });
 
   let response = completion.choices[0].message.content.trim();
-  response = response.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
+  response = response.replace(/^```(?:markdown|md)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
 
-  try {
-    return JSON.parse(response);
-  } catch {
-    const titleMatch = response.match(/"title"\s*:\s*"([^"]+)"/);
-    const contentMatch = response.match(/"content"\s*:\s*"([\s\S]*)"\s*\}?\s*$/);
-    if (!titleMatch || !contentMatch) {
-      throw new Error('Could not parse AI response');
+  let title = "New Engineering Post";
+  let markdownContent = response;
+
+  const fmMatch = response.match(/^---\n?title:\s*"?([^"\n]+)"?\n?---/);
+  if (fmMatch) {
+    title = fmMatch[1].trim();
+    markdownContent = response.substring(fmMatch[0].length).trim();
+  } else {
+    const lines = response.split('\n');
+    if (lines[0].startsWith('# ')) {
+      title = lines[0].replace(/^#\s*/, '').replace(/"/g, '').trim();
+      markdownContent = lines.slice(1).join('\n').trim();
     }
-    return {
-      title: titleMatch[1],
-      content: contentMatch[1].replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
-    };
   }
+
+  return { title, content: markdownContent };
 }
 
 async function commitDraft(slug, fileContent) {

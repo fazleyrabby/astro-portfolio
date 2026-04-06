@@ -31,6 +31,13 @@ export const POST: APIRoute = async ({ request }) => {
     const chatId = message.chat.id;
     const text = message.text.trim();
 
+    // SECURITY LOCK: Only process commands from your specific private chat
+    const myChatId = parseInt(import.meta.env.TELEGRAM_CHAT_ID || "0", 10);
+    if (chatId !== myChatId) {
+      console.warn(`Unauthorized bot access attempt from chat ID: ${chatId}`);
+      return new Response("Unauthorized", { status: 403 });
+    }
+
     if (text.startsWith("/topic")) {
       const value = text.slice(6).trim();
       if (!value) return reply(chatId, "Usage: /topic <text>");

@@ -105,7 +105,9 @@ export async function POST({ request, clientAddress }) {
     const userAgent = headers.get("user-agent") || "Unknown";
     const path = new URL(request.url).pathname;
 
-    if (isBot(userAgent) || isPrivateIP(ip)) {
+    const myIP = import.meta.env.MY_IP || "";
+
+    if (isBot(userAgent) || isPrivateIP(ip) || (myIP && ip === myIP)) {
         return new Response(JSON.stringify({ ok: true }), {
             headers: { "Content-Type": "application/json" }
         });

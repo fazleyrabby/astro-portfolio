@@ -1,34 +1,80 @@
 ---
 title: "Solving the Read-After-Write Consistency Problem in Laravel with Replicas"
-date: 2026-04-05T02:04:29
+date: 2026-04-06T18:08:01
 draft: true
 ---
 
 # Solving the Read-After-Write Consistency Problem in Laravel with Replicas
+
 ## Introduction
-As a Laravel backend engineer, I've encountered my fair share of production problems. One issue that still haunts me is the read-after-write consistency problem when using database replicas to scale reads. In this post, I'll dive into the problem, its consequences, and how I solved it using a combination of sticky sessions, manual connection switching, and a deep understanding of eventually consistent reads.
-## The Problem
-When using database replicas, the primary goal is to offload read traffic from the master database. However, this can lead to stale data and UI glitches if not implemented carefully. The problem arises when a user performs a write operation, and immediately after, they trigger a read operation that should reflect the updated data. If the read operation is routed to a replica that hasn't yet synchronized with the master, the user will see stale data. This can lead to a poor user experience and potentially even data inconsistencies.
+As a senior backend engineer, I've encountered my fair share of challenges when scaling Laravel applications to meet growing traffic demands. One common issue is ensuring read-after-write consistency when using database replicas to offload reads. In this post, I'll share my experience solving this problem in a production environment, highlighting the trade-offs and solutions that worked for our team.
+
+## The Problem: Read-After-Write Consistency
+When using database replicas to scale reads, there's a risk of stale data being returned to the user, causing UI glitches and inconsistent behavior. This occurs when a write operation is performed on the primary database, but the replica hasn't yet been updated. To mitigate this, we need to ensure that reads are routed to the primary database or a replica that's guaranteed to have the latest data.
+
+## Architectural Decisions
+Our application uses a combination of sticky sessions and manual connection switching to achieve read-after-write consistency. Here are the key decisions we made:
+* **Sticky sessions**: We use a load balancer to direct incoming requests to a specific web server, ensuring that subsequent requests from the same client are routed to the same server. This allows us to maintain a consistent connection to the primary database or a designated replica.
+* **Manual connection switching**: We use Laravel's built-in database connection features to manually switch between the primary database and replicas based on the type of request. For example, we use the primary database for write operations and a replica for read-only operations.
+
 ## The Solution
-To solve this problem, I employed a dual-pronged approach. First, I implemented sticky sessions to ensure that users are routed to the same database connection for a certain period. This reduces the likelihood of read-after-write inconsistencies but doesn't eliminate them entirely. Second, I used manual connection switching to explicitly route read operations to the master database immediately after a write operation. This ensures that the user sees the updated data without waiting for the replicas to synchronize.
-## Code Example
-Here's an example of how I implemented manual connection switching in Laravel:
+To implement manual connection switching, we created a custom database connection resolver that determines which connection to use based on the request type. Here's an example code snippet:
 ```php
-// Create a new database connection to the master database
-$masterConnection = DB::connection('master');
+// app/Database/ConnectionResolver.php
 
-// Perform a write operation
-$user = new User();
-$user->name = 'John Doe';
-$user->save();
+namespace App\Database;
 
-// Switch to the master connection for the next read operation
-DB::connection('master')->beginTransaction();
-$user = User::find($user->id);
-DB::connection('master')->commit();
+use Illuminate\Database\Connectors\ConnectionFactory;
+use Illuminate\DatabasegetConnection;
+
+class ConnectionResolver
+{
+    public function resolveConnection($request)
+    {
+        if ($request->isMethod('POST') || $request->isMethod('PUT') || $request->isMethod('DELETE')) {
+            // Use primary database for write operations
+            return 'primary';
+        } else {
+            // Use replica for read-only operations
+            return 'replica';
+        }
+    }
+}
 ```
-Note that this approach has trade-offs. For instance, it can lead to increased load on the master database, which may impact write performance. Additionally, if the master database is down, the application will be unable to perform reads or writes.
-## Trade-Offs and Edge Cases
-When using eventually consistent reads, there are several trade-offs and edge cases to consider. For example, retries and race conditions can lead to inconsistent data if not handled properly. To mitigate these issues, I implemented a retry mechanism with exponential backoff to handle temporary inconsistencies. I also used transactions to ensure that multiple operations are executed as a single, all-or-nothing unit of work.
-## Conclusion
-Solving the read-after-write consistency problem in Laravel with replicas requires a deep understanding of the trade-offs involved. By using a combination of sticky sessions, manual connection switching, and eventually consistent reads, I was able to ensure that my application provides a seamless user experience while minimizing the risk of data inconsistencies. However, it's essential to carefully evaluate the pros and cons of each approach and consider the specific requirements of your application before implementing a solution.
+We then registered the connection resolver in our Laravel application:
+```php
+// config/database.php
+
+'connections' => [
+    'primary' => [
+        'driver' => 'mysql',
+        'host' => env('DB_HOST_PRIMARY'),
+        'port' => env('DB_PORT'),
+        'database' => env('DB_DATABASE'),
+        'username' => env('DB_USERNAME'),
+        'password' => env('DB_PASSWORD'),
+    ],
+    'replica' => [
+        'driver' => 'mysql',
+        'host' => env('DB_HOST_REPLICA'),
+        'port' => env('DB_PORT'),
+        'database' => env('DB_DATABASE'),
+        'username' => env('DB_USERNAME'),
+        'password' => env('DB_PASSWORD'),
+    ],
+],
+
+'resolver' => [
+    'class' => \App\Database\ConnectionResolver::class,
+],
+```
+## Trade-Offs and Eventually Consistent Reads
+While our solution ensures read-after-write consistency, it comes with trade-offs. Using sticky sessions and manual connection switching can increase complexity and may lead to hotspots in our infrastructure. Additionally, we've had to accept eventually consistent reads, where data may be stale for a short period after a write operation. However, this trade-off is acceptable for our use case, as the benefits of scaled reads and improved performance outweigh the occasional stale data.
+
+## Key Takeaways
+To summarize, our solution to the read-after-write consistency problem in Laravel with replicas involves:
+* Using sticky sessions to maintain a consistent connection to the primary database or a designated replica
+* Implementing manual connection switching to route write operations to the primary database and read-only operations to a replica
+* Accepting eventually consistent reads and the associated trade-offs
+
+By applying these strategies, we've been able to scale our Laravel application to meet growing traffic demands while ensuring a consistent user experience. As with any solution, it's essential to carefully evaluate the trade-offs and adjust the approach as needed to suit your specific use case.

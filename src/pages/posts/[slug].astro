@@ -3,6 +3,7 @@
 export const prerender = true;
 
 import MainLayout from "@layouts/MainLayout.astro";
+import TableOfContents from "@components/TableOfContents.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -29,20 +30,52 @@ const { Content } = await render(post);
   twitterImage={post.data.thumbnail}
 >
   <main class="max-w-6xl mx-auto px-6 py-16">
-    <article class="prose prose-neutral dark:prose-invert max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-li:text-[var(--text-secondary)] prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)]">
+    <!-- Hero: thumbnail + title (full width, above the grid) -->
+    <div class="max-w-3xl mx-auto lg:mx-0 lg:max-w-none mb-12">
       {post.data.thumbnail && (
-        <img data-thumb src={post.data.thumbnail} alt={post.data.title} class="rounded-lg mb-8 max-h-[400px] w-full object-contain" loading="lazy" />
+        <div class="relative w-full rounded-[1.5rem] mb-8 overflow-hidden flex justify-center items-center" data-thumb-container>
+          <img 
+            data-thumb 
+            src={post.data.thumbnail} 
+            alt={post.data.title} 
+            class="max-h-[400px] w-auto max-w-full object-contain" 
+            style="-webkit-mask-image: linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent); mask-image: linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent);"
+            loading="lazy" 
+          />
+        </div>
       )}
       <h1 class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-[var(--text-primary)] mb-4">{post.data.title}</h1>
-      <p class="mb-10">
-        <small class="font-mono text-xs text-[var(--text-muted)] uppercase tracking-widest"
-          >{
-            post.data.date ? new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : ""
-          }</small
-        >
-      </p>
-      <Content />
-    </article>
+      <div class="flex flex-col sm:flex-row sm:items-center gap-4 flex-wrap mb-4">
+        <p class="mb-0">
+          <small class="font-mono text-xs text-[var(--text-muted)] uppercase tracking-widest"
+            >{
+              post.data.date ? new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : ""
+            }</small
+          >
+        </p>
+        
+        {post.data.tags && post.data.tags.length > 0 && (
+          <>
+            <span class="hidden sm:inline-block text-[var(--border-color)]">|</span>
+            <div class="flex items-center gap-2 flex-wrap">
+              {post.data.tags.map((tag) => (
+                <span class="px-2.5 py-1 text-[10px] font-mono tracking-widest uppercase rounded-full bg-[var(--surface-color)] border border-[var(--border-color)] text-[var(--text-secondary)]">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+
+    <!-- Content grid: article + TOC sidebar -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+      <article id="article-content" class="lg:col-span-8 prose prose-neutral dark:prose-invert max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-li:text-[var(--text-secondary)] prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)]">
+        <Content />
+      </article>
+      <TableOfContents />
+    </div>
   </main>
 </MainLayout>
 
@@ -52,8 +85,16 @@ const { Content } = await render(post);
     const cacheKey = `thumb-bg:${img.src}`;
     const cached = sessionStorage.getItem(cacheKey);
 
+    const applyColor = (color: string) => {
+      const container = document.querySelector('[data-thumb-container]') as HTMLElement | null;
+      if (container) {
+        container.style.backgroundColor = color;
+        container.style.setProperty('--edge-color', color);
+      }
+    };
+
     if (cached) {
-      img.style.backgroundColor = cached;
+      applyColor(cached);
     } else {
       const detectBg = () => {
         const proxy = new Image();
@@ -80,13 +121,13 @@ const { Content } = await render(post);
             for (let y = 0; y < h; y += step) { sample(0, y); sample(w - 1, y); }
 
             const color = `rgb(${Math.round(r / count)}, ${Math.round(g / count)}, ${Math.round(b / count)})`;
-            img.style.backgroundColor = color;
+            applyColor(color);
             sessionStorage.setItem(cacheKey, color);
           } catch {
-            img.style.backgroundColor = '#000';
+            applyColor('#000');
           }
         };
-        proxy.onerror = () => { img.style.backgroundColor = '#000'; };
+        proxy.onerror = () => { applyColor('#000'); };
       };
       if (img.complete) detectBg();
       else img.addEventListener('load', detectBg);

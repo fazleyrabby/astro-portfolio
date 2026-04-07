@@ -134,3 +134,40 @@ const { Content } = await render(post);
     }
   }
 </script>
+
+<script>
+  // Wrap code blocks with a proper header for sticky dots + badge
+  document.querySelectorAll('#article-content pre').forEach((pre) => {
+    // Skip if already wrapped
+    if (pre.parentElement?.classList.contains('code-block-wrapper')) return;
+
+    const lang = pre.getAttribute('data-language') || '';
+
+    // Create wrapper
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-block-wrapper';
+
+    // Create sticky header
+    const header = document.createElement('div');
+    header.className = 'code-block-header';
+
+    // macOS dots
+    const dots = document.createElement('div');
+    dots.className = 'code-block-dots';
+    dots.innerHTML = '<span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>';
+    header.appendChild(dots);
+
+    // Language badge
+    if (lang) {
+      const badge = document.createElement('span');
+      badge.className = 'code-block-lang';
+      badge.textContent = lang.toUpperCase();
+      header.appendChild(badge);
+    }
+
+    // Insert wrapper before pre, then move pre inside
+    pre.parentNode!.insertBefore(wrapper, pre);
+    wrapper.appendChild(header);
+    wrapper.appendChild(pre);
+  });
+</script>

@@ -74,12 +74,20 @@ Your article content starts here...`;
   response = response.replace(/^```(?:markdown|md)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
 
   let title = "New Engineering Post";
+  let tags = [];
   let markdownContent = response;
 
-  const fmMatch = response.match(/^---\n?title:\s*"?([^"\n]+)"?\n?---/);
-  if (fmMatch) {
-    title = fmMatch[1].trim();
-    markdownContent = response.substring(fmMatch[0].length).trim();
+  // Match full frontmatter block (may contain title, tags, and other fields)
+  const fmBlockMatch = response.match(/^---\n([\s\S]*?)\n---/);
+  if (fmBlockMatch) {
+    const fmBody = fmBlockMatch[1];
+    const titleMatch = fmBody.match(/title:\s*"?([^"\n]+)"?/);
+    const tagsMatch = fmBody.match(/tags:\s*(\[.*?\])/);
+    if (titleMatch) title = titleMatch[1].trim();
+    if (tagsMatch) {
+      try { tags = JSON.parse(tagsMatch[1]); } catch { tags = []; }
+    }
+    markdownContent = response.substring(fmBlockMatch[0].length).trim();
   } else {
     const lines = response.split('\n');
     if (lines[0].startsWith('# ')) {
@@ -88,7 +96,7 @@ Your article content starts here...`;
     }
   }
 
-  return { title, content: markdownContent };
+  return { title, tags, content: markdownContent };
 }
 
 async function commitDraft(slug, fileContent) {
@@ -164,7 +172,8 @@ async function main() {
 
   const now = new Date();
   const date = now.toISOString().replace(/\.\d{3}Z$/, '');
-  const fileContent = `---\ntitle: "${post.title}"\ndate: ${date}\ndraft: true\n---\n\n${post.content}`;
+  const tagsLine = post.tags.length ? `\ntags: ${JSON.stringify(post.tags)}` : '';
+  const fileContent = `---\ntitle: "${post.title}"\ndate: ${date}\ndraft: true${tagsLine}\n---\n\n${post.content}`;
 
   console.log(`Committing draft: ${slugValue}.md`);
   await commitDraft(slugValue, fileContent);

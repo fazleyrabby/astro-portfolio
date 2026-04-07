@@ -179,13 +179,13 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
       return document.documentElement.classList.contains("dark");
     }
 
-  function buildParticles(art) {
-    const lines = art.split('\n');
-    const rows = lines.length;
-    const cols = Math.max(...lines.map(l => l.length));
-    const CELL_W = 3.6;
-    const CELL_H = 7;
-    const particles = [];
+    function buildParticles(art) {
+      const lines = art.split("\n");
+      const rows = lines.length;
+      const cols = Math.max(...lines.map((l) => l.length));
+      const CELL_W = 3.6;
+      const CELL_H = 7;
+      const particles = [];
 
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < lines[r].length; c++) {
@@ -241,13 +241,14 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
     let currentTheme = isDark() ? "dark" : "light";
     let data = buildParticles(currentTheme === "dark" ? DARK_ART : LIGHT_ART);
 
-  let width, height, offsetX, offsetY, scale;
-  let mouseX = -9999, mouseY = -9999;
-  let isHovering = false;
-  let animating = false;
-  let dpr = 1;
-  let cachedMutedColor = '';
-  let cachedAccentColor = '';
+    let width, height, offsetX, offsetY, scale;
+    let mouseX = -9999,
+      mouseY = -9999;
+    let isHovering = false;
+    let animating = false;
+    let dpr = 1;
+    let cachedMutedColor = "";
+    let cachedAccentColor = "";
 
     function resize() {
       const rect = cnv.parentElement.getBoundingClientRect();
@@ -265,50 +266,52 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
       offsetY = (height - data.artH * scale) / 2;
     }
 
-  function getStyle(prop) {
-    return getComputedStyle(document.documentElement).getPropertyValue(prop).trim();
-  }
-
-  function updateCachedColors() {
-    cachedMutedColor = getStyle('--text-muted') || '#57534E';
-    cachedAccentColor = getStyle('--accent') || '#E8823A';
-  }
-
-  function draw() {
-    const nowTheme = isDark() ? 'dark' : 'light';
-    if (nowTheme !== currentTheme) {
-      currentTheme = nowTheme;
-      data = buildParticles(currentTheme === 'dark' ? DARK_ART : LIGHT_ART);
-      resize();
-      updateCachedColors();
+    function getStyle(prop) {
+      return getComputedStyle(document.documentElement)
+        .getPropertyValue(prop)
+        .trim();
     }
 
-    ctx.clearRect(0, 0, width, height);
+    function updateCachedColors() {
+      cachedMutedColor = getStyle("--text-muted") || "#57534E";
+      cachedAccentColor = getStyle("--accent") || "#E8823A";
+    }
+
+    function draw() {
+      const nowTheme = isDark() ? "dark" : "light";
+      if (nowTheme !== currentTheme) {
+        currentTheme = nowTheme;
+        data = buildParticles(currentTheme === "dark" ? DARK_ART : LIGHT_ART);
+        resize();
+        updateCachedColors();
+      }
+
+      ctx.clearRect(0, 0, width, height);
 
       ctx.save();
       ctx.translate(offsetX, offsetY);
       ctx.scale(scale, scale);
 
-    ctx.font = `${data.CELL_H * 0.95}px "DM Mono", monospace`;
-    ctx.textBaseline = 'top';
+      ctx.font = `${data.CELL_H * 0.95}px "DM Mono", monospace`;
+      ctx.textBaseline = "top";
 
-    const baseRadius = 90;
-    const pushStrength = 22;
-    const frameTime = performance.now() * 0.001;
+      const baseRadius = 90;
+      const pushStrength = 22;
+      const frameTime = performance.now() * 0.001;
 
-    let localMX, localMY;
-    if (isHovering) {
-      localMX = (mouseX - offsetX) / scale;
-      localMY = (mouseY - offsetY) / scale;
-    }
-
-    let needsNextFrame = isHovering;
-
-    for (const p of data.visible) {
+      let localMX, localMY;
       if (isHovering) {
-        const ddx = p.x - localMX;
-        const ddy = p.y - localMY;
-        const dist = Math.sqrt(ddx * ddx + ddy * ddy);
+        localMX = (mouseX - offsetX) / scale;
+        localMY = (mouseY - offsetY) / scale;
+      }
+
+      let needsNextFrame = isHovering;
+
+      for (const p of data.visible) {
+        if (isHovering) {
+          const ddx = p.x - localMX;
+          const ddy = p.y - localMY;
+          const dist = Math.sqrt(ddx * ddx + ddy * ddy);
 
           const n = pseudoNoise(
             p.homeX * 0.07 + frameTime * 0.4,
@@ -339,39 +342,43 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
         const dispFade = Math.max(0.08, 1 - dispDist / 80);
         p.opacity += (p.homeOpacity * dispFade - p.opacity) * 0.1;
 
-      if (Math.abs(p.vx) > 0.01 || Math.abs(p.vy) > 0.01 || Math.abs(p.opacity - p.homeOpacity * dispFade) > 0.005) {
-        needsNextFrame = true;
-      }
-
-      let color = cachedMutedColor;
-      if (isHovering) {
-        const md = Math.sqrt((p.x - localMX) ** 2 + (p.y - localMY) ** 2);
-        const colorNoise = pseudoNoise(p.homeX * 0.09 + frameTime * 0.3, p.homeY * 0.09);
-        const colorRadius = baseRadius * (0.8 + colorNoise * 1.2);
-        if (md < colorRadius) {
-          color = cachedAccentColor;
+        if (
+          Math.abs(p.vx) > 0.01 ||
+          Math.abs(p.vy) > 0.01 ||
+          Math.abs(p.opacity - p.homeOpacity * dispFade) > 0.005
+        ) {
+          needsNextFrame = true;
         }
-      }
 
-      let alpha = p.opacity;
-      if (!isHovering) {
-        // Replace chaotic hash noise with organic, overlapping sine waves for a buttery smooth fade
-        const wave1 = Math.sin(p.homeX * 0.03 + frameTime * 1.1);
-        const wave2 = Math.cos(p.homeY * 0.04 - frameTime * 0.8);
-        const wave3 = Math.sin((p.homeX + p.homeY) * 0.02 + frameTime * 0.6);
-        
-        const combined = wave1 + wave2 + wave3;
-        
-        // When waves align peaking > 1.2, gracefully dim the particle
-        if (combined > 1.2) {
-          // Normalize intensity
-          const intensity = Math.min(1, (combined - 1.2) / 1.8);
-          // Apply cubic easing function to smooth out the edge of the blink
-          const smoothFade = intensity * intensity * (3 - 2 * intensity);
-          alpha *= 1 - (smoothFade * 0.65);
+        let color = cachedMutedColor;
+        if (isHovering) {
+          const md = Math.sqrt((p.x - localMX) ** 2 + (p.y - localMY) ** 2);
+          const colorNoise = pseudoNoise(
+            p.homeX * 0.09 + frameTime * 0.3,
+            p.homeY * 0.09,
+          );
+          const colorRadius = baseRadius * (0.8 + colorNoise * 1.2);
+          if (md < colorRadius) {
+            color = cachedAccentColor;
+          }
         }
-        needsNextFrame = true; // Maintain glassy 60fps loop for smooth transitions
-      }
+
+        let alpha = p.opacity;
+        if (!isHovering) {
+          // ── Single horizontal luminance wave ──
+          const nx = p.homeX / data.artW;
+
+          // A single wave spanning the entire horizontal width, traveling rightwards
+          const wavePhase = nx * Math.PI * 2.5 - frameTime * 2.0;
+          const wave = Math.sin(wavePhase);
+
+          // Map sine [-1, 1] to an intensity range [0.75, 1.0]
+          // Particles fade to 75% opacity at trough, 100% at crest for a very subtle effect
+          const crest = (wave * 0.5) + 0.5;
+          alpha *= 0.75 + crest * 0.25;
+
+          needsNextFrame = true; // Maintain 60fps loop for smooth transitions
+        }
 
         ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
         ctx.fillStyle = color;
@@ -380,14 +387,14 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
 
       ctx.restore();
 
-    if (needsNextFrame) {
-      animating = true;
-      requestAnimationFrame(draw);
-    } else {
-      animating = false;
-      setTimeout(() => startAnim(), 200);
+      if (needsNextFrame) {
+        animating = true;
+        requestAnimationFrame(draw);
+      } else {
+        animating = false;
+        setTimeout(() => startAnim(), 200);
+      }
     }
-  }
 
     function startAnim() {
       if (!animating) {
@@ -396,13 +403,19 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
       }
     }
 
-  resize();
-  updateCachedColors();
-  draw();
+    resize();
+    updateCachedColors();
+    draw();
 
-  // Watch for theme toggles
-  const observer = new MutationObserver(() => { updateCachedColors(); startAnim(); });
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    // Watch for theme toggles
+    const observer = new MutationObserver(() => {
+      updateCachedColors();
+      startAnim();
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
 
     window.addEventListener("resize", () => {
       resize();
@@ -436,7 +449,7 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
         mouseY = e.touches[0].clientY - rect.top;
         startAnim();
       },
-      { passive: true }
+      { passive: true },
     );
     avatar.addEventListener(
       "touchmove",
@@ -446,7 +459,7 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
         mouseY = e.touches[0].clientY - rect.top;
         startAnim();
       },
-      { passive: true }
+      { passive: true },
     );
     avatar.addEventListener("touchend", () => {
       isHovering = false;

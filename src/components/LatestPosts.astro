@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
-const allPosts = await getCollection('posts');
+const allPostsRaw = await getCollection('posts');
+const allPosts = allPostsRaw.filter(post => !post.data.draft);
 // Sort by date descending
 allPosts.sort((a, b) => {
   const dateA = a.data.date ? new Date(a.data.date).getTime() : 0;

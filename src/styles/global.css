@@ -421,12 +421,76 @@
     word-break: break-word;
   }
 
-  /* Code blocks (macOS window style) */
-  #article-content pre {
+  /* Code block wrapper (container for header + pre) */
+  .code-block-wrapper {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    margin: 2rem 0;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02), 0 10px 30px rgba(0, 0, 0, 0.1);
+    background-color: var(--bg-card);
+  }
+
+  /* Sticky header with dots + badge */
+  .code-block-header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1rem;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-block-dots {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .code-block-dots .dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    display: block;
+  }
+
+  .dot-red   { background: #FF5F56; opacity: 0.8; }
+  .dot-yellow { background: #FFBD2E; opacity: 0.8; }
+  .dot-green  { background: #27C93F; opacity: 0.8; }
+
+  .code-block-lang {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--bg-base);
+    user-select: none;
+  }
+
+  /* Code blocks inside wrapper — no extra decoration needed */
+  .code-block-wrapper pre {
+    background-color: var(--bg-card) !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 1.25rem !important;
+    margin: 0 !important;
+    overflow-x: auto;
+    box-shadow: none !important;
+  }
+
+  /* Fallback: un-wrapped pre (shouldn't happen in posts but just in case) */
+  #article-content pre:not(.code-block-wrapper pre) {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border);
     border-radius: 0.5rem;
-    padding: 2.5rem 1.25rem 1.25rem 1.25rem !important; /* Force top padding for buttons */
+    padding: 2.5rem 1.25rem 1.25rem 1.25rem !important;
     margin: 2rem 0;
     overflow-x: auto;
     position: relative;
@@ -437,39 +501,6 @@
   .dark #article-content pre .line,
   .dark #article-content pre span {
     filter: brightness(1.7) contrast(1.15);
-  }
-
-  /* macOS traffic lights */
-  #article-content pre::before {
-    content: '';
-    position: absolute;
-    top: 0.85rem;
-    left: 1rem;
-    width: 0.6rem;
-    height: 0.6rem;
-    border-radius: 50%;
-    background: #FF5F56; /* Red */
-    box-shadow: 1.2rem 0 0 #FFBD2E, 2.4rem 0 0 #27C93F; /* Yellow & Green */
-    opacity: 0.8;
-  }
-
-  /* Language Badge overlay */
-  #article-content pre[data-language]::after {
-    content: attr(data-language);
-    position: absolute;
-    top: 0.5rem;
-    right: 1rem;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    letter-spacing: 0.05em;
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    background: var(--bg-base);
-    pointer-events: none;
-    user-select: none;
   }
 
   /* Custom Shiki Scrollbar */

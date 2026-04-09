@@ -1,5 +1,5 @@
 ---
-date: “2026-04-09T12:00:00”
+date: 2026-04-09T12:00:00
 draft: false
 title: Creating a Finder Toolbar “New File” Tool for Developers and macOS Users
 description: “How to build a custom Finder toolbar button on macOS that lets you create new files with developer-friendly templates — no Terminal or editor needed.”

@@ -303,10 +303,24 @@ Output ONLY JSON:
 // --- Callback handler (approve/reject) ---
 
 async function handleCallback(callback: any) {
-  const [action, slug] = callback.data.split(":");
-  if (!action || !slug) return;
+  const [action, cbSlug] = callback.data.split(":");
+  if (!action || !cbSlug) return;
 
   const [owner, repo] = GITHUB_REPOSITORY.split("/");
+  // Slug may have been truncated to fit Telegram's 64-byte callback_data limit;
+  // resolve the full slug by listing posts that match the prefix
+  let slug = cbSlug;
+  try {
+    const listRes = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/contents/src/content/posts?ref=${DRAFTS_BRANCH}`,
+      { headers: ghHeaders }
+    );
+    if (listRes.ok) {
+      const files: any[] = await listRes.json();
+      const match = files.find((f: any) => f.name.endsWith(".md") && f.name.startsWith(cbSlug));
+      if (match) slug = match.name.replace(/\.md$/, "");
+    }
+  } catch {}
   const mdPath = `src/content/posts/${slug}.md`;
   let resultText: string;
 
@@ -401,6 +415,8 @@ function escapeMarkdown(text: string) {
 
 async function sendTelegramWithButtons(chatId: number, title: string, slug: string, preview: string) {
   const text = `📝 New draft: *${escapeMarkdown(title)}*\n\n${escapeMarkdown(preview)}`;
+  // Telegram callback_data has a 64-byte limit; truncate slug to fit with longest prefix ("approve:")
+  const cbSlug = slug.length > 56 ? slug.slice(0, 56) : slug;
   await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -410,8 +426,8 @@ async function sendTelegramWithButtons(chatId: number, title: string, slug: stri
       parse_mode: "MarkdownV2",
       reply_markup: {
         inline_keyboard: [
-          [{ text: "✅ Approve Publish", callback_data: `approve:${slug}` }],
-          [{ text: "❌ Reject Delete", callback_data: `reject:${slug}` }],
+          [{ text: "✅ Approve Publish", callback_data: `approve:${cbSlug}` }],
+          [{ text: "❌ Reject Delete", callback_data: `reject:${cbSlug}` }],
         ],
       },
     }),

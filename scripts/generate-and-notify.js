@@ -122,6 +122,8 @@ async function commitDraft(slug, fileContent) {
 async function sendTelegram(title, slug, preview) {
   const text = `📝 New draft: *${escapeMarkdown(title)}*\n\n${escapeMarkdown(preview)}`;
   const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+  // Telegram callback_data has a 64-byte limit; truncate slug to fit with prefix
+  const cbSlug = slug.length > 62 ? slug.slice(0, 62) : slug;
 
   const res = await fetch(url, {
     method: 'POST',
@@ -132,8 +134,8 @@ async function sendTelegram(title, slug, preview) {
       parse_mode: 'MarkdownV2',
       reply_markup: {
         inline_keyboard: [
-          [{ text: '✅ Approve Publish', callback_data: `a:${slug}` }],
-          [{ text: '❌ Reject Delete', callback_data: `r:${slug}` }],
+          [{ text: '✅ Approve Publish', callback_data: `a:${cbSlug}` }],
+          [{ text: '❌ Reject Delete', callback_data: `r:${cbSlug}` }],
         ],
       },
     }),

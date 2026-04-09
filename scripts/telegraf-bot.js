@@ -144,12 +144,14 @@ bot.hears(/^\s*\/generate(?:\s+|$)/, async (ctx) => {
       env: process.env,
       stdio: 'pipe',
     });
+    // Telegram callback_data has a 64-byte limit; truncate slug to fit with prefix
+    const cbSlug = slug.length > 62 ? slug.slice(0, 62) : slug;
     ctx.reply(`New draft: *${title.replace(/([_*\[\]()~`>#+\-=|{}.!\\])/g, '\\$1')}*\n\n${preview}`, {
       parse_mode: 'MarkdownV2',
       reply_markup: {
         inline_keyboard: [
-          [{ text: '✅ Approve Publish', callback_data: `a:${slug}` }],
-          [{ text: '❌ Reject Delete', callback_data: `r:${slug}` }]
+          [{ text: '✅ Approve Publish', callback_data: `a:${cbSlug}` }],
+          [{ text: '❌ Reject Delete', callback_data: `r:${cbSlug}` }]
         ]
       }
     });
@@ -160,9 +162,14 @@ bot.hears(/^\s*\/generate(?:\s+|$)/, async (ctx) => {
 
 
 bot.on('callback_query', async (ctx) => {
-  const [tag, slug] = ctx.callbackQuery.data.split(':');
+  const [tag, cbSlug] = ctx.callbackQuery.data.split(':');
   const action = (tag === 'a' || tag === 'approve') ? 'approve' : 'reject';
   const [owner, repo] = REPO.split('/');
+  // Slug may have been truncated to fit Telegram's 64-byte callback_data limit;
+  // find the actual file by matching the prefix
+  const postsFiles = fsSync.readdirSync(path.join(__dirname, '..', 'src', 'content', 'posts'));
+  const match = postsFiles.find(f => f.endsWith('.md') && f.startsWith(cbSlug));
+  const slug = match ? match.replace(/\.md$/, '') : cbSlug;
   const mdPath = `src/content/posts/${slug}.md`;
 
   console.log(`Bot received click: ${action} for ${slug}`);

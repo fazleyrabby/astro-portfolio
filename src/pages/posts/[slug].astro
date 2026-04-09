@@ -136,7 +136,7 @@ const { Content } = await render(post);
 </script>
 
 <script>
-  // Wrap code blocks with a proper header for sticky dots + badge
+  // Wrap code blocks with a proper header for sticky dots + badge + copy button
   document.querySelectorAll('#article-content pre').forEach((pre) => {
     // Skip if already wrapped
     if (pre.parentElement?.classList.contains('code-block-wrapper')) return;
@@ -157,17 +157,115 @@ const { Content } = await render(post);
     dots.innerHTML = '<span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>';
     header.appendChild(dots);
 
+    // Right side: language badge + copy button
+    const rightSide = document.createElement('div');
+    rightSide.className = 'code-block-right';
+
     // Language badge
     if (lang) {
       const badge = document.createElement('span');
       badge.className = 'code-block-lang';
       badge.textContent = lang.toUpperCase();
-      header.appendChild(badge);
+      rightSide.appendChild(badge);
     }
+
+    // Copy button
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'code-block-copy';
+    copyBtn.setAttribute('aria-label', 'Copy code');
+    copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-text">Copy</span>`;
+    copyBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const code = pre.querySelector('code')?.innerText || pre.innerText;
+      try {
+        await navigator.clipboard.writeText(code);
+        copyBtn.classList.add('copied');
+        copyBtn.querySelector('.copy-text')!.textContent = 'Copied!';
+        setTimeout(() => {
+          copyBtn.classList.remove('copied');
+          copyBtn.querySelector('.copy-text')!.textContent = 'Copy';
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    });
+    rightSide.appendChild(copyBtn);
+
+    // Expand button
+    const expandBtn = document.createElement('button');
+    expandBtn.className = 'code-block-expand';
+    expandBtn.setAttribute('aria-label', 'Expand code');
+    expandBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1"/></svg>`;
+    expandBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openCodeModal(pre, lang);
+    });
+    rightSide.appendChild(expandBtn);
+
+    header.appendChild(rightSide);
 
     // Insert wrapper before pre, then move pre inside
     pre.parentNode!.insertBefore(wrapper, pre);
     wrapper.appendChild(header);
     wrapper.appendChild(pre);
+
+    // Only trap scroll when the code block actually overflows
+    const isScrollable = () => pre.scrollHeight > pre.clientHeight;
+    wrapper.addEventListener('mouseenter', () => { if (isScrollable()) document.body.style.overflow = 'hidden'; });
+    wrapper.addEventListener('mouseleave', () => { document.body.style.overflow = ''; });
+    wrapper.addEventListener('wheel', (e) => { if (isScrollable()) e.stopPropagation(); }, { passive: true });
+    wrapper.addEventListener('touchmove', (e) => { if (isScrollable()) e.stopPropagation(); }, { passive: true });
   });
+
+  function openCodeModal(pre: Element, lang: string) {
+    const code = pre.querySelector('code')?.innerText || pre.innerText;
+    const modal = document.createElement('div');
+    modal.className = 'code-modal-overlay';
+    modal.innerHTML = `
+      <div class="code-modal-content">
+        <div class="code-modal-header">
+          <span class="code-modal-lang">${lang.toUpperCase()}</span>
+          <div class="code-modal-actions">
+            <button class="code-modal-copy" data-code="${encodeURIComponent(code)}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy
+            </button>
+            <button class="code-modal-close">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+        </div>
+        <pre class="code-modal-pre"><code>${code}</code></pre>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+    
+    const modalPre = modal.querySelector('.code-modal-pre') as HTMLElement;
+    modalPre.addEventListener('wheel', (e) => e.stopPropagation(), { passive: true });
+    modalPre.addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
+    
+    modal.addEventListener('wheel', (e) => e.stopPropagation(), { passive: true });
+    modal.addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
+    
+    modal.querySelector('.code-modal-close')?.addEventListener('click', () => closeCodeModal(modal));
+    modal.querySelector('.code-modal-copy')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      const code = decodeURIComponent(btn.getAttribute('data-code') || '');
+      try {
+        await navigator.clipboard.writeText(code);
+        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!`;
+        setTimeout(() => {
+          btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy`;
+        }, 2000);
+      } catch (err) { console.error('Failed to copy:', err); }
+    });
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeCodeModal(modal); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCodeModal(modal); });
+  }
+
+  function closeCodeModal(modal: Element) {
+    document.body.style.overflow = '';
+    modal.remove();
+  }
 </script>

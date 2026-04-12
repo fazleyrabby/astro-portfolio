@@ -1,51 +1,44 @@
 ---
-import Nav from "./Nav.astro";
-import Footer from "./Footer.astro";
-import Head from "./Head.astro";
-import "../styles/global.css";
+import MainLayout from "./MainLayout.astro";
 import { Image } from "astro:assets";
 import moment from "moment";
-import ScrollToTop from "@components/ScrollToTop.astro";
 const { frontmatter } = Astro.props;
 ---
 
-<html lang="en">
-    <Head 
-      title={frontmatter.title} 
-      ogTitle={frontmatter.title}
-      ogDescription={frontmatter.title}
-      ogImage={frontmatter.thumbnail}
-      ogUrl={`https://fazleyrabbi.xyz/posts/${frontmatter.slug}`}
-      ogType="article"
-      twitterCard="summary_large_image"
-      twitterImage={frontmatter.thumbnail}
-    />
-    <body class="min-h-screen relative overflow-x-hidden">
-        <Nav />
-        <div class="container mx-auto w-full px-4 md:px-8 py-8">
-            <section class="markdown">
-                {frontmatter.thumbnail && (
-                    <Image
-                        src={frontmatter.thumbnail}
-                        class="object-cover object-left-top w-full lg:h-80 mb-8"
-                        alt={frontmatter.title}
-                        width={800} height={300} loading="lazy"
-                    />
-                )}
-                <div class="prose w-full mx-auto max-w-[720px]">
-                    <div class="text-center mb-8">
-                        <h2 class="font-display font-extrabold text-3xl text-[var(--text-primary)] mb-2">
-                            {frontmatter.title}
-                        </h2>
-                        <p class="font-mono text-xs text-[var(--text-muted)]">
-                            {moment(frontmatter.date).format("D MMMM YYYY")}
-                        </p>
-                    </div>
-                    <slot />
-                </div>
-            </section>
+<MainLayout 
+  title={frontmatter.title} 
+  ogTitle={frontmatter.title}
+  ogDescription={frontmatter.title}
+  ogImage={frontmatter.thumbnail}
+  ogType="article"
+>
+  <div class="container mx-auto w-full px-4 md:px-8 py-20">
+    <section class="max-w-4xl mx-auto">
+      {frontmatter.thumbnail && (
+        <div class="rounded-sm overflow-hidden border border-[var(--border)] mb-12">
+          <Image
+            src={frontmatter.thumbnail}
+            class="object-cover w-full h-[300px] md:h-[450px]"
+            alt={frontmatter.title}
+            width={1200} height={600}
+          />
         </div>
-        <Footer />
-        <ScrollToTop />
-    </body>
-</html>
+      )}
+      
+      <article class="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-display prose-p:leading-relaxed prose-pre:bg-[var(--bg-card)] prose-pre:border prose-pre:border-[var(--border)]">
+        <header class="mb-12 text-center">
+          <div class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-muted)] mb-4">
+            {moment(frontmatter.date).format("MMMM D, YYYY")}
+          </div>
+          <h1 class="font-display font-bold text-4xl md:text-5xl lg:text-6xl text-[var(--text-primary)] leading-tight">
+            {frontmatter.title}
+          </h1>
+        </header>
+
+        <div id="article-content" class="mt-16">
+          <slot />
+        </div>
+      </article>
+    </section>
+  </div>
+</MainLayout>

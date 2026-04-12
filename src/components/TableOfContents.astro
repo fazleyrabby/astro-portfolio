@@ -9,9 +9,6 @@
   <nav id="toc" class="toc-nav" aria-label="Table of Contents">
     <span class="toc-label">On this page</span>
     <div id="toc-links" class="toc-links"></div>
-    <div class="toc-progress">
-      <div id="toc-progress-bar" class="toc-progress-bar"></div>
-    </div>
   </nav>
 </aside>
 
@@ -149,29 +146,13 @@
     font-size: 0.7rem;
   }
 
-  /* Reading progress bar */
-  .toc-progress {
-    margin-top: 1rem;
-    height: 2px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
 
-  .toc-progress-bar {
-    height: 100%;
-    width: 0%;
-    background: var(--accent);
-    border-radius: 2px;
-    transition: width 0.15s ease;
-  }
 </style>
 
 <script>
   function initTOC() {
     const article = document.getElementById('article-content');
     const tocLinks = document.getElementById('toc-links');
-    const progressBar = document.getElementById('toc-progress-bar');
     const mobileBtn = document.getElementById('mobile-toc-btn');
     const sidebar = document.getElementById('toc-sidebar');
 
@@ -250,22 +231,8 @@
       }
     });
 
-    // Scroll spy & reading progress via scroll listener
+    // Scroll spy via scroll listener
     const updateScrollSpyAndProgress = () => {
-      // 1. Progress Bar
-      if (progressBar) {
-        const articleRect = article.getBoundingClientRect();
-        const articleTop = articleRect.top + window.scrollY;
-        const articleHeight = articleRect.height;
-        const scrollY = window.scrollY;
-        const windowHeight = window.innerHeight;
-
-        const progress = Math.min(1, Math.max(0,
-          (scrollY - articleTop + windowHeight * 0.3) / (articleHeight - windowHeight * 0.5)
-        ));
-
-        progressBar.style.width = `${Math.round(progress * 100)}%`;
-      }
 
       // 2. Scroll Spy
       if (isClickScrolling) return;

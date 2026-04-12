@@ -37,22 +37,22 @@ import AsciiAvatar from "./AsciiAvatar.astro";
 
         <h1 class="mb-4">
           <span class="hero-word block font-display">Hi, I'm</span>
-          <span class="hero-word hero-name block font-display"
+          <span class="hero-word hero-name block font-display" data-decipher="Fazley Rabbi"
             >Fazley Rabbi</span
           >
-          <!-- data-decipher="Fazley Rabbi" -->
         </h1>
 
         <p class="hero-tagline font-serif italic">
-          A passionate web developer & tech enthusiast from Bangladesh.
+          Building tools and systems that make software faster, cleaner, and
+          more reliable.
         </p>
 
         <p class="hero-body max-w-[550px] font-sans">
-          With over three years of professional experience, I've built a variety
-          of client projects and contributed on several projects for CodeCanyon.
-          I enjoy crafting clean, efficient solutions — whether it's a
-          full-scale web app or a tiny helper module. Currently working on
-          Larabrix, a modular Laravel-based framework.
+          With 4+ years of experience, I build scalable applications, client
+          solutions, and commercial products. My
+          work focuses on clean architecture, performance, and long-term
+          maintainability. Currently developing SignalStack and Xentari to
+          improve developer workflows and system stability.
         </p>
 
         <div class="flex gap-3 flex-wrap mt-8">
@@ -89,6 +89,14 @@ import AsciiAvatar from "./AsciiAvatar.astro";
       <div class="hero-avatar-col">
         <AsciiAvatar />
       </div>
+    </div>
+  </div>
+
+  <!-- Scroll Down Indicator -->
+  <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 opacity-50 hidden md:block">
+    <div class="flex flex-col items-center gap-2">
+      <span class="font-mono text-[0.6rem] uppercase tracking-widest text-[var(--text-muted)]">Scroll</span>
+      <div class="w-[1px] h-12 bg-gradient-to-b from-[var(--accent)] to-transparent"></div>
     </div>
   </div>
 </section>

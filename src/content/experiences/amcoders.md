@@ -1,6 +1,6 @@
 ---
 title: "Amcoders"
-link: "https://codecanyon.net/user/amcoders"
+link: "#"
 from: "Jan 2021"
 to: "July 2021"
 role: "Laravel Developer"

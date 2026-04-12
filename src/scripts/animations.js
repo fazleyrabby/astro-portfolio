@@ -155,4 +155,11 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 
     sections.forEach(section => observer.observe(section));
   }
+
+  window.addEventListener('scroll', () => {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    document.documentElement.style.setProperty('--scroll-percent', `${scrolled}%`);
+  }, { passive: true });
 }

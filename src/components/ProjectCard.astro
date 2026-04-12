@@ -14,7 +14,7 @@ const { title, tech, live, github, thumbnail, description, type, status } = proj
           src={thumbnail}
           class="object-cover object-left-top w-full h-full transition-all duration-700 grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105"
           alt={`${title} screenshot`}
-          width={600} height={300} loading="lazy"
+          width={800} height={450} loading="lazy"
         />
         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
       </>
@@ -39,12 +39,12 @@ const { title, tech, live, github, thumbnail, description, type, status } = proj
       )}
     </div>
 
-    <p class="text-[0.9rem] text-[var(--text-secondary)] mb-6 line-clamp-3 leading-relaxed">
+    <p class="text-[0.9rem] text-[var(--text-secondary)] mb-3 line-clamp-3 leading-relaxed">
       {description}
     </p>
 
     <!-- Tech Stack -->
-    <div class="flex gap-2 flex-wrap mb-6 mt-auto">
+    <div class="flex gap-2 flex-wrap mb-4 mt-auto">
       {tech?.map((t: string) => <span class="tag">{t}</span>)}
     </div>
 
@@ -69,6 +69,6 @@ const { title, tech, live, github, thumbnail, description, type, status } = proj
   .project-card:hover {
     border-color: var(--border-hover);
     box-shadow: var(--accent-glow);
-    transform: translateY(-5px);
+    transform: translateY(-4px);
   }
 </style>

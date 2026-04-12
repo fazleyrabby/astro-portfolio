@@ -4,7 +4,6 @@ import MainLayout from '@layouts/MainLayout.astro';
 import ProjectCard from '@components/ProjectCard.astro';
 
 const projects = await getCollection('projects');
-// Sort by position
 projects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
 
 const mainProjects = projects.filter(p => p.data.type !== 'frontend');
@@ -20,7 +19,7 @@ const frontendProjects = projects.filter(p => p.data.type === 'frontend');
         <p class="font-serif italic text-[1.2rem] text-[var(--text-secondary)] mt-4">Selected work and experimental labs.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="project-grid">
         {mainProjects.map(p => <ProjectCard project={p} />)}
       </div>
 
@@ -31,7 +30,7 @@ const frontendProjects = projects.filter(p => p.data.type === 'frontend');
             <h2 class="font-display font-bold text-3xl text-[var(--text-primary)]">Other Works & Experiments</h2>
             <p class="text-sm text-[var(--text-muted)] mt-2 font-mono uppercase tracking-widest">Frontend experiments & templates.</p>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="project-grid">
             {frontendProjects.map(p => <ProjectCard project={p} />)}
           </div>
         </div>
@@ -39,3 +38,28 @@ const frontendProjects = projects.filter(p => p.data.type === 'frontend');
     </div>
   </main>
 </MainLayout>
+
+<style>
+  .project-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .project-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .project-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Last card alone in its row → center it */
+    .project-grid > :global(*:last-child:nth-child(3n+1)) {
+      grid-column: 2 / 3;
+    }
+  }
+</style>

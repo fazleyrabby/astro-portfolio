@@ -160,7 +160,14 @@ async function main() {
   const topics = await loadTopics();
 
   if (!topics.length) {
-    console.log('No topics in queue. Skipping generation.');
+    const text = "🚨 *Blog Queue Empty* \nNo topics left in the generation queue. Please add some via the /topic command!";
+    const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: "MarkdownV2" }),
+    });
+    console.log("No topics in queue. Sent reminder to user.");
     process.exit(0);
   }
 

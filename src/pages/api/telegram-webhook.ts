@@ -42,9 +42,10 @@ export const POST: APIRoute = async ({ request }) => {
       const value = text.slice(6).trim();
       if (!value) return reply(chatId, "Usage: /topic <text>");
       const ctx = await loadContext();
-      ctx.topic = value;
+      if (!ctx.topics) ctx.topics = [];
+      ctx.topics.push({ topic: value, category: "backend", context: "", notes: "" });
       await saveContext(ctx);
-      return reply(chatId, `Topic set: ${value}`);
+      return reply(chatId, `✅ Topic added to queue (#${ctx.topics.length}): ${value}`);
     }
 
     if (text.startsWith("/category")) {
@@ -73,7 +74,11 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (text.startsWith("/status")) {
       const ctx = await loadContext();
-      return reply(chatId, `📝 Context:\nTopic: ${ctx.topic || "none"}\nCategory: ${ctx.category || "general"}\nContext: ${ctx.context || "none"}\nNotes: ${ctx.notes || "none"}`);
+      const topics = ctx.topics || [];
+      if (!topics.length) return reply(chatId, "📝 Queue is empty. Add topics with /topic");
+      const next = topics[0];
+      const list = topics.map((t, i) => `${i + 1}. ${t.topic}`).join("\n");
+      return reply(chatId, `📝 Queue: ${topics.length} topic(s)\n\nNext Up:\n• ${next.topic}\n\nFull List:\n${list}`);
     }
 
     if (text.startsWith("/reset")) {

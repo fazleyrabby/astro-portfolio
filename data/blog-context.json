@@ -13,10 +13,34 @@
       "notes": "include rapid signature verification, queue-first processing, idempotent handlers, and dynamic rate limiting"
     },
     {
-      "topic": "Beating the N+1 Query Problem in Laravel using Eager Loading\nCategory: backend\nContext: We noticed huge DB spikes when loading relations.\nNotes: Keep it focused on the With() method and index optimization.",
+      "topic": "Zero-Downtime Database Migrations for Large Datasets in Laravel",
       "category": "backend",
-      "context": "",
-      "notes": ""
+      "context": "handling ALTER TABLE on tables with millions of rows without table locking or performance degradation",
+      "notes": "discuss using pt-online-schema-change, blue-green migration patterns, and Laravel's native schema tools"
+    },
+    {
+      "topic": "Architecting Multi-Tenant SaaS: Database-per-Tenant vs. Single-DB Isolation",
+      "category": "backend",
+      "context": "choosing the right scaling strategy for a growing B2B SaaS platform",
+      "notes": "deep dive into trade-offs, handling cross-tenant migrations, and reporting across isolated databases"
+    },
+    {
+      "topic": "Advanced Caching Strategies: Beyond Simply Using Cache::remember",
+      "category": "backend",
+      "context": "managing high-traffic systems where cache stampsede and stale data are critical failures",
+      "notes": "implementing Atomic Locks for rehydration, Stale-While-Revalidate patterns, and effective use of Cache Tags"
+    },
+    {
+      "topic": "Optimizing Laravel Eloquent for High-Frequency Writes",
+      "category": "backend",
+      "context": "reducing DB bottlenecks when your system processes thousands of writes per second",
+      "notes": "focusing on batching, raw upserts, and avoiding Eloquent event overhead in high-throughput loops"
+    },
+    {
+      "topic": "Hardening Laravel APIs with Consumer-Driven Contract Testing",
+      "category": "backend",
+      "context": "ensuring integration stability between Laravel microservices and external providers",
+      "notes": "using Pact or custom contract tests to catch breaking API changes before they reach production"
     }
   ]
 }

@@ -110,6 +110,38 @@ bot.hears(/^\s*\/reset(?:\s+|$)/, async (ctx) => {
   ctx.reply('🗑 Queue cleared.');
 });
 
+bot.hears(/^\s*\/list(?:\s+|$)/, async (ctx) => {
+  const [owner, repo] = REPO.split('/');
+  try {
+    const { data: files } = await octokit.repos.getContent({ owner, repo, path: 'src/content/posts', ref: 'main' });
+    const posts = files
+      .filter(f => f.name.endsWith('.md'))
+      .map((f, i) => `${i + 1}. ${f.name.replace('.md', '')}`)
+      .join('\n');
+    ctx.reply(`📋 Published Posts:\n\n${posts || 'No posts found.'}\n\nUse /delete <slug> to remove.`);
+  } catch (e) {
+    ctx.reply(`Error fetching posts: ${e.message}`);
+  }
+});
+
+bot.hears(/^\s*\/delete(?:\s+|$)(.*)/s, async (ctx) => {
+  const input = (ctx.match[1] || '').trim();
+  if (!input) return ctx.reply('Usage: /delete <slug>');
+  
+  const [owner, repo] = REPO.split('/');
+  const mdPath = `src/content/posts/${input}.md`;
+  
+  try {
+    const { data: file } = await octokit.repos.getContent({ owner, repo, path: mdPath, ref: 'main' });
+    await octokit.repos.deleteFile({
+      owner, repo, path: mdPath, message: `Delete: ${input}`, sha: file.sha, branch: 'main'
+    });
+    ctx.reply(`🗑 Deleted: ${input}`);
+  } catch (e) {
+    ctx.reply(`Delete failed: ${e.message}`);
+  }
+});
+
 bot.hears(/^\s*\/generate(?:\s+|$)/, async (ctx) => {
   ctx.reply('⏳ This command usually runs via the scripts/generate-post.js script.\nFor serverless generation, please use /topic first to set details.');
 });

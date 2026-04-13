@@ -71,7 +71,7 @@ const { Content } = await render(post);
 
     <!-- Content grid: article + TOC sidebar -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-      <article id="article-content" class="lg:col-span-8 prose prose-neutral dark:prose-invert max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-li:text-[var(--text-secondary)] prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)]">
+      <article id="article-content" class="lg:col-span-8 prose prose-neutral dark:prose-invert max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-li:text-[var(--text-secondary)] prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)] prose-strong:text-[var(--text-primary)] prose-strong:font-semibold prose-blockquote:text-[var(--text-secondary)] prose-blockquote:border-[var(--accent)]">
         <Content />
       </article>
       <TableOfContents />

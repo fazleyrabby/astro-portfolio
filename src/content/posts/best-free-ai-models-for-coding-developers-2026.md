@@ -20,13 +20,6 @@ These models are reliable enough to use in real projects without second-guessing
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
 <div style="border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem;">
-<h4 style="margin: 0 0 0.5rem;">Qwen 3.6 Plus (Preview)</h4>
-
-Strong reasoning and planning with ~1M token context. Handles complex workflows well. Occasional preview instability.
-
-**Best for:** long-context tasks, planning
-</div>
-<div style="border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem;">
 <h4 style="margin: 0 0 0.5rem;">NVIDIA Nemotron 3 Super</h4>
 
 Strong balance of reasoning, coding, and speed. Consistent output across backend and agent workflows.
@@ -40,7 +33,16 @@ Stable and predictable outputs. Handles structured and multi-step tasks without 
 
 **Best for:** pipelines, automation, structured outputs
 </div>
+<div style="border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem;">
+<h4 style="margin: 0 0 0.5rem;">Qwen3 Coder 480B A35B</h4>
+
+Excellent coding with repo-level context understanding. MoE architecture keeps inference efficient. Free via OpenRouter.
+
+**Best for:** large projects, code generation, refactoring
 </div>
+</div>
+
+> **Note on Qwen 3.6 Plus:** While Qwen 3.6 Plus is an excellent model with ~1M token context and strong reasoning, it is **not free** — it's a paid commercial API (~$0.28/1M input tokens via Alibaba Cloud). It didn't make this list, but it's worth considering if you have budget for a premium reasoning model.
 
 ---
 
@@ -135,13 +137,6 @@ Powerful but more specialized — they excel in specific use cases rather than b
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
 <div style="border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem;">
-<h4 style="margin: 0 0 0.5rem;">Qwen3 Coder 480B A35B</h4>
-
-Strong coding with large context for repo-level understanding. MoE architecture keeps it efficient.
-
-**Best for:** large projects, refactoring
-</div>
-<div style="border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem;">
 <h4 style="margin: 0 0 0.5rem;">GPT-OSS 120B</h4>
 
 Good balance of reasoning and coding. Solid instruction following. Works well as a fallback model.
@@ -211,10 +206,11 @@ Instead of relying on a single model, I run a multi-model strategy:
 | Role | Model | Use Case |
 |------|-------|----------|
 | **Primary** | Nemotron 3 Super | Handles most daily tasks |
-| **Reasoning** | Qwen 3.6 Plus | Complex planning, long-context work |
+| **Coding** | Qwen3 Coder 480B A35B | Repo-level refactoring, large codebases |
 | **Fallback** | GPT-OSS 120B | When the primary struggles with a task |
+| **Paid upgrade** | Qwen 3.6 Plus *(not free)* | Complex planning, long-context work |
 
-This approach gives you redundancy and lets you match the model to the task. In practice, switching models based on the job produces better results than forcing one model to do everything.
+This approach gives you redundancy and lets you match the model to the task. In practice, switching models based on the job produces better results than forcing one model to do everything. If you have budget for a paid model, Qwen 3.6 Plus is an excellent addition for reasoning-heavy tasks.
 
 ---
 

@@ -12,6 +12,7 @@
   --accent: #E8823A;
   --accent-dim: rgba(232, 130, 58, 0.1);
   --accent-glow: 0 0 40px rgba(232, 130, 58, 0.1);
+  --accent-text: var(--accent);
   --text-primary: #1c1917;
   --text-secondary: #44403c;
   --text-muted: #78716c;
@@ -50,6 +51,7 @@
   --accent: #E8823A;
   --accent-dim: rgba(232, 130, 58, 0.12);
   --accent-glow: 0 0 60px rgba(232, 130, 58, 0.14);
+  --accent-text: var(--accent);
   --text-primary: #F0EDE8;
   --text-secondary: #A8A29E;
   --text-muted: #57534E;
@@ -79,6 +81,7 @@ html[data-theme="brutal"] {
   --accent: #FFD23F;
   --accent-dim: rgba(255, 210, 63, 0.15);
   --accent-glow: none;
+  --accent-text: #B8860B; /* Dark goldenrod — WCAG AA on white */
   --text-primary: #000000;
   --text-secondary: #1a1a1a;
   --text-muted: #4d4d4d;
@@ -102,6 +105,7 @@ html[data-theme="cyberpunk"] {
   --accent: #ff00ff;
   --accent-dim: rgba(255, 0, 255, 0.12);
   --accent-glow: 0 0 20px rgba(255, 0, 255, 0.4);
+  --accent-text: var(--accent);
   --text-primary: #00ffcc;
   --text-secondary: #00ccaa;
   --text-muted: #009988;
@@ -124,6 +128,7 @@ html[data-theme="nord"] {
   --accent: #88C0D0;
   --accent-dim: rgba(136, 192, 208, 0.12);
   --accent-glow: 0 0 30px rgba(136, 192, 208, 0.08);
+  --accent-text: var(--accent);
   --text-primary: #ECEFF4;
   --text-secondary: #D8DEE9;
   --text-muted: #81A1C1;
@@ -544,7 +549,7 @@ html[data-theme="brutal"] #article-content li > code {
 
   .marquee-item::after {
     content: "·";
-    color: var(--accent);
+    color: var(--accent-text);
     position: absolute;
     right: 0;
     font-size: 1.2rem;
@@ -605,7 +610,7 @@ html[data-theme="brutal"] #article-content li > code {
   }
 
   /* Brutal theme color overrides for text visibility */
-  html[data-theme="brutal"] .toc-links :global(a.toc-active) {
+  html[data-theme="brutal"] .toc-links a.toc-active {
     color: #000000 !important;
     font-weight: 800;
   }
@@ -615,6 +620,40 @@ html[data-theme="brutal"] #article-content li > code {
   html[data-theme="brutal"] .timeline-entry:hover .timeline-dot {
     box-shadow: none;
     border-color: #000000;
+  }
+
+  /* Brutal theme: fix all accent-as-text to use readable dark gold */
+  html[data-theme="brutal"] .toc-links a.toc-active {
+    color: var(--accent-text) !important;
+  }
+  html[data-theme="brutal"] #article-content p > code,
+  html[data-theme="brutal"] #article-content li > code {
+    color: #000000;
+  }
+  /* Nav hover states */
+  html[data-theme="brutal"] nav a:hover,
+  html[data-theme="brutal"] .nav-link-item:hover {
+    color: var(--accent-text) !important;
+  }
+  /* Blog post page accent text */
+  html[data-theme="brutal"] .text-\[var\(--accent\)\] {
+    color: var(--accent-text) !important;
+  }
+  /* Contact CTA italic accent */
+  html[data-theme="brutal"] .italic.text-\[var\(--accent\)\] {
+    color: var(--accent-text) !important;
+  }
+  /* Post hover states */
+  html[data-theme="brutal"] .group:hover .group-hover\:text-\[var\(--accent\)\] {
+    color: var(--accent-text) !important;
+  }
+  /* Footer accent dots */
+  html[data-theme="brutal"] .text-\[var\(--accent\)\].opacity-50 {
+    color: var(--accent-text) !important;
+  }
+  /* Post featured labels and read more arrows */
+  html[data-theme="brutal"] [class*="text-[var(--accent)]"] {
+    color: var(--accent-text);
   }
 
   .cursor {
@@ -676,7 +715,7 @@ html[data-theme="brutal"] #article-content li > code {
     font-family: var(--font-mono);
     font-size: 0.82em;
     background: var(--bg-surface);
-    color: var(--accent);
+    color: var(--accent-text);
     padding: 0.15rem 0.35rem;
     border-radius: var(--radius);
     border: 1px solid var(--border);

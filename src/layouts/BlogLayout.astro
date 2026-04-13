@@ -25,7 +25,7 @@ const { frontmatter } = Astro.props;
         </div>
       )}
       
-      <article class="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-display prose-p:leading-relaxed prose-pre:bg-[var(--bg-card)] prose-pre:border prose-pre:border-[var(--border)]">
+      <article class="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-display prose-p:leading-relaxed prose-p:text-[var(--text-secondary)] prose-strong:text-[var(--text-primary)] prose-strong:font-semibold prose-li:text-[var(--text-secondary)] prose-blockquote:text-[var(--text-secondary)] prose-blockquote:border-[var(--accent)] prose-pre:bg-[var(--bg-card)] prose-pre:border prose-pre:border-[var(--border)]">
         <header class="mb-12 text-center">
           <div class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-muted)] mb-4">
             {moment(frontmatter.date).format("MMMM D, YYYY")}

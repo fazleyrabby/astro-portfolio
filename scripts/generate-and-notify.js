@@ -105,7 +105,8 @@ async function commitDraft(slug, fileContent) {
   // Check if file already exists
   try {
     await octokit.repos.getContent({ owner, repo, path });
-    throw new Error(`Post already exists: ${slug}`);
+    console.log(`Post already exists: ${slug}. Skipping...`);
+    return false;
   } catch (e) {
     if (e.status !== 404) throw e;
   }
@@ -116,7 +117,7 @@ async function commitDraft(slug, fileContent) {
     content: Buffer.from(fileContent).toString('base64'),
   });
 
-  return path;
+  return true;
 }
 
 async function sendTelegram(title, slug, preview) {
@@ -157,41 +158,45 @@ async function main() {
   if (!TELEGRAM_TOKEN) throw new Error('TELEGRAM_TOKEN must be set');
   if (!CHAT_ID) throw new Error('TELEGRAM_CHAT_ID must be set');
 
-  const topics = await loadTopics();
+  let topics = await loadTopics();
 
-  if (!topics.length) {
-    const text = "🚨 *Blog Queue Empty* \nNo topics left in the generation queue. Please add some via the /topic command!";
-    const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
-    await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: "MarkdownV2" }),
-    });
-    console.log("No topics in queue. Sent reminder to user.");
-    process.exit(0);
+  while (topics.length > 0) {
+    const context = topics[0];
+    const remainingTopics = topics.slice(1);
+
+    console.log(`Generating post for topic: ${context.topic} (${remainingTopics.length} remaining in queue)`);
+    const post = await generatePost(context);
+    const slugValue = slug(post.title);
+
+    const now = new Date();
+    const date = now.toISOString().replace(/\.\d{3}Z$/, '');
+    const tagsLine = post.tags.length ? `\ntags: ${JSON.stringify(post.tags)}` : '';
+    const fileContent = `---\ntitle: "${post.title}"\ndate: ${date}\ndraft: true${tagsLine}\n---\n\n${post.content}`;
+
+    console.log(`Checking/Committing draft: ${slugValue}.md`);
+    const committed = await commitDraft(slugValue, fileContent);
+
+    if (committed) {
+      const preview = post.content.replace(/<[^>]*>/g, '').slice(0, 500) + '...';
+      await sendTelegram(post.title, slugValue, preview);
+      await removeUsedTopic(remainingTopics);
+      console.log(`Done — draft committed, topic removed from queue (${remainingTopics.length} left).`);
+      return;
+    } else {
+      await removeUsedTopic(remainingTopics);
+      topics = remainingTopics;
+      console.log(`Moving to next topic...`);
+    }
   }
 
-  const context = topics[0];
-  const remainingTopics = topics.slice(1);
-
-  console.log(`Generating post for topic: ${context.topic} (${remainingTopics.length} remaining)`);
-  const post = await generatePost(context);
-
-  const slugValue = slug(post.title);
-
-  const now = new Date();
-  const date = now.toISOString().replace(/\.\d{3}Z$/, '');
-  const tagsLine = post.tags.length ? `\ntags: ${JSON.stringify(post.tags)}` : '';
-  const fileContent = `---\ntitle: "${post.title}"\ndate: ${date}\ndraft: true${tagsLine}\n---\n\n${post.content}`;
-
-  console.log(`Committing draft: ${slugValue}.md`);
-  await commitDraft(slugValue, fileContent);
-
-  const preview = post.content.replace(/<[^>]*>/g, '').slice(0, 500) + '...';
-  await sendTelegram(post.title, slugValue, preview);
-
-  await removeUsedTopic(remainingTopics);
-  console.log(`Done — draft committed, topic removed from queue (${remainingTopics.length} left).`);
+  const text = "🚨 *Blog Queue Empty* \nNo topics left in the generation queue. Please add some via the /topic command!";
+  const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+  await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: "MarkdownV2" }),
+  });
+  console.log("No topics left in queue.");
 }
 
 main().catch((e) => {

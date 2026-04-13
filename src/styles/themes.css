@@ -1,0 +1,7 @@
+/* ============================================
+   Theme definitions are inlined in global.css
+   using html[data-theme="..."] selectors for
+   proper specificity over :root and .dark.
+   
+   This file is kept as reference only.
+   ============================================ */

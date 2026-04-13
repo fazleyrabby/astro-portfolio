@@ -176,7 +176,13 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
     const ctx = cnv.getContext("2d");
 
     function isDark() {
-      return document.documentElement.classList.contains("dark");
+      const theme = document.documentElement.getAttribute('data-theme');
+      // Cyberpunk and Nord have dark backgrounds
+      if (theme === 'cyberpunk' || theme === 'nord') return true;
+      // Brutal is always light
+      if (theme === 'brutal') return false;
+      // Sass/default: use the dark class
+      return document.documentElement.classList.contains('dark');
     }
 
     function buildParticles(art) {
@@ -292,7 +298,7 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
       ctx.translate(offsetX, offsetY);
       ctx.scale(scale, scale);
 
-      ctx.font = `${data.CELL_H * 0.95}px "DM Mono", monospace`;
+      ctx.font = `${data.CELL_H * 0.95}px "JetBrains Mono", monospace`;
       ctx.textBaseline = "top";
 
       const baseRadius = 90;
@@ -414,7 +420,7 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
     });
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["class"],
+      attributeFilter: ["class", "data-theme"],
     });
 
     window.addEventListener("resize", () => {

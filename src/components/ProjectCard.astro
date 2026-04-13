@@ -4,7 +4,7 @@ const { project } = Astro.props;
 const { title, tech, live, github, thumbnail, description, type, status } = project.data;
 ---
 
-<article class="project-card group flex flex-col bg-[var(--bg-card)] border border-[var(--border)] overflow-hidden h-full">
+<article class="project-card group flex flex-col bg-surface border border-border overflow-hidden h-full">
   <!-- Thumbnail -->
   <a href={live || github || "#"} target="_blank" rel="noreferrer" aria-label={title}
      class="block relative overflow-hidden aspect-video flex-shrink-0">
@@ -25,16 +25,16 @@ const { title, tech, live, github, thumbnail, description, type, status } = proj
   <!-- Content -->
   <div class="flex flex-col flex-grow p-6">
     <div class="flex items-center justify-between mb-3">
-      <h3 class="font-display font-bold text-xl text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
+      <h3 class="font-display font-bold text-xl text-text group-hover:text-accent transition-colors">
         {title}
       </h3>
       {status && (
-        <div class="flex items-center gap-2 px-2 py-0.5 rounded-full bg-[var(--accent-dim)] border border-[var(--border)]">
+        <div class="flex items-center gap-2 px-2 py-0.5 rounded-full bg-[var(--accent-dim)] border border-border">
           <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent)] opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-[var(--accent)]"></span>
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
           </span>
-          <span class="font-mono text-[0.6rem] uppercase tracking-wider text-[var(--accent)] font-bold">{status}</span>
+          <span class="font-mono text-[0.6rem] uppercase tracking-wider text-accent font-bold">{status}</span>
         </div>
       )}
     </div>
@@ -51,11 +51,11 @@ const { title, tech, live, github, thumbnail, description, type, status } = proj
     <!-- Actions -->
     <div class="flex gap-4">
       {live && (
-        <a class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 text-xs font-bold uppercase tracking-wider bg-[var(--accent)] text-[#080808] rounded-[2px] transition-all hover:brightness-110 active:scale-95 btn-magnetic"
+        <a class="flex-1 btn-primary btn-magnetic !py-2.5 text-xs tracking-wider"
            href={live} target="_blank">Live Demo</a>
       )}
       {github && (
-        <a class="flex-1 inline-flex items-center justify-center gap-2 py-2.5 text-xs font-bold uppercase tracking-wider border border-[var(--border)] text-[var(--text-primary)] rounded-[2px] transition-all hover:border-[var(--accent)] hover:text-[var(--accent)] active:scale-95 btn-magnetic"
+        <a class="flex-1 btn-ghost btn-magnetic !py-2.5 text-xs tracking-wider"
            href={github} target="_blank">Repo</a>
       )}
     </div>

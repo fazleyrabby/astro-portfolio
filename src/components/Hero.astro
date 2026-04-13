@@ -35,10 +35,9 @@ import AsciiAvatar from "./AsciiAvatar.astro";
           Available for freelance & collaboration
         </div>
 
-        <h1 class="mb-4">
-          <span class="hero-word block font-display">Hi, I'm</span>
-          <span class="hero-word hero-name block font-display" data-decipher="Fazley Rabbi"
-            >Fazley Rabbi</span
+        <h1 class="mb-1">
+          <span class="block">Hi, I'm</span>
+          <span>Fazley Rabbi</span
           >
         </h1>
 
@@ -47,7 +46,7 @@ import AsciiAvatar from "./AsciiAvatar.astro";
           more reliable.
         </p>
 
-        <p class="hero-body max-w-[550px] font-sans">
+        <p class="hero-body max-w-[550px] font-sans mt-4">
           With 4+ years of experience, I build scalable applications, client
           solutions, and commercial products. My
           work focuses on clean architecture, performance, and long-term
@@ -96,7 +95,7 @@ import AsciiAvatar from "./AsciiAvatar.astro";
   <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 opacity-50 hidden md:block">
     <div class="flex flex-col items-center gap-2">
       <span class="font-mono text-[0.6rem] uppercase tracking-widest text-[var(--text-muted)]">Scroll</span>
-      <div class="w-[1px] h-12 bg-gradient-to-b from-[var(--accent)] to-transparent"></div>
+      <div class="w-[1px] h-12 bg-gradient-to-b from-accent to-transparent"></div>
     </div>
   </div>
 </section>
@@ -111,11 +110,13 @@ import AsciiAvatar from "./AsciiAvatar.astro";
     grid-template-columns: 1fr;
     align-items: center;
     gap: 2rem;
+    position: relative;
   }
 
   @media (min-width: 1025px) {
     .hero-grid {
-      grid-template-columns: 1fr 1.2fr;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 4rem;
     }
   }
 
@@ -125,8 +126,9 @@ import AsciiAvatar from "./AsciiAvatar.astro";
     inset: 0;
     justify-content: center;
     align-items: center;
-    opacity: 0.45;
-    z-index: 0;
+    opacity: 0.15;
+    z-index: -1;
+    pointer-events: none;
   }
 
   @media (min-width: 1025px) {
@@ -134,21 +136,28 @@ import AsciiAvatar from "./AsciiAvatar.astro";
       position: relative;
       opacity: 1;
       inset: auto;
-      min-height: 550px;
-      margin-left: -8rem;
-      margin-right: -3rem;
+      min-height: 500px;
+      margin-left: 0;
+      margin-right: 0;
+      z-index: 1;
+      pointer-events: auto;
     }
   }
 
   h1 {
     font-size: clamp(2.5rem, 6vw, 4.5rem);
-    line-height: 1.05;
+    line-height: 1.2;
     color: var(--text-primary);
+  }
+
+  .hero-name {
+    padding-bottom: 0.15em;
   }
 
   .hero-tagline {
     font-size: clamp(1rem, 2.5vw, 1.25rem);
     color: var(--text-secondary);
+    margin-top: 0;
     margin-bottom: 1.25rem;
   }
 
@@ -187,7 +196,7 @@ import AsciiAvatar from "./AsciiAvatar.astro";
     border-radius: 50%;
     background: radial-gradient(
       circle,
-      rgba(232, 130, 58, 0.04) 0%,
+      var(--accent-dim) 0%,
       transparent 70%
     );
     pointer-events: none;
@@ -213,7 +222,7 @@ import AsciiAvatar from "./AsciiAvatar.astro";
     border-radius: 50%;
     background: radial-gradient(
       circle,
-      rgba(232, 130, 58, 0.03) 0%,
+      var(--accent-dim) 0%,
       transparent 70%
     );
     pointer-events: none;

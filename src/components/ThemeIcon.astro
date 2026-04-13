@@ -1,6 +1,7 @@
+<!-- Dark/Light toggle — original behavior preserved -->
 <button
   class="themeToggle inline-flex justify-center items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-  aria-label="Theme toggle"
+  aria-label="Toggle dark mode"
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -24,8 +25,9 @@
 </button>
 
 <script>
+  // Dark/light mode toggle (original behavior)
   const theme =
-    localStorage.getItem("theme") ||
+    localStorage.getItem("color-mode") ||
     (window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light");
@@ -36,27 +38,16 @@
     document.documentElement.classList.remove("dark");
   }
 
-  localStorage.setItem("theme", theme);
+  localStorage.setItem("color-mode", theme);
 
-  // Attach event listeners to all theme toggle buttons
   document.querySelectorAll(".themeToggle").forEach((button) => {
     button.addEventListener("click", () => {
       const element = document.documentElement;
       element.classList.toggle("dark");
       localStorage.setItem(
-        "theme",
+        "color-mode",
         element.classList.contains("dark") ? "dark" : "light",
       );
     });
   });
-
-  window
-    .matchMedia("(prefers-color-scheme: dark)")
-    .addEventListener("change", () => {
-      const newTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-      document.documentElement.classList.toggle("dark", newTheme === "dark");
-      localStorage.setItem("theme", newTheme);
-    });
 </script>

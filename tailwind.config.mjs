@@ -13,11 +13,11 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-			display: ['Instrument Serif', 'serif'],
-			'sans': ['DM Sans', 'system-ui'],
-			'serif': ['Instrument Serif', 'serif'],
-			'logo': ['Instrument Serif', 'cursive'],
-			'mono': ['DM Mono', 'ui-monospace'],
+			display: ['Yrsa', 'serif'],
+			serif: ['Yrsa', 'serif'],
+			sans: ['DM Sans', 'system-ui'],
+			mono: ['JetBrains Mono', 'ui-monospace'],
+			logo: ['Yrsa', 'cursive'],
 		},
 		fontSize: {
 			xs: '0.8125rem',   // 13px
@@ -42,9 +42,24 @@ export default {
 		},
 		extend: {
 			colors: {
-				accent: '#E8823A',
-				surface: '#0f0f0f',
-				card: '#141414',
+				base: 'var(--color-bg)',
+				text: 'var(--color-text)',
+				surface: 'var(--color-surface)',
+				border: 'var(--color-border)',
+				accent: 'var(--color-accent)',
+			},
+			boxShadow: {
+				theme: 'var(--shadow-main)',
+			},
+			borderRadius: {
+				theme: 'var(--radius)',
+				DEFAULT: 'var(--radius)',
+				sm: 'calc(var(--radius) * 0.5)',
+				md: 'var(--radius)',
+				lg: 'calc(var(--radius) * 1.5)',
+				xl: 'calc(var(--radius) * 2)',
+				'2xl': 'calc(var(--radius) * 3)',
+				'full': '9999px',
 			},
 			animation: {
 				wiggle: 'wiggle 3s ease-in-out infinite',

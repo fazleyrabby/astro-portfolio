@@ -27,7 +27,7 @@
     max-height: 400px;
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius);
     padding: 1.5rem;
     padding-bottom: 0.5rem;
     z-index: 49;
@@ -82,7 +82,7 @@
   }
   .toc-nav::-webkit-scrollbar-thumb {
     background: var(--border);
-    border-radius: 4px;
+    border-radius: var(--radius);
   }
 
   .toc-label {
@@ -113,7 +113,7 @@
     text-decoration: none;
     padding: 0.35rem 0.6rem;
     border-left: 2px solid transparent;
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 var(--radius) var(--radius) 0;
     transition:
       color 0.2s ease,
       border-color 0.2s ease,

@@ -27,7 +27,7 @@ const umamiID = import.meta.env.UMAMI_ID;
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Yrsa:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
     <script
         is:inline
         src="https://identity.netlify.com/v1/netlify-identity-widget.js"
@@ -54,4 +54,26 @@ const umamiID = import.meta.env.UMAMI_ID;
             </Fragment>
         )
     }
+    <script is:inline>
+      // 1. Dark mode (Always default to dark)
+      ;(function() {
+        var t = localStorage.getItem("color-mode");
+        if (!t) {
+          t = "dark";
+        }
+        if (t === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      })();
+
+      // 2. Theme engine (data-theme attribute — additive)
+      ;(function() {
+        var saved = localStorage.getItem("data-theme");
+        if (saved && saved !== "sass") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      })();
+    </script>
 </head>

@@ -601,7 +601,20 @@ html[data-theme="brutal"] #article-content li > code {
   .timeline-entry:hover .timeline-dot {
     border-color: var(--accent);
     background: var(--accent);
-    box-shadow: 0 0 6px rgba(232, 130, 58, 0.4);
+    box-shadow: 0 0 6px var(--accent-dim);
+  }
+
+  /* Brutal theme color overrides for text visibility */
+  html[data-theme="brutal"] .toc-links :global(a.toc-active) {
+    color: #000000 !important;
+    font-weight: 800;
+  }
+  html[data-theme="brutal"] .marquee-item::after {
+    color: #000000;
+  }
+  html[data-theme="brutal"] .timeline-entry:hover .timeline-dot {
+    box-shadow: none;
+    border-color: #000000;
   }
 
   .cursor {

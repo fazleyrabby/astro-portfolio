@@ -63,6 +63,11 @@
         transform: translateY(-20px) scale(0.75);
         color: var(--accent);
     }
+    :global(html[data-theme="brutal"]) .custom-input:focus ~ .custom-label,
+    :global(html[data-theme="brutal"]) .custom-input:not(:placeholder-shown) ~ .custom-label {
+        color: #000000;
+        font-weight: 700;
+    }
 
     .submit-btn {
         background: var(--accent);

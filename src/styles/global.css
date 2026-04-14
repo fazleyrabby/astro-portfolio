@@ -95,7 +95,11 @@ html[data-theme="brutal"] {
   --radius: 0px;
   --border-width: 2px;
 
-  /* Force prose colors for Brutal (Light) theme to avoid dark:prose-invert interference */
+  /* End of Brutal HTML tokens */
+}
+
+/* Force prose colors for Brutal (Light) theme to avoid dark:prose-invert interference */
+html[data-theme="brutal"] .prose {
   --tw-prose-body: var(--text-secondary);
   --tw-prose-headings: var(--text-primary);
   --tw-prose-lead: var(--text-secondary);
@@ -133,6 +137,9 @@ html[data-theme="brutal"] {
   
   /* Table content colors */
   --tw-prose-invert-th: var(--text-primary);
+  
+  /* Make sure plain text inherits the overridden body color */
+  color: var(--tw-prose-invert-body) !important;
 }
 
 html[data-theme="cyberpunk"] {

@@ -94,6 +94,45 @@ html[data-theme="brutal"] {
   --shadow-main: 4px 4px 0px #000000;
   --radius: 0px;
   --border-width: 2px;
+
+  /* Force prose colors for Brutal (Light) theme to avoid dark:prose-invert interference */
+  --tw-prose-body: var(--text-secondary);
+  --tw-prose-headings: var(--text-primary);
+  --tw-prose-lead: var(--text-secondary);
+  --tw-prose-links: var(--accent-text);
+  --tw-prose-bold: var(--text-primary);
+  --tw-prose-counters: var(--text-primary);
+  --tw-prose-bullets: var(--text-primary);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--text-secondary);
+  --tw-prose-quote-borders: var(--accent);
+  --tw-prose-captions: var(--text-muted);
+  --tw-prose-code: var(--text-primary);
+  --tw-prose-pre-code: var(--text-primary);
+  --tw-prose-pre-bg: var(--bg-card);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+
+  /* Override invert variables to neutralize dark:prose-invert when class="dark" is present */
+  --tw-prose-invert-body: var(--text-secondary);
+  --tw-prose-invert-headings: var(--text-primary);
+  --tw-prose-invert-lead: var(--text-secondary);
+  --tw-prose-invert-links: var(--accent-text);
+  --tw-prose-invert-bold: var(--text-primary);
+  --tw-prose-invert-counters: var(--text-primary);
+  --tw-prose-invert-bullets: var(--text-primary);
+  --tw-prose-invert-hr: var(--border);
+  --tw-prose-invert-quotes: var(--text-secondary);
+  --tw-prose-invert-quote-borders: var(--accent);
+  --tw-prose-invert-captions: var(--text-muted);
+  --tw-prose-invert-code: var(--text-primary);
+  --tw-prose-invert-pre-code: var(--text-primary);
+  --tw-prose-invert-pre-bg: var(--bg-card);
+  --tw-prose-invert-th-borders: var(--border);
+  --tw-prose-invert-td-borders: var(--border);
+  
+  /* Table content colors */
+  --tw-prose-invert-th: var(--text-primary);
 }
 
 html[data-theme="cyberpunk"] {
@@ -628,7 +667,28 @@ html[data-theme="brutal"] #article-content li > code {
   }
   html[data-theme="brutal"] #article-content p > code,
   html[data-theme="brutal"] #article-content li > code {
-    color: #000000;
+    color: #000000 !important;
+  }
+  
+  /* Global fix for bold/strong text in Brutal theme inside article content */
+  html[data-theme="brutal"] #article-content strong,
+  html[data-theme="brutal"] #article-content b {
+    color: var(--text-primary) !important;
+  }
+  
+  /* Enforce list marker color in Brutal theme */
+  html[data-theme="brutal"] .prose ol > li::before,
+  html[data-theme="brutal"] .prose ul > li::before {
+    color: var(--text-primary) !important;
+  }
+  
+  /* Enforce table cell and header colors in Brutal theme */
+  html[data-theme="brutal"] .prose table td,
+  html[data-theme="brutal"] .prose table th {
+    color: var(--text-secondary) !important;
+  }
+  html[data-theme="brutal"] .prose table th {
+    color: var(--text-primary) !important;
   }
   /* Nav hover states */
   html[data-theme="brutal"] nav a:hover,

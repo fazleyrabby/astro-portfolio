@@ -1,12 +1,6 @@
 {
   "topics": [
     {
-      "topic": "Architecting High-Performance API Observability with Structured Logging",
-      "category": "backend",
-      "context": "debugging production failures in distributed Laravel systems using Correlation IDs and Context",
-      "notes": "include Logstage/Monolog customization, tracing request lifecycles across queues, and integrating with Datadog/ELK"
-    },
-    {
       "topic": "Hardening Laravel Webhook Consumers Against Distributed Denial of Service",
       "category": "backend",
       "context": "processing massive spikes in payment/event webhooks without overwhelming DB connections",

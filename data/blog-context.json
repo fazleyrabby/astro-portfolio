@@ -1,12 +1,6 @@
 {
   "topics": [
     {
-      "topic": "Hardening Laravel Webhook Consumers Against Distributed Denial of Service",
-      "category": "backend",
-      "context": "processing massive spikes in payment/event webhooks without overwhelming DB connections",
-      "notes": "include rapid signature verification, queue-first processing, idempotent handlers, and dynamic rate limiting"
-    },
-    {
       "topic": "Zero-Downtime Database Migrations for Large Datasets in Laravel",
       "category": "backend",
       "context": "handling ALTER TABLE on tables with millions of rows without table locking or performance degradation",

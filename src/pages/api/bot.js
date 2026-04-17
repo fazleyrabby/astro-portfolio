@@ -186,17 +186,25 @@ bot.hears(/^\s*\/feature(?:\s+|$)(.*)/s, async (ctx) => {
 
 // 3. The Bot Callback Query Handler (Approval logic)
 bot.on('callback_query', async (ctx) => {
-  const [tag, slug] = ctx.callbackQuery.data.split(':');
+  const [tag, cbSlug] = ctx.callbackQuery.data.split(':');
   const action = (tag === 'a' || tag === 'approve') ? 'approve' : 'reject';
   const [owner, repo] = REPO.split('/');
-  const mdPath = `src/content/posts/${slug}.md`;
 
-  console.log(`Webhook received click: ${action} for ${slug}`);
-  
+  console.log(`Webhook received click: ${action} for ${cbSlug}`);
+
   // Try to answer immediately (acknowledges the click)
   try { await ctx.answerCbQuery(action === 'approve' ? 'Publishing...' : 'Deleting...'); } catch (e) {}
 
   try {
+    // Resolve potentially truncated slug by listing posts directory
+    let slug = cbSlug;
+    try {
+      const { data: files } = await octokit.repos.getContent({ owner, repo, path: 'src/content/posts' });
+      const match = files.find(f => f.name.endsWith('.md') && f.name.startsWith(cbSlug));
+      if (match) slug = match.name.replace(/\.md$/, '');
+    } catch {}
+
+    const mdPath = `src/content/posts/${slug}.md`;
     const { data: file } = await octokit.repos.getContent({ owner, repo, path: mdPath });
 
     if (action === 'approve') {

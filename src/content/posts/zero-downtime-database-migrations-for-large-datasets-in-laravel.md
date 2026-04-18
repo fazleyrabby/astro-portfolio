@@ -1,7 +1,7 @@
 ---
 title: "Zero-Downtime Database Migrations for Large Datasets in Laravel"
 date: 2026-04-17T02:08:48
-draft: true
+draft: false
 tags: ["Laravel","Database","Scaling"]
 ---
 

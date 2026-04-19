@@ -1,12 +1,6 @@
 {
   "topics": [
     {
-      "topic": "Architecting Multi-Tenant SaaS: Database-per-Tenant vs. Single-DB Isolation",
-      "category": "backend",
-      "context": "choosing the right scaling strategy for a growing B2B SaaS platform",
-      "notes": "deep dive into trade-offs, handling cross-tenant migrations, and reporting across isolated databases"
-    },
-    {
       "topic": "Advanced Caching Strategies: Beyond Simply Using Cache::remember",
       "category": "backend",
       "context": "managing high-traffic systems where cache stampsede and stale data are critical failures",

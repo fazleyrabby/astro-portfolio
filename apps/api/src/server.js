@@ -150,6 +150,7 @@ bot.command('generate', async (ctx) => {
     if (!topic) return ctx.reply('Please provide a topic: /generate Scaling Laravel with Redis');
 
     const msg = await ctx.reply('🧠 Generating technical post... please wait.');
+    console.log(`[BOT] Starting /generate for topic: ${topic}`);
     
     try {
         const post = await generateAIContent(topic);
@@ -158,7 +159,7 @@ bot.command('generate', async (ctx) => {
         aiDrafts.set(slug, post);
         const preview = post.content.slice(0, 500) + '...';
         
-        await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id);
+        await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => {});
         await ctx.reply(`📝 <b>DRAFT GENERATED</b>\n\n<b>Title:</b> ${post.title}\n<b>Tags:</b> ${post.tags.join(', ')}\n\n${preview}`, {
             parse_mode: 'HTML',
             reply_markup: {
@@ -168,9 +169,10 @@ bot.command('generate', async (ctx) => {
                 ]
             }
         });
+        console.log(`[BOT] Draft sent to Telegram for slug: ${slug}`);
     } catch (err) {
-        console.error('AI Generation error:', err);
-        ctx.reply(`❌ AI Error: ${err.message}`);
+        console.error('[BOT] Generate command error:', err);
+        ctx.reply(`❌ AI Error: ${err.message}`).catch(() => {});
     }
 });
 

@@ -14,9 +14,9 @@
     "update-readme": "node scripts/update-github-readme.js"
   },
   "dependencies": {
-    "@astrojs/netlify": "^5.5.4",
     "@astrojs/sitemap": "^3.7.2",
     "@astrojs/tailwind": "^5.1.2",
+    "@astrojs/vercel": "^9.0.5",
     "@cloudinary/url-gen": "^1.14.0",
     "@octokit/rest": "^20.0.2",
     "@splinetool/runtime": "^1.12.73",

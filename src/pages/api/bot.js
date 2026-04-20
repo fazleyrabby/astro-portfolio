@@ -241,7 +241,7 @@ bot.on('callback_query', async (ctx) => {
 });
 
 
-// 4. The Netlify/Astro API Handler
+// 4. The Vercel/Astro API Handler
 export const POST = async ({ request }) => {
   try {
     const body = await request.json();

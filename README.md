@@ -23,7 +23,7 @@
 4. Workflow:
    - Use Telegram bot commands: /topic, /context, /generate
    - Approve draft via buttons
-   - Netlify auto deploys
+   - Vercel auto deploys
 
 ## Commands
 

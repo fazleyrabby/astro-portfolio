@@ -17,7 +17,7 @@ function isBot(userAgent: string): boolean {
         "nessus", "openvas", "nmap", "sqlmap", "nikto",
         "gptbot", "chatgpt", "claudebot", "anthropic", "applebot",
         "headlesschrome", "headless", "phantomjs", "selenium", "puppeteer",
-        "netlify", "prerender", "rendertron",
+        "netlify", "vercel", "prerender", "rendertron",
         "bot", "crawler", "spider", "scraper", "wget", "curl",
     ];
     return botPatterns.some(pattern => ua.includes(pattern));

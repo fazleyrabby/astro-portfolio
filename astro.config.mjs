@@ -1,17 +1,27 @@
-import { defineConfig, passthroughImageService } from "astro/config";
+import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
-import netlify from "@astrojs/netlify";
+import vercel from "@astrojs/vercel";
 import rehypeSlug from "rehype-slug";
 import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
   site: "https://fazleyrabbi.xyz",
+
   output: "server",
-  adapter: netlify(),
-  integrations: [tailwind(), sitemap()],
+
+  adapter: vercel({
+    webAnalytics: { enabled: true },
+  }),
+
+  integrations: [
+    tailwind(),
+    sitemap(),
+  ],
 
   image: {
-    service: passthroughImageService(),
+    service: {
+      entrypoint: "@astrojs/vercel/image-service",
+    },
   },
 
   markdown: {
@@ -22,5 +32,5 @@ export default defineConfig({
         dark: "nord",
       },
     },
-  }
+  },
 });

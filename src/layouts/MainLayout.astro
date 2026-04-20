@@ -80,26 +80,34 @@ const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twit
       }
     </script>
     <script>
-      if (!sessionStorage.getItem("visitor_ip")) {
-        fetch("/api/track", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            platform: navigator.platform,
-            language: navigator.language,
-            screen: window.screen.width + "x" + window.screen.height,
-          }),
-          keepalive: true,
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.ip) {
-              sessionStorage.setItem("visitor_ip", data.ip);
-            }
+      const trackVisitor = () => {
+        if (!sessionStorage.getItem("visitor_ip")) {
+          fetch("/api/track", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              platform: navigator.platform,
+              language: navigator.language,
+              screen: window.screen.width + "x" + window.screen.height,
+            }),
+            keepalive: true,
           })
-          .catch(() => {});
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.ip) {
+                sessionStorage.setItem("visitor_ip", data.ip);
+              }
+            })
+            .catch(() => {});
+        }
+      };
+
+      if (window.requestIdleCallback) {
+        requestIdleCallback(trackVisitor);
+      } else {
+        window.addEventListener('load', trackVisitor);
       }
     </script>
   </body>

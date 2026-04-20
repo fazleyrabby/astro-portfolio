@@ -1,7 +1,8 @@
 ---
 import { Image } from "astro:assets";
-const { project } = Astro.props;
+const { project, index = 10 } = Astro.props;
 const { title, tech, live, github, thumbnail, description, type, status } = project.data;
+const isCritical = index < 2;
 ---
 
 <article class="project-card group flex flex-col bg-surface border border-border overflow-hidden h-full">
@@ -16,7 +17,8 @@ const { title, tech, live, github, thumbnail, description, type, status } = proj
           alt={`${title} screenshot`}
           width={600} height={338} 
           format="webp"
-          loading="lazy"
+          loading={isCritical ? "eager" : "lazy"}
+          fetchpriority={isCritical ? "high" : "auto"}
           quality={80}
         />
         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />

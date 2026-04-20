@@ -344,6 +344,11 @@ app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
     }
 });
 
+app.get('/telegram-webhook', (req, res) => {
+    log(`GET request received on webhook endpoint`);
+    res.send('Webhook endpoint is active. Use POST for updates.');
+});
+
 app.post('/telegram-webhook', (req, res) => {
     res.sendStatus(200);
     bot.handleUpdate(req.body).catch(err => console.error('Bot Error:', err));

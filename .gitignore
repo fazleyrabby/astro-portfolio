@@ -25,3 +25,12 @@ agent.md
 .gemini/
 .claude/
 NETLIFY-TO-VERCEL-MIGRATION.md
+BLOG_PROMPT.md
+DATABASE.md
+DEPLOYMENT.md
+migrate-posts.js
+MIGRATION.sql
+api_deploy.tar.gz
+apps/api/dist/
+debug.log
+/tmp/bot_debug.log

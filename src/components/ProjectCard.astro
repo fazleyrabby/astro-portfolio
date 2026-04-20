@@ -14,7 +14,10 @@ const { title, tech, live, github, thumbnail, description, type, status } = proj
           src={thumbnail}
           class="object-cover object-left-top w-full h-full transition-all duration-700 grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105"
           alt={`${title} screenshot`}
-          width={800} height={450} loading="lazy"
+          width={600} height={338} 
+          format="webp"
+          loading="lazy"
+          quality={80}
         />
         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
       </>

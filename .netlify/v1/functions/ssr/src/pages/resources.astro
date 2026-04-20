@@ -1,0 +1,45 @@
+---
+import MainLayout from "@layouts/MainLayout.astro";
+import { getCollection } from "astro:content";
+
+const allResources = await getCollection("resources");
+
+const sections = [
+    { id: "php-laravel",      title: "PHP & Laravel" },
+    { id: "blogs-articles",   title: "Blogs & Articles" },
+    { id: "portfolios",       title: "Portfolio & UI Inspirations" },
+    { id: "javascript",       title: "JavaScript" },
+    { id: "youtube-tutorials",title: "Youtube & Tutorials" },
+    { id: "miscellaneous",    title: "Miscellaneous" },
+];
+
+const getResources = (id) => allResources.find((r) => r.id === id)?.data || [];
+---
+
+<MainLayout title="Resources">
+    <main class="max-w-6xl mx-auto px-6 py-20">
+        <div class="mb-14">
+            <span class="section-label">Resources</span>
+            <h1 class="font-display font-bold text-[clamp(2.5rem,6vw,4rem)] text-[var(--text-primary)] leading-tight">Resources</h1>
+            <p class="font-serif italic text-[1.2rem] text-[var(--text-secondary)] mt-4">A curated collection of helpful resources and inspirations</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {sections.map((section) => (
+                <div class="card rounded p-6">
+                    <h2 class="font-serif font-bold text-xl text-[var(--text-primary)] mb-5">{section.title}</h2>
+                    <ol class="list-decimal pl-5 space-y-2">
+                        {getResources(section.id).map((item) => (
+                            <li>
+                                <a href={item.link} target="_blank"
+                                   class="text-[var(--accent)] hover:opacity-80 transition-opacity">
+                                    {item.text}
+                                </a>
+                            </li>
+                        ))}
+                    </ol>
+                </div>
+            ))}
+        </div>
+    </main>
+</MainLayout>

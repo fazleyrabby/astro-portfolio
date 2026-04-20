@@ -189,14 +189,14 @@ html[data-theme="nord"] {
 }
 
 
-* {
+/* * {
   transition:
   background-color 0.2s ease,
   color 0.2s ease,
   border-color 0.2s ease,
   box-shadow 0.2s ease,
   transform 0.1s ease;
-}
+} */
 
 /* Apply dynamic border width and effects for themes */
 .border { border-width: var(--border-width); }
@@ -731,10 +731,10 @@ html[data-theme="brutal"] #article-content li > code {
     border-radius: 50%;
     pointer-events: none;
     z-index: 9999;
-    transform: translate(-50%, -50%);
-    left: -20px;
-    top: -20px;
-    transition: width var(--t-base) var(--ease-in-out), height var(--t-base) var(--ease-in-out);
+    transform: translate3d(-100px, -100px, 0);
+    left: 0;
+    top: 0;
+    transition: width var(--t-base) var(--ease-in-out), height var(--t-base) var(--ease-in-out), opacity var(--t-base) ease;
     opacity: 0.8;
   }
 

@@ -247,43 +247,29 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
     let currentTheme = isDark() ? "dark" : "light";
     let data = buildParticles(currentTheme === "dark" ? DARK_ART : LIGHT_ART);
 
-    let width, height, offsetX, offsetY, scale;
-    let mouseX = -9999,
-      mouseY = -9999;
+    let width, height, offsetX, offsetY, scale, dpr;
+    let mouseX = -9999, mouseY = -9999;
+    let isVisible = false;
     let isHovering = false;
     let animating = false;
-    let dpr = 1;
-    let cachedMutedColor = "";
-    let cachedAccentColor = "";
 
-    function resize() {
-      const rect = cnv.parentElement.getBoundingClientRect();
-      dpr = window.devicePixelRatio || 1;
-      width = rect.width;
-      height = rect.height;
-      cnv.width = width * dpr;
-      cnv.height = height * dpr;
-      cnv.style.width = width + "px";
-      cnv.style.height = height + "px";
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const observerOptions = { threshold: 0.1 };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) startAnim();
+      });
+    }, observerOptions);
+    io.observe(cnv);
 
-      scale = Math.min(width / data.artW, height / data.artH) * 1.2;
-      offsetX = (width - data.artW * scale) / 2;
-      offsetY = (height - data.artH * scale) / 2;
-    }
-
-    function getStyle(prop) {
-      return getComputedStyle(document.documentElement)
-        .getPropertyValue(prop)
-        .trim();
-    }
-
-    function updateCachedColors() {
-      cachedMutedColor = getStyle("--text-muted") || "#57534E";
-      cachedAccentColor = getStyle("--accent") || "#E8823A";
-    }
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function draw() {
+      if (!isVisible && !isHovering) {
+        animating = false;
+        return;
+      }
+
       const nowTheme = isDark() ? "dark" : "light";
       if (nowTheme !== currentTheme) {
         currentTheme = nowTheme;
@@ -311,7 +297,7 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
         localMY = (mouseY - offsetY) / scale;
       }
 
-      let needsNextFrame = isHovering;
+      let needsNextFrame = isHovering || !prefersReducedMotion;
 
       for (const p of data.visible) {
         if (isHovering) {
@@ -370,20 +356,13 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
         }
 
         let alpha = p.opacity;
-        if (!isHovering) {
-          // ── Single horizontal luminance wave ──
+        if (!isHovering && !prefersReducedMotion) {
           const nx = p.homeX / data.artW;
-
-          // A single wave spanning the entire horizontal width, traveling rightwards
           const wavePhase = nx * Math.PI * 2.5 - frameTime * 2.0;
           const wave = Math.sin(wavePhase);
-
-          // Map sine [-1, 1] to an intensity range [0.75, 1.0]
-          // Particles fade to 75% opacity at trough, 100% at crest for a very subtle effect
           const crest = (wave * 0.5) + 0.5;
           alpha *= 0.75 + crest * 0.25;
-
-          needsNextFrame = true; // Maintain 60fps loop for smooth transitions
+          needsNextFrame = true; 
         }
 
         ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
@@ -393,17 +372,16 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
 
       ctx.restore();
 
-      if (needsNextFrame) {
+      if (needsNextFrame && (isVisible || isHovering)) {
         animating = true;
         requestAnimationFrame(draw);
       } else {
         animating = false;
-        setTimeout(() => startAnim(), 200);
       }
     }
 
     function startAnim() {
-      if (!animating) {
+      if (!animating && (isVisible || isHovering)) {
         animating = true;
         requestAnimationFrame(draw);
       }
@@ -411,14 +389,14 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
 
     resize();
     updateCachedColors();
-    draw();
+    startAnim();
 
     // Watch for theme toggles
-    const observer = new MutationObserver(() => {
+    const themeObserver = new MutationObserver(() => {
       updateCachedColors();
       startAnim();
     });
-    observer.observe(document.documentElement, {
+    themeObserver.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class", "data-theme"],
     });

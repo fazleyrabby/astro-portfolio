@@ -4,7 +4,6 @@ import Nav from "./Nav.astro";
 import Footer from "./Footer.astro";
 import "../styles/global.css";
 import ScrollToTop from "@components/ScrollToTop.astro";
-import Cursor from "@components/Cursor.astro";
 const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twitterCard, twitterImage } = Astro.props;
 ---
 
@@ -20,32 +19,48 @@ const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twit
     <Footer />
     <ScrollToTop />
     <script>
-      import Lenis from 'lenis';
-      import { gsap } from 'gsap';
-      import { ScrollTrigger } from 'gsap/ScrollTrigger';
-      gsap.registerPlugin(ScrollTrigger);
+      const initAnimations = async () => {
+        const { default: Lenis } = await import('lenis');
+        const { gsap } = await import('gsap');
+        const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+        gsap.registerPlugin(ScrollTrigger);
 
-      // Initialize Lenis
-      const lenis = new Lenis({ 
-        duration: 1.2, 
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) 
-      });
+        // Initialize Lenis
+        const lenis = new Lenis({ 
+          duration: 1.2, 
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) 
+        });
 
-      lenis.on('scroll', ScrollTrigger.update);
+        lenis.on('scroll', ScrollTrigger.update);
 
-      gsap.ticker.add((time) => {
-        lenis.raf(time * 1000);
-      });
+        gsap.ticker.add((time) => {
+          lenis.raf(time * 1000);
+        });
 
-      gsap.ticker.lagSmoothing(0);
+        gsap.ticker.lagSmoothing(0);
 
-      // Custom Cursor Logic
+        // Hero Cursor Light
+        const cursorLight = document.querySelector('.hero-cursor-light') as HTMLElement;
+        if (cursorLight && window.matchMedia('(pointer: fine)').matches) {
+          document.addEventListener('mousemove', (e) => {
+            gsap.to(cursorLight, {
+              x: e.clientX,
+              y: e.clientY,
+              duration: 0.6,
+              ease: 'power2.out'
+            });
+          }, { passive: true });
+        }
+
+        await import("../scripts/animations.js");
+      };
+
+      // Custom Cursor Logic (Critical - keep it fast but optimized)
       const cursor = document.querySelector('.cursor') as HTMLElement;
       if (cursor && window.matchMedia('(pointer: fine)').matches) {
         document.addEventListener('mousemove', (e) => {
-          cursor.style.left = e.clientX + 'px';
-          cursor.style.top = e.clientY + 'px';
-        });
+          cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+        }, { passive: true });
 
         document.querySelectorAll('a, button, .btn-magnetic').forEach((el) => {
           el.addEventListener('mouseenter', () => cursor.classList.add('cursor--hover'));
@@ -53,20 +68,14 @@ const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twit
         });
       }
 
-      // Hero Cursor Light
-      const cursorLight = document.querySelector('.hero-cursor-light') as HTMLElement;
-      if (cursorLight && window.matchMedia('(pointer: fine)').matches) {
-        document.addEventListener('mousemove', (e) => {
-          gsap.to(cursorLight, {
-            left: e.clientX,
-            top: e.clientY,
-            duration: 0.6,
-            ease: 'power2.out'
-          });
+      // Defer non-critical animations
+      if (window.requestIdleCallback) {
+        requestIdleCallback(() => {
+          initAnimations();
         });
+      } else {
+        setTimeout(initAnimations, 1000);
       }
-
-      import "../scripts/animations.js";
     </script>
     <script>
       if (!sessionStorage.getItem("visitor_ip")) {

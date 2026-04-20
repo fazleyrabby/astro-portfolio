@@ -110,11 +110,20 @@ OUTPUT: Raw Markdown with YAML title and tags. DO NOT wrap the YAML in markdown 
 
 // --- Telegram Bot Logic ---
 bot.use(async (ctx, next) => {
+    console.log(`Bot received message from: ${ctx.from?.id}`);
     if (ctx.from?.id !== ALLOWED_USER_ID) {
-        console.log(`Unauthorized user attempted access: ${ctx.from?.id}`);
+        console.log(`Unauthorized access attempt by ID: ${ctx.from?.id}. Expected: ${ALLOWED_USER_ID}`);
+        // Only reply if it's a direct command to avoid bot spamming groups
+        if (ctx.message?.text?.startsWith('/')) {
+            ctx.reply(`⚠️ Unauthorized. Your ID: ${ctx.from?.id}`);
+        }
         return;
     }
     return next();
+});
+
+bot.command('me', (ctx) => {
+    ctx.reply(`Your Telegram ID is: ${ctx.from?.id}\nAllowed ID: ${ALLOWED_USER_ID}`);
 });
 
 bot.command('status', (ctx) => ctx.reply('🚀 API & CMS Engine is active.'));

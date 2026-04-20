@@ -36,9 +36,11 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const CMS_TOKEN = process.env.CMS_TOKEN;
 const REPO = process.env.GITHUB_REPOSITORY || 'fazleyrabby/astro-portfolio';
-const ALLOWED_USER_ID = parseInt(TELEGRAM_CHAT_ID || '0', 10);
+const ALLOWED_USER_ID = parseInt(String(process.env.TELEGRAM_CHAT_ID).trim() || '0', 10);
 
 const bot = new Telegraf(TELEGRAM_TOKEN);
+
+bot.start((ctx) => ctx.reply(`Welcome! Your ID is ${ctx.from?.id}. Allowed: ${ALLOWED_USER_ID}`));
 
 if (!TELEGRAM_TOKEN) {
     console.error('CRITICAL: TELEGRAM_TOKEN is missing in environment variables!');

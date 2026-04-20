@@ -1,27 +1,25 @@
 import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
-import vercel from "@astrojs/vercel";
-import rehypeSlug from "rehype-slug";
 import sitemap from "@astrojs/sitemap";
+import rehypeSlug from "rehype-slug";
 
 export default defineConfig({
   site: "https://fazleyrabbi.xyz",
 
-  output: "server",
-
-  adapter: vercel({
-    webAnalytics: { enabled: true },
-  }),
+  // 🔥 Static build (no SSR, no adapter needed)
+  output: "static",
 
   integrations: [
     tailwind(),
-    sitemap(),
+    sitemap({
+      changefreq: "weekly",
+      priority: 0.7,
+    }),
   ],
 
+  // ✅ Optional: basic image config (safe for static)
   image: {
-    service: {
-      entrypoint: "@astrojs/vercel/image-service",
-    },
+    domains: ["fazleyrabbi.xyz"],
   },
 
   markdown: {
@@ -31,6 +29,19 @@ export default defineConfig({
         light: "github-light",
         dark: "nord",
       },
+      wrap: true, // prevents long code overflow
+    },
+  },
+
+  // ⚡ Minor performance optimization
+  build: {
+    inlineStylesheets: "auto",
+  },
+
+  // ⚡ Dev + preview consistency
+  vite: {
+    build: {
+      cssCodeSplit: true,
     },
   },
 });

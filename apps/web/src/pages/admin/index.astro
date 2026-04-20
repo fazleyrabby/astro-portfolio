@@ -1,0 +1,132 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Posts">
+  <div class="max-w-3xl mx-auto px-4 py-10">
+    <header class="flex items-center justify-between mb-12">
+      <div class="flex items-center gap-4">
+        <h1 class="text-xl font-bold tracking-tight">Posts</h1>
+        <div class="h-4 w-[1px] bg-adm-border"></div>
+        <span id="tokenStatus" class="text-xs text-muted font-mono">Token active</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="logoutBtn" class="text-xs text-muted hover:text-gray-200 transition-colors uppercase tracking-wider font-medium">Logout</button>
+      </div>
+    </header>
+
+    <div class="flex items-center gap-3 mb-8">
+      <div class="relative flex-1">
+        <input 
+          type="text" 
+          id="search" 
+          placeholder="Search posts..." 
+          class="w-full bg-panel border border-adm-border rounded-md px-3 py-1.5 text-sm focus:outline-none focus:border-primary/50 transition-colors placeholder:text-muted/50"
+        />
+      </div>
+      <a href="/admin/create" class="bg-primary hover:bg-primary/90 text-white px-4 py-1.5 rounded-md text-sm font-medium transition-colors">
+        New Post
+      </a>
+    </div>
+
+    <div id="postList" class="space-y-1">
+      <div class="text-center py-20 text-muted animate-pulse text-sm">Loading posts...</div>
+    </div>
+
+    <footer class="mt-12 pt-6 border-t border-adm-border flex justify-between items-center text-[10px] text-muted uppercase tracking-widest font-mono">
+      <span id="postCount">0 posts</span>
+      <span>GitHub Sync Active</span>
+    </footer>
+  </div>
+</AdminLayout>
+
+<script>
+  const API = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://api.fazleyrabbi.xyz';
+  let allPosts = [];
+
+  function getToken() {
+    const t = localStorage.getItem('cms_token');
+    if (!t) { window.location.href = '/admin/login?r=/admin'; return null; }
+    return t;
+  }
+
+  function authHeaders() {
+    return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' };
+  }
+
+  function render(posts) {
+    const el = document.getElementById('postList');
+    const countEl = document.getElementById('postCount');
+    
+    if (!posts.length) {
+      el.innerHTML = '<div class="text-center py-20 text-muted text-sm border border-dashed border-adm-border rounded-lg">No posts found.</div>';
+      countEl.textContent = '0 posts';
+      return;
+    }
+
+    el.innerHTML = posts.map(p => `
+      <div class="group flex items-center justify-between p-3 rounded-md hover:bg-panel transition-colors border border-transparent hover:border-adm-border">
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="w-2 h-2 rounded-full ${p.draft ? 'bg-yellow-500/50' : 'bg-green-500/50'} shrink-0"></span>
+          <span class="text-sm font-medium truncate text-gray-300 group-hover:text-white transition-colors">${p.slug}</span>
+        </div>
+        <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <a href="/admin/edit?slug=${p.slug}" class="text-[10px] uppercase tracking-wider font-bold text-primary hover:text-white px-2 py-1 transition-colors">Edit</a>
+          <button onclick="window.deletePost('${p.slug}')" class="text-[10px] uppercase tracking-wider font-bold text-red-500/70 hover:text-red-500 px-2 py-1 transition-colors">Delete</button>
+        </div>
+      </div>
+    `).join('');
+    
+    countEl.textContent = `${posts.length} posts`;
+  }
+
+  async function loadPosts() {
+    try {
+      const res = await fetch(`${API}/cms/posts`, { headers: authHeaders() });
+      if (res.status === 401) { 
+        localStorage.removeItem('cms_token'); 
+        window.location.href = '/admin/login'; 
+        return; 
+      }
+      if (!res.ok) throw new Error('Failed to fetch posts');
+      allPosts = await res.json();
+      render(allPosts);
+    } catch (e) {
+      document.getElementById('postList').innerHTML = `<div class="text-center py-20 text-red-400 text-sm">Error: ${e.message}</div>`;
+    }
+  }
+
+  // @ts-ignore
+  window.deletePost = async function(slug) {
+    if (!confirm(`Permanently delete "${slug}"?`)) return;
+    
+    try {
+      const res = await fetch(`${API}/cms/posts/${slug}`, { 
+        method: 'DELETE', 
+        headers: authHeaders() 
+      });
+      if (!res.ok) throw new Error('Delete failed');
+      
+      allPosts = allPosts.filter(p => p.slug !== slug);
+      render(allPosts);
+    } catch (e) {
+      alert(`Delete failed: ${e.message}`);
+    }
+  };
+
+  document.getElementById('search').addEventListener('input', (e) => {
+    // @ts-ignore
+    const q = e.target.value.toLowerCase();
+    render(q ? allPosts.filter(p => p.slug.toLowerCase().includes(q)) : allPosts);
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('cms_token');
+    window.location.href = '/admin/login';
+  });
+
+  const token = getToken();
+  if (token) {
+    loadPosts();
+  }
+</script>

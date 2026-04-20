@@ -370,6 +370,11 @@ html[data-theme="brutal"] #article-content li > code {
   a {
     transition: color var(--t-base) ease;
   }
+
+  .admin-body {
+    @apply bg-bg text-gray-200 antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
 }
 
 @layer components {

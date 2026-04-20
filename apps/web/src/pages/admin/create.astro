@@ -1,0 +1,345 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Create Post">
+  <div class="h-screen flex flex-col overflow-hidden bg-bg text-gray-200">
+    <!-- Top Bar -->
+    <header class="flex items-center justify-between px-4 py-2 bg-panel border-b border-adm-border z-20 shrink-0">
+      <div class="flex items-center gap-4">
+        <a href="/admin" class="text-muted hover:text-white transition-colors text-sm flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          Back
+        </a>
+        <div class="h-4 w-[1px] bg-adm-border"></div>
+        <span class="text-xs font-mono text-muted uppercase tracking-widest">New Entry</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <!-- Mode Toggle -->
+        <div class="flex bg-bg rounded-md p-1 border border-adm-border mr-4">
+          <button data-mode="edit" class="mode-btn px-3 py-1 text-xs rounded transition-all">Edit</button>
+          <button data-mode="split" class="mode-btn active px-3 py-1 text-xs rounded transition-all">Split</button>
+          <button data-mode="preview" class="mode-btn px-3 py-1 text-xs rounded transition-all">Preview</button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <label class="flex items-center gap-2 text-xs text-muted cursor-pointer hover:text-gray-200 transition-colors mr-2">
+            <input type="checkbox" id="draftCheck" checked class="rounded border-adm-border bg-bg text-primary focus:ring-primary/20" />
+            Draft
+          </label>
+          <button id="uploadBtn" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted hover:text-white transition-colors border border-adm-border rounded-md hover:bg-muted/10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+            Image
+          </button>
+          <button id="saveBtn" class="bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-white px-5 py-1.5 rounded-md text-xs font-semibold transition-all shadow-lg shadow-primary/20">
+            Publish
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Title Area -->
+    <div class="bg-bg border-b border-adm-border shrink-0">
+      <div class="max-w-5xl mx-auto px-8 py-6">
+        <input 
+          type="text" 
+          id="titleInput" 
+          placeholder="Post Title" 
+          autofocus
+          class="w-full bg-transparent text-3xl font-bold focus:outline-none placeholder:text-muted/30 tracking-tight"
+        />
+        <div id="slugPreview" class="text-[10px] font-mono text-muted/40 mt-2 px-1">slug: —</div>
+      </div>
+    </div>
+
+    <!-- Editor Area -->
+    <div class="flex-1 flex overflow-hidden">
+      <div class="max-w-7xl mx-auto w-full flex overflow-hidden">
+        <div id="editorPane" class="flex-1 overflow-hidden border-x border-adm-border bg-bg">
+          <!-- CodeMirror initialized here -->
+        </div>
+        <div id="previewPane" class="flex-1 overflow-y-auto bg-bg prose prose-neutral dark:prose-invert max-w-none p-10 prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-li:text-[var(--text-secondary)] prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)] prose-strong:text-[var(--text-primary)] prose-strong:font-semibold prose-blockquote:text-[var(--text-secondary)] prose-blockquote:border-[var(--accent)]">
+          <!-- Markdown preview here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="imageFile" class="hidden" accept="image/*" />
+    
+    <!-- Status Toast -->
+    <div id="statusToast" class="fixed bottom-6 right-6 px-4 py-2 rounded-lg text-xs font-medium translate-y-20 opacity-0 transition-all duration-300 shadow-xl z-50"></div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, drawSelection, dropCursor, rectangularSelection, crosshairCursor } from "@codemirror/view";
+  import { EditorState } from "@codemirror/state";
+  import { markdown } from "@codemirror/lang-markdown";
+  import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
+  import { oneDark } from "@codemirror/theme-one-dark";
+  import { syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldGutter, indentOnInput } from "@codemirror/language";
+  import { marked } from "marked";
+
+  const API = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://api.fazleyrabbi.xyz';
+
+  function getToken() {
+    const t = localStorage.getItem('cms_token');
+    if (!t) { window.location.href = `/admin/login?r=${encodeURIComponent(window.location.pathname)}`; return null; }
+    return t;
+  }
+
+  let view;
+  const previewPane = document.getElementById('previewPane');
+  const editorPane = document.getElementById('editorPane');
+  const titleInput = document.getElementById('titleInput') as HTMLInputElement;
+  const slugPreview = document.getElementById('slugPreview');
+  const draftCheck = document.getElementById('draftCheck') as HTMLInputElement;
+  const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
+  const imageFile = document.getElementById('imageFile') as HTMLInputElement;
+  const uploadBtn = document.getElementById('uploadBtn');
+
+  // Title to slug helper
+  function toSlug(title) {
+    return title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-');
+  }
+
+  titleInput.addEventListener('input', () => {
+    slugPreview.textContent = `slug: ${toSlug(titleInput.value) || '—'}`;
+  });
+
+  // Mode handling
+  let currentMode = 'split';
+  const modeBtns = document.querySelectorAll('.mode-btn');
+
+  function updateLayout() {
+    modeBtns.forEach(btn => {
+      const mode = (btn as HTMLElement).dataset.mode;
+      if (mode === currentMode) btn.classList.add('bg-muted/20', 'text-white');
+      else btn.classList.remove('bg-muted/20', 'text-white');
+    });
+
+    if (currentMode === 'edit') {
+      editorPane.style.display = 'block';
+      previewPane.style.display = 'none';
+    } else if (currentMode === 'preview') {
+      editorPane.style.display = 'none';
+      previewPane.style.display = 'block';
+      renderPreview();
+    } else {
+      editorPane.style.display = 'block';
+      previewPane.style.display = 'block';
+      renderPreview();
+    }
+  }
+
+  modeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentMode = (btn as HTMLElement).dataset.mode;
+      updateLayout();
+    });
+  });
+
+  function renderPreview() {
+    if (view) {
+      const content = view.state.doc.toString();
+      previewPane.innerHTML = marked.parse(content) as string;
+    }
+  }
+
+  function showToast(msg, type = 'info') {
+    const toast = document.getElementById('statusToast');
+    toast.textContent = msg;
+    toast.className = `fixed bottom-6 right-6 px-4 py-2 rounded-lg text-xs font-medium z-50 transition-all duration-300 shadow-xl ${
+      type === 'success' ? 'bg-green-500 text-white' : 
+      type === 'error' ? 'bg-red-500 text-white' : 'bg-panel border border-adm-border text-gray-200'
+    }`;
+    toast.style.transform = 'translateY(0)';
+    toast.style.opacity = '1';
+    setTimeout(() => {
+      toast.style.transform = 'translateY(20px)';
+      toast.style.opacity = '0';
+    }, 3000);
+  }
+
+  // Initialize Editor
+  view = new EditorView({
+    state: EditorState.create({
+      doc: '# Post Title\n\nStart writing here...',
+      extensions: [
+        lineNumbers(),
+        highlightActiveLineGutter(),
+        foldGutter(),
+        history(),
+        drawSelection(),
+        dropCursor(),
+        EditorState.allowMultipleSelections.of(true),
+        indentOnInput(),
+        syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+        bracketMatching(),
+        rectangularSelection(),
+        crosshairCursor(),
+        highlightActiveLine(),
+        markdown(),
+        oneDark,
+        keymap.of([
+          ...defaultKeymap,
+          ...historyKeymap,
+          indentWithTab,
+          { key: 'Mod-s', run: () => { save(); return true; } },
+        ]),
+        EditorView.lineWrapping,
+        EditorView.theme({
+          '&': { height: '100%', fontSize: '14px', backgroundColor: '#0a0f1a' },
+          '.cm-content': { 
+            fontFamily: "'JetBrains Mono', 'Fira Code', monospace", 
+            padding: '2rem',
+            color: '#d1d5db'
+          },
+          '.cm-gutters': { 
+            backgroundColor: '#0a0f1a', 
+            color: '#4b5563', 
+            border: 'none',
+            paddingLeft: '10px'
+          },
+          '.cm-activeLineGutter': { backgroundColor: '#1f2937', color: '#9ca3af' },
+          '.cm-activeLine': { backgroundColor: '#1f2937' },
+          '.cm-cursor': { borderLeftColor: '#6366f1' },
+          '.cm-selectionBackground': { backgroundColor: '#312e81' }
+        }, { dark: true }),
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged && currentMode !== 'edit') {
+            debouncedRender();
+          }
+        }),
+      ],
+    }),
+    parent: editorPane,
+  });
+
+  let renderTimeout;
+  function debouncedRender() {
+    clearTimeout(renderTimeout);
+    renderTimeout = setTimeout(renderPreview, 300);
+  }
+
+  async function save() {
+    if (!view || saveBtn.disabled) return;
+    
+    const title = titleInput.value.trim();
+    const body = view.state.doc.toString().trim();
+    const isDraft = draftCheck.checked;
+
+    if (!title || !body) {
+      showToast('Title and content are required', 'error');
+      return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Creating...';
+
+    try {
+      const res = await fetch(`${API}/cms/posts`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${getToken()}`,
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify({ title, content: body, draft: isDraft }),
+      });
+      
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Creation failed');
+      
+      showToast('Post created successfully', 'success');
+      setTimeout(() => window.location.href = `/admin/edit?slug=${data.slug}`, 1000);
+    } catch (e) {
+      showToast(e.message, 'error');
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Publish';
+    }
+  }
+
+  // Upload handler
+  uploadBtn.addEventListener('click', () => imageFile.click());
+
+  imageFile.addEventListener('change', async () => {
+    const file = imageFile.files[0];
+    if (!file) return;
+
+    showToast('Uploading image...', 'info');
+    
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      
+      const res = await fetch(`${API}/cms/upload`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${getToken()}` },
+        body: fd,
+      });
+      
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+
+      const md = `\n![${file.name}](${data.url})\n`;
+      const cursor = view.state.selection.main.head;
+      
+      view.dispatch({
+        changes: { from: cursor, insert: md },
+        selection: { anchor: cursor + md.length }
+      });
+      
+      showToast('Image uploaded and inserted', 'success');
+      imageFile.value = ''; // Reset
+    } catch (e) {
+      showToast(e.message, 'error');
+    }
+  });
+
+  saveBtn.addEventListener('click', save);
+  updateLayout();
+</script>
+
+<style is:global>
+  /* CodeMirror 6 Overrides for better Notion-lite look */
+  .cm-editor {
+    outline: none !important;
+  }
+  .cm-scroller {
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+  .cm-focused {
+    outline: none !important;
+  }
+  
+  /* Markdown Preview Typography */
+  #previewPane {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  #previewPane h1, #previewPane h2, #previewPane h3 {
+    @apply font-bold border-b border-adm-border pb-2 mb-4 mt-8;
+  }
+  #previewPane p {
+    @apply mb-4 leading-relaxed text-gray-300;
+  }
+  #previewPane code {
+    @apply bg-panel px-1.5 py-0.5 rounded text-primary border border-adm-border font-mono text-[0.8em];
+  }
+  #previewPane pre {
+    @apply bg-panel p-4 rounded-lg border border-adm-border my-6 overflow-x-auto;
+  }
+  #previewPane pre code {
+    @apply bg-transparent p-0 border-none text-gray-300;
+  }
+  #previewPane ul, #previewPane ol {
+    @apply mb-4 ml-6;
+  }
+  #previewPane li {
+    @apply mb-1;
+  }
+  #previewPane blockquote {
+    @apply border-l-4 border-primary/40 pl-4 italic text-muted my-6;
+  }
+</style>

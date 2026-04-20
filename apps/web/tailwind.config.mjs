@@ -47,6 +47,12 @@ export default {
 				surface: 'var(--color-surface)',
 				border: 'var(--color-border)',
 				accent: 'var(--color-accent)',
+				// Admin UI colors
+				bg: "#0a0f1a",
+				panel: "#0f172a",
+				"adm-border": "#1f2937",
+				muted: "#94a3b8",
+				primary: "#6366f1"
 			},
 			boxShadow: {
 				theme: 'var(--shadow-main)',

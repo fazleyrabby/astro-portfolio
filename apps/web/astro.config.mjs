@@ -7,6 +7,16 @@ export default defineConfig({
   site: "https://fazleyrabbi.xyz",
   output: "static",
   integrations: [tailwind(), sitemap()],
+  vite: {
+    resolve: {
+      dedupe: [
+        "@codemirror/state",
+        "@codemirror/view",
+        "@codemirror/commands",
+        "@codemirror/lang-markdown"
+      ]
+    }
+  },
 
   image: {
     service: passthroughImageService(),

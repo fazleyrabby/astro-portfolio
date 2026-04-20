@@ -344,14 +344,14 @@ app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
     }
 });
 
-app.get('/telegram-webhook', (req, res) => {
-    log(`GET request received on webhook endpoint`);
-    res.send('Webhook endpoint is active. Use POST for updates.');
+app.get('/tg-feed', (req, res) => {
+    log(`GET request received on hidden webhook endpoint`);
+    res.send('Secret channel active.');
 });
 
-app.post('/telegram-webhook', (req, res) => {
+app.post('/tg-feed', (req, res) => {
     res.sendStatus(200);
-    bot.handleUpdate(req.body).catch(err => console.error('Bot Error:', err));
+    bot.handleUpdate(req.body).catch(err => log(`Bot Error: ${err.message}`));
 });
 
 app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }));

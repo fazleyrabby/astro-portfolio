@@ -9,6 +9,16 @@ import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 import OpenAI from 'openai';
 import { slug as slugify } from 'github-slugger';
+import fs from 'fs';
+import path from 'path';
+
+const logFile = path.join(process.cwd(), 'debug.log');
+function log(msg) {
+    const timestamp = new Date().toISOString();
+    const formatted = `[${timestamp}] ${msg}\n`;
+    console.log(msg);
+    fs.appendFileSync(logFile, formatted);
+}
 
 const app = express();
 app.use(cors());
@@ -82,8 +92,9 @@ async function ghGetFile(filePath) {
 
 // --- AI Logic ---
 async function generateAIContent(topic) {
-    console.log(`[AI] Starting generation for: ${topic}`);
+    log(`[AI] Starting generation for: ${topic}`);
     if (!process.env.GROQ_API_KEY) {
+        log(`[AI] Error: GROQ_API_KEY is missing`);
         throw new Error('GROQ_API_KEY is missing on the server');
     }
 
@@ -96,10 +107,10 @@ OUTPUT: Raw Markdown with YAML title and tags. DO NOT wrap the YAML in markdown 
         const completion = await openai.chat.completions.create({
             model: 'llama-3.3-70b-versatile',
             messages: [{ role: 'user', content: prompt }],
-            timeout: 30000, // 30 second timeout
+            timeout: 50000, // 50 second timeout for shared hosting
         });
 
-        console.log(`[AI] Response received from Groq`);
+        log(`[AI] Response received from Groq`);
         let response = completion.choices[0].message.content.trim();
         response = response.replace(/^```(?:markdown|md)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
 
@@ -119,7 +130,7 @@ OUTPUT: Raw Markdown with YAML title and tags. DO NOT wrap the YAML in markdown 
 
         return { title, tags, content: markdownContent };
     } catch (err) {
-        console.error(`[AI] Error during generation:`, err.message);
+        log(`[AI] Error during generation: ${err.message}`);
         throw err;
     }
 }
@@ -127,12 +138,12 @@ OUTPUT: Raw Markdown with YAML title and tags. DO NOT wrap the YAML in markdown 
 // --- Telegram Bot Logic ---
 bot.use(async (ctx, next) => {
     const userId = ctx.from?.id;
-    console.log(`[BOT] Incoming from: ${userId}. Allowed: ${ALLOWED_USER_ID}`);
+    log(`[BOT] Incoming message from: ${userId}`);
     
     if (userId !== ALLOWED_USER_ID) {
-        // If it's a command, tell them they are unauthorized
+        log(`[BOT] Unauthorized attempt by: ${userId}. Expected: ${ALLOWED_USER_ID}`);
         if (ctx.message?.text?.startsWith('/')) {
-            return ctx.reply(`⛔ Unauthorized. Your ID: ${userId}\nExpected ID: ${ALLOWED_USER_ID}\nCheck your .env file on cPanel.`);
+            return ctx.reply(`⛔ Unauthorized. Your ID: ${userId}\nExpected ID: ${ALLOWED_USER_ID}`).catch(() => {});
         }
         return;
     }
@@ -150,7 +161,7 @@ bot.command('generate', async (ctx) => {
     if (!topic) return ctx.reply('Please provide a topic: /generate Scaling Laravel with Redis');
 
     const msg = await ctx.reply('🧠 Generating technical post... please wait.');
-    console.log(`[BOT] Starting /generate for topic: ${topic}`);
+    log(`[BOT] Executing /generate for: ${topic}`);
     
     try {
         const post = await generateAIContent(topic);
@@ -169,9 +180,9 @@ bot.command('generate', async (ctx) => {
                 ]
             }
         });
-        console.log(`[BOT] Draft sent to Telegram for slug: ${slug}`);
+        log(`[BOT] Draft preview sent for: ${slug}`);
     } catch (err) {
-        console.error('[BOT] Generate command error:', err);
+        log(`[BOT] Generate command failed: ${err.message}`);
         ctx.reply(`❌ AI Error: ${err.message}`).catch(() => {});
     }
 });

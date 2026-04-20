@@ -12,12 +12,14 @@ import { slug as slugify } from 'github-slugger';
 import fs from 'fs';
 import path from 'path';
 
-const logFile = path.join(process.cwd(), 'debug.log');
+const logFile = '/home/rhtechde/api.rhtech.dev/debug.log';
 function log(msg) {
     const timestamp = new Date().toISOString();
     const formatted = `[${timestamp}] ${msg}\n`;
+    try {
+        fs.appendFileSync(logFile, formatted);
+    } catch (e) {}
     console.log(msg);
-    fs.appendFileSync(logFile, formatted);
 }
 
 const app = express();

@@ -4,11 +4,11 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
 <AdminLayout title="Posts">
   <div class="max-w-3xl mx-auto px-4 py-10">
-    <header class="flex items-center justify-between mb-12">
+    <header class="flex items-center justify-between mb-12 bg-transparent border-none shadow-none">
       <div class="flex items-center gap-4">
         <h1 class="text-xl font-bold tracking-tight text-adm-text">Posts</h1>
         <div class="h-4 w-[1px] bg-adm-border"></div>
-        <span id="tokenStatus" class="text-xs text-adm-muted font-mono">Token active</span>
+        <span id="tokenStatus" class="text-[10px] text-adm-muted font-mono uppercase tracking-widest">Database Active</span>
       </div>
       <div class="flex items-center gap-6">
         <button id="themeToggle" class="text-adm-muted hover:text-adm-text transition-colors p-1" title="Toggle Theme">
@@ -68,21 +68,24 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       return;
     }
 
-    el.innerHTML = posts.map(p => `
-      <div class="group flex items-center justify-between p-3 rounded-md hover:bg-adm-panel transition-colors border border-transparent hover:border-adm-border">
-        <div class="flex items-center gap-3 min-w-0">
-          <span class="w-2 h-2 rounded-full ${p.draft ? 'bg-yellow-500/50' : 'bg-green-500/50'} shrink-0"></span>
-          <div class="flex flex-col min-w-0">
-            <span class="text-sm font-medium truncate text-adm-text group-hover:text-adm-primary transition-colors">${p.title}</span>
-            <span class="text-[10px] font-mono text-adm-muted truncate">${p.slug}</span>
+    el.innerHTML = posts.map(p => {
+      const displayTitle = (p.title && p.title.trim() !== '') ? p.title : p.slug;
+      return `
+        <div class="group relative flex items-center justify-between p-3 rounded-md hover:bg-adm-panel transition-colors border border-transparent hover:border-adm-border">
+          <a href="/admin/edit?slug=${p.slug}" class="absolute inset-0 z-10" aria-label="Edit ${displayTitle}"></a>
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="w-2 h-2 rounded-full ${p.draft ? 'bg-yellow-500/50' : 'bg-green-500/50'} shrink-0"></span>
+            <div class="flex flex-col min-w-0">
+              <span class="text-sm font-medium truncate text-adm-text group-hover:text-adm-primary transition-colors">${displayTitle}</span>
+              <span class="text-[10px] font-mono text-adm-muted truncate">${p.slug}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+            <button onclick="event.preventDefault(); window.deletePost('${p.slug}')" class="text-[10px] uppercase tracking-wider font-bold text-red-500/70 hover:text-red-500 px-2 py-1 transition-colors">Delete</button>
           </div>
         </div>
-        <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <a href="/admin/edit?slug=${p.slug}" class="text-[10px] uppercase tracking-wider font-bold text-adm-primary hover:text-adm-text px-2 py-1 transition-colors">Edit</a>
-          <button onclick="window.deletePost('${p.slug}')" class="text-[10px] uppercase tracking-wider font-bold text-red-500/70 hover:text-red-500 px-2 py-1 transition-colors">Delete</button>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
     
     countEl.textContent = `${posts.length} posts`;
   }

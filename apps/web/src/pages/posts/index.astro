@@ -1,14 +1,24 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
-export const prerender = true;
-import { getCollection } from 'astro:content';
+import { supabase } from "@lib/supabase";
 
-const posts = await getCollection('posts');
-const publishedPosts = posts.filter(post => !post.data.draft);
-publishedPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+export const prerender = false;
 
-const featuredPosts = publishedPosts.filter(post => post.data.featured);
-const regularPosts = publishedPosts.filter(post => !post.data.featured);
+// Fetch strictly from Supabase
+const { data: posts, error } = await supabase
+  .from('posts')
+  .select('*')
+  .eq('status', 'published')
+  .order('published_at', { ascending: false });
+
+if (error) {
+  console.error("Supabase error:", error);
+}
+
+const publishedPosts = posts || [];
+
+const featuredPosts = publishedPosts.filter(post => post.featured);
+const regularPosts = publishedPosts.filter(post => !post.featured);
 
 // Split featured posts into Hero and Others
 const [heroPost, ...otherFeatured] = featuredPosts;
@@ -34,17 +44,17 @@ const [heroPost, ...otherFeatured] = featuredPosts;
         <div class="space-y-8">
           {/* Main Hero Featured Post */}
           <article class="featured-hero group relative border border-[var(--border)] rounded-sm overflow-hidden bg-[rgba(255,255,255,0.015)] transition-all hover:border-[var(--accent)] hover:shadow-[0_0_50px_rgba(6,182,212,0.08)]">
-            <a href={`/posts/${heroPost.id.replace(/\.mdx?$/, '')}`} class="grid lg:grid-cols-12 no-underline items-stretch">
+            <a href={`/posts/${heroPost.slug}`} class="grid lg:grid-cols-12 no-underline items-stretch">
               <div class="lg:col-span-7 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
                 <div class="flex items-center gap-3 font-mono text-[0.65rem] text-[var(--text-muted)] mb-6 uppercase tracking-widest">
                   <span class="px-2 py-0.5 rounded-full border border-[var(--accent)] text-[var(--accent)]">Special</span>
-                  {heroPost.data.date ? new Date(heroPost.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Unknown'}
+                  {heroPost.published_at ? new Date(heroPost.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Unknown'}
                 </div>
                 <h3 class="font-display font-bold text-3xl md:text-4xl lg:text-5xl text-[var(--text-primary)] mb-8 leading-[1.1] group-hover:text-[var(--accent)] transition-all duration-300">
-                  {heroPost.data.title}
+                  {heroPost.title}
                 </h3>
                 <p class="text-[var(--text-secondary)] text-lg mb-10 line-clamp-3 leading-relaxed max-w-[550px]">
-                  {heroPost.data.description || "An in-depth analysis of critical production engineering patterns and scalable architecture."}
+                  {heroPost.description || "An in-depth analysis of critical production engineering patterns and scalable architecture."}
                 </p>
                 <div class="flex items-center gap-4 text-sm font-semibold text-[var(--accent)]">
                   <span class="h-[1px] w-8 bg-[var(--accent)] transition-all duration-300 group-hover:w-12"></span>
@@ -53,8 +63,8 @@ const [heroPost, ...otherFeatured] = featuredPosts;
               </div>
               
               <div class="lg:col-span-5 h-[300px] lg:h-auto overflow-hidden bg-[var(--background-secondary)] order-first lg:order-last border-b lg:border-b-0 lg:border-l border-[var(--border)] group-hover:border-[var(--accent)] transition-colors relative">
-                {heroPost.data.thumbnail ? (
-                  <img src={heroPost.data.thumbnail} alt={heroPost.data.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-60 group-hover:opacity-90 grayscale-[30%] group-hover:grayscale-0" />
+                {heroPost.cover_image ? (
+                  <img src={heroPost.cover_image} alt={heroPost.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-60 group-hover:opacity-90 grayscale-[30%] group-hover:grayscale-0" />
                 ) : (
                   <div class="absolute inset-0 flex items-center justify-center overflow-hidden">
                     <div class="w-[140%] h-[140%] border-[var(--accent)] border-dashed border opacity-[0.03] rotate-45 pointer-events-none"></div>
@@ -72,16 +82,16 @@ const [heroPost, ...otherFeatured] = featuredPosts;
             <div class="grid md:grid-cols-2 gap-8">
               {otherFeatured.map((post) => (
                 <article class="featured-sub-card group relative border border-[var(--border)] rounded-sm overflow-hidden bg-transparent transition-all hover:border-[var(--accent)] hover:shadow-glow">
-                  <a href={`/posts/${post.id.replace(/\.mdx?$/, '')}`} class="flex flex-col h-full no-underline p-8">
+                  <a href={`/posts/${post.slug}`} class="flex flex-col h-full no-underline p-8">
                     <div class="font-mono text-[0.6rem] text-[var(--text-muted)] mb-4 uppercase tracking-[0.2em] flex items-center gap-3">
                       <span class="inline-block w-1.5 h-1.5 rounded-full bg-[var(--accent)] opacity-50"></span>
-                      {post.data.date ? new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'Unknown'}
+                      {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'Unknown'}
                     </div>
                     <h3 class="font-display font-semibold text-xl text-[var(--text-primary)] mb-6 leading-tight group-hover:text-[var(--accent)] transition-colors">
-                      {post.data.title}
+                      {post.title}
                     </h3>
                     <p class="text-[var(--text-secondary)] text-sm mb-8 line-clamp-2 opacity-80 group-hover:opacity-100 transition-opacity">
-                      {post.data.description || "Exploring advanced system architecture and engineering trade-offs."}
+                      {post.description || "Exploring advanced system architecture and engineering trade-offs."}
                     </p>
                     <div class="mt-auto flex items-center gap-2 text-xs font-bold text-[var(--accent)] uppercase tracking-widest opacity-0 group-hover:opacity-100 translate-x-[-10px] group-hover:translate-x-0 transition-all duration-300">
                       View Pattern <span class="text-lg">→</span>
@@ -108,13 +118,13 @@ const [heroPost, ...otherFeatured] = featuredPosts;
             class={`post-card group card border border-[var(--border)] rounded-sm transition-all hover:bg-[rgba(255,255,255,0.01)] h-full ${index >= 6 ? 'hidden' : ''}`}
             data-index={index}
           >
-            <a href={`/posts/${post.id.replace(/\.mdx?$/, '')}`} class="flex flex-col p-6 no-underline h-full">
+            <a href={`/posts/${post.slug}`} class="flex flex-col p-6 no-underline h-full">
               <div class="font-mono text-[0.72rem] text-[var(--text-muted)] mb-3 flex justify-between items-center">
-                <span>{post.data.date ? new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Unknown'}</span>
+                <span>{post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Unknown'}</span>
                 <span class="opacity-0 group-hover:opacity-100 transition-opacity text-[var(--accent)]">→</span>
               </div>
               <h3 class="font-display font-bold text-lg text-[var(--text-primary)] mb-3 leading-snug group-hover:text-[var(--accent)] transition-colors">
-                {post.data.title}
+                {post.title}
               </h3>
             </a>
           </article>
@@ -180,4 +190,3 @@ const [heroPost, ...otherFeatured] = featuredPosts;
     animation-fill-mode: both;
   }
 </style>
-

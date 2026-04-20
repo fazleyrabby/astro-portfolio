@@ -209,41 +209,27 @@ async function ghDelete(filePath, sha, message) {
 
 function buildMarkdown(title, content, draft = false) {
     const date = new Date().toISOString().split('T')[0];
-    return `---\ntitle: "${title}"\ndate: "${date}"\ndraft: ${draft}\n---\n\n${content}`;
+    // Use JSON.stringify for title to handle special characters and ensure double quotes
+    return `---\ntitle: ${JSON.stringify(title)}\ndate: "${date}"\ndraft: ${draft}\n---\n\n${content}`;
 }
 
 // LIST
 app.get('/cms/posts', cmsAuth, async (req, res) => {
     try {
-        const { data } = await octokit.repos.getContent({
-            owner: REPO_OWNER, repo: REPO_NAME, path: POSTS_PATH,
-        });
-        
-        const files = data.filter(f => f.name.endsWith('.md'));
-        
-        // Fetch contents in parallel to extract titles/draft status
-        const posts = await Promise.all(files.map(async (file) => {
-            try {
-                const { data: contentData } = await octokit.repos.getContent({
-                    owner: REPO_OWNER, repo: REPO_NAME, path: file.path,
-                });
-                const raw = Buffer.from(contentData.content, 'base64').toString('utf8');
-                
-                const titleMatch = raw.match(/^title:\s*"?([^"\n]+)"?/m);
-                const draftMatch = raw.match(/^draft:\s*(\S+)/m);
-                
-                return {
-                    slug: file.name.replace(/\.md$/, ''),
-                    title: titleMatch ? titleMatch[1].trim() : file.name.replace(/\.md$/, ''),
-                    draft: draftMatch ? draftMatch[1] === 'true' : false,
-                    sha: file.sha
-                };
-            } catch (e) {
-                return { slug: file.name.replace(/\.md$/, ''), title: file.name, draft: false };
-            }
+        const { data, error } = await supabase
+            .from('posts')
+            .select('slug, title, status, updated_at')
+            .order('updated_at', { ascending: false });
+
+        if (error) throw error;
+
+        const posts = data.map(p => ({
+            slug: p.slug,
+            title: (p.title && p.title.trim() !== '') ? p.title : p.slug,
+            draft: p.status === 'draft',
+            updated_at: p.updated_at
         }));
 
-        // Sort by slug or title if needed (GitHub returns alphabetical by default)
         res.json(posts);
     } catch (err) {
         console.error('CMS list error:', err.message);
@@ -270,17 +256,22 @@ app.post('/cms/posts', cmsAuth, async (req, res) => {
     if (!title || !content) return res.status(400).json({ error: 'title and content required' });
 
     const slug = toSlug(title);
+    const status = draft ? 'draft' : 'published';
     const filePath = `${POSTS_PATH}/${slug}.md`;
 
     try {
-        await ghGetFile(filePath);
-        return res.status(409).json({ error: 'post already exists', slug });
-    } catch (err) {
-        if (err.status !== 404) return res.status(500).json({ error: err.message });
-    }
-
-    try {
+        // 1. Sync to GitHub (Astro source)
         await ghCreateOrUpdate(filePath, buildMarkdown(title, content, draft), null, `cms: create ${slug}`);
+        
+        // 2. Sync to Supabase (CMS metadata/list)
+        await supabase.from('posts').upsert({
+            title,
+            slug,
+            content,
+            status,
+            published_at: status === 'published' ? new Date() : null
+        });
+
         res.status(201).json({ ok: true, slug });
     } catch (err) {
         console.error('CMS create error:', err.message);
@@ -293,20 +284,31 @@ app.put('/cms/posts/:slug', cmsAuth, async (req, res) => {
     const { title, content, draft } = req.body || {};
     if (!content) return res.status(400).json({ error: 'content required' });
 
-    const filePath = `${POSTS_PATH}/${req.params.slug}.md`;
+    const slug = req.params.slug;
+    const filePath = `${POSTS_PATH}/${slug}.md`;
 
     try {
         const file = await ghGetFile(filePath);
         const existing = Buffer.from(file.content, 'base64').toString('utf8');
 
-        // Extract existing title/draft if not provided
-        const existingTitle = title || (existing.match(/^title:\s*"?([^"\n]+)"?/m)?.[1] ?? req.params.slug);
-        const existingDraft = draft !== undefined ? draft : (existing.match(/^draft:\s*(\S+)/m)?.[1] === 'true');
+        const finalTitle = title || (existing.match(/^title:\s*"?([^"\n]+)"?/m)?.[1] ?? slug);
+        const finalDraft = draft !== undefined ? draft : (existing.match(/^draft:\s*(\S+)/m)?.[1] === 'true');
+        const status = finalDraft ? 'draft' : 'published';
 
-        await ghCreateOrUpdate(filePath, buildMarkdown(existingTitle, content, existingDraft), file.sha, `cms: update ${req.params.slug}`);
-        res.json({ ok: true, slug: req.params.slug });
+        // 1. Sync to GitHub
+        await ghCreateOrUpdate(filePath, buildMarkdown(finalTitle, content, finalDraft), file.sha, `cms: update ${slug}`);
+        
+        // 2. Sync to Supabase
+        await supabase.from('posts').upsert({
+            title: finalTitle,
+            slug,
+            content,
+            status,
+            published_at: status === 'published' ? new Date() : null
+        });
+
+        res.json({ ok: true, slug });
     } catch (err) {
-        if (err.status === 404) return res.status(404).json({ error: 'not found' });
         console.error('CMS update error:', err.message);
         res.status(500).json({ error: err.message });
     }
@@ -314,13 +316,18 @@ app.put('/cms/posts/:slug', cmsAuth, async (req, res) => {
 
 // DELETE
 app.delete('/cms/posts/:slug', cmsAuth, async (req, res) => {
-    const filePath = `${POSTS_PATH}/${req.params.slug}.md`;
+    const slug = req.params.slug;
+    const filePath = `${POSTS_PATH}/${slug}.md`;
     try {
         const file = await ghGetFile(filePath);
-        await ghDelete(filePath, file.sha, `cms: delete ${req.params.slug}`);
+        // 1. Delete from GitHub
+        await ghDelete(filePath, file.sha, `cms: delete ${slug}`);
+        
+        // 2. Delete from Supabase
+        await supabase.from('posts').delete().eq('slug', slug);
+
         res.json({ ok: true });
     } catch (err) {
-        if (err.status === 404) return res.status(404).json({ error: 'not found' });
         console.error('CMS delete error:', err.message);
         res.status(500).json({ error: err.message });
     }

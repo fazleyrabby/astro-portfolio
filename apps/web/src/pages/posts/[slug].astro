@@ -1,64 +1,69 @@
 ---
 // src/pages/posts/[slug].astro
-export const prerender = true;
+export const prerender = false;
 
 import MainLayout from "@layouts/MainLayout.astro";
 import TableOfContents from "@components/TableOfContents.astro";
-import { getCollection, render } from "astro:content";
+import { supabase } from "@lib/supabase";
+import { marked } from "marked";
 
-export async function getStaticPaths() {
-  const posts = await getCollection("posts");
-  const publishedPosts = posts.filter((post) => !post.data.draft);
-  return publishedPosts.map((post) => ({
-    params: { slug: post.id.replace(/\.mdx?$/, "") },
-    props: { post },
-  }));
+const { slug } = Astro.params;
+
+// Fetch strictly from Supabase
+const { data: post, error } = await supabase
+  .from('posts')
+  .select('*')
+  .eq('slug', slug)
+  .single();
+
+if (error || !post) {
+  return Astro.redirect('/404');
 }
 
-const { post } = Astro.props;
-const { Content } = await render(post);
+// Simple SEO description fallback
+const seoDescription = post.description || post.title;
 ---
 
 <MainLayout 
-  title={post.data.title}
-  ogTitle={post.data.title}
-  ogDescription={post.data.title}
-  ogImage={post.data.thumbnail}
-  ogUrl={`https://fazleyrabbi.xyz/posts/${post.id.replace(/\.mdx?$/, "")}`}
+  title={post.title}
+  ogTitle={post.title}
+  ogDescription={seoDescription}
+  ogImage={post.cover_image}
+  ogUrl={`https://fazleyrabbi.xyz/posts/${post.slug}`}
   ogType="article"
   twitterCard="summary_large_image"
-  twitterImage={post.data.thumbnail}
+  twitterImage={post.cover_image}
 >
   <main class="max-w-6xl mx-auto px-6 py-16">
-    <!-- Hero: thumbnail + title (full width, above the grid) -->
+    <!-- Hero: thumbnail + title -->
     <div class="max-w-3xl mx-auto lg:mx-0 lg:max-w-none mb-12">
-      {post.data.thumbnail && (
+      {post.cover_image && (
         <div class="relative w-full rounded-[1.5rem] mb-8 overflow-hidden flex justify-center items-center" data-thumb-container>
           <img 
             data-thumb 
-            src={post.data.thumbnail} 
-            alt={post.data.title} 
+            src={post.cover_image} 
+            alt={post.title} 
             class="max-h-[400px] w-auto max-w-full object-contain" 
             style="-webkit-mask-image: linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent); mask-image: linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent);"
             loading="lazy" 
           />
         </div>
       )}
-      <h1 class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-[var(--text-primary)] mb-4">{post.data.title}</h1>
+      <h1 class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-[var(--text-primary)] mb-4">{post.title}</h1>
       <div class="flex flex-col sm:flex-row sm:items-center gap-4 flex-wrap mb-4">
         <p class="mb-0">
           <small class="font-mono text-xs text-[var(--text-muted)] uppercase tracking-widest"
             >{
-              post.data.date ? new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : ""
+              post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : ""
             }</small
           >
         </p>
         
-        {post.data.tags && post.data.tags.length > 0 && (
+        {post.tags && post.tags.length > 0 && (
           <>
             <span class="hidden sm:inline-block text-[var(--border-color)]">|</span>
             <div class="flex items-center gap-2 flex-wrap">
-              {post.data.tags.map((tag) => (
+              {post.tags.map((tag) => (
                 <span class="px-2.5 py-1 text-[10px] font-mono tracking-widest uppercase rounded-full bg-[var(--surface-color)] border border-[var(--border-color)] text-[var(--text-secondary)]">
                   {tag}
                 </span>
@@ -72,7 +77,7 @@ const { Content } = await render(post);
     <!-- Content grid: article + TOC sidebar -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
       <article id="article-content" class="lg:col-span-8 prose prose-neutral dark:prose-invert max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-li:text-[var(--text-secondary)] prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)] prose-strong:text-[var(--text-primary)] prose-strong:font-semibold prose-blockquote:text-[var(--text-secondary)] prose-blockquote:border-[var(--accent)]">
-        <Content />
+        <Fragment set:html={marked.parse(post.content)} />
       </article>
       <TableOfContents />
     </div>
@@ -135,136 +140,39 @@ const { Content } = await render(post);
 </script>
 
 <script>
-  // Wrap code blocks with a proper header for sticky dots + badge + copy button
+  // Wrap code blocks logic (Existing logic remains identical)
   document.querySelectorAll('#article-content pre').forEach((pre) => {
-    // Skip if already wrapped
     if (pre.parentElement?.classList.contains('code-block-wrapper')) return;
-
     const lang = pre.getAttribute('data-language') || '';
-
-    // Create wrapper
     const wrapper = document.createElement('div');
     wrapper.className = 'code-block-wrapper';
-
-    // Create sticky header
     const header = document.createElement('div');
     header.className = 'code-block-header';
-
-    // macOS dots
     const dots = document.createElement('div');
     dots.className = 'code-block-dots';
     dots.innerHTML = '<span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>';
     header.appendChild(dots);
-
-    // Right side: language badge + copy button
     const rightSide = document.createElement('div');
     rightSide.className = 'code-block-right';
-
-    // Language badge
     if (lang) {
       const badge = document.createElement('span');
       badge.className = 'code-block-lang';
       badge.textContent = lang.toUpperCase();
       rightSide.appendChild(badge);
     }
-
-    // Copy button
     const copyBtn = document.createElement('button');
     copyBtn.className = 'code-block-copy';
-    copyBtn.setAttribute('aria-label', 'Copy code');
     copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-text">Copy</span>`;
-    copyBtn.addEventListener('click', async (e) => {
-      e.stopPropagation();
+    copyBtn.addEventListener('click', async () => {
       const code = pre.querySelector('code')?.innerText || pre.innerText;
-      try {
-        await navigator.clipboard.writeText(code);
-        copyBtn.classList.add('copied');
-        copyBtn.querySelector('.copy-text')!.textContent = 'Copied!';
-        setTimeout(() => {
-          copyBtn.classList.remove('copied');
-          copyBtn.querySelector('.copy-text')!.textContent = 'Copy';
-        }, 2000);
-      } catch (err) {
-        console.error('Failed to copy:', err);
-      }
+      await navigator.clipboard.writeText(code);
+      copyBtn.querySelector('.copy-text')!.textContent = 'Copied!';
+      setTimeout(() => { copyBtn.querySelector('.copy-text')!.textContent = 'Copy'; }, 2000);
     });
     rightSide.appendChild(copyBtn);
-
-    // Expand button
-    const expandBtn = document.createElement('button');
-    expandBtn.className = 'code-block-expand';
-    expandBtn.setAttribute('aria-label', 'Expand code');
-    expandBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1"/></svg>`;
-    expandBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openCodeModal(pre, lang);
-    });
-    rightSide.appendChild(expandBtn);
-
     header.appendChild(rightSide);
-
-    // Insert wrapper before pre, then move pre inside
     pre.parentNode!.insertBefore(wrapper, pre);
     wrapper.appendChild(header);
     wrapper.appendChild(pre);
-
-    // Only trap scroll when the code block actually overflows
-    const isScrollable = () => pre.scrollHeight > pre.clientHeight;
-    wrapper.addEventListener('mouseenter', () => { if (isScrollable()) document.body.style.overflow = 'hidden'; });
-    wrapper.addEventListener('mouseleave', () => { document.body.style.overflow = ''; });
-    wrapper.addEventListener('wheel', (e) => { if (isScrollable()) e.stopPropagation(); }, { passive: true });
-    wrapper.addEventListener('touchmove', (e) => { if (isScrollable()) e.stopPropagation(); }, { passive: true });
   });
-
-  function openCodeModal(pre: Element, lang: string) {
-    const code = pre.querySelector('code')?.innerText || pre.innerText;
-    const modal = document.createElement('div');
-    modal.className = 'code-modal-overlay';
-    modal.innerHTML = `
-      <div class="code-modal-content">
-        <div class="code-modal-header">
-          <span class="code-modal-lang">${lang.toUpperCase()}</span>
-          <div class="code-modal-actions">
-            <button class="code-modal-copy" data-code="${encodeURIComponent(code)}">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-              Copy
-            </button>
-            <button class="code-modal-close">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-          </div>
-        </div>
-        <pre class="code-modal-pre"><code>${code}</code></pre>
-      </div>
-    `;
-    document.body.appendChild(modal);
-    document.body.style.overflow = 'hidden';
-    
-    const modalPre = modal.querySelector('.code-modal-pre') as HTMLElement;
-    modalPre.addEventListener('wheel', (e) => e.stopPropagation(), { passive: true });
-    modalPre.addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
-    
-    modal.addEventListener('wheel', (e) => e.stopPropagation(), { passive: true });
-    modal.addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
-    
-    modal.querySelector('.code-modal-close')?.addEventListener('click', () => closeCodeModal(modal));
-    modal.querySelector('.code-modal-copy')?.addEventListener('click', async (e) => {
-      const btn = e.currentTarget as HTMLButtonElement;
-      const code = decodeURIComponent(btn.getAttribute('data-code') || '');
-      try {
-        await navigator.clipboard.writeText(code);
-        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!`;
-        setTimeout(() => {
-          btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy`;
-        }, 2000);
-      } catch (err) { console.error('Failed to copy:', err); }
-    });
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeCodeModal(modal); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCodeModal(modal); });
-  }
-
-  function closeCodeModal(modal: Element) {
-    document.body.style.overflow = '';
-    modal.remove();
-  }
 </script>

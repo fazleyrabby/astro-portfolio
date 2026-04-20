@@ -117,8 +117,13 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   function updateLayout() {
     modeBtns.forEach(btn => {
       const mode = (btn as HTMLElement).dataset.mode;
-      if (mode === currentMode) btn.classList.add('bg-muted/20', 'text-white');
-      else btn.classList.remove('bg-muted/20', 'text-white');
+      if (mode === currentMode) {
+        btn.classList.add('bg-adm-primary', 'text-white', 'shadow-sm');
+        btn.classList.remove('text-adm-muted');
+      } else {
+        btn.classList.remove('bg-adm-primary', 'text-white', 'shadow-sm');
+        btn.classList.add('text-adm-muted');
+      }
     });
 
     if (currentMode === 'edit') {
@@ -164,8 +169,12 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     }, 3000);
   }
 
+  const themeConfig = new Compartment();
+
   function initEditor(doc) {
     editorPane.innerHTML = '';
+    
+    const isDark = document.documentElement.classList.contains('dark');
     
     view = new EditorView({
       state: EditorState.create({
@@ -185,7 +194,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           crosshairCursor(),
           highlightActiveLine(),
           markdown(),
-          oneDark,
+          themeConfig.of(isDark ? oneDark : []),
           keymap.of([
             ...defaultKeymap,
             ...historyKeymap,
@@ -194,23 +203,22 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           ]),
           EditorView.lineWrapping,
           EditorView.theme({
-            '&': { height: '100%', fontSize: '14px', backgroundColor: '#0a0f1a' },
+            '&': { height: '100%', fontSize: '14px' },
             '.cm-content': { 
               fontFamily: "'JetBrains Mono', 'Fira Code', monospace", 
               padding: '2rem',
-              color: '#d1d5db'
             },
             '.cm-gutters': { 
-              backgroundColor: '#0a0f1a', 
-              color: '#4b5563', 
+              backgroundColor: 'transparent', 
+              color: 'var(--adm-muted)', 
               border: 'none',
               paddingLeft: '10px'
             },
-            '.cm-activeLineGutter': { backgroundColor: '#1f2937', color: '#9ca3af' },
-            '.cm-activeLine': { backgroundColor: '#1f2937' },
-            '.cm-cursor': { borderLeftColor: '#6366f1' },
-            '.cm-selectionBackground': { backgroundColor: '#312e81' }
-          }, { dark: true }),
+            '.cm-activeLineGutter': { backgroundColor: 'var(--adm-panel)' },
+            '.cm-activeLine': { backgroundColor: 'var(--adm-panel)' },
+            '.cm-cursor': { borderLeftColor: 'var(--adm-primary)' },
+            '.cm-selectionBackground': { backgroundColor: 'rgba(99, 102, 241, 0.2)' }
+          }),
           EditorView.updateListener.of((update) => {
             if (update.docChanged && currentMode !== 'edit') {
               debouncedRender();
@@ -370,12 +378,21 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   const themeToggle = document.getElementById('themeToggle');
   themeToggle.addEventListener('click', () => {
     const isDark = document.documentElement.classList.contains('dark');
+    const newIsDark = !isDark;
+    
     if (isDark) {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('adm_theme', 'light');
     } else {
       document.documentElement.classList.add('dark');
       localStorage.setItem('adm_theme', 'dark');
+    }
+
+    // Update CodeMirror theme
+    if (view) {
+      view.dispatch({
+        effects: themeConfig.reconfigure(newIsDark ? oneDark : [])
+      });
     }
   });
   
@@ -404,7 +421,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     @apply font-bold border-b border-adm-border pb-2 mb-4 mt-8;
   }
   #previewPane p {
-    @apply mb-4 leading-relaxed text-gray-300;
+    @apply mb-4 leading-relaxed text-adm-text/80;
   }
   #previewPane code {
     @apply bg-adm-panel px-1.5 py-0.5 rounded text-adm-primary border border-adm-border font-mono text-[0.8em];

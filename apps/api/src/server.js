@@ -1,4 +1,4 @@
-import 'dotenv/config.js';
+// Environment variables are injected by the host or process
 import express from 'express';
 import cors from 'cors';
 import fetch from 'node-fetch';

@@ -27,6 +27,11 @@ const REPO = process.env.GITHUB_REPOSITORY || 'fazleyrabby/astro-portfolio';
 const ALLOWED_USER_ID = parseInt(TELEGRAM_CHAT_ID || '0', 10);
 
 const bot = new Telegraf(TELEGRAM_TOKEN);
+
+if (!TELEGRAM_TOKEN) {
+    console.error('CRITICAL: TELEGRAM_TOKEN is missing in environment variables!');
+}
+
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -110,12 +115,13 @@ OUTPUT: Raw Markdown with YAML title and tags. DO NOT wrap the YAML in markdown 
 
 // --- Telegram Bot Logic ---
 bot.use(async (ctx, next) => {
-    console.log(`Bot received message from: ${ctx.from?.id}`);
-    if (ctx.from?.id !== ALLOWED_USER_ID) {
-        console.log(`Unauthorized access attempt by ID: ${ctx.from?.id}. Expected: ${ALLOWED_USER_ID}`);
-        // Only reply if it's a direct command to avoid bot spamming groups
+    const userId = ctx.from?.id;
+    console.log(`[BOT] Incoming from: ${userId}. Allowed: ${ALLOWED_USER_ID}`);
+    
+    if (userId !== ALLOWED_USER_ID) {
+        // If it's a command, tell them they are unauthorized
         if (ctx.message?.text?.startsWith('/')) {
-            ctx.reply(`⚠️ Unauthorized. Your ID: ${ctx.from?.id}`);
+            return ctx.reply(`⛔ Unauthorized. Your ID: ${userId}\nExpected ID: ${ALLOWED_USER_ID}\nCheck your .env file on cPanel.`);
         }
         return;
     }

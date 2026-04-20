@@ -189,12 +189,12 @@ async function ghGetFile(filePath) {
     return data;
 }
 
-async function ghCreateOrUpdate(filePath, content, sha, message) {
+async function ghCreateOrUpdate(filePath, content, sha, message, isBase64 = false) {
     await octokit.repos.createOrUpdateFileContents({
         owner: REPO_OWNER, repo: REPO_NAME,
         path: filePath,
         message: message || `cms: update ${filePath}`,
-        content: Buffer.from(content).toString('base64'),
+        content: isBase64 ? content : Buffer.from(content).toString('base64'),
         ...(sha ? { sha } : {}),
     });
 }
@@ -311,11 +311,13 @@ app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
 
     const safeName = req.file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_');
     const filename = `${Date.now()}-${safeName}`;
-    const filePath = `apps/web/public/images/${filename}`;
+    const filePath = `apps/web/public/images/uploads/${filename}`;
 
     try {
-        await ghCreateOrUpdate(filePath, req.file.buffer.toString('base64'), null, `cms: upload image ${filename}`);
-        res.json({ url: `/images/${filename}` });
+        // req.file.buffer is the raw binary, we convert to base64 string and set isBase64=true
+        const base64Content = req.file.buffer.toString('base64');
+        await ghCreateOrUpdate(filePath, base64Content, null, `cms: upload image ${filename}`, true);
+        res.json({ url: `/images/uploads/${filename}` });
     } catch (err) {
         console.error('CMS upload error:', err.message);
         res.status(500).json({ error: err.message });

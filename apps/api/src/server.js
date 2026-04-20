@@ -82,35 +82,46 @@ async function ghGetFile(filePath) {
 
 // --- AI Logic ---
 async function generateAIContent(topic) {
-    console.log(`Generating AI content for topic: ${topic}`);
+    console.log(`[AI] Starting generation for: ${topic}`);
+    if (!process.env.GROQ_API_KEY) {
+        throw new Error('GROQ_API_KEY is missing on the server');
+    }
+
     const prompt = `You are a senior backend engineer. Write a technical, portfolio-grade blog post.
 TOPIC: ${topic}
 REQUIREMENTS: Professional tone, senior-level insights, include code snippets.
 OUTPUT: Raw Markdown with YAML title and tags. DO NOT wrap the YAML in markdown code blocks.`;
 
-    const completion = await openai.chat.completions.create({
-        model: 'llama-3.3-70b-versatile',
-        messages: [{ role: 'user', content: prompt }],
-    });
+    try {
+        const completion = await openai.chat.completions.create({
+            model: 'llama-3.3-70b-versatile',
+            messages: [{ role: 'user', content: prompt }],
+            timeout: 30000, // 30 second timeout
+        });
 
-    let response = completion.choices[0].message.content.trim();
-    response = response.replace(/^```(?:markdown|md)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
+        console.log(`[AI] Response received from Groq`);
+        let response = completion.choices[0].message.content.trim();
+        response = response.replace(/^```(?:markdown|md)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
 
-    let title = topic;
-    let tags = [];
-    let markdownContent = response;
+        let title = topic;
+        let tags = [];
+        let markdownContent = response;
 
-    const fmBlockMatch = response.match(/^---\n([\s\S]*?)\n---/);
-    if (fmBlockMatch) {
-        const fmBody = fmBlockMatch[1];
-        const titleMatch = fmBody.match(/title:\s*"?([^"\n]+)"?/);
-        const tagsMatch = fmBody.match(/tags:\s*(\[.*?\])/);
-        if (titleMatch) title = titleMatch[1].trim();
-        if (tagsMatch) { try { tags = JSON.parse(tagsMatch[1]); } catch {} }
-        markdownContent = response.substring(fmBlockMatch[0].length).trim();
+        const fmBlockMatch = response.match(/^---\n([\s\S]*?)\n---/);
+        if (fmBlockMatch) {
+            const fmBody = fmBlockMatch[1];
+            const titleMatch = fmBody.match(/title:\s*"?([^"\n]+)"?/);
+            const tagsMatch = fmBody.match(/tags:\s*(\[.*?\])/);
+            if (titleMatch) title = titleMatch[1].trim();
+            if (tagsMatch) { try { tags = JSON.parse(tagsMatch[1]); } catch {} }
+            markdownContent = response.substring(fmBlockMatch[0].length).trim();
+        }
+
+        return { title, tags, content: markdownContent };
+    } catch (err) {
+        console.error(`[AI] Error during generation:`, err.message);
+        throw err;
     }
-
-    return { title, tags, content: markdownContent };
 }
 
 // --- Telegram Bot Logic ---

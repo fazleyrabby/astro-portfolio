@@ -1,18 +1,24 @@
 ---
 // src/pages/posts/[slug].astro
-export const prerender = false;
-
 import MainLayout from "@layouts/MainLayout.astro";
 import TableOfContents from "@components/TableOfContents.astro";
 import { supabase } from "@lib/supabase";
 import { marked } from "marked";
 
-// Cache for 1 minute
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+export async function getStaticPaths() {
+  const { data: posts } = await supabase
+    .from('posts')
+    .select('slug')
+    .eq('status', 'published');
+  
+  return (posts || []).map((post) => ({
+    params: { slug: post.slug },
+  }));
+}
 
 const { slug } = Astro.params;
 
-// Fetch strictly from Supabase
+// Fetch single post data for this specific slug
 const { data: post, error } = await supabase
   .from('posts')
   .select('*')
@@ -23,7 +29,6 @@ if (error || !post) {
   return Astro.redirect('/404');
 }
 
-// Simple SEO description fallback
 const seoDescription = post.description || post.title;
 ---
 
@@ -38,7 +43,6 @@ const seoDescription = post.description || post.title;
   twitterImage={post.cover_image}
 >
   <main class="max-w-6xl mx-auto px-6 py-16">
-    <!-- Hero: thumbnail + title -->
     <div class="max-w-3xl mx-auto lg:mx-0 lg:max-w-none mb-12">
       {post.cover_image && (
         <div class="relative w-full rounded-[1.5rem] mb-8 overflow-hidden flex justify-center items-center" data-thumb-container>
@@ -77,7 +81,6 @@ const seoDescription = post.description || post.title;
       </div>
     </div>
 
-    <!-- Content grid: article + TOC sidebar -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
       <article id="article-content" class="lg:col-span-8 prose prose-neutral dark:prose-invert max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-li:text-[var(--text-secondary)] prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)] prose-strong:text-[var(--text-primary)] prose-strong:font-semibold prose-blockquote:text-[var(--text-secondary)] prose-blockquote:border-[var(--accent)]">
         <Fragment set:html={marked.parse(post.content)} />
@@ -107,7 +110,8 @@ const seoDescription = post.description || post.title;
       const detectBg = () => {
         const proxy = new Image();
         proxy.crossOrigin = 'anonymous';
-        proxy.src = `https://api.rhtech.dev/image-proxy?url=${encodeURIComponent(img.src)}`;        proxy.onload = () => {
+        proxy.src = `https://api.rhtech.dev/image-proxy?url=${encodeURIComponent(img.src)}`;
+        proxy.onload = () => {
           try {
             const c = document.createElement('canvas');
             const ctx = c.getContext('2d');
@@ -140,42 +144,4 @@ const seoDescription = post.description || post.title;
       else img.addEventListener('load', detectBg);
     }
   }
-</script>
-
-<script>
-  // Wrap code blocks logic (Existing logic remains identical)
-  document.querySelectorAll('#article-content pre').forEach((pre) => {
-    if (pre.parentElement?.classList.contains('code-block-wrapper')) return;
-    const lang = pre.getAttribute('data-language') || '';
-    const wrapper = document.createElement('div');
-    wrapper.className = 'code-block-wrapper';
-    const header = document.createElement('div');
-    header.className = 'code-block-header';
-    const dots = document.createElement('div');
-    dots.className = 'code-block-dots';
-    dots.innerHTML = '<span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>';
-    header.appendChild(dots);
-    const rightSide = document.createElement('div');
-    rightSide.className = 'code-block-right';
-    if (lang) {
-      const badge = document.createElement('span');
-      badge.className = 'code-block-lang';
-      badge.textContent = lang.toUpperCase();
-      rightSide.appendChild(badge);
-    }
-    const copyBtn = document.createElement('button');
-    copyBtn.className = 'code-block-copy';
-    copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-text">Copy</span>`;
-    copyBtn.addEventListener('click', async () => {
-      const code = pre.querySelector('code')?.innerText || pre.innerText;
-      await navigator.clipboard.writeText(code);
-      copyBtn.querySelector('.copy-text')!.textContent = 'Copied!';
-      setTimeout(() => { copyBtn.querySelector('.copy-text')!.textContent = 'Copy'; }, 2000);
-    });
-    rightSide.appendChild(copyBtn);
-    header.appendChild(rightSide);
-    pre.parentNode!.insertBefore(wrapper, pre);
-    wrapper.appendChild(header);
-    wrapper.appendChild(pre);
-  });
 </script>

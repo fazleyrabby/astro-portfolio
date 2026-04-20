@@ -2,12 +2,7 @@
 import MainLayout from "@layouts/MainLayout.astro";
 import { supabase } from "@lib/supabase";
 
-export const prerender = false;
-
-// Cache the response at the Edge for 1 minute, with stale-while-revalidate
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
-
-// Fetch strictly from Supabase
+// Fetch strictly from Supabase at build time
 const { data: posts, error } = await supabase
   .from('posts')
   .select('*')

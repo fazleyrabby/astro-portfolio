@@ -28,7 +28,7 @@ const skillsMatrix = [
     <div class="marquee-inner marquee-inner--left">
       {[...marqueeItems, ...marqueeItems].map(item => (
         <div class="marquee-item">
-          {item}
+          {item.toUpperCase()}
         </div>
       ))}
     </div>
@@ -38,7 +38,7 @@ const skillsMatrix = [
     <div class="marquee-inner marquee-inner--right">
       {[...marqueeItems.slice().reverse(), ...marqueeItems.slice().reverse()].map(item => (
         <div class="marquee-item">
-          {item}
+          {item.toUpperCase()}
         </div>
       ))}
     </div>
@@ -50,10 +50,10 @@ const skillsMatrix = [
       {skillsMatrix.map(row => (
         <div class="skills-row flex flex-col md:flex-row md:items-start group transition-colors hover:bg-[var(--accent-dim)] px-4 -mx-4">
           <div class="skills-cat w-full md:w-[180px] shrink-0">
-            {row.label}
+            {row.label.toUpperCase()}
           </div>
           <div class="skills-val flex-1">
-            {row.values}
+            {row.values.toUpperCase()}
           </div>
         </div>
       ))}

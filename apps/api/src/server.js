@@ -12,17 +12,25 @@ import { slug as slugify } from 'github-slugger';
 import fs from 'fs';
 import path from 'path';
 
-const logFile = '/home/rhtechde/api.rhtech.dev/debug.log';
+const logFile = '/tmp/bot_debug.log';
 function log(msg) {
     const timestamp = new Date().toISOString();
     const formatted = `[${timestamp}] ${msg}\n`;
     try {
         fs.appendFileSync(logFile, formatted);
-    } catch (e) {}
+    } catch (e) {
+        console.error('Log write failed:', e.message);
+    }
     console.log(msg);
 }
 
 const app = express();
+app.use((req, res, next) => {
+    if (req.url === '/telegram-webhook') {
+        log(`Webhook hit: ${req.method} ${req.url}`);
+    }
+    next();
+});
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 

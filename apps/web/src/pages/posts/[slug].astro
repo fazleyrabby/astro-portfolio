@@ -99,8 +99,7 @@ const { Content } = await render(post);
       const detectBg = () => {
         const proxy = new Image();
         proxy.crossOrigin = 'anonymous';
-        proxy.src = `/api/image-proxy?url=${encodeURIComponent(img.src)}`;
-        proxy.onload = () => {
+        proxy.src = `https://api.fazleyrabbi.xyz/image-proxy?url=${encodeURIComponent(img.src)}`;        proxy.onload = () => {
           try {
             const c = document.createElement('canvas');
             const ctx = c.getContext('2d');

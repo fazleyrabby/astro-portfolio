@@ -6,12 +6,16 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   <div class="max-w-3xl mx-auto px-4 py-10">
     <header class="flex items-center justify-between mb-12">
       <div class="flex items-center gap-4">
-        <h1 class="text-xl font-bold tracking-tight">Posts</h1>
+        <h1 class="text-xl font-bold tracking-tight text-adm-text">Posts</h1>
         <div class="h-4 w-[1px] bg-adm-border"></div>
-        <span id="tokenStatus" class="text-xs text-muted font-mono">Token active</span>
+        <span id="tokenStatus" class="text-xs text-adm-muted font-mono">Token active</span>
       </div>
-      <div class="flex items-center gap-3">
-        <button id="logoutBtn" class="text-xs text-muted hover:text-gray-200 transition-colors uppercase tracking-wider font-medium">Logout</button>
+      <div class="flex items-center gap-6">
+        <button id="themeToggle" class="text-adm-muted hover:text-adm-text transition-colors p-1" title="Toggle Theme">
+          <svg id="sunIcon" class="hidden dark:block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M22 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg id="moonIcon" class="block dark:hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+        <button id="logoutBtn" class="text-xs text-adm-muted hover:text-adm-text transition-colors uppercase tracking-wider font-bold">Logout</button>
       </div>
     </header>
 
@@ -21,16 +25,16 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           type="text" 
           id="search" 
           placeholder="Search posts..." 
-          class="w-full bg-panel border border-adm-border rounded-md px-3 py-1.5 text-sm focus:outline-none focus:border-primary/50 transition-colors placeholder:text-muted/50"
+          class="w-full bg-adm-panel border border-adm-border rounded-md px-3 py-1.5 text-sm text-adm-text focus:outline-none focus:border-adm-primary/50 transition-colors placeholder:text-adm-muted/50"
         />
       </div>
-      <a href="/admin/create" class="bg-primary hover:bg-primary/90 text-white px-4 py-1.5 rounded-md text-sm font-medium transition-colors">
+      <a href="/admin/create" class="bg-adm-primary hover:opacity-90 text-white px-4 py-1.5 rounded-md text-sm font-medium transition-all">
         New Post
       </a>
     </div>
 
     <div id="postList" class="space-y-1">
-      <div class="text-center py-20 text-muted animate-pulse text-sm">Loading posts...</div>
+      <div class="text-center py-20 text-adm-muted animate-pulse text-sm">Loading posts...</div>
     </div>
 
     <footer class="mt-12 pt-6 border-t border-adm-border flex justify-between items-center text-[10px] text-muted uppercase tracking-widest font-mono">
@@ -59,19 +63,19 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     const countEl = document.getElementById('postCount');
     
     if (!posts.length) {
-      el.innerHTML = '<div class="text-center py-20 text-muted text-sm border border-dashed border-adm-border rounded-lg">No posts found.</div>';
+      el.innerHTML = '<div class="text-center py-20 text-adm-muted text-sm border border-dashed border-adm-border rounded-lg">No posts found.</div>';
       countEl.textContent = '0 posts';
       return;
     }
 
     el.innerHTML = posts.map(p => `
-      <div class="group flex items-center justify-between p-3 rounded-md hover:bg-panel transition-colors border border-transparent hover:border-adm-border">
+      <div class="group flex items-center justify-between p-3 rounded-md hover:bg-adm-panel transition-colors border border-transparent hover:border-adm-border">
         <div class="flex items-center gap-3 min-w-0">
           <span class="w-2 h-2 rounded-full ${p.draft ? 'bg-yellow-500/50' : 'bg-green-500/50'} shrink-0"></span>
-          <span class="text-sm font-medium truncate text-gray-300 group-hover:text-white transition-colors">${p.slug}</span>
+          <span class="text-sm font-medium truncate text-adm-text group-hover:text-adm-primary transition-colors">${p.slug}</span>
         </div>
         <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <a href="/admin/edit?slug=${p.slug}" class="text-[10px] uppercase tracking-wider font-bold text-primary hover:text-white px-2 py-1 transition-colors">Edit</a>
+          <a href="/admin/edit?slug=${p.slug}" class="text-[10px] uppercase tracking-wider font-bold text-adm-primary hover:text-adm-text px-2 py-1 transition-colors">Edit</a>
           <button onclick="window.deletePost('${p.slug}')" class="text-[10px] uppercase tracking-wider font-bold text-red-500/70 hover:text-red-500 px-2 py-1 transition-colors">Delete</button>
         </div>
       </div>
@@ -123,6 +127,19 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('cms_token');
     window.location.href = '/admin/login';
+  });
+
+  // Theme Toggle Logic
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('adm_theme', 'light');
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('adm_theme', 'dark');
+    }
   });
 
   const token = getToken();

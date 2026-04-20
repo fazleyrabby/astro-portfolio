@@ -3,36 +3,41 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 ---
 
 <AdminLayout title="Edit Post">
-  <div class="h-screen flex flex-col overflow-hidden bg-bg text-gray-200">
+  <div class="h-screen flex flex-col overflow-hidden bg-adm-bg text-adm-text transition-colors duration-200">
     <!-- Top Bar -->
-    <header class="flex items-center justify-between px-4 py-2 bg-panel border-b border-adm-border z-20 shrink-0">
+    <header class="flex items-center justify-between px-4 py-2 bg-adm-panel border-b border-adm-border z-20 shrink-0">
       <div class="flex items-center gap-4">
-        <a href="/admin" class="text-muted hover:text-white transition-colors text-sm flex items-center gap-1">
+        <a href="/admin" class="text-adm-muted hover:text-adm-text transition-colors text-sm flex items-center gap-1">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           Back
         </a>
         <div class="h-4 w-[1px] bg-adm-border"></div>
-        <span id="slugLabel" class="text-xs font-mono text-muted truncate max-w-[200px]">Loading...</span>
+        <span id="slugLabel" class="text-xs font-mono text-adm-muted truncate max-w-[200px]">Loading...</span>
       </div>
 
       <div class="flex items-center gap-2">
+        <button id="themeToggle" class="text-adm-muted hover:text-adm-text transition-colors p-2 mr-2" title="Toggle Theme">
+          <svg id="sunIcon" class="hidden dark:block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M22 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg id="moonIcon" class="block dark:hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+
         <!-- Mode Toggle -->
-        <div class="flex bg-bg rounded-md p-1 border border-adm-border mr-4">
+        <div class="flex bg-adm-bg rounded-md p-1 border border-adm-border mr-4">
           <button data-mode="edit" class="mode-btn px-3 py-1 text-xs rounded transition-all">Edit</button>
           <button data-mode="split" class="mode-btn active px-3 py-1 text-xs rounded transition-all">Split</button>
           <button data-mode="preview" class="mode-btn px-3 py-1 text-xs rounded transition-all">Preview</button>
         </div>
 
         <div class="flex items-center gap-2">
-          <label class="flex items-center gap-2 text-xs text-muted cursor-pointer hover:text-gray-200 transition-colors mr-2">
-            <input type="checkbox" id="draftCheck" class="rounded border-adm-border bg-bg text-primary focus:ring-primary/20" />
+          <label class="flex items-center gap-2 text-xs text-adm-muted cursor-pointer hover:text-adm-text transition-colors mr-2">
+            <input type="checkbox" id="draftCheck" class="rounded border-adm-border bg-adm-bg text-adm-primary focus:ring-adm-primary/20" />
             Draft
           </label>
-          <button id="uploadBtn" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted hover:text-white transition-colors border border-adm-border rounded-md hover:bg-muted/10">
+          <button id="uploadBtn" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-adm-muted hover:text-adm-text transition-colors border border-adm-border rounded-md hover:bg-adm-muted/10">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
             Image
           </button>
-          <button id="saveBtn" disabled class="bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-white px-5 py-1.5 rounded-md text-xs font-semibold transition-all shadow-lg shadow-primary/20">
+          <button id="saveBtn" disabled class="bg-adm-primary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white px-5 py-1.5 rounded-md text-xs font-semibold transition-all shadow-lg shadow-adm-primary/20">
             Save
           </button>
         </div>
@@ -40,13 +45,13 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     </header>
 
     <!-- Title Area -->
-    <div class="bg-bg border-b border-adm-border shrink-0">
+    <div class="bg-adm-bg border-b border-adm-border shrink-0 transition-colors duration-200">
       <div class="max-w-5xl mx-auto px-8 py-6">
         <input 
           type="text" 
           id="titleInput" 
           placeholder="Post Title" 
-          class="w-full bg-transparent text-3xl font-bold focus:outline-none placeholder:text-muted/30 tracking-tight"
+          class="w-full bg-transparent text-3xl font-bold text-adm-text focus:outline-none placeholder:text-adm-muted/30 tracking-tight"
         />
       </div>
     </div>
@@ -54,10 +59,10 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     <!-- Editor Area -->
     <div class="flex-1 flex overflow-hidden">
       <div class="max-w-7xl mx-auto w-full flex overflow-hidden">
-        <div id="editorPane" class="flex-1 overflow-hidden border-x border-adm-border bg-bg">
-          <div class="h-full flex items-center justify-center text-muted/30 animate-pulse font-mono text-sm">Initializing Editor...</div>
+        <div id="editorPane" class="flex-1 overflow-hidden border-x border-adm-border bg-adm-bg transition-colors duration-200">
+          <div class="h-full flex items-center justify-center text-adm-muted/30 animate-pulse font-mono text-sm">Initializing Editor...</div>
         </div>
-        <div id="previewPane" class="flex-1 overflow-y-auto bg-bg prose prose-neutral dark:prose-invert max-w-none p-10 prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-li:text-[var(--text-secondary)] prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)] prose-strong:text-[var(--text-primary)] prose-strong:font-semibold prose-blockquote:text-[var(--text-secondary)] prose-blockquote:border-[var(--accent)]">
+        <div id="previewPane" class="flex-1 overflow-y-auto bg-adm-bg prose prose-neutral dark:prose-invert max-w-none p-10 prose-p:text-adm-text/80 prose-p:leading-relaxed prose-li:text-adm-text/80 prose-headings:font-display prose-headings:font-bold prose-headings:text-adm-text prose-strong:text-adm-text prose-strong:font-semibold prose-blockquote:text-adm-text/80 prose-blockquote:border-adm-primary transition-colors duration-200">
           <!-- Markdown preview here -->
         </div>
       </div>
@@ -149,7 +154,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     toast.textContent = msg;
     toast.className = `fixed bottom-6 right-6 px-4 py-2 rounded-lg text-xs font-medium z-50 transition-all duration-300 shadow-xl ${
       type === 'success' ? 'bg-green-500 text-white' : 
-      type === 'error' ? 'bg-red-500 text-white' : 'bg-panel border border-adm-border text-gray-200'
+      type === 'error' ? 'bg-red-500 text-white' : 'bg-adm-panel border border-adm-border text-adm-text'
     }`;
     toast.style.transform = 'translateY(0)';
     toast.style.opacity = '1';
@@ -332,6 +337,19 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   });
 
   saveBtn.addEventListener('click', save);
+
+  // Theme Toggle Logic
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('adm_theme', 'light');
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('adm_theme', 'dark');
+    }
+  });
   
   if (getToken()) {
     loadPost();
@@ -361,13 +379,13 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     @apply mb-4 leading-relaxed text-gray-300;
   }
   #previewPane code {
-    @apply bg-panel px-1.5 py-0.5 rounded text-primary border border-adm-border font-mono text-[0.8em];
+    @apply bg-adm-panel px-1.5 py-0.5 rounded text-adm-primary border border-adm-border font-mono text-[0.8em];
   }
   #previewPane pre {
-    @apply bg-panel p-4 rounded-lg border border-adm-border my-6 overflow-x-auto;
+    @apply bg-adm-panel p-4 rounded-lg border border-adm-border my-6 overflow-x-auto;
   }
   #previewPane pre code {
-    @apply bg-transparent p-0 border-none text-gray-300;
+    @apply bg-transparent p-0 border-none text-adm-text;
   }
   #previewPane ul, #previewPane ol {
     @apply mb-4 ml-6;
@@ -376,6 +394,6 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     @apply mb-1;
   }
   #previewPane blockquote {
-    @apply border-l-4 border-primary/40 pl-4 italic text-muted my-6;
+    @apply border-l-4 border-adm-primary pl-4 italic text-adm-muted my-6;
   }
 </style>

@@ -4,12 +4,14 @@ import Nav from "./Nav.astro";
 import Footer from "./Footer.astro";
 import "../styles/global.css";
 import ScrollToTop from "@components/ScrollToTop.astro";
+import Analytics from "@vercel/analytics/astro";
 const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twitterCard, twitterImage } = Astro.props;
 ---
 
 <html lang="en">
   <Head {title} {description} {ogTitle} {ogDescription} {ogImage} {ogUrl} {ogType} {twitterCard} {twitterImage} />
   <body class="font-sans min-h-screen relative overflow-x-hidden">
+    <Analytics />
     <div class="page-gradient-layer" aria-hidden="true"></div>
     <div class="cursor" aria-hidden="true"></div>
     <Nav />

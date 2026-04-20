@@ -47,12 +47,21 @@ export default {
 				surface: 'var(--color-surface)',
 				border: 'var(--color-border)',
 				accent: 'var(--color-accent)',
-				// Admin UI colors
-				bg: "#0a0f1a",
-				panel: "#0f172a",
-				"adm-border": "#1f2937",
-				muted: "#94a3b8",
-				primary: "#6366f1"
+				// Admin UI colors (Dynamic via AdminLayout)
+				adm: {
+					bg: "var(--adm-bg)",
+					panel: "var(--adm-panel)",
+					border: "var(--adm-border)",
+					text: "var(--adm-text)",
+					muted: "var(--adm-muted)",
+					primary: "var(--adm-primary)"
+				},
+				// Legacy aliases (if needed by existing files, though I will update them)
+				bg: "var(--adm-bg)",
+				panel: "var(--adm-panel)",
+				"adm-border": "var(--adm-border)",
+				muted: "var(--adm-muted)",
+				primary: "var(--adm-primary)"
 			},
 			boxShadow: {
 				theme: 'var(--shadow-main)',

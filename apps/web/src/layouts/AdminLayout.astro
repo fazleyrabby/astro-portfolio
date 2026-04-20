@@ -13,15 +13,49 @@ const { title } = Astro.props;
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <script is:inline>
+    // Initialize theme immediately to prevent flash
+    const theme = (() => {
+      if (typeof localStorage !== 'undefined' && localStorage.getItem('adm_theme')) {
+        return localStorage.getItem('adm_theme');
+      }
+      return 'dark'; // Default to dark for admin
+    })();
+    if (theme === 'light') {
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
 </head>
-<body class="admin-body min-h-screen">
+<body class="admin-body min-h-screen text-adm-text bg-adm-bg transition-colors duration-200">
   <slot />
 </body>
 </html>
 
 <style is:global>
   :root {
-    --cm-bg: #0f172a;
+    --adm-bg: #ffffff;
+    --adm-panel: #f8fafc;
+    --adm-border: #e2e8f0;
+    --adm-text: #0f172a;
+    --adm-muted: #64748b;
+    --adm-primary: #4f46e5;
+    --cm-bg: #ffffff;
+  }
+  
+  .dark {
+    --adm-bg: #0a0f1a;
+    --adm-panel: #0f172a;
+    --adm-border: #1f2937;
+    --adm-text: #e2e8eb;
+    --adm-muted: #94a3b8;
+    --adm-primary: #6366f1;
+    --cm-bg: #0a0f1a;
+  }
+  
+  .admin-body {
+    font-family: 'Inter', system-ui, sans-serif;
   }
   
   /* Distraction-free scrollbars */
@@ -30,12 +64,18 @@ const { title } = Astro.props;
     height: 8px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-bg;
+    background: var(--adm-bg);
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-adm-border rounded-full;
+    background: var(--adm-border);
+    border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted/30;
+    background: var(--adm-muted);
+  }
+
+  /* CodeMirror Overrides for Light Mode */
+  .cm-editor {
+    background-color: var(--cm-bg) !important;
   }
 </style>

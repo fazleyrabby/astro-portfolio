@@ -3,42 +3,48 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 ---
 
 <AdminLayout title="Login">
-  <div class="min-h-screen flex items-center justify-center p-6 bg-bg">
+  <div class="min-h-screen flex items-center justify-center p-6 bg-adm-bg transition-colors duration-200">
+    <!-- Theme Toggle (Fixed Position on Login) -->
+    <button id="themeToggle" class="fixed top-6 right-6 text-adm-muted hover:text-adm-text transition-colors p-2" title="Toggle Theme">
+      <svg id="sunIcon" class="hidden dark:block" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M22 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      <svg id="moonIcon" class="block dark:hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    </button>
+
     <div class="w-full max-w-sm">
-      <div class="bg-panel border border-adm-border rounded-xl p-8 shadow-2xl">
-        <header class="mb-8">
-          <h1 class="text-xl font-bold text-white tracking-tight">CMS Access</h1>
-          <p class="text-xs text-muted mt-1 uppercase tracking-widest font-mono">Authentication Required</p>
+      <div class="bg-adm-panel border border-adm-border rounded-xl p-8 shadow-2xl transition-colors duration-200">
+        <header class="mb-8 text-center">
+          <h1 class="text-2xl font-bold text-adm-text tracking-tight">CMS Access</h1>
+          <p class="text-[10px] text-adm-muted mt-2 uppercase tracking-[0.2em] font-mono">Authentication Required</p>
         </header>
 
         <form id="loginForm" class="space-y-6">
           <div class="space-y-2">
-            <label for="token" class="text-[10px] font-bold uppercase tracking-widest text-muted/60 ml-1">Admin Token</label>
+            <label for="token" class="text-[10px] font-bold uppercase tracking-widest text-adm-muted/60 ml-1">Admin Token</label>
             <input 
               type="password" 
               id="token" 
               placeholder="••••••••••••" 
               autofocus 
               required 
-              class="w-full bg-bg border border-adm-border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-primary/50 transition-colors placeholder:text-muted/20"
+              class="w-full bg-adm-bg border border-adm-border rounded-lg px-4 py-3 text-sm text-adm-text focus:outline-none focus:border-adm-primary/50 transition-all placeholder:text-adm-muted/20"
             />
           </div>
 
           <button 
             type="submit" 
             id="loginBtn"
-            class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 rounded-lg text-sm transition-all shadow-lg shadow-primary/20"
+            class="w-full bg-adm-primary hover:opacity-90 text-white font-semibold py-3 rounded-lg text-sm transition-all shadow-lg shadow-adm-primary/20"
           >
             Sign In
           </button>
 
-          <div id="error" class="hidden text-center text-[10px] font-bold text-red-500 uppercase tracking-widest">
+          <div id="error" class="hidden text-center text-[10px] font-bold text-red-500 uppercase tracking-widest animate-bounce">
             Invalid Token. Access Denied.
           </div>
         </form>
       </div>
       
-      <p class="text-center mt-8 text-[10px] text-muted/30 uppercase tracking-[0.2em] font-mono">
+      <p class="text-center mt-12 text-[10px] text-adm-muted/30 uppercase tracking-[0.3em] font-mono">
         &copy; {new Date().getFullYear()} Fazley Rabbi
       </p>
     </div>
@@ -51,6 +57,19 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   if (localStorage.getItem('cms_token')) {
     window.location.href = '/admin';
   }
+
+  // Theme Toggle Logic
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('adm_theme', 'light');
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('adm_theme', 'dark');
+    }
+  });
 
   const form = document.getElementById('loginForm');
   const btn = document.getElementById('loginBtn') as HTMLButtonElement;

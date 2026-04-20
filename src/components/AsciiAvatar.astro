@@ -286,7 +286,10 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         isVisible = entry.isIntersecting;
-        if (isVisible) startAnim();
+        if (isVisible) {
+          // Short delay to prioritize initial page load / LCP
+          setTimeout(startAnim, 100);
+        }
       });
     }, observerOptions);
     io.observe(cnv);

@@ -20,7 +20,7 @@ const frontendProjects = projects.filter(p => p.data.type === 'frontend');
       </div>
 
       <div class="project-grid">
-        {mainProjects.map(p => <ProjectCard project={p} />)}
+        {mainProjects.map((p, i) => <ProjectCard project={p} index={i} />)}
       </div>
 
       {frontendProjects.length > 0 && (
@@ -31,7 +31,7 @@ const frontendProjects = projects.filter(p => p.data.type === 'frontend');
             <p class="text-sm text-[var(--text-muted)] mt-2 font-mono uppercase tracking-widest">Frontend experiments & templates.</p>
           </div>
           <div class="project-grid">
-            {frontendProjects.map(p => <ProjectCard project={p} />)}
+            {frontendProjects.map((p, i) => <ProjectCard project={p} index={i} />)}
           </div>
         </div>
       )}

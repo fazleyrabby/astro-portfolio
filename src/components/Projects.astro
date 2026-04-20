@@ -23,7 +23,7 @@ const projects = type === "home"
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
       {projects.map((project, index) => (
-        <ProjectCard project={project} index={index} />
+        <ProjectCard project={project} index={index} isHome={type === "home"} />
       ))}
     </div>
 

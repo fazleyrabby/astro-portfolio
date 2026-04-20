@@ -27,8 +27,8 @@ const umamiID = import.meta.env.UMAMI_ID;
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/dmsans/v15/rP2Fp2K8zQ2xbXpOd02_64vI_52xRHC_.woff2" crossorigin />
-    <link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/yrsa/v21/rax6HiW9NfI_Vq1lW_g.woff2" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Yrsa:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
     {
         isProduction && (
@@ -80,4 +80,31 @@ const umamiID = import.meta.env.UMAMI_ID;
         }
       })();
     </script>
+
+    <style is:inline>
+      :root {
+        --bg-base: #fafaf9;
+        --text-primary: #1c1917;
+        --accent: #E8823A;
+        --font-display: "Yrsa", serif;
+        --font-sans: "DM Sans", sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
+      }
+      .dark {
+        --bg-base: #080808;
+        --text-primary: #F0EDE8;
+      }
+      body {
+        background-color: var(--bg-base);
+        color: var(--text-primary);
+        margin: 0;
+      }
+      /* Pre-style Hero to avoid layout shift */
+      .hero-section {
+        min-height: 85svh;
+        display: flex;
+        align-items: center;
+        background-color: var(--bg-base);
+      }
+    </style>
 </head>

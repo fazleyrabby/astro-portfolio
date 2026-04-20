@@ -1,8 +1,8 @@
 ---
 import { Image } from "astro:assets";
-const { project, index = 10 } = Astro.props;
+const { project, index = 10, isHome = false } = Astro.props;
 const { title, tech, live, github, thumbnail, description, type, status } = project.data;
-const isCritical = index < 2;
+const isCritical = !isHome && index < 2;
 ---
 
 <article class="project-card group flex flex-col bg-surface border border-border overflow-hidden h-full">

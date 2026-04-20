@@ -266,10 +266,24 @@ const upload = multer({ storage: multer.memoryStorage() });
 app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'no file' });
     const filename = `${Date.now()}-${req.file.originalname.replace(/\s+/g, '_')}`;
+
     try {
-        await ghCreateOrUpdate(`apps/web/public/images/uploads/${filename}`, req.file.buffer.toString('base64'), null, `cms: upload ${filename}`, true);
-        res.json({ url: `/images/uploads/${filename}` });
+        const { data, error } = await supabase.storage
+            .from('blog-images')
+            .upload(filename, req.file.buffer, {
+                contentType: req.file.mimetype,
+                upsert: true
+            });
+
+        if (error) throw error;
+
+        const { data: { publicUrl } } = supabase.storage
+            .from('blog-images')
+            .getPublicUrl(filename);
+
+        res.json({ url: publicUrl });
     } catch (err) {
+        console.error('Supabase upload error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });

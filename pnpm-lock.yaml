@@ -25,12 +25,18 @@ importers:
       express:
         specifier: ^4.18.2
         version: 4.22.1
-      multer:
+      github-slugger:
         specifier: ^2.0.0
+        version: 2.0.0
+      multer:
+        specifier: ^2.1.1
         version: 2.1.1
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
+      openai:
+        specifier: ^4.104.0
+        version: 4.104.0(ws@8.20.0)(zod@3.25.76)
       telegraf:
         specifier: ^4.16.3
         version: 4.16.3
@@ -3822,7 +3828,7 @@ snapshots:
 
   '@types/node-fetch@2.6.13':
     dependencies:
-      '@types/node': 18.19.130
+      '@types/node': 25.6.0
       form-data: 4.0.5
 
   '@types/node@18.19.130':

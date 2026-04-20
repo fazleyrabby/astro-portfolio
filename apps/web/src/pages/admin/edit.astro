@@ -118,10 +118,10 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     modeBtns.forEach(btn => {
       const mode = (btn as HTMLElement).dataset.mode;
       if (mode === currentMode) {
-        btn.classList.add('bg-adm-primary', 'text-white', 'shadow-sm');
+        btn.classList.add('bg-adm-primary', '!text-white', 'shadow-sm');
         btn.classList.remove('text-adm-muted');
       } else {
-        btn.classList.remove('bg-adm-primary', 'text-white', 'shadow-sm');
+        btn.classList.remove('bg-adm-primary', '!text-white', 'shadow-sm');
         btn.classList.add('text-adm-muted');
       }
     });
@@ -207,8 +207,11 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
             '.cm-content': { 
               fontFamily: "'JetBrains Mono', 'Fira Code', monospace", 
               padding: '2rem',
+              color: 'var(--adm-text)'
             },
-            '.cm-gutters': { 
+            '.cm-scroller': {
+              color: 'var(--adm-text)'
+            },            '.cm-gutters': { 
               backgroundColor: 'transparent', 
               color: 'var(--adm-muted)', 
               border: 'none',

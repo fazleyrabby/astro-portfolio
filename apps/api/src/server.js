@@ -7,6 +7,8 @@ import { Telegraf } from 'telegraf';
 import { Octokit } from '@octokit/rest';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
+import OpenAI from 'openai';
+import { slug as slugify } from 'github-slugger';
 
 const app = express();
 app.use(cors());
@@ -28,165 +30,32 @@ const bot = new Telegraf(TELEGRAM_TOKEN);
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// --- Visit Tracking Cooldown (in-memory, resets on restart — acceptable) ---
-const lastNotified = new Map();
-const NOTIFY_COOLDOWN = 30 * 60 * 1000;
-
-// --- Telegram Bot Middleware ---
-bot.use(async (ctx, next) => {
-    if (ctx.from?.id !== ALLOWED_USER_ID) return;
-    return next();
+const openai = new OpenAI({
+    apiKey: process.env.GROQ_API_KEY,
+    baseURL: 'https://api.groq.com/openai/v1',
 });
 
-bot.command('status', (ctx) => ctx.reply('API server running.'));
-
-// --- Helper Functions ---
-function isBot(userAgent = '') {
-    const ua = userAgent.toLowerCase();
-    const botPatterns = ['googlebot', 'bingbot', 'yandexbot', 'bot', 'crawler', 'spider', 'vercel', 'netlify'];
-    return botPatterns.some(pattern => ua.includes(pattern));
-}
-
-function hashIP(ip) {
-    return crypto.createHash('sha256').update(ip + (TELEGRAM_TOKEN || '')).digest('hex').slice(0, 16);
-}
-
-async function sendTelegramNotification(message) {
-    try {
-        await bot.telegram.sendMessage(TELEGRAM_CHAT_ID, message, { parse_mode: 'HTML' });
-    } catch (err) {
-        console.error('Telegram notification failed:', err.message);
-    }
-}
-
-// --- Routes ---
-
-// Root
-app.get('/', (req, res) => {
-    res.send('OK - server running');
-});
-
-// Health Check
-app.get('/health', (req, res) => {
-    res.json({ ok: true, ts: Date.now() });
-});
-
-// Version
-app.get('/version', (req, res) => {
-    res.json({ version: process.env.GIT_SHA || 'unknown', time: new Date().toISOString() });
-});
-
-// 1. Contact Form
-app.post('/contact', async (req, res) => {
-    const { email, message, website } = req.body || {};
-
-    // Honeypot
-    if (website) {
-        return res.status(200).json({ ok: true });
-    }
-
-    if (!email || !message) {
-        return res.status(400).json({ error: 'email and message required' });
-    }
-
-    const tgMessage = `📩 <b>New Contact Form Submission</b>\n\n<b>Email:</b> ${email}\n<b>Message:</b>\n${message}`;
-    await sendTelegramNotification(tgMessage);
-
-    res.status(201).json({ ok: true });
-});
-
-// 2. Visitor Tracking
-app.post('/track', async (req, res) => {
-    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || 'Unknown';
-    const userAgent = req.headers['user-agent'] || 'Unknown';
-    const { platform, language, path } = req.body || {};
-
-    if (isBot(userAgent) || ip === process.env.MY_IP) {
-        return res.json({ ok: true });
-    }
-
-    const ipHash = hashIP(ip);
-
-    // Geo Lookup
-    let geo = {};
-    try {
-        const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
-        if (geoRes.ok) geo = await geoRes.json();
-    } catch {}
-
-    // Store in Supabase
-    try {
-        await supabase.rpc('record_visit', {
-            p_ip_hash: ipHash,
-            p_country: geo.country_name ?? 'Unknown',
-            p_region: geo.region ?? 'Unknown',
-            p_city: geo.city ?? 'Unknown',
-            p_isp: geo.org ?? 'Unknown',
-            p_platform: platform ?? 'Unknown',
-            p_language: language ?? 'Unknown',
-            p_user_agent: userAgent,
-            p_path: path ?? '/',
-        });
-    } catch (err) {
-        console.error('Supabase record_visit error:', err.message);
-    }
-
-    // Notify with cooldown
-    const now = Date.now();
-    const lastTime = lastNotified.get(ipHash) || 0;
-    if (now - lastTime > NOTIFY_COOLDOWN) {
-        lastNotified.set(ipHash, now);
-        const notifyMsg = `🚨 <b>NEW VISITOR</b>\n📍 ${geo.city || 'Unknown'}, ${geo.country_name || 'Unknown'}\n🌐 ${geo.org || 'Unknown'}\n💻 ${platform || 'Unknown'}\n🔗 ${path || '/'}`;
-        sendTelegramNotification(notifyMsg);
-    }
-
-    res.json({ ok: true });
-});
-
-// 3. Image Proxy
-app.get('/image-proxy', async (req, res) => {
-    const { url } = req.query;
-    if (!url) return res.status(400).send('URL is required');
-
-    try {
-        const response = await fetch(url);
-        if (!response.ok) return res.status(502).send('Upstream fetch failed');
-
-        const contentType = response.headers.get('content-type') || 'application/octet-stream';
-        const buffer = Buffer.from(await response.arrayBuffer());
-
-        res.set('Content-Type', contentType);
-        res.set('Access-Control-Allow-Origin', '*');
-        res.set('Cache-Control', 'public, max-age=86400');
-        res.send(buffer);
-    } catch (err) {
-        console.error('Image Proxy Error:', err.message);
-        res.status(500).send('Error proxying image');
-    }
-});
-
-// --- CMS ---
-
+// --- CMS & Paths ---
 const [REPO_OWNER, REPO_NAME] = REPO.split('/');
 const POSTS_PATH = 'apps/web/src/content/posts';
 
-function cmsAuth(req, res, next) {
-    const auth = req.headers['authorization'] || '';
-    if (!CMS_TOKEN || auth !== `Bearer ${CMS_TOKEN}`) {
-        return res.status(401).json({ error: 'unauthorized' });
-    }
-    next();
-}
+// --- In-memory AI Draft Store ---
+const aiDrafts = new Map();
 
+// --- Helper Functions ---
 function toSlug(title) {
-    return title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-');
+    return slugify(title);
 }
 
-async function ghGetFile(filePath) {
-    const { data } = await octokit.repos.getContent({
-        owner: REPO_OWNER, repo: REPO_NAME, path: filePath,
-    });
-    return data;
+function buildMarkdown(title, content, draft = false, tags = []) {
+    const date = new Date().toISOString().split('T')[0];
+    const fm = {
+        title,
+        date,
+        draft,
+        tags: tags.length ? tags : []
+    };
+    return `---\n${Object.entries(fm).map(([k, v]) => `${k}: ${JSON.stringify(v)}`).join('\n')}\n---\n\n${content}`;
 }
 
 async function ghCreateOrUpdate(filePath, content, sha, message, isBase64 = false) {
@@ -199,201 +68,218 @@ async function ghCreateOrUpdate(filePath, content, sha, message, isBase64 = fals
     });
 }
 
-async function ghDelete(filePath, sha, message) {
-    await octokit.repos.deleteFile({
-        owner: REPO_OWNER, repo: REPO_NAME,
-        path: filePath, sha,
-        message: message || `cms: delete ${filePath}`,
+async function ghGetFile(filePath) {
+    const { data } = await octokit.repos.getContent({
+        owner: REPO_OWNER, repo: REPO_NAME, path: filePath,
     });
+    return data;
 }
 
-function buildMarkdown(title, content, draft = false) {
-    const date = new Date().toISOString().split('T')[0];
-    // Use JSON.stringify for title to handle special characters and ensure double quotes
-    return `---\ntitle: ${JSON.stringify(title)}\ndate: "${date}"\ndraft: ${draft}\n---\n\n${content}`;
+// --- AI Logic ---
+async function generateAIContent(topic) {
+    console.log(`Generating AI content for topic: ${topic}`);
+    const prompt = `You are a senior backend engineer. Write a technical, portfolio-grade blog post.
+TOPIC: ${topic}
+REQUIREMENTS: Professional tone, senior-level insights, include code snippets.
+OUTPUT: Raw Markdown with YAML title and tags. DO NOT wrap the YAML in markdown code blocks.`;
+
+    const completion = await openai.chat.completions.create({
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'user', content: prompt }],
+    });
+
+    let response = completion.choices[0].message.content.trim();
+    response = response.replace(/^```(?:markdown|md)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
+
+    let title = topic;
+    let tags = [];
+    let markdownContent = response;
+
+    const fmBlockMatch = response.match(/^---\n([\s\S]*?)\n---/);
+    if (fmBlockMatch) {
+        const fmBody = fmBlockMatch[1];
+        const titleMatch = fmBody.match(/title:\s*"?([^"\n]+)"?/);
+        const tagsMatch = fmBody.match(/tags:\s*(\[.*?\])/);
+        if (titleMatch) title = titleMatch[1].trim();
+        if (tagsMatch) { try { tags = JSON.parse(tagsMatch[1]); } catch {} }
+        markdownContent = response.substring(fmBlockMatch[0].length).trim();
+    }
+
+    return { title, tags, content: markdownContent };
 }
 
-// LIST
+// --- Telegram Bot Logic ---
+bot.use(async (ctx, next) => {
+    if (ctx.from?.id !== ALLOWED_USER_ID) {
+        console.log(`Unauthorized user attempted access: ${ctx.from?.id}`);
+        return;
+    }
+    return next();
+});
+
+bot.command('status', (ctx) => ctx.reply('🚀 API & CMS Engine is active.'));
+
+bot.command('generate', async (ctx) => {
+    const topic = ctx.message.text.replace('/generate', '').trim();
+    if (!topic) return ctx.reply('Please provide a topic: /generate Scaling Laravel with Redis');
+
+    const msg = await ctx.reply('🧠 Generating technical post... please wait.');
+    
+    try {
+        const post = await generateAIContent(topic);
+        const slug = toSlug(post.title);
+        
+        aiDrafts.set(slug, post);
+        const preview = post.content.slice(0, 500) + '...';
+        
+        await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id);
+        await ctx.reply(`📝 <b>DRAFT GENERATED</b>\n\n<b>Title:</b> ${post.title}\n<b>Tags:</b> ${post.tags.join(', ')}\n\n${preview}`, {
+            parse_mode: 'HTML',
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: '✅ Approve & Publish', callback_data: `p_app:${slug}` }],
+                    [{ text: '❌ Reject', callback_data: `p_rej:${slug}` }]
+                ]
+            }
+        });
+    } catch (err) {
+        console.error('AI Generation error:', err);
+        ctx.reply(`❌ AI Error: ${err.message}`);
+    }
+});
+
+bot.on('callback_query', async (ctx) => {
+    const data = ctx.callbackQuery.data;
+    if (data.startsWith('p_app:')) {
+        const slug = data.replace('p_app:', '');
+        const post = aiDrafts.get(slug);
+
+        if (!post) return ctx.answerCbQuery('Draft expired or not found.');
+
+        await ctx.editMessageText(`🚀 <b>Publishing:</b> ${post.title}...`, { parse_mode: 'HTML' });
+
+        try {
+            const filePath = `${POSTS_PATH}/${slug}.md`;
+            const md = buildMarkdown(post.title, post.content, false, post.tags);
+
+            await ghCreateOrUpdate(filePath, md, null, `ai: publish ${post.title}`);
+            await supabase.from('posts').upsert({
+                title: post.title,
+                slug,
+                content: post.content,
+                tags: post.tags,
+                status: 'published',
+                published_at: new Date()
+            });
+
+            await ctx.editMessageText(`✅ <b>PUBLISHED!</b>\n\n<b>Title:</b> ${post.title}\n<b>Status:</b> Live on Database & GitHub.`, { parse_mode: 'HTML' });
+            aiDrafts.delete(slug);
+        } catch (err) {
+            console.error('Bot publish error:', err);
+            await ctx.reply(`❌ Publish failed: ${err.message}`);
+        }
+    } else if (data.startsWith('p_rej:')) {
+        const slug = data.replace('p_rej:', '');
+        aiDrafts.delete(slug);
+        await ctx.editMessageText('❌ Post draft rejected and discarded.');
+    }
+    await ctx.answerCbQuery();
+});
+
+// --- REST API Logic ---
+function cmsAuth(req, res, next) {
+    const auth = req.headers['authorization'] || '';
+    if (!CMS_TOKEN || auth !== `Bearer ${CMS_TOKEN}`) {
+        return res.status(401).json({ error: 'unauthorized' });
+    }
+    next();
+}
+
 app.get('/cms/posts', cmsAuth, async (req, res) => {
     try {
-        const { data, error } = await supabase
-            .from('posts')
-            .select('slug, title, status, updated_at');
-
+        const { data, error } = await supabase.from('posts').select('slug, title, status, updated_at');
         if (error) throw error;
-
-        const posts = data.map(p => {
-            let title = p.title;
-            if (!title || title.trim() === '' || title.toLowerCase() === 'untitled') {
-                title = p.slug;
-            }
-            return {
-                slug: p.slug,
-                title: title,
-                draft: p.status === 'draft',
-                updated_at: p.updated_at
-            };
-        });
-
-        // Sort by update time descending
+        const posts = data.map(p => ({
+            slug: p.slug,
+            title: (p.title && p.title.trim() !== '' && p.title.toLowerCase() !== 'untitled') ? p.title : p.slug,
+            draft: p.status === 'draft',
+            updated_at: p.updated_at
+        }));
         posts.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
-
         res.json(posts);
     } catch (err) {
-        console.error('CMS list error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
 
-// GET SINGLE
 app.get('/cms/posts/:slug', cmsAuth, async (req, res) => {
     try {
-        // 1. Try Supabase first
-        const { data, error } = await supabase
-            .from('posts')
-            .select('*')
-            .eq('slug', req.params.slug)
-            .single();
-
-        if (!error && data) {
-            return res.json(data);
-        }
-
-        // 2. Fallback to GitHub
+        const { data, error } = await supabase.from('posts').select('*').eq('slug', req.params.slug).single();
+        if (!error && data) return res.json(data);
         const file = await ghGetFile(`${POSTS_PATH}/${req.params.slug}.md`);
-        const content = Buffer.from(file.content, 'base64').toString('utf8');
-        res.json({ slug: req.params.slug, sha: file.sha, content });
+        res.json({ slug: req.params.slug, content: Buffer.from(file.content, 'base64').toString('utf8') });
     } catch (err) {
-        if (err.status === 404) return res.status(404).json({ error: 'not found' });
-        console.error('CMS get error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
 
-// CREATE
 app.post('/cms/posts', cmsAuth, async (req, res) => {
-    const { title, content, draft = false } = req.body || {};
-    if (!title || !content) return res.status(400).json({ error: 'title and content required' });
-
+    const { title, content, draft = false, tags = [] } = req.body || {};
     const slug = toSlug(title);
     const status = draft ? 'draft' : 'published';
-    const filePath = `${POSTS_PATH}/${slug}.md`;
-
     try {
-        // 1. Sync to GitHub (Astro source)
-        await ghCreateOrUpdate(filePath, buildMarkdown(title, content, draft), null, `cms: create ${slug}`);
-        
-        // 2. Sync to Supabase (CMS metadata/list)
-        await supabase.from('posts').upsert({
-            title,
-            slug,
-            content,
-            status,
-            published_at: status === 'published' ? new Date() : null
-        });
-
+        await ghCreateOrUpdate(`${POSTS_PATH}/${slug}.md`, buildMarkdown(title, content, draft, tags), null, `cms: create ${slug}`);
+        await supabase.from('posts').upsert({ title, slug, content, tags, status, published_at: status === 'published' ? new Date() : null });
         res.status(201).json({ ok: true, slug });
     } catch (err) {
-        console.error('CMS create error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
 
-// UPDATE
 app.put('/cms/posts/:slug', cmsAuth, async (req, res) => {
-    const { title, content, draft } = req.body || {};
-    if (!content) return res.status(400).json({ error: 'content required' });
-
+    const { title, content, draft, tags } = req.body || {};
     const slug = req.params.slug;
-    const filePath = `${POSTS_PATH}/${slug}.md`;
-
+    const status = draft ? 'draft' : 'published';
     try {
-        const file = await ghGetFile(filePath);
-        const existing = Buffer.from(file.content, 'base64').toString('utf8');
-
-        const finalTitle = title || (existing.match(/^title:\s*"?([^"\n]+)"?/m)?.[1] ?? slug);
-        const finalDraft = draft !== undefined ? draft : (existing.match(/^draft:\s*(\S+)/m)?.[1] === 'true');
-        const status = finalDraft ? 'draft' : 'published';
-
-        // 1. Sync to GitHub
-        await ghCreateOrUpdate(filePath, buildMarkdown(finalTitle, content, finalDraft), file.sha, `cms: update ${slug}`);
-        
-        // 2. Sync to Supabase
-        await supabase.from('posts').upsert({
-            title: finalTitle,
-            slug,
-            content,
-            status,
-            published_at: status === 'published' ? new Date() : null
-        });
-
+        const file = await ghGetFile(`${POSTS_PATH}/${slug}.md`);
+        await ghCreateOrUpdate(`${POSTS_PATH}/${slug}.md`, buildMarkdown(title || slug, content, draft, tags), file.sha, `cms: update ${slug}`);
+        await supabase.from('posts').upsert({ title, slug, content, tags, status, published_at: status === 'published' ? new Date() : null });
         res.json({ ok: true, slug });
     } catch (err) {
-        console.error('CMS update error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
 
-// DELETE
 app.delete('/cms/posts/:slug', cmsAuth, async (req, res) => {
     const slug = req.params.slug;
-    const filePath = `${POSTS_PATH}/${slug}.md`;
     try {
-        const file = await ghGetFile(filePath);
-        // 1. Delete from GitHub
-        await ghDelete(filePath, file.sha, `cms: delete ${slug}`);
-        
-        // 2. Delete from Supabase
+        const file = await ghGetFile(`${POSTS_PATH}/${slug}.md`);
+        await octokit.repos.deleteFile({ owner: REPO_OWNER, repo: REPO_NAME, path: `${POSTS_PATH}/${slug}.md`, sha: file.sha, message: `cms: delete ${slug}` });
         await supabase.from('posts').delete().eq('slug', slug);
-
         res.json({ ok: true });
     } catch (err) {
-        console.error('CMS delete error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
 
-// IMAGE UPLOAD
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 2 * 1024 * 1024 } });
-
+const upload = multer({ storage: multer.memoryStorage() });
 app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
-    if (!req.file) return res.status(400).json({ error: 'no file uploaded' });
-
-    const safeName = req.file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_');
-    const filename = `${Date.now()}-${safeName}`;
-    const filePath = `apps/web/public/images/uploads/${filename}`;
-
+    if (!req.file) return res.status(400).json({ error: 'no file' });
+    const filename = `${Date.now()}-${req.file.originalname.replace(/\s+/g, '_')}`;
     try {
-        // req.file.buffer is the raw binary, we convert to base64 string and set isBase64=true
-        const base64Content = req.file.buffer.toString('base64');
-        await ghCreateOrUpdate(filePath, base64Content, null, `cms: upload image ${filename}`, true);
+        await ghCreateOrUpdate(`apps/web/public/images/uploads/${filename}`, req.file.buffer.toString('base64'), null, `cms: upload ${filename}`, true);
         res.json({ url: `/images/uploads/${filename}` });
     } catch (err) {
-        console.error('CMS upload error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
 
-// 4. Telegram Webhook
 app.post('/telegram-webhook', (req, res) => {
-    console.log('Telegram update received:', JSON.stringify(req.body));
     res.sendStatus(200);
-
-    setImmediate(async () => {
-        try {
-            await bot.handleUpdate(req.body);
-        } catch (err) {
-            console.error('Telegram handleUpdate error:', err.message);
-        }
-    });
+    bot.handleUpdate(req.body).catch(err => console.error('Bot Error:', err));
 });
 
-// --- Global Error Handler ---
-app.use((err, req, res, next) => {
-    console.error('Unhandled error:', err);
-    res.status(500).json({ error: 'internal_error' });
-});
+app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }));
+app.get('/', (req, res) => res.send('OK - Backend API Active'));
 
-app.listen(PORT, () => {
-    console.log(`Backend API running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Backend running on port ${PORT}`));

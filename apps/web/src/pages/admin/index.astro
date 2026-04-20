@@ -4,11 +4,11 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
 <AdminLayout title="Posts">
   <div class="max-w-3xl mx-auto px-4 py-10">
-    <header class="flex items-center justify-between mb-12 !bg-transparent !border-none !shadow-none !p-0">
+    <div class="flex items-center justify-between mb-12 !bg-transparent !border-none !shadow-none !p-0 !sticky-none !backdrop-filter-none">
       <div class="flex items-center gap-4">
         <h1 class="text-xl font-bold tracking-tight text-adm-text">Posts</h1>
         <div class="h-4 w-[1px] bg-adm-border"></div>
-        <span id="tokenStatus" class="text-[10px] text-adm-muted font-mono uppercase tracking-widest">Database Active</span>
+        <span id="tokenStatus" class="text-[10px] text-adm-muted font-mono uppercase tracking-widest leading-none">Database Active</span>
       </div>
       <div class="flex items-center gap-6">
         <button id="themeToggle" class="text-adm-muted hover:text-adm-text transition-colors p-1" title="Toggle Theme">

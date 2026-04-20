@@ -277,6 +277,7 @@ app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
     const filename = `${Date.now()}-${req.file.originalname.replace(/\s+/g, '_')}`;
 
     try {
+        console.log(`Attempting image upload: ${filename} (${req.file.mimetype})`);
         const { data, error } = await supabase.storage
             .from('blog-images')
             .upload(filename, req.file.buffer, {
@@ -284,12 +285,16 @@ app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
                 upsert: true
             });
 
-        if (error) throw error;
+        if (error) {
+            console.error('Supabase storage error:', error);
+            throw error;
+        }
 
         const { data: { publicUrl } } = supabase.storage
             .from('blog-images')
             .getPublicUrl(filename);
 
+        console.log(`Image upload successful. URL: ${publicUrl}`);
         res.json({ url: publicUrl });
     } catch (err) {
         console.error('Supabase upload error:', err.message);

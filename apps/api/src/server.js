@@ -218,9 +218,32 @@ app.get('/cms/posts', cmsAuth, async (req, res) => {
         const { data } = await octokit.repos.getContent({
             owner: REPO_OWNER, repo: REPO_NAME, path: POSTS_PATH,
         });
-        const posts = data
-            .filter(f => f.name.endsWith('.md'))
-            .map(f => ({ slug: f.name.replace(/\.md$/, ''), sha: f.sha, url: f.html_url }));
+        
+        const files = data.filter(f => f.name.endsWith('.md'));
+        
+        // Fetch contents in parallel to extract titles/draft status
+        const posts = await Promise.all(files.map(async (file) => {
+            try {
+                const { data: contentData } = await octokit.repos.getContent({
+                    owner: REPO_OWNER, repo: REPO_NAME, path: file.path,
+                });
+                const raw = Buffer.from(contentData.content, 'base64').toString('utf8');
+                
+                const titleMatch = raw.match(/^title:\s*"?([^"\n]+)"?/m);
+                const draftMatch = raw.match(/^draft:\s*(\S+)/m);
+                
+                return {
+                    slug: file.name.replace(/\.md$/, ''),
+                    title: titleMatch ? titleMatch[1].trim() : file.name.replace(/\.md$/, ''),
+                    draft: draftMatch ? draftMatch[1] === 'true' : false,
+                    sha: file.sha
+                };
+            } catch (e) {
+                return { slug: file.name.replace(/\.md$/, ''), title: file.name, draft: false };
+            }
+        }));
+
+        // Sort by slug or title if needed (GitHub returns alphabetical by default)
         res.json(posts);
     } catch (err) {
         console.error('CMS list error:', err.message);

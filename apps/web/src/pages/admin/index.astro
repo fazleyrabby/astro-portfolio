@@ -72,7 +72,10 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       <div class="group flex items-center justify-between p-3 rounded-md hover:bg-adm-panel transition-colors border border-transparent hover:border-adm-border">
         <div class="flex items-center gap-3 min-w-0">
           <span class="w-2 h-2 rounded-full ${p.draft ? 'bg-yellow-500/50' : 'bg-green-500/50'} shrink-0"></span>
-          <span class="text-sm font-medium truncate text-adm-text group-hover:text-adm-primary transition-colors">${p.slug}</span>
+          <div class="flex flex-col min-w-0">
+            <span class="text-sm font-medium truncate text-adm-text group-hover:text-adm-primary transition-colors">${p.title}</span>
+            <span class="text-[10px] font-mono text-adm-muted truncate">${p.slug}</span>
+          </div>
         </div>
         <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <a href="/admin/edit?slug=${p.slug}" class="text-[10px] uppercase tracking-wider font-bold text-adm-primary hover:text-adm-text px-2 py-1 transition-colors">Edit</a>
@@ -121,7 +124,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   document.getElementById('search').addEventListener('input', (e) => {
     // @ts-ignore
     const q = e.target.value.toLowerCase();
-    render(q ? allPosts.filter(p => p.slug.toLowerCase().includes(q)) : allPosts);
+    render(q ? allPosts.filter(p => p.slug.toLowerCase().includes(q) || p.title.toLowerCase().includes(q)) : allPosts);
   });
 
   document.getElementById('logoutBtn').addEventListener('click', () => {

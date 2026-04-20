@@ -344,17 +344,19 @@ app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
     }
 });
 
-app.get('/tg-feed', (req, res) => {
-    log(`GET request received on hidden webhook endpoint`);
-    res.send('Secret channel active.');
+app.get('/', (req, res) => {
+    if (req.query.tg_webhook === '1') {
+        return res.send('Webhook root active.');
+    }
+    res.send('OK - Backend API Active');
 });
 
-app.post('/tg-feed', (req, res) => {
-    res.sendStatus(200);
-    bot.handleUpdate(req.body).catch(err => log(`Bot Error: ${err.message}`));
+app.post('/', (req, res) => {
+    if (req.query.tg_webhook === '1') {
+        res.sendStatus(200);
+        return bot.handleUpdate(req.body).catch(err => log(`Bot Error: ${err.message}`));
+    }
+    res.sendStatus(404);
 });
-
-app.get('/health', (req, res) => res.json({ ok: true, ts: Date.now() }));
-app.get('/', (req, res) => res.send('OK - Backend API Active'));
 
 app.listen(PORT, () => console.log(`🚀 Backend running on port ${PORT}`));

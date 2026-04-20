@@ -7,6 +7,9 @@ import TableOfContents from "@components/TableOfContents.astro";
 import { supabase } from "@lib/supabase";
 import { marked } from "marked";
 
+// Cache for 1 minute
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+
 const { slug } = Astro.params;
 
 // Fetch strictly from Supabase
@@ -104,7 +107,7 @@ const seoDescription = post.description || post.title;
       const detectBg = () => {
         const proxy = new Image();
         proxy.crossOrigin = 'anonymous';
-        proxy.src = `https://api.fazleyrabbi.xyz/image-proxy?url=${encodeURIComponent(img.src)}`;        proxy.onload = () => {
+        proxy.src = `https://api.rhtech.dev/image-proxy?url=${encodeURIComponent(img.src)}`;        proxy.onload = () => {
           try {
             const c = document.createElement('canvas');
             const ctx = c.getContext('2d');

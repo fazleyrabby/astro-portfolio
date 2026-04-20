@@ -218,17 +218,25 @@ app.get('/cms/posts', cmsAuth, async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('posts')
-            .select('slug, title, status, updated_at')
-            .order('updated_at', { ascending: false });
+            .select('slug, title, status, updated_at');
 
         if (error) throw error;
 
-        const posts = data.map(p => ({
-            slug: p.slug,
-            title: (p.title && p.title.trim() !== '') ? p.title : p.slug,
-            draft: p.status === 'draft',
-            updated_at: p.updated_at
-        }));
+        const posts = data.map(p => {
+            let title = p.title;
+            if (!title || title.trim() === '' || title.toLowerCase() === 'untitled') {
+                title = p.slug;
+            }
+            return {
+                slug: p.slug,
+                title: title,
+                draft: p.status === 'draft',
+                updated_at: p.updated_at
+            };
+        });
+
+        // Sort by update time descending
+        posts.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
 
         res.json(posts);
     } catch (err) {
@@ -240,6 +248,18 @@ app.get('/cms/posts', cmsAuth, async (req, res) => {
 // GET SINGLE
 app.get('/cms/posts/:slug', cmsAuth, async (req, res) => {
     try {
+        // 1. Try Supabase first
+        const { data, error } = await supabase
+            .from('posts')
+            .select('*')
+            .eq('slug', req.params.slug)
+            .single();
+
+        if (!error && data) {
+            return res.json(data);
+        }
+
+        // 2. Fallback to GitHub
         const file = await ghGetFile(`${POSTS_PATH}/${req.params.slug}.md`);
         const content = Buffer.from(file.content, 'base64').toString('utf8');
         res.json({ slug: req.params.slug, sha: file.sha, content });

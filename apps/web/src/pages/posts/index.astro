@@ -4,6 +4,9 @@ import { supabase } from "@lib/supabase";
 
 export const prerender = false;
 
+// Cache the response at the Edge for 1 minute, with stale-while-revalidate
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+
 // Fetch strictly from Supabase
 const { data: posts, error } = await supabase
   .from('posts')
@@ -51,7 +54,7 @@ const [heroPost, ...otherFeatured] = featuredPosts;
                   {heroPost.published_at ? new Date(heroPost.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Unknown'}
                 </div>
                 <h3 class="font-display font-bold text-3xl md:text-4xl lg:text-5xl text-[var(--text-primary)] mb-8 leading-[1.1] group-hover:text-[var(--accent)] transition-all duration-300">
-                  {heroPost.title}
+                  {heroPost.title || heroPost.slug}
                 </h3>
                 <p class="text-[var(--text-secondary)] text-lg mb-10 line-clamp-3 leading-relaxed max-w-[550px]">
                   {heroPost.description || "An in-depth analysis of critical production engineering patterns and scalable architecture."}
@@ -88,7 +91,7 @@ const [heroPost, ...otherFeatured] = featuredPosts;
                       {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'Unknown'}
                     </div>
                     <h3 class="font-display font-semibold text-xl text-[var(--text-primary)] mb-6 leading-tight group-hover:text-[var(--accent)] transition-colors">
-                      {post.title}
+                      {post.title || post.slug}
                     </h3>
                     <p class="text-[var(--text-secondary)] text-sm mb-8 line-clamp-2 opacity-80 group-hover:opacity-100 transition-opacity">
                       {post.description || "Exploring advanced system architecture and engineering trade-offs."}
@@ -124,7 +127,7 @@ const [heroPost, ...otherFeatured] = featuredPosts;
                 <span class="opacity-0 group-hover:opacity-100 transition-opacity text-[var(--accent)]">→</span>
               </div>
               <h3 class="font-display font-bold text-lg text-[var(--text-primary)] mb-3 leading-snug group-hover:text-[var(--accent)] transition-colors">
-                {post.title}
+                {post.title || post.slug}
               </h3>
             </a>
           </article>

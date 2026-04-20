@@ -19,6 +19,7 @@ create table posts (
   content text, -- markdown body
 
   tags text[] default '{}',
+  featured boolean default false,
 
   cover_image text,
 

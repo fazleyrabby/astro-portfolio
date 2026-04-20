@@ -4,7 +4,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
 <AdminLayout title="Posts">
   <div class="max-w-3xl mx-auto px-4 py-10">
-    <header class="flex items-center justify-between mb-12 bg-transparent border-none shadow-none">
+    <header class="flex items-center justify-between mb-12 !bg-transparent !border-none !shadow-none !p-0">
       <div class="flex items-center gap-4">
         <h1 class="text-xl font-bold tracking-tight text-adm-text">Posts</h1>
         <div class="h-4 w-[1px] bg-adm-border"></div>
@@ -13,7 +13,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       <div class="flex items-center gap-6">
         <button id="themeToggle" class="text-adm-muted hover:text-adm-text transition-colors p-1" title="Toggle Theme">
           <svg id="sunIcon" class="hidden dark:block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M22 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-          <svg id="moonIcon" class="block dark:hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <svg id="moonIcon" class="block dark:hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 0 1 1-9-9Z"/></svg>
         </button>
         <button id="logoutBtn" class="text-xs text-adm-muted hover:text-adm-text transition-colors uppercase tracking-wider font-bold">Logout</button>
       </div>
@@ -45,7 +45,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 </AdminLayout>
 
 <script>
-  const API = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://api.fazleyrabbi.xyz';
+  const API = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://api.rhtech.dev';
   let allPosts = [];
 
   function getToken() {
@@ -69,19 +69,24 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     }
 
     el.innerHTML = posts.map(p => {
-      const displayTitle = (p.title && p.title.trim() !== '') ? p.title : p.slug;
+      // Robust title recovery
+      let displayTitle = p.title;
+      if (!displayTitle || displayTitle.trim() === '' || displayTitle.toLowerCase() === 'untitled' || displayTitle === 'undefined') {
+        displayTitle = p.slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+      }
+      
       return `
-        <div class="group relative flex items-center justify-between p-3 rounded-md hover:bg-adm-panel transition-colors border border-transparent hover:border-adm-border">
+        <div class="group relative flex items-center justify-between p-4 rounded-xl hover:bg-adm-panel transition-all border border-transparent hover:border-adm-border shadow-sm hover:shadow-md mb-2">
           <a href="/admin/edit?slug=${p.slug}" class="absolute inset-0 z-10" aria-label="Edit ${displayTitle}"></a>
-          <div class="flex items-center gap-3 min-w-0">
-            <span class="w-2 h-2 rounded-full ${p.draft ? 'bg-yellow-500/50' : 'bg-green-500/50'} shrink-0"></span>
+          <div class="flex items-center gap-4 min-w-0">
+            <span class="w-2.5 h-2.5 rounded-full ${p.draft ? 'bg-amber-500/40 shadow-[0_0_8px_rgba(245,158,11,0.3)]' : 'bg-emerald-500/40 shadow-[0_0_8px_rgba(16,185,129,0.3)]'} shrink-0"></span>
             <div class="flex flex-col min-w-0">
-              <span class="text-sm font-medium truncate text-adm-text group-hover:text-adm-primary transition-colors">${displayTitle}</span>
-              <span class="text-[10px] font-mono text-adm-muted truncate">${p.slug}</span>
+              <span class="text-[15px] font-semibold tracking-tight text-adm-text group-hover:text-adm-primary transition-colors leading-tight">${displayTitle}</span>
+              <span class="text-[11px] font-mono text-adm-muted mt-1 opacity-60 tracking-wider">${p.slug}</span>
             </div>
           </div>
-          <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-            <button onclick="event.preventDefault(); window.deletePost('${p.slug}')" class="text-[10px] uppercase tracking-wider font-bold text-red-500/70 hover:text-red-500 px-2 py-1 transition-colors">Delete</button>
+          <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all z-20 translate-x-2 group-hover:translate-x-0">
+            <button onclick="event.preventDefault(); window.deletePost('${p.slug}')" class="text-[10px] uppercase tracking-widest font-bold text-red-500/60 hover:text-red-500 px-3 py-1.5 rounded-md hover:bg-red-500/5 transition-all">Delete</button>
           </div>
         </div>
       `;

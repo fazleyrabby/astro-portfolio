@@ -217,10 +217,6 @@ bot.on('callback_query', async (ctx) => {
         await ctx.editMessageText(`🚀 <b>Publishing:</b> ${post.title}...`, { parse_mode: 'HTML' });
 
         try {
-            const filePath = `${POSTS_PATH}/${slug}.md`;
-            const md = buildMarkdown(post.title, post.content, false, post.tags);
-
-            await ghCreateOrUpdate(filePath, md, null, `ai: publish ${post.title}`);
             await supabase.from('posts').upsert({
                 title: post.title,
                 slug,
@@ -229,8 +225,9 @@ bot.on('callback_query', async (ctx) => {
                 status: 'published',
                 published_at: new Date()
             });
+            triggerDeploy();
 
-            await ctx.editMessageText(`✅ <b>PUBLISHED!</b>\n\n<b>Title:</b> ${post.title}\n<b>Status:</b> Live on Database & GitHub.`, { parse_mode: 'HTML' });
+            await ctx.editMessageText(`✅ <b>PUBLISHED!</b>\n\n<b>Title:</b> ${post.title}\n<b>Status:</b> Live on Supabase. Site rebuilding...`, { parse_mode: 'HTML' });
             aiDrafts.delete(slug);
         } catch (err) {
             log(`[BOT] Bot publish error: ${err.message}`);
@@ -295,14 +292,25 @@ app.get('/cms/posts/:slug', cmsAuth, async (req, res) => {
     }
 });
 
+const VERCEL_DEPLOY_HOOK = process.env.VERCEL_DEPLOY_HOOK || 'https://api.vercel.com/v1/integrations/deploy/prj_lY5Ii1JI2IUVUIVR9anpPUtuQI8d/6qdbCkqaTh';
+
+async function triggerDeploy() {
+    try {
+        await fetch(VERCEL_DEPLOY_HOOK, { method: 'POST' });
+        log('[DEPLOY] Vercel rebuild triggered');
+    } catch (e) {
+        log(`[DEPLOY] Hook failed: ${e.message}`);
+    }
+}
+
 app.post('/cms/posts', cmsAuth, async (req, res) => {
     const { title, content, draft = false, tags = [], published_at } = req.body || {};
     const slug = toSlug(title);
     const status = draft ? 'draft' : 'published';
     const pubDate = published_at ? new Date(published_at) : (status === 'published' ? new Date() : null);
     try {
-        await ghCreateOrUpdate(`${POSTS_PATH}/${slug}.md`, buildMarkdown(title, content, draft, tags), null, `cms: create ${slug}`);
         await supabase.from('posts').upsert({ title, slug, content, tags, status, published_at: pubDate });
+        if (status === 'published') triggerDeploy();
         res.status(201).json({ ok: true, slug });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -315,9 +323,8 @@ app.put('/cms/posts/:slug', cmsAuth, async (req, res) => {
     const status = draft ? 'draft' : 'published';
     const pubDate = published_at ? new Date(published_at) : (status === 'published' ? new Date() : null);
     try {
-        const file = await ghGetFile(`${POSTS_PATH}/${slug}.md`);
-        await ghCreateOrUpdate(`${POSTS_PATH}/${slug}.md`, buildMarkdown(title || slug, content, draft, tags), file.sha, `cms: update ${slug}`);
         await supabase.from('posts').upsert({ title, slug, content, tags, status, published_at: pubDate });
+        if (status === 'published') triggerDeploy();
         res.json({ ok: true, slug });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -327,9 +334,8 @@ app.put('/cms/posts/:slug', cmsAuth, async (req, res) => {
 app.delete('/cms/posts/:slug', cmsAuth, async (req, res) => {
     const slug = req.params.slug;
     try {
-        const file = await ghGetFile(`${POSTS_PATH}/${slug}.md`);
-        await octokit.repos.deleteFile({ owner: REPO_OWNER, repo: REPO_NAME, path: `${POSTS_PATH}/${slug}.md`, sha: file.sha, message: `cms: delete ${slug}` });
         await supabase.from('posts').delete().eq('slug', slug);
+        triggerDeploy();
         res.json({ ok: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

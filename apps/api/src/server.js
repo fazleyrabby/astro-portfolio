@@ -354,7 +354,7 @@ app.delete('/cms/posts/:slug', cmsAuth, async (req, res) => {
     }
 });
 
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 2 * 1024 * 1024 } });
 app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'no file' });
     const filename = `${Date.now()}-${req.file.originalname.replace(/\s+/g, '_')}`;
@@ -381,6 +381,32 @@ app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
         res.json({ url: publicUrl });
     } catch (err) {
         log(`Supabase upload error: ${err.message}`);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/cms/media', cmsAuth, async (req, res) => {
+    try {
+        const { data, error } = await supabase.storage.from('blog-images').list('', { sortBy: { column: 'created_at', order: 'desc' } });
+        if (error) throw error;
+        const files = data.map(f => ({
+            name: f.name,
+            size: f.metadata?.size,
+            created_at: f.created_at,
+            url: supabase.storage.from('blog-images').getPublicUrl(f.name).data.publicUrl
+        }));
+        res.json(files);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.delete('/cms/media/:filename', cmsAuth, async (req, res) => {
+    try {
+        const { error } = await supabase.storage.from('blog-images').remove([req.params.filename]);
+        if (error) throw error;
+        res.json({ ok: true });
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });

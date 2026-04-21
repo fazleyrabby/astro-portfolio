@@ -1,0 +1,156 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout title="Media">
+  <div class="max-w-6xl mx-auto px-8 py-10">
+    <div class="flex items-center justify-between mb-12">
+      <div class="flex items-center gap-4">
+        <a href="/admin" class="text-adm-muted hover:text-adm-text transition-colors text-sm flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          Back
+        </a>
+        <div class="h-4 w-[1px] bg-adm-border"></div>
+        <h1 class="text-xl font-bold tracking-tight text-adm-text">Media</h1>
+        <div class="h-4 w-[1px] bg-adm-border"></div>
+        <span id="mediaCount" class="text-[10px] text-adm-muted font-mono uppercase tracking-widest">Loading...</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <label class="bg-adm-primary hover:opacity-90 text-white px-4 py-1.5 rounded-md text-sm font-medium transition-all cursor-pointer">
+          Upload Image
+          <input type="file" id="uploadFile" accept="image/*" class="hidden" />
+        </label>
+        <button id="themeToggle" class="text-adm-muted hover:text-adm-text transition-colors p-1" title="Toggle Theme">
+          <svg id="sunIcon" class="hidden dark:block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M22 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg id="moonIcon" class="block dark:hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="uploadStatus" class="hidden mb-6 px-4 py-2 rounded-md text-xs font-mono"></div>
+
+    <div id="mediaGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div class="col-span-full text-center py-20 text-adm-muted text-sm animate-pulse">Loading media...</div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  const API = import.meta.env.PUBLIC_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3005' : 'https://cms.fazleyrabbi.xyz');
+
+  function getToken() {
+    const t = localStorage.getItem('cms_token');
+    if (!t) { window.location.href = '/admin/login?r=/admin/media'; return null; }
+    return t;
+  }
+
+  function authHeaders() {
+    return { 'Authorization': `Bearer ${getToken()}` };
+  }
+
+  function formatSize(bytes) {
+    if (!bytes) return '—';
+    if (bytes < 1024) return `${bytes}B`;
+    if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)}KB`;
+    return `${(bytes / 1048576).toFixed(1)}MB`;
+  }
+
+  async function loadMedia() {
+    try {
+      const res = await fetch(`${API}/cms/media`, { headers: authHeaders() });
+      if (res.status === 401) { window.location.href = '/admin/login'; return; }
+      const files = await res.json();
+      render(files);
+    } catch (e) {
+      document.getElementById('mediaGrid').innerHTML = `<div class="col-span-full text-center py-20 text-red-400 text-sm">Error: ${e.message}</div>`;
+    }
+  }
+
+  function render(files) {
+    const grid = document.getElementById('mediaGrid');
+    const count = document.getElementById('mediaCount');
+    count.textContent = `${files.length} files`;
+
+    if (!files.length) {
+      grid.innerHTML = `<div class="col-span-full text-center py-20 border border-dashed border-adm-border rounded-lg text-adm-muted text-sm">No images uploaded yet.</div>`;
+      return;
+    }
+
+    grid.innerHTML = files.map(f => `
+      <div class="group relative border border-adm-border rounded-lg overflow-hidden bg-adm-panel hover:border-adm-primary/50 transition-all">
+        <div class="aspect-square overflow-hidden bg-adm-bg">
+          <img src="${f.url}" alt="${f.name}" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div class="p-2">
+          <p class="text-[10px] font-mono text-adm-muted truncate" title="${f.name}">${f.name}</p>
+          <p class="text-[9px] text-adm-muted/50 mt-0.5">${formatSize(f.size)}</p>
+        </div>
+        <div class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button onclick="copyUrl('${f.url}')" class="bg-adm-bg/90 backdrop-blur text-adm-muted hover:text-adm-text px-2 py-1 rounded text-[9px] font-mono border border-adm-border transition-colors">Copy</button>
+          <button onclick="deleteFile('${f.name}')" class="bg-adm-bg/90 backdrop-blur text-red-500/60 hover:text-red-500 px-2 py-1 rounded text-[9px] font-mono border border-adm-border transition-colors">Del</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function showStatus(msg, ok = true) {
+    const el = document.getElementById('uploadStatus');
+    el.textContent = msg;
+    el.className = `mb-6 px-4 py-2 rounded-md text-xs font-mono ${ok ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'}`;
+    setTimeout(() => el.classList.add('hidden'), 3000);
+  }
+
+  // @ts-ignore
+  window.copyUrl = function(url) {
+    navigator.clipboard.writeText(url);
+    showStatus('URL copied to clipboard');
+  };
+
+  // @ts-ignore
+  window.deleteFile = async function(name) {
+    if (!confirm(`Delete "${name}"?`)) return;
+    try {
+      const res = await fetch(`${API}/cms/media/${encodeURIComponent(name)}`, { method: 'DELETE', headers: authHeaders() });
+      if (!res.ok) throw new Error('Delete failed');
+      showStatus(`Deleted: ${name}`);
+      loadMedia();
+    } catch (e) {
+      showStatus(e.message, false);
+    }
+  };
+
+  document.getElementById('uploadFile').addEventListener('change', async (e) => {
+    // @ts-ignore
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      showStatus(`File too large: ${formatSize(file.size)}. Max 2MB.`, false);
+      // @ts-ignore
+      e.target.value = '';
+      return;
+    }
+    const form = new FormData();
+    form.append('file', file);
+    showStatus('Uploading...');
+    try {
+      const res = await fetch(`${API}/cms/upload`, { method: 'POST', headers: authHeaders(), body: form });
+      if (!res.ok) throw new Error('Upload failed');
+      showStatus('Uploaded successfully');
+      loadMedia();
+    } catch (e) {
+      showStatus(e.message, false);
+    }
+    // @ts-ignore
+    e.target.value = '';
+  });
+
+  // Theme toggle
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    document.documentElement.classList.toggle('dark', !isDark);
+    localStorage.setItem('adm_theme', isDark ? 'light' : 'dark');
+  });
+
+  const token = getToken();
+  if (token) loadMedia();
+</script>

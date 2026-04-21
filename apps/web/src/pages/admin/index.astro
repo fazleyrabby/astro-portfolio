@@ -69,27 +69,32 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       return;
     }
 
+    // Desktop table
+    const tableRows = posts.map(p => {
+      let displayTitle = p.title;
+      if (!displayTitle || displayTitle.trim() === '' || displayTitle.toLowerCase() === 'untitled' || displayTitle === 'undefined') {
+        displayTitle = p.slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      }
+      const isDraft = p.status === 'draft' || p.draft;
+      const statusLabel = p.status || (isDraft ? 'draft' : 'published');
+      const date = (p.published_at || p.updated_at) ? new Date(p.published_at || p.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
+      return { p, displayTitle, isDraft, statusLabel, date };
+    });
+
     el.innerHTML = `
-      <table class="w-full text-sm">
-        <thead>
-          <tr class="border-b border-adm-border text-[10px] uppercase tracking-widest text-adm-muted font-mono">
-            <th class="text-left pb-2 font-medium">Title</th>
-            <th class="text-left pb-2 font-medium">Slug</th>
-            <th class="text-left pb-2 font-medium">Status</th>
-            <th class="text-left pb-2 font-medium">Date</th>
-            <th class="text-left pb-2 font-medium">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${posts.map(p => {
-            let displayTitle = p.title;
-            if (!displayTitle || displayTitle.trim() === '' || displayTitle.toLowerCase() === 'untitled' || displayTitle === 'undefined') {
-              displayTitle = p.slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-            }
-            const isDraft = p.status === 'draft' || p.draft;
-            const statusLabel = p.status || (isDraft ? 'draft' : 'published');
-            const date = (p.published_at || p.updated_at) ? new Date(p.published_at || p.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
-            return `
+      <div class="hidden md:block">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-adm-border text-[10px] uppercase tracking-widest text-adm-muted font-mono">
+              <th class="text-left pb-2 font-medium">Title</th>
+              <th class="text-left pb-2 font-medium">Slug</th>
+              <th class="text-left pb-2 font-medium">Status</th>
+              <th class="text-left pb-2 font-medium">Date</th>
+              <th class="text-left pb-2 font-medium">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRows.map(({ p, displayTitle, isDraft, statusLabel, date }) => `
               <tr class="group border-b border-adm-border/40 hover:bg-adm-panel transition-colors">
                 <td class="py-3 pr-4">
                   <a href="/admin/edit?slug=${p.slug}" class="font-medium text-adm-text group-hover:text-adm-primary transition-colors">${displayTitle}</a>
@@ -103,10 +108,24 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
                   <button onclick="window.deletePost('${p.slug}')" class="text-[10px] uppercase tracking-widest font-bold text-red-500/60 hover:text-red-500 transition-colors">Delete</button>
                 </td>
               </tr>
-            `;
-          }).join('')}
-        </tbody>
-      </table>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="md:hidden space-y-2">
+        ${tableRows.map(({ p, displayTitle, isDraft, statusLabel, date }) => `
+          <div class="border border-adm-border rounded-lg p-3 bg-adm-panel">
+            <div class="flex items-start justify-between gap-2 mb-1.5">
+              <a href="/admin/edit?slug=${p.slug}" class="font-medium text-adm-text text-sm leading-snug flex-1">${displayTitle}</a>
+              <span class="text-[10px] uppercase tracking-widest font-bold shrink-0 ${isDraft ? 'text-amber-500' : 'text-emerald-500'}">${statusLabel}</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[10px] text-adm-muted/60">${date}</span>
+              <button onclick="window.deletePost('${p.slug}')" class="text-[10px] uppercase tracking-widest font-bold text-red-500/60 hover:text-red-500 transition-colors">Delete</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
     `;
     
     countEl.textContent = `${posts.length} posts`;

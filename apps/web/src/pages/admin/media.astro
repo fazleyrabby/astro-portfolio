@@ -86,7 +86,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           <p class="text-[9px] text-adm-muted/50 mt-0.5">${formatSize(f.size)}</p>
         </div>
         <div class="flex gap-1 p-2 border-t border-adm-border">
-          <button onclick="copyUrl('${f.url}')" class="flex-1 bg-adm-bg hover:bg-adm-primary hover:text-white text-adm-muted px-2 py-1.5 rounded text-[10px] font-mono border border-adm-border transition-colors">Copy URL</button>
+          <button onclick="copyUrl('${f.url}', '${f.name}')" class="flex-1 bg-adm-bg hover:bg-adm-primary hover:text-white text-adm-muted px-2 py-1.5 rounded text-[10px] font-mono border border-adm-border transition-colors">Copy MD</button>
           <button onclick="deleteFile('${f.name}')" class="bg-adm-bg hover:bg-red-500 hover:text-white text-red-500 px-2 py-1.5 rounded text-[10px] font-mono border border-red-500/30 transition-colors">Delete</button>
         </div>
       </div>
@@ -101,9 +101,10 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   }
 
   // @ts-ignore
-  window.copyUrl = function(url) {
-    navigator.clipboard.writeText(url);
-    showStatus('URL copied to clipboard');
+  window.copyUrl = function(url, name) {
+    const alt = name.replace(/^\d+-/, '').replace(/\.[^.]+$/, '').replace(/[_-]/g, ' ');
+    navigator.clipboard.writeText(`![${alt}](${url})`);
+    showStatus('Markdown copied to clipboard');
   };
 
   // @ts-ignore

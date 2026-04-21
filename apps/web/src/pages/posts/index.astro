@@ -113,7 +113,7 @@ const [heroPost, ...otherFeatured] = featuredPosts;
       <div id="posts-grid" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {regularPosts.map((post, index) => (
           <article 
-            class={`post-card group card border border-[var(--border)] rounded-sm transition-all hover:bg-[rgba(255,255,255,0.01)] h-full ${index >= 6 ? 'hidden' : ''}`}
+            class={`post-card group card border border-[var(--border)] rounded-sm transition-all hover:bg-[rgba(255,255,255,0.01)] h-full ${index >= 12 ? 'hidden' : ''}`}
             data-index={index}
           >
             <a href={`/posts/${post.slug}`} class="flex flex-col p-6 no-underline h-full">
@@ -129,7 +129,7 @@ const [heroPost, ...otherFeatured] = featuredPosts;
         ))}
       </div>
 
-      {regularPosts.length > 6 && (
+      {regularPosts.length > 12 && (
         <div class="mt-12 flex justify-center">
           <button 
             id="show-more-btn"

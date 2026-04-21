@@ -119,7 +119,7 @@ OUTPUT: Raw Markdown with YAML title and tags. DO NOT wrap the YAML in markdown 
         const completion = await openai.chat.completions.create({
             model: 'llama-3.3-70b-versatile',
             messages: [{ role: 'user', content: prompt }],
-            timeout: 50000, // 50 second timeout for shared hosting
+             // 50 second timeout for shared hosting
         });
 
         log(`[AI] Response received from Groq`);

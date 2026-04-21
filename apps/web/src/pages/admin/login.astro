@@ -40,6 +40,11 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           <div id="error" class="hidden text-center text-[10px] font-bold text-red-500 uppercase tracking-widest animate-bounce">
             Invalid Token. Access Denied.
           </div>
+<div class="mt-4 text-center"> 
+  <p class="text-[9px] text-adm-muted font-mono uppercase tracking-widest opacity-40"> 
+    Target: <span id="apiTarget">Connecting...</span> 
+  </p> 
+</div>
         </form>
       </div>
       
@@ -52,6 +57,8 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
 <script>
   const API = import.meta.env.PUBLIC_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3005' : 'https://cms.fazleyrabbi.xyz');
+
+document.getElementById("apiTarget").textContent = API; 
 
   if (localStorage.getItem('cms_token')) {
     window.location.href = '/admin';

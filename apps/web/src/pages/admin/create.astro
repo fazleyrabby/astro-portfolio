@@ -29,6 +29,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         </div>
 
         <div class="flex items-center gap-2">
+          <input type="date" id="publishedAt" class="bg-adm-bg border border-adm-border rounded-md px-2 py-1 text-xs text-adm-muted focus:outline-none focus:border-adm-primary/50 transition-colors mr-2" />
           <label class="flex items-center gap-2 text-xs text-adm-muted cursor-pointer hover:text-adm-text transition-colors mr-2">
             <input type="checkbox" id="draftCheck" checked class="rounded border-adm-border bg-adm-bg text-adm-primary focus:ring-adm-primary/20" />
             Draft
@@ -101,9 +102,13 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   const titleInput = document.getElementById('titleInput') as HTMLInputElement;
   const slugPreview = document.getElementById('slugPreview');
   const draftCheck = document.getElementById('draftCheck') as HTMLInputElement;
+  const publishedAtInput = document.getElementById('publishedAt') as HTMLInputElement;
   const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
   const imageFile = document.getElementById('imageFile') as HTMLInputElement;
   const uploadBtn = document.getElementById('uploadBtn');
+
+  // Default date to today
+  publishedAtInput.value = new Date().toISOString().split('T')[0];
 
   // Title to slug helper
   function toSlug(title) {
@@ -291,7 +296,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           'Authorization': `Bearer ${getToken()}`,
           'Content-Type': 'application/json' 
         },
-        body: JSON.stringify({ title, content: body, draft: isDraft }),
+        body: JSON.stringify({ title, content: body, draft: isDraft, published_at: publishedAtInput.value || null }),
       });
       
       const data = await res.json();

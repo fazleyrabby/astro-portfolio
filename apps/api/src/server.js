@@ -245,23 +245,7 @@ bot.on('callback_query', async (ctx) => {
 });
 
 // --- REST API Logic ---
-const CMS_ALLOWED_IPS = (process.env.CMS_ALLOWED_IPS || '100.84.207.28,100.120.167.83')
-    .split(',').map(ip => ip.trim());
-
-function getClientIp(req) {
-    return (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
-        || req.socket.remoteAddress
-        || '';
-}
-
 function cmsAuth(req, res, next) {
-    const clientIp = getClientIp(req);
-
-    if (!CMS_ALLOWED_IPS.includes(clientIp)) {
-        log(`[AUTH] IP blocked: ${clientIp}`);
-        return res.status(403).json({ error: 'forbidden' });
-    }
-
     const auth = req.headers['authorization'] || '';
     const token = auth.replace('Bearer ', '').trim();
 
@@ -312,12 +296,13 @@ app.get('/cms/posts/:slug', cmsAuth, async (req, res) => {
 });
 
 app.post('/cms/posts', cmsAuth, async (req, res) => {
-    const { title, content, draft = false, tags = [] } = req.body || {};
+    const { title, content, draft = false, tags = [], published_at } = req.body || {};
     const slug = toSlug(title);
     const status = draft ? 'draft' : 'published';
+    const pubDate = published_at ? new Date(published_at) : (status === 'published' ? new Date() : null);
     try {
         await ghCreateOrUpdate(`${POSTS_PATH}/${slug}.md`, buildMarkdown(title, content, draft, tags), null, `cms: create ${slug}`);
-        await supabase.from('posts').upsert({ title, slug, content, tags, status, published_at: status === 'published' ? new Date() : null });
+        await supabase.from('posts').upsert({ title, slug, content, tags, status, published_at: pubDate });
         res.status(201).json({ ok: true, slug });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -325,13 +310,14 @@ app.post('/cms/posts', cmsAuth, async (req, res) => {
 });
 
 app.put('/cms/posts/:slug', cmsAuth, async (req, res) => {
-    const { title, content, draft, tags } = req.body || {};
+    const { title, content, draft, tags, published_at } = req.body || {};
     const slug = req.params.slug;
     const status = draft ? 'draft' : 'published';
+    const pubDate = published_at ? new Date(published_at) : (status === 'published' ? new Date() : null);
     try {
         const file = await ghGetFile(`${POSTS_PATH}/${slug}.md`);
         await ghCreateOrUpdate(`${POSTS_PATH}/${slug}.md`, buildMarkdown(title || slug, content, draft, tags), file.sha, `cms: update ${slug}`);
-        await supabase.from('posts').upsert({ title, slug, content, tags, status, published_at: status === 'published' ? new Date() : null });
+        await supabase.from('posts').upsert({ title, slug, content, tags, status, published_at: pubDate });
         res.json({ ok: true, slug });
     } catch (err) {
         res.status(500).json({ error: err.message });

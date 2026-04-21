@@ -260,7 +260,7 @@ function cmsAuth(req, res, next) {
 
 app.get('/cms/posts', cmsAuth, async (req, res) => {
     try {
-        const { data, error } = await supabase.from('posts').select('slug, title, status, updated_at');
+        const { data, error } = await supabase.from('posts').select('slug, title, status, published_at, updated_at');
         if (error) throw error;
         const posts = data.map(p => {
             let title = p.title;
@@ -269,12 +269,14 @@ app.get('/cms/posts', cmsAuth, async (req, res) => {
             }
             return {
                 slug: p.slug,
-                title: title,
+                title,
+                status: p.status,
                 draft: p.status === 'draft',
+                published_at: p.published_at,
                 updated_at: p.updated_at
             };
         });
-        posts.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        posts.sort((a, b) => new Date(b.published_at || b.updated_at) - new Date(a.published_at || a.updated_at));
         res.json(posts);
     } catch (err) {
         res.status(500).json({ error: err.message });

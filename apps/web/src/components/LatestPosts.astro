@@ -1,14 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
-const allPostsRaw = await getCollection('posts');
-const allPosts = allPostsRaw.filter(post => !post.data.draft);
-// Sort by date descending
-allPosts.sort((a, b) => {
-  const dateA = a.data.date ? new Date(a.data.date).getTime() : 0;
-  const dateB = b.data.date ? new Date(b.data.date).getTime() : 0;
-  return dateB - dateA;
-});
-const latestPosts = allPosts.slice(0, 3);
+import { supabase } from '@lib/supabase';
+const { data } = await supabase
+  .from('posts')
+  .select('slug, title, published_at')
+  .eq('status', 'published')
+  .order('published_at', { ascending: false })
+  .limit(3);
+const latestPosts = data || [];
 ---
 
 <section id="posts" class="py-16">
@@ -28,10 +26,10 @@ const latestPosts = allPosts.slice(0, 3);
             <span class="post-number font-mono text-[0.7rem] text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors shrink-0">0{i + 1}</span>
             <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 min-w-0">
               <span class="post-date font-mono text-[0.68rem] text-[var(--text-muted)] shrink-0">
-                {post.data.date ? new Date(post.data.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) : 'Unknown'}
+                {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) : 'Unknown'}
               </span>
               <span class="post-title font-display font-semibold text-[1.02rem] text-[var(--text-primary)] group-hover:text-[var(--text-primary)] truncate">
-                {post.data.title}
+                {post.title}
               </span>
             </div>
           </div>

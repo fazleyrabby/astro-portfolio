@@ -87,7 +87,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
             }
             const isDraft = p.status === 'draft' || p.draft;
             const statusLabel = p.status || (isDraft ? 'draft' : 'published');
-            const date = (p.updated_at || p.published_at) ? new Date(p.updated_at || p.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
+            const date = (p.published_at || p.updated_at) ? new Date(p.published_at || p.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
             return `
               <tr class="group border-b border-adm-border/40 hover:bg-adm-panel transition-colors">
                 <td class="py-3 pr-4">

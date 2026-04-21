@@ -3,7 +3,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 ---
 
 <AdminLayout title="Posts">
-  <div class="max-w-3xl mx-auto px-4 py-10">
+  <div class="max-w-6xl mx-auto px-8 py-10">
     <div class="flex items-center justify-between mb-12 !bg-transparent !border-none !shadow-none !p-0 !sticky-none !backdrop-filter-none">
       <div class="flex items-center gap-4">
         <h1 class="text-xl font-bold tracking-tight text-adm-text">Posts</h1>
@@ -68,29 +68,45 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       return;
     }
 
-    el.innerHTML = posts.map(p => {
-      // Robust title recovery
-      let displayTitle = p.title;
-      if (!displayTitle || displayTitle.trim() === '' || displayTitle.toLowerCase() === 'untitled' || displayTitle === 'undefined') {
-        displayTitle = p.slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-      }
-      
-      return `
-        <div class="group relative flex items-center justify-between p-4 rounded-xl hover:bg-adm-panel transition-all border border-transparent hover:border-adm-border shadow-sm hover:shadow-md mb-2">
-          <a href="/admin/edit?slug=${p.slug}" class="absolute inset-0 z-10" aria-label="Edit ${displayTitle}"></a>
-          <div class="flex items-center gap-4 min-w-0">
-            <span class="w-2.5 h-2.5 rounded-full ${p.draft ? 'bg-amber-500/40 shadow-[0_0_8px_rgba(245,158,11,0.3)]' : 'bg-emerald-500/40 shadow-[0_0_8px_rgba(16,185,129,0.3)]'} shrink-0"></span>
-            <div class="flex flex-col min-w-0">
-              <span class="text-[15px] font-semibold tracking-tight text-adm-text group-hover:text-adm-primary transition-colors leading-tight">${displayTitle}</span>
-              <span class="text-[11px] font-mono text-adm-muted mt-1 opacity-60 tracking-wider">${p.slug}</span>
-            </div>
-          </div>
-          <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all z-20 translate-x-2 group-hover:translate-x-0">
-            <button onclick="event.preventDefault(); window.deletePost('${p.slug}')" class="text-[10px] uppercase tracking-widest font-bold text-red-500/60 hover:text-red-500 px-3 py-1.5 rounded-md hover:bg-red-500/5 transition-all">Delete</button>
-          </div>
-        </div>
-      `;
-    }).join('');
+    el.innerHTML = `
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-adm-border text-[10px] uppercase tracking-widest text-adm-muted font-mono">
+            <th class="text-left pb-2 font-medium">Title</th>
+            <th class="text-left pb-2 font-medium">Slug</th>
+            <th class="text-left pb-2 font-medium">Status</th>
+            <th class="text-left pb-2 font-medium">Date</th>
+            <th class="text-left pb-2 font-medium">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${posts.map(p => {
+            let displayTitle = p.title;
+            if (!displayTitle || displayTitle.trim() === '' || displayTitle.toLowerCase() === 'untitled' || displayTitle === 'undefined') {
+              displayTitle = p.slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            }
+            const isDraft = p.status === 'draft' || p.draft;
+            const statusLabel = p.status || (isDraft ? 'draft' : 'published');
+            const date = (p.updated_at || p.published_at) ? new Date(p.updated_at || p.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
+            return `
+              <tr class="group border-b border-adm-border/40 hover:bg-adm-panel transition-colors">
+                <td class="py-3 pr-4">
+                  <a href="/admin/edit?slug=${p.slug}" class="font-medium text-adm-text group-hover:text-adm-primary transition-colors">${displayTitle}</a>
+                </td>
+                <td class="py-3 pr-4 font-mono text-[11px] text-adm-muted max-w-[160px]"><span class="block truncate" title="${p.slug}">${p.slug}</span></td>
+                <td class="py-3 pr-4">
+                  <span class="text-[10px] uppercase tracking-widest font-bold ${isDraft ? 'text-amber-500' : 'text-emerald-500'}">${statusLabel}</span>
+                </td>
+                <td class="py-3 pr-4 font-mono text-[11px] text-adm-muted">${date}</td>
+                <td class="py-3">
+                  <button onclick="window.deletePost('${p.slug}')" class="text-[10px] uppercase tracking-widest font-bold text-red-500/60 hover:text-red-500 transition-colors">Delete</button>
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    `;
     
     countEl.textContent = `${posts.length} posts`;
   }

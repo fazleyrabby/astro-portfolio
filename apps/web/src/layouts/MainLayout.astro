@@ -81,10 +81,10 @@ const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twit
         setTimeout(initAnimations, 1000);
       }
     </script>
-    <script>
+    <script is:inline define:vars={{ apiUrl: import.meta.env.PUBLIC_API_URL || 'https://cms.fazleyrabbi.xyz' }}>
       const trackVisitor = () => {
         if (!sessionStorage.getItem("visitor_ip")) {
-          fetch("https://api.rhtech.dev/track", {
+          fetch(`${apiUrl}/track`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

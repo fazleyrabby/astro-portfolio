@@ -90,14 +90,14 @@ const seoDescription = post.description || post.title;
   </main>
 </MainLayout>
 
-<script>
-  const img = document.querySelector('img[data-thumb]') as HTMLImageElement | null;
+<script is:inline define:vars={{ apiUrl: import.meta.env.PUBLIC_API_URL || 'https://cms.fazleyrabbi.xyz' }}>
+  const img = document.querySelector('img[data-thumb]');
   if (img) {
     const cacheKey = `thumb-bg:${img.src}`;
     const cached = sessionStorage.getItem(cacheKey);
 
-    const applyColor = (color: string) => {
-      const container = document.querySelector('[data-thumb-container]') as HTMLElement | null;
+    const applyColor = (color) => {
+      const container = document.querySelector('[data-thumb-container]');
       if (container) {
         container.style.backgroundColor = color;
         container.style.setProperty('--edge-color', color);
@@ -110,7 +110,7 @@ const seoDescription = post.description || post.title;
       const detectBg = () => {
         const proxy = new Image();
         proxy.crossOrigin = 'anonymous';
-        proxy.src = `https://api.rhtech.dev/image-proxy?url=${encodeURIComponent(img.src)}`;
+        proxy.src = `${apiUrl}/image-proxy?url=${encodeURIComponent(img.src)}`;
         proxy.onload = () => {
           try {
             const c = document.createElement('canvas');

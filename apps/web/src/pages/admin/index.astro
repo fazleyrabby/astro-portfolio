@@ -45,7 +45,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 </AdminLayout>
 
 <script>
-  const API = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://api.rhtech.dev';
+  const API = import.meta.env.PUBLIC_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3005' : 'https://cms.fazleyrabbi.xyz');
   let allPosts = [];
 
   function getToken() {

@@ -87,7 +87,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   import { syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldGutter, indentOnInput } from "@codemirror/language";
   import { marked } from "marked";
 
-  const API = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://api.rhtech.dev';
+  const API = import.meta.env.PUBLIC_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3005' : 'https://cms.fazleyrabbi.xyz');
 
   function getToken() {
     const t = localStorage.getItem('cms_token');

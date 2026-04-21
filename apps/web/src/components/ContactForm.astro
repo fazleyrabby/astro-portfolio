@@ -86,7 +86,7 @@
     }
 </style>
 
-<script is:inline>
+<script is:inline define:vars={{ apiUrl: import.meta.env.PUBLIC_API_URL || 'https://cms.fazleyrabbi.xyz' }}>
     document.getElementById("contactForm").addEventListener("submit", (e) => {
         e.preventDefault();
         const email = document.getElementById("email");
@@ -97,7 +97,7 @@
             return;
         }
 
-        fetch("https://api.rhtech.dev/contact", {
+        fetch(`${apiUrl}/contact`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

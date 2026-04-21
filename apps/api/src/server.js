@@ -55,7 +55,7 @@ if (!TELEGRAM_TOKEN) {
 }
 
 const octokit = new Octokit({ auth: GITHUB_TOKEN });
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = createClient(SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY || SUPABASE_KEY);
 
 const openai = new OpenAI({
     apiKey: process.env.GROQ_API_KEY,
@@ -181,16 +181,26 @@ bot.command('generate', async (ctx) => {
 
     const msg = await ctx.reply('🧠 Generating technical post... please wait.');
     log(`[BOT] Executing /generate for: ${topic}`);
-    
+
     try {
         const post = await generateAIContent(topic);
         const slug = toSlug(post.title);
-        
+
+        // Duplicate check
+        const { data: existing } = await supabase.from('posts').select('slug, status').eq('slug', slug).single();
+        if (existing) {
+            await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => {});
+            return ctx.reply(
+                `⚠️ <b>Duplicate detected!</b>\n\nA post with slug <code>${slug}</code> already exists (${existing.status}).\n\nGenerate with a different title or delete the existing post first.`,
+                { parse_mode: 'HTML' }
+            );
+        }
+
         aiDrafts.set(slug, post);
         const preview = post.content.slice(0, 500) + '...';
-        
+
         await ctx.telegram.deleteMessage(ctx.chat.id, msg.message_id).catch(() => {});
-        await ctx.reply(`📝 <b>DRAFT GENERATED</b>\n\n<b>Title:</b> ${post.title}\n<b>Tags:</b> ${post.tags.join(', ')}\n\n${preview}`, {
+        await ctx.reply(`📝 <b>DRAFT GENERATED</b>\n\n<b>Title:</b> ${post.title}\n<b>Slug:</b> <code>${slug}</code>\n<b>Tags:</b> ${post.tags.join(', ')}\n\n${preview}`, {
             parse_mode: 'HTML',
             reply_markup: {
                 inline_keyboard: [

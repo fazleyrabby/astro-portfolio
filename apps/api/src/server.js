@@ -119,7 +119,6 @@ OUTPUT: Raw Markdown with YAML title and tags. DO NOT wrap the YAML in markdown 
         const completion = await openai.chat.completions.create({
             model: 'llama-3.3-70b-versatile',
             messages: [{ role: 'user', content: prompt }],
-             // 50 second timeout for shared hosting
         });
 
         log(`[AI] Response received from Groq`);
@@ -167,6 +166,14 @@ bot.command('me', (ctx) => {
 });
 
 bot.command('status', (ctx) => ctx.reply('🚀 API & CMS Engine is active.'));
+
+bot.command('help', (ctx) => ctx.reply(
+    `📋 Available Commands:\n\n` +
+    `/status — Check if API is alive\n` +
+    `/generate <topic> — AI generate a blog post draft\n` +
+    `/me — Show your Telegram ID\n` +
+    `/help — Show this message`
+));
 
 bot.command('generate', async (ctx) => {
     const topic = ctx.message.text.replace('/generate', '').trim();
@@ -238,10 +245,26 @@ bot.on('callback_query', async (ctx) => {
 });
 
 // --- REST API Logic ---
+const CMS_ALLOWED_IPS = (process.env.CMS_ALLOWED_IPS || '100.84.207.28,100.120.167.83')
+    .split(',').map(ip => ip.trim());
+
+function getClientIp(req) {
+    return (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+        || req.socket.remoteAddress
+        || '';
+}
+
 function cmsAuth(req, res, next) {
+    const clientIp = getClientIp(req);
+
+    if (!CMS_ALLOWED_IPS.includes(clientIp)) {
+        log(`[AUTH] IP blocked: ${clientIp}`);
+        return res.status(403).json({ error: 'forbidden' });
+    }
+
     const auth = req.headers['authorization'] || '';
     const token = auth.replace('Bearer ', '').trim();
-    
+
     if (!CMS_TOKEN) {
         log('[AUTH] CRITICAL: CMS_TOKEN is not defined in server environment!');
         return res.status(500).json({ error: 'server_config_error' });

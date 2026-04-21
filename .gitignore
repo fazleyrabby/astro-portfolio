@@ -31,6 +31,7 @@ DEPLOYMENT.md
 migrate-posts.js
 MIGRATION.sql
 api_deploy.tar.gz
+deploy-api.sh
 apps/api/dist/
 debug.log
 /tmp/bot_debug.log

@@ -6,6 +6,7 @@
     "dev:web": "pnpm --filter web dev",
     "build:web": "pnpm --filter web build",
     "dev:api": "pnpm --filter api dev",
-    "start:api": "pnpm --filter api start"
+    "start:api": "pnpm --filter api start",
+    "deploy:api": "./deploy-api.sh"
   }
 }

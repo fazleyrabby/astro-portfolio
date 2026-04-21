@@ -281,17 +281,12 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       const data = await res.json();
       const raw = data.content;
 
-      // Extract title and draft from frontmatter if available
-      const titleMatch = raw.match(/^title:\s*"?([^"\n]+)"?/m);
-      const draftMatch = raw.match(/^draft:\s*(\S+)/m);
+      // Use title directly from API response
+      titleInput.value = data.title || slug;
+      draftCheck.checked = data.status === 'draft';
+
+      // Strip frontmatter from content if present
       const bodyMatch = raw.match(/^---[\s\S]*?---\s*([\s\S]*)$/m);
-
-      if (titleMatch) titleInput.value = titleMatch[1].trim();
-      else titleInput.value = slug;
-      
-      if (draftMatch) draftCheck.checked = draftMatch[1] === 'true';
-      else draftCheck.checked = false;
-
       const body = bodyMatch ? bodyMatch[1].trim() : raw;
       initEditor(body);
     } catch (e) {

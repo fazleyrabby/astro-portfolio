@@ -320,12 +320,12 @@ app.post('/cms/posts', cmsAuth, async (req, res) => {
 });
 
 app.put('/cms/posts/:slug', cmsAuth, async (req, res) => {
-    const { title, content, draft, tags, published_at } = req.body || {};
+    const { title, content, draft, tags, published_at, featured = false } = req.body || {};
     const slug = req.params.slug;
     const status = draft ? 'draft' : 'published';
     const pubDate = published_at ? new Date(published_at) : (status === 'published' ? new Date() : null);
     try {
-        await supabase.from('posts').upsert({ title, slug, content, tags, status, published_at: pubDate });
+        await supabase.from('posts').upsert({ title, slug, content, tags, status, featured, published_at: pubDate });
         if (status === 'published') triggerDeploy();
         res.json({ ok: true, slug });
     } catch (err) {

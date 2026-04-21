@@ -12,7 +12,7 @@ import { slug as slugify } from 'github-slugger';
 import fs from 'fs';
 import path from 'path';
 
-const logFile = '/tmp/bot_debug.log';
+const logFile = path.join(process.cwd(), 'debug.log');
 function log(msg) {
     const timestamp = new Date().toISOString();
     const formatted = `[${timestamp}] ${msg}\n`;
@@ -26,7 +26,7 @@ function log(msg) {
 
 const app = express();
 app.use((req, res, next) => {
-    if (req.url === '/telegram-webhook') {
+    if (req.query.tg_webhook === '1') {
         log(`Webhook hit: ${req.method} ${req.url}`);
     }
     next();
@@ -226,7 +226,7 @@ bot.on('callback_query', async (ctx) => {
             await ctx.editMessageText(`✅ <b>PUBLISHED!</b>\n\n<b>Title:</b> ${post.title}\n<b>Status:</b> Live on Database & GitHub.`, { parse_mode: 'HTML' });
             aiDrafts.delete(slug);
         } catch (err) {
-            console.error('Bot publish error:', err);
+            log(`[BOT] Bot publish error: ${err.message}`);
             await ctx.reply(`❌ Publish failed: ${err.message}`);
         }
     } else if (data.startsWith('p_rej:')) {
@@ -240,7 +240,15 @@ bot.on('callback_query', async (ctx) => {
 // --- REST API Logic ---
 function cmsAuth(req, res, next) {
     const auth = req.headers['authorization'] || '';
-    if (!CMS_TOKEN || auth !== `Bearer ${CMS_TOKEN}`) {
+    const token = auth.replace('Bearer ', '').trim();
+    
+    if (!CMS_TOKEN) {
+        log('[AUTH] CRITICAL: CMS_TOKEN is not defined in server environment!');
+        return res.status(500).json({ error: 'server_config_error' });
+    }
+
+    if (auth !== `Bearer ${CMS_TOKEN}`) {
+        log(`[AUTH] Denied. Received: ${token.slice(0, 5)}... Expected: ${CMS_TOKEN.slice(0, 5)}...`);
         return res.status(401).json({ error: 'unauthorized' });
     }
     next();
@@ -250,12 +258,18 @@ app.get('/cms/posts', cmsAuth, async (req, res) => {
     try {
         const { data, error } = await supabase.from('posts').select('slug, title, status, updated_at');
         if (error) throw error;
-        const posts = data.map(p => ({
-            slug: p.slug,
-            title: (p.title && p.title.trim() !== '' && p.title.toLowerCase() !== 'untitled') ? p.title : p.slug,
-            draft: p.status === 'draft',
-            updated_at: p.updated_at
-        }));
+        const posts = data.map(p => {
+            let title = p.title;
+            if (!title || title.trim() === '' || title.toLowerCase() === 'untitled' || title === 'undefined') {
+                title = p.slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            }
+            return {
+                slug: p.slug,
+                title: title,
+                draft: p.status === 'draft',
+                updated_at: p.updated_at
+            };
+        });
         posts.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
         res.json(posts);
     } catch (err) {
@@ -319,7 +333,7 @@ app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
     const filename = `${Date.now()}-${req.file.originalname.replace(/\s+/g, '_')}`;
 
     try {
-        console.log(`Attempting image upload: ${filename} (${req.file.mimetype})`);
+        log(`Attempting image upload: ${filename} (${req.file.mimetype})`);
         const { data, error } = await supabase.storage
             .from('blog-images')
             .upload(filename, req.file.buffer, {
@@ -328,7 +342,7 @@ app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
             });
 
         if (error) {
-            console.error('Supabase storage error:', error);
+            log(`Supabase storage error: ${error.message}`);
             throw error;
         }
 
@@ -336,27 +350,27 @@ app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
             .from('blog-images')
             .getPublicUrl(filename);
 
-        console.log(`Image upload successful. URL: ${publicUrl}`);
+        log(`Image upload successful. URL: ${publicUrl}`);
         res.json({ url: publicUrl });
     } catch (err) {
-        console.error('Supabase upload error:', err.message);
+        log(`Supabase upload error: ${err.message}`);
         res.status(500).json({ error: err.message });
     }
 });
 
-app.get('/', (req, res) => {
-    if (req.query.tg_webhook === '1') {
-        return res.send('Webhook root active.');
-    }
-    res.send('OK - Backend API Active');
+app.get('/webhook', (req, res) => {
+    log(`GET hit on webhook check`);
+    res.send('Webhook endpoint is active.');
 });
 
-app.post('/', (req, res) => {
-    if (req.query.tg_webhook === '1') {
-        res.sendStatus(200);
-        return bot.handleUpdate(req.body).catch(err => log(`Bot Error: ${err.message}`));
-    }
-    res.sendStatus(404);
+app.post('/webhook', (req, res) => {
+    log(`Webhook hit: POST /webhook`);
+    res.sendStatus(200);
+    bot.handleUpdate(req.body).catch(err => log(`Bot Error: ${err.message}`));
+});
+
+app.get('/', (req, res) => {
+    res.send('OK - Backend API Active');
 });
 
 app.listen(PORT, () => console.log(`🚀 Backend running on port ${PORT}`));

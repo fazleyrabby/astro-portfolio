@@ -334,11 +334,17 @@ app.put('/cms/posts/:slug', cmsAuth, async (req, res) => {
     const slug = req.params.slug;
     const status = draft ? 'draft' : 'published';
     const pubDate = published_at ? new Date(published_at) : (status === 'published' ? new Date() : null);
+    log(`[CMS] PUT ${slug} — draft:${draft} featured:${featured} status:${status}`);
     try {
-        await supabase.from('posts').upsert({ title, slug, content, tags, status, featured, published_at: pubDate });
+        const updates = { title, slug, status, featured, published_at: pubDate };
+        if (content !== undefined) updates.content = content;
+        if (tags !== undefined) updates.tags = tags;
+        const { error } = await supabase.from('posts').update(updates).eq('slug', slug);
+        if (error) throw new Error(error.message);
         if (status === 'published') triggerDeploy();
         res.json({ ok: true, slug });
     } catch (err) {
+        log(`[CMS] PUT error: ${err.message}`);
         res.status(500).json({ error: err.message });
     }
 });

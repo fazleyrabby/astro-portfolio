@@ -5,6 +5,13 @@ import TableOfContents from "@components/TableOfContents.astro";
 import { supabase } from "@lib/supabase";
 import { marked } from "marked";
 
+const renderer = new marked.Renderer();
+renderer.heading = function({ text, depth }) {
+  const id = text.toLowerCase().replace(/[^\w]+/g, '-');
+  return `<h${depth} id="${id}">${text}</h${depth}>`;
+};
+marked.use({ renderer });
+
 export async function getStaticPaths() {
   const { data: posts } = await supabase
     .from('posts')
@@ -30,6 +37,7 @@ if (error || !post) {
 }
 
 const seoDescription = post.description || post.title;
+const articleContent = await marked.parse(post.content);
 ---
 
 <MainLayout 
@@ -83,7 +91,7 @@ const seoDescription = post.description || post.title;
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
       <article id="article-content" class="lg:col-span-8 prose prose-neutral dark:prose-invert max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-li:text-[var(--text-secondary)] prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)] prose-strong:text-[var(--text-primary)] prose-strong:font-semibold prose-blockquote:text-[var(--text-secondary)] prose-blockquote:border-[var(--accent)]">
-        <Fragment set:html={marked.parse(post.content)} />
+        <Fragment set:html={articleContent} />
       </article>
       <TableOfContents />
     </div>

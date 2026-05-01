@@ -8,5 +8,5 @@ live: "https://codecanyon.net/item/ebank-complete-online-banking-system-with-dps
 thumbnail: "/projects/1.webp"
 description: "Online banking system with DPS and loan management."
 tech: ["PHP", "Laravel 8", "JavaScript"]
-position: 5
+position: 7
 ---

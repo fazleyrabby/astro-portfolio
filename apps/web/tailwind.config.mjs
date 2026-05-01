@@ -13,11 +13,11 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-			display: ['Yrsa', 'serif'],
-			serif: ['Yrsa', 'serif'],
+			display: ['Spectral', 'serif'],
+			serif: ['Spectral', 'serif'],
 			sans: ['DM Sans', 'system-ui'],
 			mono: ['JetBrains Mono', 'ui-monospace'],
-			logo: ['Yrsa', 'cursive'],
+			logo: ['Spectral', 'cursive'],
 		},
 		fontSize: {
 			xs: '0.8125rem',   // 13px

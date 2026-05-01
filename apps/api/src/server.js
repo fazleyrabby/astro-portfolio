@@ -428,6 +428,44 @@ app.post('/webhook', (req, res) => {
     bot.handleUpdate(req.body).catch(err => log(`Bot Error: ${err.message}`));
 });
 
+// --- Contact Form ---
+app.post('/contact', async (req, res) => {
+    const { email, message, website } = req.body || {};
+
+    // Honeypot check
+    if (website) return res.status(200).json({ ok: true });
+
+    if (!email || !message) {
+        return res.status(400).json({ error: 'Email and message required' });
+    }
+
+    try {
+        // Save to Supabase
+        const { error } = await supabase.from('contacts').insert({
+            email: email.trim(),
+            message: message.trim(),
+            created_at: new Date().toISOString(),
+        });
+        if (error) log(`[Contact] Supabase insert error: ${error.message}`);
+
+        // Telegram notification
+        if (TELEGRAM_TOKEN && TELEGRAM_CHAT_ID) {
+            const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const text = `📬 <b>New Contact Message</b>\n\n<b>From:</b> ${esc(email)}\n\n<b>Message:</b>\n${esc(message.trim())}`;
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'HTML' }),
+            });
+        }
+
+        res.status(201).json({ ok: true });
+    } catch (e) {
+        log(`[Contact] Error: ${e.message}`);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 app.get('/', (req, res) => {
     res.send('OK - Backend API Active');
 });

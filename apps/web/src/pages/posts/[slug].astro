@@ -98,6 +98,48 @@ const articleContent = await marked.parse(post.content);
   </main>
 </MainLayout>
 
+<style>
+  #article-content pre { margin: 0; border-radius: 0; border: none; }
+  #article-content .code-block-wrapper { position: relative; }
+  #article-content pre code { display: block; }
+</style>
+
+<script>
+  // Copy button functionality for code blocks
+  document.querySelectorAll('pre').forEach(pre => {
+    const code = pre.querySelector('code');
+    if (!code) return;
+    
+    const langClass = Array.from(code.classList).find(c => c.startsWith('language-'));
+    const lang = langClass ? langClass.replace('language-', '') : 'text';
+    const displayLang = lang.toUpperCase();
+    
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-block-wrapper group relative my-6 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden';
+    
+    const header = document.createElement('div');
+    header.className = 'code-header flex items-center justify-between px-4 py-2 bg-[var(--bg-elevated)] border-b border-[var(--border)]';
+    header.innerHTML = `
+      <div class="flex items-center gap-2">
+        <span class="text-[0.65rem] font-mono font-semibold px-2 py-0.5 rounded bg-[var(--accent)]/10 text-[var(--accent)]">${displayLang}</span>
+      </div>
+      <button class="copy-btn text-[0.65rem] font-mono px-2 py-0.5 rounded bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--accent)] transition-all opacity-0 group-hover:opacity-100">Copy</button>
+    `;
+    
+    pre.parentNode.insertBefore(wrapper, pre);
+    wrapper.appendChild(header);
+    wrapper.appendChild(pre);
+    pre.className = '!mt-0 !rounded-none !border-0 overflow-x-auto p-4 text-sm leading-relaxed';
+    
+    const btn = header.querySelector('.copy-btn');
+    btn.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(code.textContent || '');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  });
+</script>
+
 <script is:inline define:vars={{ apiUrl: import.meta.env.PUBLIC_API_URL || 'https://cms.fazleyrabbi.xyz' }}>
   const img = document.querySelector('img[data-thumb]');
   if (img) {

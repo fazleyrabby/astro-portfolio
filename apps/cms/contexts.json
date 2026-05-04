@@ -1,0 +1,30 @@
+[
+  {
+    "topic": "Building Multi-Tenant SaaS with Laravel",
+    "focus": "Tenant isolation strategies, subdomain routing, per-tenant settings, data partitioning, and billing integration"
+  },
+  {
+    "topic": "Laravel Testing Strategies for Production",
+    "focus": "Dusk browser testing, feature tests, API contract testing, mutation testing, and CI/CD testing pipelines"
+  },
+  {
+    "topic": "Advanced Eloquent Patterns and Query Optimization",
+    "focus": "Lazy loading vs eager loading, polymorphic relationships, query scopes, computed attributes, and N+1 elimination"
+  },
+  {
+    "topic": "Laravel Broadcasting and Real-Time Features",
+    "focus": "WebSocket architecture, private/presence channels, Pusher alternatives, real-time notifications, and echo integration"
+  },
+  {
+    "topic": "Securing Laravel Applications Against Common Attacks",
+    "focus": "SQL injection prevention, XSS protection, CSRF tokens, secure file uploads, and security header implementation"
+  },
+  {
+    "topic": "Laravel Octane and Swoole for High Performance",
+    "focus": "Server acceleration, swoole workers, persistent applications, background tasks, and benchmarking results"
+  },
+  {
+    "topic": "Building Domain-Driven Design in Laravel",
+    "focus": "DDD architecture, value objects, aggregates, repository pattern, domain events, and tactical design in Laravel"
+  }
+]

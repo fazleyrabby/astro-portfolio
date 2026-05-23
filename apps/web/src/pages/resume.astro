@@ -37,7 +37,7 @@ import MainLayout from '@layouts/MainLayout.astro';
                 <div class="cv-section">
                     <h3 class="cv-section-title">Summary</h3>
                     <p class="text-[0.95rem] text-[var(--text-secondary)] leading-relaxed">
-                        Backend developer with 4+ years of experience building and maintaining production web applications using Laravel and MySQL. Currently exploring system design and data pipelines.
+                        Backend engineer with 4+ years of experience building scalable Laravel applications, REST APIs, async processing systems, and internal platform tooling. Experienced in performance optimization, data-heavy systems, and production debugging. Currently focused on system design, real-time pipelines, infrastructure, and AI-assisted developer tooling.
                     </p>
                 </div>
 
@@ -57,16 +57,16 @@ import MainLayout from '@layouts/MainLayout.astro';
                                 <span class="font-mono text-[0.75rem] text-[var(--text-muted)] tracking-wider shrink-0">Oct 2021 – Present</span>
                             </div>
                             <ul class="cv-list mt-1.5">
-                                <li>Developed and maintained backend features for high-traffic Laravel applications</li>
-                                <li>Optimized MySQL queries and refactored legacy code to improve performance and scalability</li>
-                                <li>Designed and implemented REST APIs for internal and external systems</li>
-                                <li>Integrated third-party services and payment gateways</li>
-                                <li>Debugged and resolved production issues to ensure system stability</li>
-                                <li>Worked with automation and scraping tools (Puppeteer, BrowserKit)</li>
-                                <li>Managed framework upgrades and applied Laravel best practices</li>
+                                <li>Developed and maintained backend systems for high-traffic Laravel applications</li>
+                                <li>Optimized complex MySQL queries and refactored legacy code to improve scalability and maintainability</li>
+                                <li>Designed and implemented REST APIs for internal services and external integrations</li>
+                                <li>Integrated payment gateways and third-party services across multiple systems</li>
+                                <li>Debugged and resolved production issues in live environments to improve stability and reliability</li>
+                                <li>Worked with automation and scraping workflows using Puppeteer and BrowserKit</li>
+                                <li>Managed Laravel upgrades, deployment workflows, and backend architecture improvements</li>
                             </ul>
                             <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
-                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, MySQL, ClickHouse, REST APIs, Livewire, Alpine.js, Git, Linux
+                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, MySQL, ClickHouse, REST APIs, Livewire, Alpine.js, Docker, Git, Linux
                             </p>
                         </div>
 
@@ -105,10 +105,10 @@ import MainLayout from '@layouts/MainLayout.astro';
                                 <span class="italic text-[0.9rem] text-[var(--text-secondary)]">Real-time data pipeline (ingestion → processing → enrichment → serving)</span>
                             </h4>
                             <ul class="cv-list mt-1">
-                                <li>Designed async processing pipeline using queues</li>
-                                <li>Implemented caching strategies for performance optimization</li>
-                                <li>Built AI-assisted enrichment workflow</li>
-                                <li>Conducted load testing and identified system bottlenecks</li>
+                                <li>Designed async ingestion and processing pipeline using queue-based architecture</li>
+                                <li>Implemented caching and data-serving strategies for high-throughput workloads</li>
+                                <li>Built AI-assisted enrichment workflows for processing and classifying incoming signals</li>
+                                <li>Conducted load testing and bottleneck analysis to improve system performance</li>
                             </ul>
                         </div>
 
@@ -119,10 +119,10 @@ import MainLayout from '@layouts/MainLayout.astro';
                                 <span class="italic text-[0.9rem] text-[var(--text-secondary)]">Privacy-first, offline Islamic research engine</span>
                             </h4>
                             <ul class="cv-list mt-1">
-                                <li>Built full-text and semantic search across Quran (6,236 verses) and 36K+ hadith</li>
+                                <li>Built full-text and semantic search across Quran (6,236 verses) and 36K+ hadith records</li>
                                 <li>Implemented local AI chat with RAG pipeline using llama.cpp and Transformers.js</li>
-                                <li>Designed interactive sanad chain visualization with narrator explorer</li>
-                                <li>Cross-platform via Tauri 2.0 (macOS, Windows, Linux) with SQLite + FTS5</li>
+                                <li>Designed interactive sanad-chain visualization and narrator exploration system</li>
+                                <li>Developed cross-platform desktop application using Tauri 2.0 with SQLite + FTS5</li>
                             </ul>
                             <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
                                 <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Next.js, React, Tauri, SQLite, Transformers.js, Tailwind
@@ -140,15 +140,19 @@ import MainLayout from '@layouts/MainLayout.astro';
                     <h3 class="cv-section-title">Technical Skills</h3>
                     <div class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-[0.92rem]">
                         <span class="font-semibold text-[var(--text-primary)]">Backend</span>
-                        <span class="text-[var(--text-secondary)]">Laravel, Livewire, CodeIgniter</span>
+                        <span class="text-[var(--text-secondary)]">Laravel, PHP, REST APIs, Livewire, CodeIgniter</span>
+
                         <span class="font-semibold text-[var(--text-primary)]">Frontend</span>
-                        <span class="text-[var(--text-secondary)]">Tailwind, Bootstrap, Alpine.js, jQuery, JavaScript</span>
-                        <span class="font-semibold text-[var(--text-primary)]">Database</span>
-                        <span class="text-[var(--text-secondary)]">MySQL, ClickHouse</span>
-                        <span class="font-semibold text-[var(--text-primary)]">Systems</span>
-                        <span class="text-[var(--text-secondary)]">Docker (basic), Linux</span>
-                        <span class="font-semibold text-[var(--text-primary)]">Tools</span>
-                        <span class="text-[var(--text-secondary)]">Git, VS Code</span>
+                        <span class="text-[var(--text-secondary)]">Alpine.js, Tailwind CSS, JavaScript, jQuery, Bootstrap</span>
+
+                        <span class="font-semibold text-[var(--text-primary)]">Databases</span>
+                        <span class="text-[var(--text-secondary)]">MySQL, ClickHouse, SQLite, FTS5</span>
+
+                        <span class="font-semibold text-[var(--text-primary)]">Infrastructure</span>
+                        <span class="text-[var(--text-secondary)]">Docker, Linux, Git, GitHub Actions</span>
+
+                        <span class="font-semibold text-[var(--text-primary)]">AI / Data</span>
+                        <span class="text-[var(--text-secondary)]">RAG Pipelines, Transformers.js, llama.cpp, Async Processing</span>
                     </div>
                 </div>
 
@@ -156,10 +160,10 @@ import MainLayout from '@layouts/MainLayout.astro';
                 <div class="cv-section">
                     <h3 class="cv-section-title">Current Focus</h3>
                     <ul class="cv-list">
-                        <li>System design fundamentals</li>
-                        <li>Async processing & queues</li>
-                        <li>Data pipelines & real-time systems</li>
-                        <li>Infrastructure basics (Docker, Kubernetes)</li>
+                        <li>System design and scalable backend architecture</li>
+                        <li>Async processing, queues, and event-driven systems</li>
+                        <li>Real-time pipelines and data processing workflows</li>
+                        <li>Infrastructure and containerized development environments</li>
                     </ul>
                 </div>
 

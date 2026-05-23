@@ -124,8 +124,8 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     // @ts-ignore
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      showStatus(`File too large: ${formatSize(file.size)}. Max 2MB.`, false);
+    if (file.size > 5 * 1024 * 1024) {
+      showStatus(`File too large: ${formatSize(file.size)}. Max 5MB.`, false);
       // @ts-ignore
       e.target.value = '';
       return;

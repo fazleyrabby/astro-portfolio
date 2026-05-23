@@ -15,7 +15,16 @@ if (error) {
 
 const publishedPosts = posts || [];
 
-const featuredPosts = publishedPosts.filter(post => post.featured);
+function extractFirstImage(content) {
+  if (!content) return null;
+  const match = content.match(/!\[.*?\]\((.*?)\)/);
+  return match ? match[1] : null;
+}
+
+const featuredPosts = publishedPosts.filter(post => post.featured).map(post => ({
+  ...post,
+  cover_image: post.cover_image || extractFirstImage(post.content)
+}));
 const regularPosts = publishedPosts.filter(post => !post.featured);
 
 // Split featured posts into Hero and Others

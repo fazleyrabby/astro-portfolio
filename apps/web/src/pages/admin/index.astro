@@ -48,6 +48,8 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 <script>
   const API = import.meta.env.PUBLIC_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3005' : 'https://cms.fazleyrabbi.xyz');
   let allPosts = [];
+  let sortCol = 'date';
+  let sortAsc = false;
 
   function getToken() {
     const t = localStorage.getItem('cms_token');
@@ -69,8 +71,26 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       return;
     }
 
+    const sortedPosts = [...posts].sort((a, b) => {
+      let valA, valB;
+      switch(sortCol) {
+        case 'title': valA = (a.title || '').toLowerCase(); valB = (b.title || '').toLowerCase(); break;
+        case 'slug': valA = (a.slug || '').toLowerCase(); valB = (b.slug || '').toLowerCase(); break;
+        case 'status': valA = a.status || ''; valB = b.status || ''; break;
+        case 'featured': valA = a.featured ? 1 : 0; valB = b.featured ? 1 : 0; break;
+        case 'date': 
+          valA = new Date(a.published_at || a.updated_at).getTime() || 0; 
+          valB = new Date(b.published_at || b.updated_at).getTime() || 0; 
+          break;
+        default: valA = 0; valB = 0;
+      }
+      if (valA < valB) return sortAsc ? -1 : 1;
+      if (valA > valB) return sortAsc ? 1 : -1;
+      return 0;
+    });
+
     // Desktop table
-    const tableRows = posts.map(p => {
+    const tableRows = sortedPosts.map(p => {
       let displayTitle = p.title;
       if (!displayTitle || displayTitle.trim() === '' || displayTitle.toLowerCase() === 'untitled' || displayTitle === 'undefined') {
         displayTitle = p.slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
@@ -78,23 +98,27 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       const isDraft = p.status === 'draft' || p.draft;
       const statusLabel = p.status || (isDraft ? 'draft' : 'published');
       const date = (p.published_at || p.updated_at) ? new Date(p.published_at || p.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
-      return { p, displayTitle, isDraft, statusLabel, date };
+      const featuredLabel = p.featured ? 'Yes' : 'No';
+      return { p, displayTitle, isDraft, statusLabel, date, featuredLabel };
     });
+
+    const getSortIndicator = (col) => sortCol === col ? (sortAsc ? ' ↑' : ' ↓') : '';
 
     el.innerHTML = `
       <div class="hidden md:block">
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-adm-border text-[10px] uppercase tracking-widest text-adm-muted font-mono">
-              <th class="text-left pb-2 font-medium">Title</th>
-              <th class="text-left pb-2 font-medium">Slug</th>
-              <th class="text-left pb-2 font-medium">Status</th>
-              <th class="text-left pb-2 font-medium">Date</th>
+              <th class="text-left pb-2 font-medium cursor-pointer hover:text-adm-primary transition-colors select-none" onclick="window.sortPosts('title')">Title${getSortIndicator('title')}</th>
+              <th class="text-left pb-2 font-medium cursor-pointer hover:text-adm-primary transition-colors select-none" onclick="window.sortPosts('slug')">Slug${getSortIndicator('slug')}</th>
+              <th class="text-left pb-2 font-medium cursor-pointer hover:text-adm-primary transition-colors select-none" onclick="window.sortPosts('status')">Status${getSortIndicator('status')}</th>
+              <th class="text-left pb-2 font-medium cursor-pointer hover:text-adm-primary transition-colors select-none" onclick="window.sortPosts('featured')">Featured${getSortIndicator('featured')}</th>
+              <th class="text-left pb-2 font-medium cursor-pointer hover:text-adm-primary transition-colors select-none" onclick="window.sortPosts('date')">Date${getSortIndicator('date')}</th>
               <th class="text-left pb-2 font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
-            ${tableRows.map(({ p, displayTitle, isDraft, statusLabel, date }) => `
+            ${tableRows.map(({ p, displayTitle, isDraft, statusLabel, date, featuredLabel }) => `
               <tr class="group border-b border-adm-border/40 hover:bg-adm-panel transition-colors">
                 <td class="py-3 pr-4">
                   <a href="/admin/edit?slug=${p.slug}" class="font-medium text-adm-text group-hover:text-adm-primary transition-colors">${displayTitle}</a>
@@ -102,6 +126,9 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
                 <td class="py-3 pr-4 font-mono text-[11px] text-adm-muted max-w-[160px]"><span class="block truncate" title="${p.slug}">${p.slug}</span></td>
                 <td class="py-3 pr-4">
                   <span class="text-[10px] uppercase tracking-widest font-bold ${isDraft ? 'text-amber-500' : 'text-emerald-500'}">${statusLabel}</span>
+                </td>
+                <td class="py-3 pr-4">
+                  <span class="text-[10px] uppercase tracking-widest font-bold ${p.featured ? 'text-blue-400' : 'text-adm-muted/50'}">${featuredLabel}</span>
                 </td>
                 <td class="py-3 pr-4 font-mono text-[11px] text-adm-muted">${date}</td>
                 <td class="py-3">
@@ -113,11 +140,14 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         </table>
       </div>
       <div class="md:hidden space-y-2">
-        ${tableRows.map(({ p, displayTitle, isDraft, statusLabel, date }) => `
+        ${tableRows.map(({ p, displayTitle, isDraft, statusLabel, date, featuredLabel }) => `
           <div class="border border-adm-border rounded-lg p-3 bg-adm-panel">
             <div class="flex items-start justify-between gap-2 mb-1.5">
               <a href="/admin/edit?slug=${p.slug}" class="font-medium text-adm-text text-sm leading-snug flex-1">${displayTitle}</a>
-              <span class="text-[10px] uppercase tracking-widest font-bold shrink-0 ${isDraft ? 'text-amber-500' : 'text-emerald-500'}">${statusLabel}</span>
+              <div class="flex flex-col items-end gap-1 shrink-0">
+                <span class="text-[10px] uppercase tracking-widest font-bold ${isDraft ? 'text-amber-500' : 'text-emerald-500'}">${statusLabel}</span>
+                ${p.featured ? `<span class="text-[9px] uppercase tracking-widest font-bold text-blue-400">Featured</span>` : ''}
+              </div>
             </div>
             <div class="flex items-center justify-between">
               <span class="font-mono text-[10px] text-adm-muted/60">${date}</span>
@@ -148,6 +178,19 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   }
 
   // @ts-ignore
+  window.sortPosts = function(col) {
+    if (sortCol === col) {
+      sortAsc = !sortAsc;
+    } else {
+      sortCol = col;
+      sortAsc = col === 'title' || col === 'slug' || col === 'status'; // default asc for text, desc for date/featured
+    }
+    // @ts-ignore
+    const q = document.getElementById('search').value.toLowerCase();
+    render(q ? allPosts.filter(p => p.slug.toLowerCase().includes(q) || (p.title || '').toLowerCase().includes(q)) : allPosts);
+  };
+
+  // @ts-ignore
   window.deletePost = async function(slug) {
     if (!confirm(`Permanently delete "${slug}"?`)) return;
     
@@ -159,7 +202,9 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       if (!res.ok) throw new Error('Delete failed');
       
       allPosts = allPosts.filter(p => p.slug !== slug);
-      render(allPosts);
+      // @ts-ignore
+      const q = document.getElementById('search').value.toLowerCase();
+      render(q ? allPosts.filter(p => p.slug.toLowerCase().includes(q) || (p.title || '').toLowerCase().includes(q)) : allPosts);
     } catch (e) {
       alert(`Delete failed: ${e.message}`);
     }
@@ -168,7 +213,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   document.getElementById('search').addEventListener('input', (e) => {
     // @ts-ignore
     const q = e.target.value.toLowerCase();
-    render(q ? allPosts.filter(p => p.slug.toLowerCase().includes(q) || p.title.toLowerCase().includes(q)) : allPosts);
+    render(q ? allPosts.filter(p => p.slug.toLowerCase().includes(q) || (p.title || '').toLowerCase().includes(q)) : allPosts);
   });
 
   document.getElementById('logoutBtn').addEventListener('click', () => {

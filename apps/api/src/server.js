@@ -270,7 +270,7 @@ function cmsAuth(req, res, next) {
 
 app.get('/cms/posts', cmsAuth, async (req, res) => {
     try {
-        const { data, error } = await supabase.from('posts').select('slug, title, status, published_at, updated_at');
+        const { data, error } = await supabase.from('posts').select('slug, title, status, published_at, updated_at, featured');
         if (error) throw error;
         const posts = data.map(p => {
             let title = p.title;
@@ -283,7 +283,8 @@ app.get('/cms/posts', cmsAuth, async (req, res) => {
                 status: p.status,
                 draft: p.status === 'draft',
                 published_at: p.published_at,
-                updated_at: p.updated_at
+                updated_at: p.updated_at,
+                featured: !!p.featured
             };
         });
         posts.sort((a, b) => new Date(b.published_at || b.updated_at) - new Date(a.published_at || a.updated_at));
@@ -360,8 +361,17 @@ app.delete('/cms/posts/:slug', cmsAuth, async (req, res) => {
     }
 });
 
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 2 * 1024 * 1024 } });
-app.post('/cms/upload', cmsAuth, upload.single('file'), async (req, res) => {
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
+app.post('/cms/upload', cmsAuth, (req, res, next) => {
+    upload.single('file')(req, res, (err) => {
+        if (err instanceof multer.MulterError) {
+            return res.status(400).json({ error: `Upload error: ${err.message}` });
+        } else if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        next();
+    });
+}, async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'no file' });
     const filename = `${Date.now()}-${req.file.originalname.replace(/\s+/g, '_')}`;
 

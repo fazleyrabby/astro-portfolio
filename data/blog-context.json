@@ -1,0 +1,46 @@
+{
+  "topics": [
+    {
+      "topic": "Building a Robust Event-Driven Architecture in Laravel",
+      "category": "backend",
+      "context": "decoupling systems to handle high volume background tasks efficiently",
+      "notes": "exploring Laravel's event listeners, queues, and strategies for avoiding tight coupling"
+    },
+    {
+      "topic": "Mastering Database Indexing and Query Optimization for Large Datasets",
+      "category": "backend",
+      "context": "improving performance for complex queries hitting multi-million row tables",
+      "notes": "focusing on composite indexes, analyzing slow queries with EXPLAIN, and when to denormalize"
+    },
+    {
+      "topic": "Implementing Idempotency in Payment Webhooks using Redis",
+      "category": "backend",
+      "context": "preventing duplicate processing of critical external events like Stripe or PayPal webhooks",
+      "notes": "using Redis locks and idempotency keys to ensure exactly-once processing"
+    },
+    {
+      "topic": "Seamless Zero-Downtime Deployments with Laravel Envoy and CI/CD",
+      "category": "devops",
+      "context": "automating deployment processes without dropping a single user request",
+      "notes": "symlink-based deployment strategies, database migration safety, and CI/CD pipeline integration"
+    },
+    {
+      "topic": "Demystifying Node.js Event Loop for Backend Engineers",
+      "category": "backend",
+      "context": "understanding how Node.js handles concurrency under the hood to write better code",
+      "notes": "deep dive into libuv, phases of the event loop, and avoiding event loop blocking"
+    },
+    {
+      "topic": "Effective Background Job Processing: Avoiding the 'Queue Full' Nightmare",
+      "category": "backend",
+      "context": "scaling job workers and handling failures gracefully under heavy load",
+      "notes": "job rate limiting, exponential backoff, dead-letter queues, and monitoring"
+    },
+    {
+      "topic": "Scaling WebSockets in Production: Handling 100k+ Concurrent Connections",
+      "category": "backend",
+      "context": "architecting real-time features that don't crumble under massive concurrent load",
+      "notes": "using Redis Pub/Sub for cross-node broadcasting, optimizing memory usage, and load balancing"
+    }
+  ]
+}

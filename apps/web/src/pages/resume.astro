@@ -2,20 +2,263 @@
 import MainLayout from '@layouts/MainLayout.astro';
 ---
 
-<MainLayout title="Resume">
-    <main class="max-w-6xl mx-auto px-6 py-20">
-        <div class="mb-14">
-            <span class="section-label">Resume</span>
-            <h1 class="font-display font-bold text-[clamp(2.5rem,6vw,4rem)] text-[var(--text-primary)] leading-tight">My Professional CV</h1>
-            <p class="font-serif italic text-[1.2rem] text-[var(--text-secondary)] mt-4">Download my resume for my full professional background and skills.</p>
+<MainLayout title="Resume — Fazley Rabbi">
+    <main class="max-w-4xl mx-auto px-6 py-20">
+        <div class="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div>
+                <span class="section-label">Resume</span>
+                <h1 class="font-display font-bold text-[clamp(2.5rem,6vw,4rem)] text-[var(--text-primary)] leading-tight">My CV</h1>
+            </div>
+            <a href="/resume.pdf" download="fazley_rabbi_resume.pdf" class="btn-ghost text-sm gap-2 w-fit">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                Download PDF
+            </a>
         </div>
-        <div class="card p-4 rounded">
-            <object type="application/pdf" data="/cv.pdf" width="100%" height="1000px">
-                <p class="text-[var(--text-secondary)] text-center py-10">
-                    Your web browser doesn't have a PDF plugin.<br />
-                    You can <a href="/cv.pdf" download="fazley_rabbi_resume.pdf" class="text-[var(--accent)] underline">click here</a> to download the PDF file.
-                </p>
-            </object>
+
+        <!-- Resume Card -->
+        <div class="cv-card bg-[var(--bg-card)] border border-[var(--border)] rounded-sm overflow-hidden">
+
+            <!-- Header -->
+            <div class="px-6 sm:px-10 pt-8 pb-6 border-b border-[var(--border)] text-center">
+                <h2 class="font-display font-bold text-[clamp(1.8rem,4vw,2.5rem)] text-[var(--text-primary)] leading-tight">Md Fazley Rabbi</h2>
+                <div class="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[0.85rem] text-[var(--text-secondary)]">
+                    <a href="mailto:fazley111@gmail.com" class="hover:text-[var(--accent)] transition-colors">fazley111@gmail.com</a>
+                    <span class="hidden sm:inline text-[var(--text-muted)]">|</span>
+                    <a href="https://linkedin.com/in/fazley-rabby" target="_blank" class="hover:text-[var(--accent)] transition-colors">linkedin.com/in/fazley-rabby</a>
+                    <span class="hidden sm:inline text-[var(--text-muted)]">|</span>
+                    <a href="https://github.com/fazleyrabby" target="_blank" class="hover:text-[var(--accent)] transition-colors">github.com/fazleyrabby</a>
+                </div>
+                <a href="https://fazleyrabbi.xyz" target="_blank" class="inline-block mt-1 text-[0.85rem] text-[var(--accent-text)] hover:underline">fazleyrabbi.xyz</a>
+            </div>
+
+            <div class="px-6 sm:px-10 py-6 cv-body">
+
+                <!-- Summary -->
+                <div class="cv-section">
+                    <h3 class="cv-section-title">Summary</h3>
+                    <p class="text-[0.95rem] text-[var(--text-secondary)] leading-relaxed">
+                        Backend developer with 4+ years of experience building and maintaining production web applications using Laravel and MySQL. Currently exploring system design and data pipelines.
+                    </p>
+                </div>
+
+                <!-- Work Experience -->
+                <div class="cv-section">
+                    <h3 class="cv-section-title">Work Experience</h3>
+
+                    <div class="space-y-5">
+                        <!-- Electronic First -->
+                        <div>
+                            <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5">
+                                <h4 class="font-display font-bold text-[1.1rem] text-[var(--text-primary)]">Electronic First FZ</h4>
+                                <span class="font-mono text-[0.75rem] text-[var(--text-muted)] uppercase tracking-wider shrink-0">Remote, UAE</span>
+                            </div>
+                            <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5">
+                                <span class="text-[0.92rem] text-[var(--text-secondary)] italic">Software Engineer (Laravel)</span>
+                                <span class="font-mono text-[0.75rem] text-[var(--text-muted)] tracking-wider shrink-0">Oct 2021 – Present</span>
+                            </div>
+                            <ul class="cv-list mt-1.5">
+                                <li>Developed and maintained backend features for high-traffic Laravel applications</li>
+                                <li>Optimized MySQL queries and refactored legacy code to improve performance and scalability</li>
+                                <li>Designed and implemented REST APIs for internal and external systems</li>
+                                <li>Integrated third-party services and payment gateways</li>
+                                <li>Debugged and resolved production issues to ensure system stability</li>
+                                <li>Worked with automation and scraping tools (Puppeteer, BrowserKit)</li>
+                                <li>Managed framework upgrades and applied Laravel best practices</li>
+                            </ul>
+                            <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
+                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, MySQL, ClickHouse, REST APIs, Livewire, Alpine.js, Git, Linux
+                            </p>
+                        </div>
+
+                        <!-- Amcoders -->
+                        <div>
+                            <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5">
+                                <h4 class="font-display font-bold text-[1.1rem] text-[var(--text-primary)]">Amcoders</h4>
+                                <span class="font-mono text-[0.75rem] text-[var(--text-muted)] uppercase tracking-wider shrink-0">Remote, Bangladesh</span>
+                            </div>
+                            <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5">
+                                <span class="text-[0.92rem] text-[var(--text-secondary)] italic">Laravel Developer</span>
+                                <span class="font-mono text-[0.75rem] text-[var(--text-muted)] tracking-wider shrink-0">Jan 2021 – Jul 2021</span>
+                            </div>
+                            <ul class="cv-list mt-1.5">
+                                <li>Built Laravel-based systems including ticketing and management platforms</li>
+                                <li>Implemented authentication systems (multi-auth, 2FA, email verification)</li>
+                                <li>Integrated APIs and payment gateways (Stripe, PayPal, Twilio, Mailchimp)</li>
+                                <li>Developed dynamic UI features using jQuery and AJAX</li>
+                            </ul>
+                            <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
+                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, MySQL, jQuery, AJAX, Git
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects -->
+                <div class="cv-section">
+                    <h3 class="cv-section-title">Projects</h3>
+
+                    <div class="space-y-3">
+                        <div>
+                            <h4 class="text-[1rem] text-[var(--text-primary)]">
+                                <span class="font-display font-bold">SignalStack</span>
+                                <span class="text-[var(--text-muted)]"> — </span>
+                                <span class="italic text-[0.9rem] text-[var(--text-secondary)]">Real-time data pipeline (ingestion → processing → enrichment → serving)</span>
+                            </h4>
+                            <ul class="cv-list mt-1">
+                                <li>Designed async processing pipeline using queues</li>
+                                <li>Implemented caching strategies for performance optimization</li>
+                                <li>Built AI-assisted enrichment workflow</li>
+                                <li>Conducted load testing and identified system bottlenecks</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="text-[1rem] text-[var(--text-primary)]">
+                                <span class="font-display font-bold">Hujjah</span>
+                                <span class="text-[var(--text-muted)]"> — </span>
+                                <span class="italic text-[0.9rem] text-[var(--text-secondary)]">Privacy-first, offline Islamic research engine</span>
+                            </h4>
+                            <ul class="cv-list mt-1">
+                                <li>Built full-text and semantic search across Quran (6,236 verses) and 36K+ hadith</li>
+                                <li>Implemented local AI chat with RAG pipeline using llama.cpp and Transformers.js</li>
+                                <li>Designed interactive sanad chain visualization with narrator explorer</li>
+                                <li>Cross-platform via Tauri 2.0 (macOS, Windows, Linux) with SQLite + FTS5</li>
+                            </ul>
+                            <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
+                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Next.js, React, Tauri, SQLite, Transformers.js, Tailwind
+                            </p>
+                        </div>
+
+                        <p class="text-[0.88rem] text-[var(--text-muted)]">
+                            <span class="font-semibold text-[var(--text-secondary)]">Other Projects:</span> Faculty Routine Management System, E-Bank System, Lenden Payment Gateway, Timelock Project Management System
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Technical Skills -->
+                <div class="cv-section">
+                    <h3 class="cv-section-title">Technical Skills</h3>
+                    <div class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-[0.92rem]">
+                        <span class="font-semibold text-[var(--text-primary)]">Backend</span>
+                        <span class="text-[var(--text-secondary)]">Laravel, Livewire, CodeIgniter</span>
+                        <span class="font-semibold text-[var(--text-primary)]">Frontend</span>
+                        <span class="text-[var(--text-secondary)]">Tailwind, Bootstrap, Alpine.js, jQuery, JavaScript</span>
+                        <span class="font-semibold text-[var(--text-primary)]">Database</span>
+                        <span class="text-[var(--text-secondary)]">MySQL, ClickHouse</span>
+                        <span class="font-semibold text-[var(--text-primary)]">Systems</span>
+                        <span class="text-[var(--text-secondary)]">Docker (basic), Linux</span>
+                        <span class="font-semibold text-[var(--text-primary)]">Tools</span>
+                        <span class="text-[var(--text-secondary)]">Git, VS Code</span>
+                    </div>
+                </div>
+
+                <!-- Current Focus -->
+                <div class="cv-section">
+                    <h3 class="cv-section-title">Current Focus</h3>
+                    <ul class="cv-list">
+                        <li>System design fundamentals</li>
+                        <li>Async processing & queues</li>
+                        <li>Data pipelines & real-time systems</li>
+                        <li>Infrastructure basics (Docker, Kubernetes)</li>
+                    </ul>
+                </div>
+
+                <!-- Education -->
+                <div class="cv-section">
+                    <h3 class="cv-section-title">Education</h3>
+                    <div class="space-y-2">
+                        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5">
+                            <div>
+                                <h4 class="font-display font-bold text-[1rem] text-[var(--text-primary)] uppercase tracking-wide">Port City International University</h4>
+                                <span class="text-[0.9rem] text-[var(--text-secondary)] italic">B.Sc. in Computer Science & Engineering</span>
+                            </div>
+                            <span class="font-mono text-[0.75rem] text-[var(--text-muted)] tracking-wider shrink-0">2020</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5">
+                            <div>
+                                <h4 class="font-display font-bold text-[1rem] text-[var(--text-primary)] uppercase tracking-wide">Daffodil Institute of IT</h4>
+                                <span class="text-[0.9rem] text-[var(--text-secondary)] italic">Diploma in Computer Technology</span>
+                            </div>
+                            <span class="font-mono text-[0.75rem] text-[var(--text-muted)] tracking-wider shrink-0">2016</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Languages -->
+                <div class="cv-section" style="padding-bottom: 0; border: none;">
+                    <h3 class="cv-section-title">Languages</h3>
+                    <p class="text-[0.92rem] text-[var(--text-secondary)]">
+                        <span class="font-semibold text-[var(--text-primary)]">Bengali</span> (Native),
+                        <span class="font-semibold text-[var(--text-primary)]">English</span> (Fluent)
+                    </p>
+                </div>
+
+            </div>
         </div>
+
     </main>
 </MainLayout>
+
+<style>
+    .cv-card section {
+        padding: 0 !important;
+    }
+
+    .cv-body {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .cv-section {
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+    }
+
+    .cv-section:last-child {
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .cv-section-title {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent-text);
+        padding-bottom: 0.35rem;
+        margin-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .cv-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .cv-list li {
+        position: relative;
+        padding-left: 1rem;
+        font-size: 0.92rem;
+        line-height: 1.6;
+        color: var(--text-secondary);
+    }
+
+    .cv-list li::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: var(--text-muted);
+    }
+
+    @media print {
+        main {
+            padding: 0 !important;
+        }
+        .btn-ghost, .btn-primary {
+            display: none !important;
+        }
+    }
+</style>

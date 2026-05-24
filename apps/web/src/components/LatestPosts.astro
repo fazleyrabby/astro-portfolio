@@ -1,9 +1,10 @@
 ---
 import { supabase } from '@lib/supabase';
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 
 const { data } = await supabase
   .from('posts')
@@ -28,9 +29,11 @@ const latestPosts = data || [];
 
     <div class="post-list border-t border-border">
       {latestPosts.map((post, i) => (
-        <a href={`/posts/${post.slug}`} class="post-row flex flex-col sm:flex-row sm:items-center py-4 sm:py-3 border-b border-border group transition-all duration-300 hover:bg-[var(--accent-dim)] hover:pl-4">
+        <a href={translatePath(`/posts/${post.slug}`)} class="post-row flex flex-col sm:flex-row sm:items-center py-4 sm:py-3 border-b border-border group transition-all duration-300 hover:bg-[var(--accent-dim)] hover:pl-4">
           <div class="flex items-start gap-4 sm:gap-6 flex-1 min-w-0">
-            <span class="post-number font-mono text-[0.7rem] text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors shrink-0">0{i + 1}</span>
+            <span class="post-number font-mono text-[0.7rem] text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors shrink-0">
+              {lang === 'bn' ? 'বিএন' : 'BN'}-0{i + 1}
+            </span>
             <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 min-w-0">
               <span class="post-date font-mono text-[0.68rem] text-[var(--text-muted)] shrink-0">
                 {post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { month: 'short', day: '2-digit', year: 'numeric' }) : t('posts.unknown')}

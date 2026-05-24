@@ -13,6 +13,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         </a>
         <div class="h-4 w-[1px] bg-adm-border shrink-0"></div>
         <span id="slugLabel" class="text-xs font-mono text-adm-muted truncate">Loading...</span>
+        <div id="translationLinks" class="hidden"></div>
       </div>
 
       <div class="flex items-center gap-2 flex-wrap">
@@ -40,6 +41,9 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         <button id="uploadBtn" class="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-adm-muted hover:text-adm-text transition-colors border border-adm-border rounded-md hover:bg-adm-muted/10">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
           Image
+        </button>
+        <button id="autoTranslateBtn" class="hidden items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-emerald-400 border border-emerald-500/30 rounded-md hover:bg-emerald-500/10 transition-colors bg-adm-panel">
+          🪄 Auto-Translate
         </button>
         <button id="saveBtn" disabled class="bg-adm-primary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-1.5 rounded-md text-xs font-semibold transition-all shadow-lg shadow-adm-primary/20">
           Save
@@ -88,7 +92,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   import { syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldGutter, indentOnInput } from "@codemirror/language";
   import { marked } from "marked";
 
-  const API = import.meta.env.PUBLIC_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3005' : 'https://cms.fazleyrabbi.xyz');
+  const API = import.meta.env.PUBLIC_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://cms.fazleyrabbi.xyz');
   const urlParams = new URLSearchParams(window.location.search);
   const slug = urlParams.get('slug');
 
@@ -114,6 +118,10 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   const saveBtn = document.getElementById('saveBtn') as HTMLButtonElement;
   const imageFile = document.getElementById('imageFile') as HTMLInputElement;
   const uploadBtn = document.getElementById('uploadBtn');
+  const autoTranslateBtn = document.getElementById('autoTranslateBtn') as HTMLButtonElement;
+
+  let originalContent = '';
+  let targetLang = 'en';
 
   // Mode handling
   let currentMode = 'split';
@@ -296,6 +304,45 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       const bodyMatch = raw.match(/^---[\s\S]*?---\s*([\s\S]*)$/m);
       const body = bodyMatch ? bodyMatch[1].trim() : raw;
       initEditor(body);
+
+      // Translation links logic
+      fetch(`${API}/cms/posts`, { headers: { 'Authorization': `Bearer ${getToken()}` } })
+        .then(r => r.json())
+        .then(all => {
+           const linksEl = document.getElementById('translationLinks');
+           if (!linksEl) return;
+           
+           const lang = data.lang || 'en';
+           targetLang = lang;
+           if (lang === 'en') {
+               const translated = all.find(p => p.translation_of === data.id);
+               if (translated) {
+                   linksEl.innerHTML = `<span class="text-adm-muted">Translation:</span> <a href="/admin/edit?slug=${translated.slug}" class="text-emerald-400 hover:underline">Edit BN</a>`;
+                   linksEl.className = "text-[10px] px-2 py-0.5 rounded border border-emerald-500/20 bg-emerald-500/5 ml-2 font-mono flex items-center gap-1.5";
+               } else {
+                   linksEl.innerHTML = `<a href="/admin/create?translate_from=${data.slug}&lang=bn" class="text-amber-400 hover:underline flex items-center gap-1"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add BN</a>`;
+                   linksEl.className = "text-[10px] px-2 py-0.5 rounded border border-amber-500/20 bg-amber-500/5 ml-2 font-mono flex items-center gap-1.5";
+               }
+           } else if (lang === 'bn' && data.translation_of) {
+               const original = all.find(p => p.id === data.translation_of);
+               if (original) {
+                   linksEl.innerHTML = `<span class="text-adm-muted">Translation of:</span> <a href="/admin/edit?slug=${original.slug}" class="text-blue-400 hover:underline">Edit EN</a>`;
+                   linksEl.className = "text-[10px] px-2 py-0.5 rounded border border-blue-500/20 bg-blue-500/5 ml-2 font-mono flex items-center gap-1.5";
+                   
+                   // Fetch original content for Auto-Translate
+                   fetch(`${API}/cms/posts/${original.slug}`, { headers: { 'Authorization': `Bearer ${getToken()}` } })
+                     .then(res => res.json())
+                     .then(orig => {
+                        originalContent = orig.content || '';
+                        if (originalContent) {
+                          autoTranslateBtn.classList.remove('hidden');
+                          autoTranslateBtn.classList.add('flex');
+                        }
+                     });
+               }
+           }
+        });
+        
     } catch (e) {
       editorPane.innerHTML = `<div class="h-full flex items-center justify-center text-red-400 font-mono text-xs">Failed to load: ${e.message}</div>`;
     }
@@ -378,6 +425,38 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   });
 
   saveBtn.addEventListener('click', save);
+
+  autoTranslateBtn.addEventListener('click', async () => {
+    if (!originalContent) return;
+    autoTranslateBtn.disabled = true;
+    autoTranslateBtn.textContent = 'Translating...';
+    showToast('AI Translation started. This may take 10-30 seconds...', 'info');
+
+    try {
+      const res = await fetch(`${API}/cms/translate`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${getToken()}`,
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify({ content: originalContent, targetLang: targetLang === 'bn' ? 'Bengali' : 'English' }),
+      });
+      
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Translation failed');
+      
+      view.dispatch({
+        changes: { from: 0, to: view.state.doc.length, insert: data.translatedText },
+      });
+      
+      showToast('Translation completed!', 'success');
+    } catch (e) {
+      showToast(e.message, 'error');
+    } finally {
+      autoTranslateBtn.disabled = false;
+      autoTranslateBtn.textContent = '🪄 Auto-Translate';
+    }
+  });
 
   // Theme Toggle Logic
   const themeToggle = document.getElementById('themeToggle');

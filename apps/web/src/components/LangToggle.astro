@@ -1,0 +1,52 @@
+---
+import { getLangFromUrl } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const pathname = Astro.url.pathname;
+
+let targetUrl = '/';
+if (lang === 'en') {
+  // If english, target is bengali
+  targetUrl = `/bn${pathname === '/' ? '' : pathname}`;
+} else {
+  // If bengali, target is english
+  targetUrl = pathname.replace(/^\/bn/, '');
+  if (targetUrl === '') targetUrl = '/';
+}
+---
+<a
+  href={targetUrl}
+  class="lang-toggle-btn font-mono text-[0.65rem] uppercase tracking-wider bg-transparent border border-[var(--border)] text-[var(--text-muted)] rounded px-2 py-1 cursor-pointer hover:border-[var(--accent)] hover:text-[var(--text-primary)] transition-colors flex items-center justify-center"
+  data-target-lang={lang === 'en' ? 'bn' : 'en'}
+  aria-label={`Switch to ${lang === 'en' ? 'Bengali' : 'English'}`}
+>
+  {lang === 'en' ? 'BN' : 'EN'}
+</a>
+
+<script>
+  // Persist language preference
+  const toggleBtns = document.querySelectorAll('.lang-toggle-btn');
+  toggleBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const targetLang = (e.currentTarget as HTMLElement).getAttribute('data-target-lang');
+      if (targetLang) {
+        localStorage.setItem('preferred_lang', targetLang);
+      }
+    });
+  });
+
+  // Redirect on first visit if preferred lang differs from current
+  const currentLang = document.documentElement.lang || 'en';
+  const preferredLang = localStorage.getItem('preferred_lang');
+  
+  if (preferredLang && preferredLang !== currentLang) {
+    const hasRedirected = sessionStorage.getItem('lang_redirected');
+    if (!hasRedirected) {
+      sessionStorage.setItem('lang_redirected', 'true');
+      const btn = document.querySelector('.lang-toggle-btn') as HTMLAnchorElement;
+      if (btn && btn.href) {
+        window.location.href = btn.href;
+      }
+    }
+  }
+</script>

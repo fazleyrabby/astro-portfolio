@@ -1,12 +1,16 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
 import { supabase } from "@lib/supabase";
+import { getLangFromUrl } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
 
 // Fetch strictly from Supabase at build time
 const { data: posts, error } = await supabase
   .from('posts')
   .select('*')
   .eq('status', 'published')
+  .eq('lang', lang)
   .order('published_at', { ascending: false });
 
 if (error) {

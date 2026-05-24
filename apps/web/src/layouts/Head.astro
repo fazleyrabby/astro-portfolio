@@ -1,14 +1,30 @@
 ---
-const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twitterCard, twitterImage, twitterTitle, twitterDescription, articlePublishedTime, articleModifiedTime, articleAuthor, articleTags } = Astro.props;
+import { getLangFromUrl } from "../i18n/utils";
+const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twitterCard, twitterImage, twitterTitle, twitterDescription, articlePublishedTime, articleModifiedTime, articleAuthor, articleTags, alternateUrl } = Astro.props;
 const defaultTitle = "Fazley Rabbi — Laravel & Backend Engineer";
 const defaultDesc = "Laravel and backend engineer specializing in SaaS platforms, REST APIs, and payment integrations. Based in Bangladesh, available globally.";
 const isProduction = import.meta.env.NODE_ENV === "production";
 const umamiID = import.meta.env.UMAMI_ID;
+
+const currentLang = getLangFromUrl(Astro.url);
+const siteUrl = "https://fazleyrabbi.xyz";
+const currentPathname = Astro.url.pathname;
+// Remove trailing slash if exists (except for root)
+const normalizedPath = currentPathname.endsWith('/') && currentPathname.length > 1 ? currentPathname.slice(0, -1) : currentPathname;
+
+const defaultEnPath = currentLang === 'bn' ? normalizedPath.replace(/^\/bn/, '') || '/' : normalizedPath;
+const defaultBnPath = currentLang === 'en' ? `/bn${normalizedPath === '/' ? '' : normalizedPath}` : normalizedPath;
+
+const enHref = currentLang === 'bn' && alternateUrl ? alternateUrl : `${siteUrl}${defaultEnPath}`;
+const bnHref = currentLang === 'en' && alternateUrl ? alternateUrl : `${siteUrl}${defaultBnPath}`;
 ---
 
 <head>
     <meta charset="utf-8" />
     <title>{title ?? defaultTitle}</title>
+    <link rel="alternate" href={enHref} hreflang="en" />
+    <link rel="alternate" href={bnHref} hreflang="bn" />
+    <link rel="alternate" href={enHref} hreflang="x-default" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -21,6 +37,8 @@ const umamiID = import.meta.env.UMAMI_ID;
     <meta property="og:image" content={ogImage ?? ''} />
     <meta property="og:url" content={ogUrl ?? `https://fazleyrabbi.xyz${Astro.url.pathname}`} />
     <meta property="og:type" content={ogType ?? 'website'} />
+    <meta property="og:locale" content={currentLang === 'bn' ? 'bn_BD' : 'en_US'} />
+    <meta property="og:locale:alternate" content={currentLang === 'en' ? 'bn_BD' : 'en_US'} />
     <meta name="twitter:card" content={twitterCard ?? 'summary_large_image'} />
     <meta name="twitter:title" content={twitterTitle ?? ogTitle ?? title ?? defaultTitle} />
     <meta name="twitter:description" content={twitterDescription ?? ogDescription ?? description ?? defaultDesc} />

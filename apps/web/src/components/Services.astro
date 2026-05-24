@@ -1,28 +1,33 @@
 ---
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
 const services = [
   {
-    title: "Laravel Development",
-    desc: "Custom Laravel applications, SaaS platforms, admin panels, and modular backend systems."
+    title: t('services.1.title'),
+    desc: t('services.1.desc')
   },
   {
-    title: "REST API Development",
-    desc: "Designing and building clean, versioned REST APIs for web and mobile clients."
+    title: t('services.2.title'),
+    desc: t('services.2.desc')
   },
   {
-    title: "Payment Integration",
-    desc: "Integrating payment gateways into Laravel apps — multi-gateway abstraction, webhooks, transaction management."
+    title: t('services.3.title'),
+    desc: t('services.3.desc')
   },
   {
-    title: "Performance & Optimization",
-    desc: "Query optimization, version upgrades, and caching strategies for production Laravel codebases."
+    title: t('services.4.title'),
+    desc: t('services.4.desc')
   }
 ]
 ---
 <section id="services" class="reveal py-16">
   <div class="mb-10">
-    <span class="section-label">What I Offer</span>
-    <h2 class="text-3xl md:text-5xl font-bold font-display text-[var(--text-primary)] mb-2">Services</h2>
-    <p class="text-[var(--text-secondary)] max-w-xl">What I build and how I can help your project.</p>
+    <span class="section-label">{t('services.label')}</span>
+    <h2 class="text-3xl md:text-5xl font-bold font-display text-[var(--text-primary)] mb-2">{t('services.title')}</h2>
+    <p class="text-[var(--text-secondary)] max-w-xl">{t('services.subtitle')}</p>
   </div>
 
   <div class="grid sm:grid-cols-2 gap-4">

@@ -7,6 +7,13 @@ export default defineConfig({
   site: "https://fazleyrabbi.xyz",
   output: "static",
   integrations: [tailwind(), sitemap()],
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'bn'],
+    routing: {
+      prefixDefaultLocale: false
+    }
+  },
   vite: {
     resolve: {
       dedupe: [

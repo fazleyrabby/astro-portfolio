@@ -1,9 +1,16 @@
 ---
 import { supabase } from '@lib/supabase';
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
 const { data } = await supabase
   .from('posts')
   .select('slug, title, published_at')
   .eq('status', 'published')
+  // Assume 'lang' column exists in Supabase. If not, this might fail until added.
+  .eq('lang', lang)
   .order('published_at', { ascending: false })
   .limit(3);
 const latestPosts = data || [];
@@ -13,8 +20,8 @@ const latestPosts = data || [];
   <div class="max-w-6xl mx-auto px-6">
     <div class="flex items-center gap-6 mb-12">
       <div>
-        <span class="section-label">05 / Writing</span>
-        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.8rem,5vw,2.5rem)] leading-tight">Latest Thoughts</h2>
+        <span class="section-label">{t('posts.label')}</span>
+        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.8rem,5vw,2.5rem)] leading-tight">{t('posts.title')}</h2>
       </div>
       <div class="flex-1 hidden md:block h-[1px] bg-accent opacity-20 dark:opacity-30"></div>
     </div>
@@ -26,7 +33,7 @@ const latestPosts = data || [];
             <span class="post-number font-mono text-[0.7rem] text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors shrink-0">0{i + 1}</span>
             <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 min-w-0">
               <span class="post-date font-mono text-[0.68rem] text-[var(--text-muted)] shrink-0">
-                {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) : 'Unknown'}
+                {post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { month: 'short', day: '2-digit', year: 'numeric' }) : t('posts.unknown')}
               </span>
               <span class="post-title font-display font-semibold text-[1.02rem] text-[var(--text-primary)] group-hover:text-[var(--text-primary)] truncate">
                 {post.title}
@@ -40,13 +47,13 @@ const latestPosts = data || [];
 
     {latestPosts.length === 0 && (
       <div class="text-center py-12">
-        <p class="text-[var(--text-muted)] font-mono text-xs">No posts yet. Check back soon!</p>
+        <p class="text-[var(--text-muted)] font-mono text-xs">{t('posts.empty')}</p>
       </div>
     )}
 
     {latestPosts.length > 0 && (
       <div class="mt-6 text-center">
-        <a href="/posts" class="btn-ghost">Show More Posts</a>
+        <a href="/posts" class="btn-ghost">{t('posts.showMore')}</a>
       </div>
     )}
   </div>

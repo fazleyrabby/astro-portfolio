@@ -23,21 +23,65 @@ export async function getStaticPaths() {
   }));
 }
 
-const { slug } = Astro.params;
+const rawSlug = Astro.params.slug;
+console.log("[DEBUG slug.astro] rawSlug:", rawSlug, "pathname:", Astro.url.pathname);
+const slug = rawSlug ? decodeURIComponent(rawSlug) : '';
+const currentLang = Astro.url.pathname.startsWith('/bn/') ? 'bn' : 'en';
 
-// Fetch single post data for this specific slug
-const { data: post, error } = await supabase
+// Fetch single post data for this specific slug & language
+let { data: post, error } = await supabase
   .from('posts')
   .select('*')
   .eq('slug', slug)
-  .single();
+  .eq('lang', currentLang)
+  .maybeSingle();
 
-if (error || !post) {
+// Fallback to EN if BN version is not found
+if (!post && currentLang === 'bn') {
+  const fallback = await supabase
+    .from('posts')
+    .select('*')
+    .eq('slug', slug)
+    .eq('lang', 'en')
+    .maybeSingle();
+    
+  if (fallback.data) {
+    post = fallback.data;
+    error = null;
+  }
+}
+
+if (!post) {
   return Astro.redirect('/404');
 }
 
 const seoDescription = post.description || post.title;
 const articleContent = await marked.parse(post.content);
+
+// Resolve alternate URL for LangToggle
+let altUrl = undefined;
+
+if (currentLang === 'en') {
+  const { data: altPost } = await supabase
+    .from('posts')
+    .select('slug')
+    .eq('translation_of', post.id)
+    .single();
+  if (altPost) {
+    altUrl = `/bn/posts/${altPost.slug}`;
+  }
+} else {
+  if (post.lang === 'bn' && post.translation_of) {
+    const { data: altPost } = await supabase
+      .from('posts')
+      .select('slug')
+      .eq('id', post.translation_of)
+      .single();
+    if (altPost) {
+      altUrl = `/posts/${altPost.slug}`;
+    }
+  }
+}
 
 // Estimate reading time
 const wordCount = post.content.split(/\s+/).length;
@@ -85,6 +129,7 @@ const jsonLd = JSON.stringify({
   articleModifiedTime={post.updated_at || post.published_at || undefined}
   articleAuthor="Fazley Rabbi"
   articleTags={post.tags || []}
+  altUrl={altUrl}
 >
   <main class="max-w-4xl mx-auto px-6 py-16">
     <div class="mb-12">

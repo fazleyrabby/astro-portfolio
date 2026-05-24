@@ -292,7 +292,8 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       if (!res.ok) throw new Error('Post not found');
       
       const data = await res.json();
-      const raw = data.content;
+      console.log("Loaded data:", data);
+      const raw = data.content || '';
 
       // Use title directly from API response
       titleInput.value = data.title || slug;
@@ -303,7 +304,10 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       // Strip frontmatter from content if present
       const bodyMatch = raw.match(/^---[\s\S]*?---\s*([\s\S]*)$/m);
       const body = bodyMatch ? bodyMatch[1].trim() : raw;
+      
+      console.log("Calling initEditor");
       initEditor(body);
+      console.log("Editor initialized");
 
       // Translation links logic
       fetch(`${API}/cms/posts`, { headers: { 'Authorization': `Bearer ${getToken()}` } })

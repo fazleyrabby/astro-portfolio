@@ -6,6 +6,10 @@ import Skills from "@components/Skills.astro";
 import MainLayout from "@layouts/MainLayout.astro";
 import Hero from "@components/Hero.astro";
 import ContactCTA from "@components/ContactCTA.astro";
+import { getLangFromUrl, useTranslations } from "@i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <MainLayout title="Fazley Rabbi — Laravel & Backend Engineer">
@@ -14,7 +18,7 @@ import ContactCTA from "@components/ContactCTA.astro";
 
     <div class="editorial-break">
       <p class="editorial-phrase">
-        Building scalable systems,<br />not just interfaces.
+        {t('home.editorial1')}
       </p>
     </div>
 
@@ -26,7 +30,7 @@ import ContactCTA from "@components/ContactCTA.astro";
 
     <div class="editorial-break">
       <p class="editorial-phrase">
-        Four years of real-world code.<br />Built to ship.
+        {t('home.editorial2')}
       </p>
     </div>
 

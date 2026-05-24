@@ -3,15 +3,18 @@ import { getLangFromUrl } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const pathname = Astro.url.pathname;
+const { altUrl } = Astro.props;
 
-let targetUrl = '/';
-if (lang === 'en') {
-  // If english, target is bengali
-  targetUrl = `/bn${pathname === '/' ? '' : pathname}`;
-} else {
-  // If bengali, target is english
-  targetUrl = pathname.replace(/^\/bn/, '');
-  if (targetUrl === '') targetUrl = '/';
+let targetUrl = altUrl;
+if (!targetUrl) {
+  if (lang === 'en') {
+    // If english, target is bengali
+    targetUrl = `/bn${pathname === '/' ? '' : pathname}`;
+  } else {
+    // If bengali, target is english
+    targetUrl = pathname.replace(/^\/bn/, '');
+    if (targetUrl === '') targetUrl = '/';
+  }
 }
 ---
 <a

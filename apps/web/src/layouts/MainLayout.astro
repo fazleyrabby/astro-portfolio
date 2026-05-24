@@ -7,7 +7,7 @@ import ScrollToTop from "@components/ScrollToTop.astro";
 import Analytics from "@vercel/analytics/astro";
 import { getLangFromUrl } from "../i18n/utils";
 
-const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twitterCard, twitterImage, twitterTitle, twitterDescription, articlePublishedTime, articleModifiedTime, articleAuthor, articleTags, lang = getLangFromUrl(Astro.url) } = Astro.props;
+const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twitterCard, twitterImage, twitterTitle, twitterDescription, articlePublishedTime, articleModifiedTime, articleAuthor, articleTags, lang = getLangFromUrl(Astro.url), altUrl } = Astro.props;
 ---
 
 <html lang={lang}>
@@ -16,7 +16,7 @@ const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twit
     <Analytics />
     <div class="page-gradient-layer" aria-hidden="true"></div>
     <div class="cursor" aria-hidden="true"></div>
-    <Nav />
+    <Nav altUrl={altUrl} />
     <div class="w-full relative z-10">
       <slot />
     </div>

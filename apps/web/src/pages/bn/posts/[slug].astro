@@ -1,5 +1,16 @@
 ---
 import Page from '../../posts/[slug].astro';
-export function getStaticPaths() { return Page.getStaticPaths ? Page.getStaticPaths() : []; }
+import { supabase } from '../../../lib/supabase';
+
+export async function getStaticPaths() {
+  const { data: posts } = await supabase
+    .from('posts')
+    .select('slug')
+    .eq('status', 'published');
+  
+  return (posts || []).map((post) => ({
+    params: { slug: post.slug },
+  }));
+}
 ---
 <Page {...Astro.props} />

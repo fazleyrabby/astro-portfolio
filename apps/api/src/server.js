@@ -338,7 +338,7 @@ app.get('/cms/posts/:slug', cmsAuth, async (req, res) => {
         const { data, error } = await supabase.from('posts').select('*').eq('slug', req.params.slug).single();
         if (!error && data) return res.json(data);
         const file = await ghGetFile(`${POSTS_PATH}/${req.params.slug}.md`);
-        res.json({ slug: req.params.slug, content: Buffer.from(file.content, 'base64').toString('utf8') });
+        res.json({ ...data, content: Buffer.from(file.content, 'base64').toString('utf8') });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

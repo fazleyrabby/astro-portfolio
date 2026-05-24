@@ -38,10 +38,42 @@ if (error || !post) {
 
 const seoDescription = post.description || post.title;
 const articleContent = await marked.parse(post.content);
+
+// Estimate reading time
+const wordCount = post.content.split(/\s+/).length;
+const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+
+// Prepare JSON-LD structured data
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": post.title,
+  "description": seoDescription,
+  "image": post.cover_image || undefined,
+  "datePublished": post.published_at || undefined,
+  "dateModified": post.updated_at || post.published_at || undefined,
+  "author": {
+    "@type": "Person",
+    "name": "Fazley Rabbi",
+    "url": "https://fazleyrabbi.xyz"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Fazley Rabbi",
+    "url": "https://fazleyrabbi.xyz"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": `https://fazleyrabbi.xyz/posts/${post.slug}`
+  },
+  "wordCount": wordCount,
+  "keywords": post.tags?.join(", ") || undefined
+});
 ---
 
 <MainLayout 
-  title={post.title}
+  title={`${post.title} — Fazley Rabbi`}
+  description={seoDescription}
   ogTitle={post.title}
   ogDescription={seoDescription}
   ogImage={post.cover_image}
@@ -49,6 +81,10 @@ const articleContent = await marked.parse(post.content);
   ogType="article"
   twitterCard="summary_large_image"
   twitterImage={post.cover_image}
+  articlePublishedTime={post.published_at || undefined}
+  articleModifiedTime={post.updated_at || post.published_at || undefined}
+  articleAuthor="Fazley Rabbi"
+  articleTags={post.tags || []}
 >
   <main class="max-w-6xl mx-auto px-6 py-16">
     <div class="max-w-3xl mx-auto lg:mx-0 lg:max-w-none mb-12">
@@ -58,9 +94,12 @@ const articleContent = await marked.parse(post.content);
             data-thumb 
             src={post.cover_image} 
             alt={post.title} 
+            width={1200}
+            height={630}
             class="max-h-[400px] w-auto max-w-full object-contain" 
             style="-webkit-mask-image: linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent); mask-image: linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent);"
-            loading="lazy" 
+            loading="eager"
+            fetchpriority="high"
           />
         </div>
       )}
@@ -72,6 +111,11 @@ const articleContent = await marked.parse(post.content);
               post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : ""
             }</small
           >
+        </p>
+
+        <span class="hidden sm:inline-block text-[var(--border-color)]">|</span>
+        <p class="mb-0">
+          <small class="font-mono text-xs text-[var(--text-muted)] uppercase tracking-widest">{readingTime} min read</small>
         </p>
         
         {post.tags && post.tags.length > 0 && (
@@ -96,6 +140,8 @@ const articleContent = await marked.parse(post.content);
       <TableOfContents />
     </div>
   </main>
+
+  <script type="application/ld+json" set:html={jsonLd} />
 </MainLayout>
 
 <style>

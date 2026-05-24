@@ -17,3 +17,10 @@ export function useTranslations(lang: Locale) {
     return ui[lang][key] || ui[defaultLang][key];
   }
 }
+
+export function useTranslatedPath(lang: Locale) {
+  return function translatePath(path: string, l: string = lang) {
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    return l === defaultLang ? cleanPath : `/${l}${cleanPath}`;
+  }
+}

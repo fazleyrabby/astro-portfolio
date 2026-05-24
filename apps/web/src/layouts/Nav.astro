@@ -1,15 +1,16 @@
 ---
 import ThemeIcon from "@components/ThemeIcon.astro";
 import LangToggle from "@components/LangToggle.astro";
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 
 const navItems = [
-    { href: "/#projects", label: t('nav.work') },
-    { href: "/posts/", label: t('nav.blog') },
-    { href: "/about/", label: t('nav.about') },
+    { href: translatePath("/#projects"), label: t('nav.work') },
+    { href: translatePath("/posts/"), label: t('nav.blog') },
+    { href: translatePath("/about/"), label: t('nav.about') },
 ];
 ---
 
@@ -17,7 +18,7 @@ const navItems = [
     <nav class="max-w-6xl mx-auto px-6 py-4">
         <div class="flex items-center justify-between">
             <!-- Logo -->
-            <a href="/" class="flex items-center gap-2 group">
+            <a href={translatePath("/")} class="flex items-center gap-2 group">
                 <span class="text-xl text-[var(--text-primary)] font-display font-bold tracking-tight">
                     Fazley<span class="text-[var(--accent)]">.</span>
                 </span>

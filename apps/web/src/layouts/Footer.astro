@@ -1,21 +1,22 @@
 ---
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 
 const primaryNav = [
-    { href: "/", label: t('nav.home') },
-    { href: "/#projects", label: t('nav.work') },
-    { href: "/posts", label: t('nav.blog') },
-    { href: "/about", label: t('nav.about') },
+    { href: translatePath("/"), label: t('nav.home') },
+    { href: translatePath("/#projects"), label: t('nav.work') },
+    { href: translatePath("/posts"), label: t('nav.blog') },
+    { href: translatePath("/about"), label: t('nav.about') },
 ];
 
 const secondaryNav = [
-    { href: "/uses", label: t('nav.uses') },
-    { href: "/gallery", label: t('nav.gallery') },
-    { href: "/resources", label: t('nav.resources') },
-    { href: "/resume", label: t('nav.resume') },
+    { href: translatePath("/uses"), label: t('nav.uses') },
+    { href: translatePath("/gallery"), label: t('nav.gallery') },
+    { href: translatePath("/resources"), label: t('nav.resources') },
+    { href: translatePath("/resume"), label: t('nav.resume') },
     { href: "https://prompts.fazleyrabbi.xyz", label: t('nav.prompts'), external: true },
 ];
 ---

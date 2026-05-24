@@ -152,23 +152,24 @@ async function translateAIContent(content, targetLang) {
         throw new Error('GROQ_API_KEY is missing');
     }
 
-    const prompt = `You are a professional and highly accurate translator. Translate the following Markdown content into ${targetLang}.
-Tone: Professional, compact, and simple. 
-REQUIREMENTS:
-- Do NOT add any irrelevant words, explanations, or conversational filler.
-- Do NOT break the original meaning; keep the translation precise and compact.
-- Strictly preserve all Markdown formatting, code blocks, links, and YAML frontmatter structure exactly as they are.
-- Only translate the human-readable text.
+    const prompt = `Translate the following Markdown content into conversational, everyday ${targetLang}.
+CRITICAL INSTRUCTIONS:
+- Write exactly how a modern tech-savvy person speaks. For Bengali, use ultra-simple everyday words.
+- DO NOT use formal, dictionary, or literary words (e.g., avoid words like 'মনস্তাত্ত্বিক', 'অস্তিত্ববাদী', 'অস্বস্তিকর').
+- Keep English tech terms as English words written in native script (e.g., ক্যারিয়ার, ডেভেলপার, এআই, স্কিল, ফ্রেমওয়ার্ক, প্রোডাক্টিভিটি, মার্কেট, জব). Do NOT translate them.
+- Keep the tone super casual, like a friendly tech blogger talking to a friend.
+- Do NOT output any <think> blocks or reasoning.
+- Strictly preserve all Markdown formatting, code blocks, links, and YAML frontmatter.
 
 CONTENT:
 ${content}`;
 
     try {
         const completion = await openai.chat.completions.create({
-            model: 'qwen/qwen3-32b',
+            model: 'llama-3.3-70b-versatile',
             messages: [{ role: 'user', content: prompt }],
-            temperature: 0.1,
-            max_tokens: 8000,
+            temperature: 0.2,
+            max_tokens: 30000,
         });
 
         let translatedText = completion.choices[0].message.content || '';

@@ -36,7 +36,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 </AdminLayout>
 
 <script>
-  const API = import.meta.env.PUBLIC_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3005' : 'https://cms.fazleyrabbi.xyz');
+  const API = import.meta.env.PUBLIC_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://cms.fazleyrabbi.xyz');
 
   function getToken() {
     const t = localStorage.getItem('cms_token');

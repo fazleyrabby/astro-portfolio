@@ -1,17 +1,22 @@
 ---
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
 const primaryNav = [
-    { href: "/", label: "Home" },
-    { href: "/#projects", label: "Work" },
-    { href: "/posts", label: "Blog" },
-    { href: "/about", label: "About" },
+    { href: "/", label: t('nav.home') },
+    { href: "/#projects", label: t('nav.work') },
+    { href: "/posts", label: t('nav.blog') },
+    { href: "/about", label: t('nav.about') },
 ];
 
 const secondaryNav = [
-    { href: "/uses", label: "Uses" },
-    { href: "/gallery", label: "Gallery" },
-    { href: "/resources", label: "Resources" },
-    { href: "/resume", label: "Resume" },
-    { href: "https://prompts.fazleyrabbi.xyz", label: "Prompts", external: true },
+    { href: "/uses", label: t('nav.uses') },
+    { href: "/gallery", label: t('nav.gallery') },
+    { href: "/resources", label: t('nav.resources') },
+    { href: "/resume", label: t('nav.resume') },
+    { href: "https://prompts.fazleyrabbi.xyz", label: t('nav.prompts'), external: true },
 ];
 ---
 
@@ -29,10 +34,10 @@ const secondaryNav = [
                         Fazley<span class="text-[var(--accent)]">.</span>
                     </h3>
                     <p class="footer-tagline font-serif italic text-[1.1rem] text-[var(--text-secondary)] mb-4">
-                        Building scalable systems, not just interfaces.
+                        {t('footer.tagline')}
                     </p>
                     <p class="text-[0.88rem] text-[var(--text-muted)] max-w-sm leading-relaxed">
-                        Laravel & Backend Engineer specializing in SaaS platforms, REST APIs, and high-performance applications.
+                        {t('footer.description')}
                     </p>
                 </div>
             </div>
@@ -41,7 +46,7 @@ const secondaryNav = [
             <div class="md:col-span-6 grid grid-cols-2 gap-8 md:justify-items-end">
                 <!-- Column 1: Main -->
                 <nav class="footer-nav flex flex-col gap-3">
-                    <span class="section-label mb-1">Navigation</span>
+                    <span class="section-label mb-1">{t('footer.nav')}</span>
                     <div class="flex flex-col gap-2">
                         {primaryNav.map(item => (
                             <a href={item.href} class="font-mono text-[0.68rem] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
@@ -53,7 +58,7 @@ const secondaryNav = [
 
                 <!-- Column 2: Explore -->
                 <nav class="footer-nav flex flex-col gap-3">
-                    <span class="section-label mb-1">Explore</span>
+                    <span class="section-label mb-1">{t('footer.explore')}</span>
                     <div class="flex flex-col gap-2">
                         {secondaryNav.map(item => (
                             <a href={item.href} {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} class="font-mono text-[0.68rem] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
@@ -70,9 +75,9 @@ const secondaryNav = [
             <div class="flex flex-wrap items-center justify-center gap-3 font-mono text-[0.62rem] text-[var(--text-muted)] uppercase tracking-widest">
                 <span>&copy; {new Date().getFullYear()}</span>
                 <span class="text-[var(--accent)] opacity-50">·</span>
-                <span>Powered by <a href="https://astro.build" target="_blank" class="hover:text-[var(--accent)] transition-colors">Astro</a></span>
+                <span>{t('footer.powered')} <a href="https://astro.build" target="_blank" class="hover:text-[var(--accent)] transition-colors">Astro</a></span>
                 <span class="text-[var(--accent)] opacity-50">·</span>
-                <span>Built with ❤ by <span class="text-[var(--text-secondary)]">Fazley Rabbi</span></span>
+                <span>{t('footer.built')} <span class="text-[var(--text-secondary)]">Fazley Rabbi</span></span>
             </div>
             
             <div class="flex gap-5">

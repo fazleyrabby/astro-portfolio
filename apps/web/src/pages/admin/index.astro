@@ -12,6 +12,11 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       </div>
       <div class="flex items-center gap-6">
         <a href="/admin/media" class="text-xs text-adm-muted hover:text-adm-text transition-colors uppercase tracking-wider font-bold">Media</a>
+        <div class="flex items-center gap-2 border-x border-adm-border px-4 mx-2">
+          <button onclick="window.setLangFilter('all')" id="filter-all" class="text-[10px] uppercase font-bold tracking-widest text-adm-primary transition-colors">All</button>
+          <button onclick="window.setLangFilter('en')" id="filter-en" class="text-[10px] uppercase font-bold tracking-widest text-adm-muted hover:text-adm-text transition-colors">EN</button>
+          <button onclick="window.setLangFilter('bn')" id="filter-bn" class="text-[10px] uppercase font-bold tracking-widest text-adm-muted hover:text-adm-text transition-colors">BN</button>
+        </div>
         <button id="themeToggle" class="text-adm-muted hover:text-adm-text transition-colors p-1" title="Toggle Theme">
           <svg id="sunIcon" class="hidden dark:block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M22 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
           <svg id="moonIcon" class="block dark:hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -46,10 +51,11 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 </AdminLayout>
 
 <script>
-  const API = import.meta.env.PUBLIC_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3005' : 'https://cms.fazleyrabbi.xyz');
+  const API = import.meta.env.PUBLIC_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://cms.fazleyrabbi.xyz');
   let allPosts = [];
   let sortCol = 'date';
   let sortAsc = false;
+  let activeLangFilter = 'all';
 
   function getToken() {
     const t = localStorage.getItem('cms_token');
@@ -71,13 +77,18 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       return;
     }
 
-    const sortedPosts = [...posts].sort((a, b) => {
+    const filteredPosts = activeLangFilter === 'all' 
+      ? posts 
+      : posts.filter(p => (p.lang || 'en') === activeLangFilter);
+
+    const sortedPosts = [...filteredPosts].sort((a, b) => {
       let valA, valB;
       switch(sortCol) {
         case 'title': valA = (a.title || '').toLowerCase(); valB = (b.title || '').toLowerCase(); break;
         case 'slug': valA = (a.slug || '').toLowerCase(); valB = (b.slug || '').toLowerCase(); break;
         case 'status': valA = a.status || ''; valB = b.status || ''; break;
         case 'featured': valA = a.featured ? 1 : 0; valB = b.featured ? 1 : 0; break;
+        case 'lang': valA = a.lang || 'en'; valB = b.lang || 'en'; break;
         case 'date': 
           valA = new Date(a.published_at || a.updated_at).getTime() || 0; 
           valB = new Date(b.published_at || b.updated_at).getTime() || 0; 
@@ -99,7 +110,25 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       const statusLabel = p.status || (isDraft ? 'draft' : 'published');
       const date = (p.published_at || p.updated_at) ? new Date(p.published_at || p.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
       const featuredLabel = p.featured ? 'Yes' : 'No';
-      return { p, displayTitle, isDraft, statusLabel, date, featuredLabel };
+      const lang = p.lang || 'en';
+      const langBadge = `<span class="px-1.5 py-0.5 rounded bg-adm-border/50 text-[9px] font-bold uppercase">${lang}</span>`;
+      
+      let translationAction = '';
+      if (lang === 'en' && !p.translation_of) {
+          const hasTranslation = allPosts.find(t => t.translation_of === p.id);
+          if (hasTranslation) {
+              translationAction = `<a href="/admin/edit?slug=${hasTranslation.slug}" class="text-[10px] text-blue-400 hover:underline">Edit BN</a>`;
+          } else {
+              translationAction = `<a href="/admin/create?translate_from=${p.slug}&lang=bn" class="text-[10px] text-emerald-400 hover:underline border border-emerald-400/30 px-1.5 py-0.5 rounded">Add BN</a>`;
+          }
+      } else if (lang === 'bn' && p.translation_of) {
+          const original = allPosts.find(o => o.id === p.translation_of);
+          if (original) {
+              translationAction = `<a href="/admin/edit?slug=${original.slug}" class="text-[10px] text-amber-400 hover:underline">View EN</a>`;
+          }
+      }
+
+      return { p, displayTitle, isDraft, statusLabel, date, featuredLabel, langBadge, translationAction };
     });
 
     const getSortIndicator = (col) => sortCol === col ? (sortAsc ? ' ↑' : ' ↓') : '';
@@ -113,15 +142,19 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
               <th class="text-left pb-2 font-medium cursor-pointer hover:text-adm-primary transition-colors select-none" onclick="window.sortPosts('slug')">Slug${getSortIndicator('slug')}</th>
               <th class="text-left pb-2 font-medium cursor-pointer hover:text-adm-primary transition-colors select-none" onclick="window.sortPosts('status')">Status${getSortIndicator('status')}</th>
               <th class="text-left pb-2 font-medium cursor-pointer hover:text-adm-primary transition-colors select-none" onclick="window.sortPosts('featured')">Featured${getSortIndicator('featured')}</th>
+              <th class="text-left pb-2 font-medium cursor-pointer hover:text-adm-primary transition-colors select-none" onclick="window.sortPosts('lang')">Lang${getSortIndicator('lang')}</th>
               <th class="text-left pb-2 font-medium cursor-pointer hover:text-adm-primary transition-colors select-none" onclick="window.sortPosts('date')">Date${getSortIndicator('date')}</th>
               <th class="text-left pb-2 font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
-            ${tableRows.map(({ p, displayTitle, isDraft, statusLabel, date, featuredLabel }) => `
+            ${tableRows.map(({ p, displayTitle, isDraft, statusLabel, date, featuredLabel, langBadge, translationAction }) => `
               <tr class="group border-b border-adm-border/40 hover:bg-adm-panel transition-colors">
                 <td class="py-3 pr-4">
-                  <a href="/admin/edit?slug=${p.slug}" class="font-medium text-adm-text group-hover:text-adm-primary transition-colors">${displayTitle}</a>
+                  <div class="flex items-center gap-2">
+                    ${langBadge}
+                    <a href="/admin/edit?slug=${p.slug}" class="font-medium text-adm-text group-hover:text-adm-primary transition-colors">${displayTitle}</a>
+                  </div>
                 </td>
                 <td class="py-3 pr-4 font-mono text-[11px] text-adm-muted max-w-[160px]"><span class="block truncate" title="${p.slug}">${p.slug}</span></td>
                 <td class="py-3 pr-4">
@@ -130,8 +163,12 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
                 <td class="py-3 pr-4">
                   <span class="text-[10px] uppercase tracking-widest font-bold ${p.featured ? 'text-blue-400' : 'text-adm-muted/50'}">${featuredLabel}</span>
                 </td>
+                <td class="py-3 pr-4">
+                  ${langBadge}
+                </td>
                 <td class="py-3 pr-4 font-mono text-[11px] text-adm-muted">${date}</td>
-                <td class="py-3">
+                <td class="py-3 flex items-center gap-3">
+                  ${translationAction}
                   <button onclick="window.deletePost('${p.slug}')" class="text-[10px] uppercase tracking-widest font-bold text-red-500/60 hover:text-red-500 transition-colors">Delete</button>
                 </td>
               </tr>
@@ -140,10 +177,12 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         </table>
       </div>
       <div class="md:hidden space-y-2">
-        ${tableRows.map(({ p, displayTitle, isDraft, statusLabel, date, featuredLabel }) => `
+        ${tableRows.map(({ p, displayTitle, isDraft, statusLabel, date, featuredLabel, langBadge, translationAction }) => `
           <div class="border border-adm-border rounded-lg p-3 bg-adm-panel">
             <div class="flex items-start justify-between gap-2 mb-1.5">
-              <a href="/admin/edit?slug=${p.slug}" class="font-medium text-adm-text text-sm leading-snug flex-1">${displayTitle}</a>
+              <a href="/admin/edit?slug=${p.slug}" class="font-medium text-adm-text text-sm leading-snug flex-1">
+                ${langBadge} ${displayTitle}
+              </a>
               <div class="flex flex-col items-end gap-1 shrink-0">
                 <span class="text-[10px] uppercase tracking-widest font-bold ${isDraft ? 'text-amber-500' : 'text-emerald-500'}">${statusLabel}</span>
                 ${p.featured ? `<span class="text-[9px] uppercase tracking-widest font-bold text-blue-400">Featured</span>` : ''}
@@ -151,14 +190,17 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
             </div>
             <div class="flex items-center justify-between">
               <span class="font-mono text-[10px] text-adm-muted/60">${date}</span>
-              <button onclick="window.deletePost('${p.slug}')" class="text-[10px] uppercase tracking-widest font-bold text-red-500/60 hover:text-red-500 transition-colors">Delete</button>
+              <div class="flex items-center gap-3">
+                ${translationAction}
+                <button onclick="window.deletePost('${p.slug}')" class="text-[10px] uppercase tracking-widest font-bold text-red-500/60 hover:text-red-500 transition-colors">Delete</button>
+              </div>
             </div>
           </div>
         `).join('')}
       </div>
     `;
     
-    countEl.textContent = `${posts.length} posts`;
+    countEl.textContent = `${filteredPosts.length} posts`;
   }
 
   async function loadPosts() {
@@ -176,6 +218,24 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       document.getElementById('postList').innerHTML = `<div class="text-center py-20 text-red-400 text-sm">Error: ${e.message}</div>`;
     }
   }
+
+  // @ts-ignore
+  window.setLangFilter = function(lang) {
+    activeLangFilter = lang;
+    ['all', 'en', 'bn'].forEach(l => {
+      const btn = document.getElementById(`filter-${l}`);
+      if (l === lang) {
+        btn.classList.add('text-adm-primary');
+        btn.classList.remove('text-adm-muted');
+      } else {
+        btn.classList.remove('text-adm-primary');
+        btn.classList.add('text-adm-muted');
+      }
+    });
+    // @ts-ignore
+    const q = document.getElementById('search').value.toLowerCase();
+    render(q ? allPosts.filter(p => p.slug.toLowerCase().includes(q) || (p.title || '').toLowerCase().includes(q)) : allPosts);
+  };
 
   // @ts-ignore
   window.sortPosts = function(col) {

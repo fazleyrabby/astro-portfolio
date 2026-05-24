@@ -1,5 +1,9 @@
 ---
 import AsciiAvatar from "./AsciiAvatar.astro";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section
@@ -32,36 +36,31 @@ import AsciiAvatar from "./AsciiAvatar.astro";
       <div class="max-w-2xl relative z-10">
         <div class="badge-pill">
           <span class="badge-dot"></span>
-          Available for freelance & collaboration
+          {t('hero.available')}
         </div>
 
         <h1 class="mb-1">
-          <span class="block">Hi, I'm</span>
-          <span>Fazley Rabbi</span
+          <span class="block">{t('hero.hi')}</span>
+          <span>{t('hero.name')}</span
           >
         </h1>
 
         <p class="hero-tagline font-serif italic">
-          Building tools and systems that make software faster, cleaner, and
-          more reliable.
+          {t('hero.tagline')}
         </p>
 
         <p class="hero-body max-w-[550px] font-sans mt-4">
-          With 4+ years of experience, I build scalable applications, client
-          solutions, and commercial products. My
-          work focuses on clean architecture, performance, and long-term
-          maintainability. Currently developing SignalStack, Xencode, and Hujjah to
-          improve developer workflows and system stability.
+          {t('hero.body')}
         </p>
 
         <div class="flex gap-3 flex-wrap mt-8">
-          <a href="/resume" class="btn-primary btn-magnetic">Resume</a>
-          <a href="#projects" class="btn-ghost">View Projects</a>
+          <a href="/resume" class="btn-primary btn-magnetic">{t('nav.resume')}</a>
+          <a href="#projects" class="btn-ghost">{t('hero.viewProjects')}</a>
         </div>
 
         <div class="connect-block mt-8">
           <span class="section-label font-mono" style="margin-bottom:0.4rem;"
-            >Connect</span
+            >{t('hero.connect')}</span
           >
           <div class="flex gap-5">
             <a
@@ -94,7 +93,7 @@ import AsciiAvatar from "./AsciiAvatar.astro";
   <!-- Scroll Down Indicator -->
   <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 opacity-50 hidden md:block">
     <div class="flex flex-col items-center gap-2">
-      <span class="font-mono text-[0.6rem] uppercase tracking-widest text-[var(--text-muted)]">Scroll</span>
+      <span class="font-mono text-[0.6rem] uppercase tracking-widest text-[var(--text-muted)]">{t('hero.scroll')}</span>
       <div class="w-[1px] h-12 bg-gradient-to-b from-accent to-transparent"></div>
     </div>
   </div>

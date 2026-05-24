@@ -1,14 +1,19 @@
 ---
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
 const marqueeItems = [
   "PHP", "Laravel", "MySQL", "REST API", "Docker", "Vercel", "GitHub", "CI/CD",
   "JavaScript", "Tailwind CSS", "Bootstrap", "Astro", "Linux", "VPS", "API Design"
 ];
 
 const skillsMatrix = [
-  { label: "BACKEND", values: "PHP, Laravel 8–12, REST API, MySQL" },
-  { label: "FRONTEND", values: "JavaScript, Tailwind CSS, Bootstrap" },
-  { label: "INFRA / DEVOPS", values: "Docker, Vercel, GitHub, Linux VPS" },
-  { label: "TOOLS", values: "Astro, Markdown, Web Automation" },
+  { label: t('skills.backend'), values: "PHP, Laravel 8–12, REST API, MySQL" },
+  { label: t('skills.frontend'), values: "JavaScript, Tailwind CSS, Bootstrap" },
+  { label: t('skills.infra'), values: "Docker, Vercel, GitHub, Linux VPS" },
+  { label: t('skills.tools'), values: "Astro, Markdown, Web Automation" },
 ];
 ---
 
@@ -16,8 +21,8 @@ const skillsMatrix = [
   <div class="max-w-6xl mx-auto px-6">
     <div class="flex items-center gap-6 mb-12">
       <div>
-        <span class="section-label">03 / Skills</span>
-        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.8rem,5vw,2.5rem)] leading-tight">Expertise & Stack</h2>
+        <span class="section-label">{t('skills.label')}</span>
+        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.8rem,5vw,2.5rem)] leading-tight">{t('skills.title')}</h2>
       </div>
       <div class="flex-1 hidden md:block h-[1px] bg-accent opacity-20 dark:opacity-30"></div>
     </div>

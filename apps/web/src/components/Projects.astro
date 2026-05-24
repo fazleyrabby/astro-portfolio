@@ -1,22 +1,27 @@
 ---
 import { getCollection } from 'astro:content';
 import ProjectCard from "./ProjectCard.astro";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 const { type = "home" } = Astro.props;
 const allProjects = await getCollection('projects');
-allProjects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
+const localizedProjects = allProjects.filter(p => (p.data.lang || 'en') === lang);
+localizedProjects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
 
 const projects = type === "home" 
-  ? allProjects.slice(0, 4) 
-  : allProjects;
+  ? localizedProjects.slice(0, 4) 
+  : localizedProjects;
 ---
 
 <section id="projects" class="py-16">
   <div class="max-w-6xl mx-auto px-6">
     <div class="flex items-center gap-6 mb-12">
       <div>
-        <span class="section-label">02 / Projects</span>
-        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(2rem,5vw,3rem)] leading-tight">Featured Projects</h2>
+        <span class="section-label">{t('projects.label')}</span>
+        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(2rem,5vw,3rem)] leading-tight">{t('projects.title')}</h2>
       </div>
       <div class="flex-1 hidden md:block h-[1px] bg-accent opacity-20 dark:opacity-30"></div>
     </div>
@@ -27,10 +32,10 @@ const projects = type === "home"
       ))}
     </div>
 
-    {type === "home" && allProjects.length > 4 && (
+    {type === "home" && localizedProjects.length > 4 && (
       <div class="mt-8 text-center">
         <a href="/projects" class="btn-ghost group">
-          View All Projects
+          {t('projects.viewAll')}
           <span class="inline-block transition-transform group-hover:translate-x-1 ml-1">→</span>
         </a>
       </div>

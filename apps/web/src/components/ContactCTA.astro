@@ -1,4 +1,8 @@
 ---
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section id="contact-cta" class="py-24 relative overflow-hidden">
@@ -8,24 +12,24 @@
 
   <div class="max-w-6xl mx-auto px-6 relative z-10 text-center">
     <div class="inline-block mb-6">
-      <span class="section-label">06 / Contact</span>
+      <span class="section-label">{t('contact.label')}</span>
     </div>
     
     <h2 class="font-display text-[clamp(2.5rem,8vw,5rem)] leading-[1.05] mb-8 text-[var(--text-primary)]">
-      Have a challenge for me?<br />
-      <span class="italic text-[var(--accent)]">Let's build it.</span>
+      {t('contact.title1')}<br />
+      <span class="italic text-[var(--accent)]">{t('contact.title2')}</span>
     </h2>
 
     <p class="font-sans text-[var(--text-secondary)] text-lg max-w-xl mx-auto mb-12 opacity-90">
-      Available for architectural consulting, backend leadership, and end-to-end product development. Currently accepting new collaborations for late 2026.
+      {t('contact.subtitle')}
     </p>
 
     <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
       <a href="mailto:fazley111@gmail.com" class="btn-primary flex items-center gap-2 group px-8 py-4 text-lg">
-        Start a Conversation
+        {t('contact.startBtn')}
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
       </a>
-      <a href="/resume" class="btn-ghost px-8 py-4 text-lg">Download Resume</a>
+      <a href="/resume" class="btn-ghost px-8 py-4 text-lg">{t('contact.resumeBtn')}</a>
     </div>
 
     <div class="mt-20 pt-10 border-t border-border flex flex-wrap justify-center gap-x-12 gap-y-6">

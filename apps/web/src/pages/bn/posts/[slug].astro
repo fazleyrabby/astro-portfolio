@@ -1,0 +1,5 @@
+---
+import Page from '../../posts/[slug].astro';
+export function getStaticPaths() { return Page.getStaticPaths ? Page.getStaticPaths() : []; }
+---
+<Page {...Astro.props} />

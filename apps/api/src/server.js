@@ -1,4 +1,4 @@
-// Environment variables are injected by the host or process
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import fetch from 'node-fetch';
@@ -146,6 +146,39 @@ OUTPUT: Raw Markdown with YAML title and tags. DO NOT wrap the YAML in markdown 
     }
 }
 
+async function translateAIContent(content, targetLang) {
+    log(`[AI] Starting translation to: ${targetLang}`);
+    if (!process.env.GROQ_API_KEY) {
+        throw new Error('GROQ_API_KEY is missing');
+    }
+
+    const prompt = `You are a professional and highly accurate translator. Translate the following Markdown content into ${targetLang}.
+Tone: Professional, compact, and simple. 
+REQUIREMENTS:
+- Do NOT add any irrelevant words, explanations, or conversational filler.
+- Do NOT break the original meaning; keep the translation precise and compact.
+- Strictly preserve all Markdown formatting, code blocks, links, and YAML frontmatter structure exactly as they are.
+- Only translate the human-readable text.
+
+CONTENT:
+${content}`;
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: 'llama-3.3-70b-versatile',
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.1,
+        });
+
+        let translatedText = completion.choices[0].message.content.trim();
+        translatedText = translatedText.replace(/^```(?:markdown|md)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
+        return translatedText;
+    } catch (err) {
+        log(`[AI] Translate error: ${err.message}`);
+        throw err;
+    }
+}
+
 // --- Telegram Bot Logic ---
 bot.use(async (ctx, next) => {
     const userId = ctx.from?.id;
@@ -270,7 +303,7 @@ function cmsAuth(req, res, next) {
 
 app.get('/cms/posts', cmsAuth, async (req, res) => {
     try {
-        const { data, error } = await supabase.from('posts').select('slug, title, status, published_at, updated_at, featured');
+        const { data, error } = await supabase.from('posts').select('slug, title, status, published_at, updated_at, featured, lang, translation_of, id');
         if (error) throw error;
         const posts = data.map(p => {
             let title = p.title;
@@ -284,7 +317,10 @@ app.get('/cms/posts', cmsAuth, async (req, res) => {
                 draft: p.status === 'draft',
                 published_at: p.published_at,
                 updated_at: p.updated_at,
-                featured: !!p.featured
+                featured: !!p.featured,
+                lang: p.lang || 'en',
+                translation_of: p.translation_of,
+                id: p.id
             };
         });
         posts.sort((a, b) => new Date(b.published_at || b.updated_at) - new Date(a.published_at || a.updated_at));
@@ -317,12 +353,12 @@ async function triggerDeploy() {
 }
 
 app.post('/cms/posts', cmsAuth, async (req, res) => {
-    const { title, content, draft = false, tags = [], published_at } = req.body || {};
+    const { title, content, draft = false, tags = [], published_at, lang = 'en', translation_of = null } = req.body || {};
     const slug = toSlug(title);
     const status = draft ? 'draft' : 'published';
     const pubDate = published_at ? new Date(published_at) : (status === 'published' ? new Date() : null);
     try {
-        await supabase.from('posts').upsert({ title, slug, content, tags, status, published_at: pubDate });
+        await supabase.from('posts').upsert({ title, slug, content, tags, status, published_at: pubDate, lang, translation_of });
         if (status === 'published') triggerDeploy();
         res.status(201).json({ ok: true, slug });
     } catch (err) {
@@ -331,15 +367,17 @@ app.post('/cms/posts', cmsAuth, async (req, res) => {
 });
 
 app.put('/cms/posts/:slug', cmsAuth, async (req, res) => {
-    const { title, content, draft, tags, published_at, featured = false } = req.body || {};
+    const { title, content, draft, tags, published_at, featured = false, lang, translation_of } = req.body || {};
     const slug = req.params.slug;
     const status = draft ? 'draft' : 'published';
     const pubDate = published_at ? new Date(published_at) : (status === 'published' ? new Date() : null);
-    log(`[CMS] PUT ${slug} — draft:${draft} featured:${featured} status:${status}`);
+    log(`[CMS] PUT ${slug} — draft:${draft} featured:${featured} status:${status} lang:${lang}`);
     try {
         const updates = { title, slug, status, featured, published_at: pubDate };
         if (content !== undefined) updates.content = content;
         if (tags !== undefined) updates.tags = tags;
+        if (lang !== undefined) updates.lang = lang;
+        if (translation_of !== undefined) updates.translation_of = translation_of;
         const { error } = await supabase.from('posts').update(updates).eq('slug', slug);
         if (error) throw new Error(error.message);
         if (status === 'published') triggerDeploy();
@@ -397,6 +435,18 @@ app.post('/cms/upload', cmsAuth, (req, res, next) => {
         res.json({ url: publicUrl });
     } catch (err) {
         log(`Supabase upload error: ${err.message}`);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/cms/translate', cmsAuth, async (req, res) => {
+    const { content, targetLang = 'Bengali' } = req.body;
+    if (!content) return res.status(400).json({ error: 'content required' });
+
+    try {
+        const translatedText = await translateAIContent(content, targetLang);
+        res.json({ translatedText });
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });

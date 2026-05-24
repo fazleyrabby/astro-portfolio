@@ -1,3 +1,9 @@
+---
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
 <form
     class="max-w-full"
     id="contactForm"
@@ -15,7 +21,7 @@
             placeholder=" "
             required
         />
-        <label for="email" class="custom-label">Email address</label>
+        <label for="email" class="custom-label">{t('contact.form.email')}</label>
     </div>
     <div class="relative z-0 w-full mb-6 group">
         <textarea
@@ -26,9 +32,9 @@
             rows="4"
             required
         ></textarea>
-        <label for="message" class="custom-label">Message</label>
+        <label for="message" class="custom-label">{t('contact.form.message')}</label>
     </div>
-    <button type="submit" class="submit-btn">Submit</button>
+    <button type="submit" class="submit-btn">{t('contact.form.submit')}</button>
 </form>
 
 <style>
@@ -86,14 +92,14 @@
     }
 </style>
 
-<script is:inline define:vars={{ apiUrl: import.meta.env.PUBLIC_API_URL || 'https://cms.fazleyrabbi.xyz' }}>
+<script is:inline define:vars={{ apiUrl: import.meta.env.PUBLIC_API_URL || 'https://cms.fazleyrabbi.xyz', errReq: t('contact.form.errorRequired'), errNet: t('contact.form.errorNetwork') }}>
     document.getElementById("contactForm").addEventListener("submit", (e) => {
         e.preventDefault();
         const email = document.getElementById("email");
         const message = document.getElementById("message");
 
         if (email.value === "" || message.value === "") {
-            alert("Email and Message is required!");
+            alert(errReq);
             return;
         }
 
@@ -110,9 +116,9 @@
             if (res.ok || res.status === 201) {
                 window.location.href = "/contact-success";
             } else {
-                alert("Something went wrong. Please try again.");
+                alert(errNet);
             }
         })
-        .catch(() => alert("Something went wrong. Please try again."));
+        .catch(() => alert(errNet));
     });
 </script>

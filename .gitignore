@@ -26,6 +26,7 @@ agent.md
 .claude/
 NETLIFY-TO-VERCEL-MIGRATION.md
 BLOG_PROMPT.md
+LOCALIZATION_PLAN.md
 DATABASE.md
 DEPLOYMENT.md
 migrate-posts.js

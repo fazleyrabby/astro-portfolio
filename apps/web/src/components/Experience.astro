@@ -1,6 +1,13 @@
 ---
 import { getCollection, render } from 'astro:content';
-const experiences = await getCollection('experiences');
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const allExperiences = await getCollection('experiences');
+const experiences = allExperiences.filter(e => (e.data.lang || 'en') === lang);
+
 experiences.sort((a, b) => {
   const dateA = a.data.timeline ? new Date(a.data.timeline) : new Date(0);
   const dateB = b.data.timeline ? new Date(b.data.timeline) : new Date(0);
@@ -16,8 +23,8 @@ const renderedExperiences = await Promise.all(experiences.map(async (exp) => {
   <div class="max-w-6xl mx-auto px-6">
     <div class="flex items-center gap-6 mb-12">
       <div>
-        <span class="section-label">04 / Experience</span>
-        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.8rem,5vw,2.5rem)] leading-tight">Career Journey</h2>
+        <span class="section-label">{t('experience.label')}</span>
+        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.8rem,5vw,2.5rem)] leading-tight">{t('experience.title')}</h2>
       </div>
       <div class="flex-1 hidden md:block h-[1px] bg-accent opacity-20 dark:opacity-30"></div>
     </div>

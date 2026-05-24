@@ -14,6 +14,7 @@ const projectsCollection = defineCollection({
         tech: z.array(z.string()).optional(),
         status: z.string().optional(),
         position: z.number().optional(),
+        lang: z.enum(['en', 'bn']).optional().default('en'),
     }),
 });
 
@@ -26,6 +27,7 @@ const experiencesCollection = defineCollection({
         skills: z.string().optional(),
         link: z.string().optional().nullable(),
         timeline: z.string().optional(),
+        lang: z.enum(['en', 'bn']).optional().default('en'),
     }),
 });
 
@@ -34,6 +36,7 @@ const resourcesCollection = defineCollection({
     schema: z.array(z.object({
         text: z.string(),
         link: z.string(),
+        lang: z.enum(['en', 'bn']).optional().default('en'),
     })),
 });
 

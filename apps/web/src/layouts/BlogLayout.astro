@@ -2,6 +2,11 @@
 import MainLayout from "./MainLayout.astro";
 import { Image } from "astro:assets";
 import moment from "moment";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
 const { frontmatter } = Astro.props;
 ---
 
@@ -43,7 +48,7 @@ const { frontmatter } = Astro.props;
   </div>
 </MainLayout>
 
-<script>
+<script is:inline define:vars={{ txtCopy: t('blog.copy'), txtCopied: t('blog.copied') }}>
   // Copy button functionality for code blocks
   document.querySelectorAll('pre').forEach(pre => {
     const code = pre.querySelector('code');
@@ -62,7 +67,7 @@ const { frontmatter } = Astro.props;
       <div class="flex items-center gap-2">
         <span class="text-[0.65rem] font-mono font-semibold px-2 py-0.5 rounded bg-[var(--accent)]/10 text-[var(--accent)]">${displayLang}</span>
       </div>
-      <button class="copy-btn text-[0.65rem] font-mono px-2 py-0.5 rounded bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--accent)] transition-all opacity-0 group-hover:opacity-100">Copy</button>
+      <button class="copy-btn text-[0.65rem] font-mono px-2 py-0.5 rounded bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--accent)] transition-all opacity-0 group-hover:opacity-100">${txtCopy}</button>
     `;
     
     pre.parentNode.insertBefore(wrapper, pre);
@@ -73,8 +78,8 @@ const { frontmatter } = Astro.props;
     const btn = header.querySelector('.copy-btn');
     btn.addEventListener('click', async () => {
       await navigator.clipboard.writeText(code.textContent || '');
-      btn.textContent = 'Copied!';
-      setTimeout(() => btn.textContent = 'Copy', 2000);
+      btn.textContent = txtCopied;
+      setTimeout(() => btn.textContent = txtCopy, 2000);
     });
   });
 </script>

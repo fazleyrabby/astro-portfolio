@@ -1,5 +1,10 @@
 ---
 import { Image } from "astro:assets";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
 const { project, index = 10, isHome = false } = Astro.props;
 const { title, tech, live, github, thumbnail, description, type, status } = project.data;
 const isCritical = !isHome && index < 2;
@@ -57,11 +62,11 @@ const isCritical = !isHome && index < 2;
     <div class="flex gap-4">
       {live && (
         <a class="flex-1 btn-primary btn-magnetic !py-2.5 text-xs tracking-wider"
-           href={live} target="_blank">Live Demo</a>
+           href={live} target="_blank">{t('project.liveDemo')}</a>
       )}
       {github && (
         <a class="flex-1 btn-ghost btn-magnetic !py-2.5 text-xs tracking-wider"
-           href={github} target="_blank">Repo</a>
+           href={github} target="_blank">{t('project.repo')}</a>
       )}
     </div>
   </div>

@@ -67,4 +67,13 @@ export const en = {
   'contact.form.errorNetwork': 'Something went wrong. Please try again.',
   'blog.copy': 'Copy',
   'blog.copied': 'Copied!',
+  'home.editorial1': 'Building scalable systems, not just interfaces.',
+  'home.editorial2': 'Four years of real-world code. Built to ship.',
+  'about.title': 'About — Fazley Rabbi',
+  'about.label': 'About',
+  'about.tagline': 'Backend architecture & efficient web solutions.',
+  'about.contact.label': 'Contact',
+  'about.contact.title': 'Get in touch',
+  'about.contact.subtitle': 'Open for freelance opportunities and meaningful collaborations.',
+  'about.social': 'Or connect via social channels',
 };

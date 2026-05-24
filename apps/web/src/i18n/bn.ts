@@ -67,4 +67,13 @@ export const bn = {
   'contact.form.errorNetwork': 'কিছু একটা ভুল হয়েছে। আবার চেষ্টা করুন।',
   'blog.copy': 'কপি',
   'blog.copied': 'কপি হয়েছে!',
+  'home.editorial1': 'স্কেলেবল সিস্টেম বানাই, শুধু ইন্টারফেস না।',
+  'home.editorial2': 'চার বছরের রিয়েল-ওয়ার্ল্ড কোড। শিপ করার জন্য বানানো।',
+  'about.title': 'সম্পর্কে — ফজলে রাব্বি',
+  'about.label': 'সম্পর্কে',
+  'about.tagline': 'ব্যাকএন্ড আর্কিটেকচার এবং দক্ষ ওয়েব সলিউশন।',
+  'about.contact.label': 'যোগাযোগ',
+  'about.contact.title': 'যোগাযোগ করুন',
+  'about.contact.subtitle': 'ফ্রিল্যান্স এবং কোলাবরেশনের জন্য উন্মুক্ত।',
+  'about.social': 'অথবা সোশ্যাল মিডিয়ায় যুক্ত হোন',
 };

@@ -6,18 +6,37 @@ import { getLangFromUrl } from "../../i18n/utils";
 const lang = getLangFromUrl(Astro.url);
 
 // Fetch strictly from Supabase at build time
-const { data: posts, error } = await supabase
+const { data: allPosts, error } = await supabase
   .from('posts')
   .select('*')
   .eq('status', 'published')
-  .eq('lang', lang)
+  .in('lang', ['en', lang])
   .order('published_at', { ascending: false });
 
 if (error) {
   console.error("Supabase error:", error);
 }
 
-const publishedPosts = posts || [];
+let publishedPosts = [];
+
+if (allPosts) {
+  if (lang === 'bn') {
+    const bnPosts = allPosts.filter(p => p.lang === 'bn');
+    
+    // Find IDs of English posts that have already been translated
+    const translatedEnIds = new Set(bnPosts.map(p => p.translation_of).filter(Boolean));
+    
+    // Keep the original date-sorted order from Supabase
+    publishedPosts = allPosts.filter(p => {
+      if (p.lang === 'bn') return true;
+      if (p.lang === 'en' && !translatedEnIds.has(p.id)) return true;
+      return false;
+    });
+  } else {
+    // Just show English posts
+    publishedPosts = allPosts.filter(p => p.lang === 'en');
+  }
+}
 
 function extractFirstImage(content) {
   if (!content) return null;

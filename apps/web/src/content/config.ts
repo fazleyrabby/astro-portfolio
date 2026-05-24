@@ -14,6 +14,12 @@ const projectsCollection = defineCollection({
         tech: z.array(z.string()).optional(),
         status: z.string().optional(),
         position: z.number().optional(),
+        period: z.string().optional(),
+        role: z.string().optional(),
+        commits: z.number().optional(),
+        highlights: z.array(z.string()).optional(),
+        scope: z.array(z.string()).optional(),
+        hidden: z.boolean().default(false),
         lang: z.enum(['en', 'bn']).optional().default('en'),
     }),
 });

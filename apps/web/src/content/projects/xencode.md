@@ -10,4 +10,5 @@ description: "Local-first agentic AI coding CLI optimized for efficiency and sma
 tech: ["Node", "typescript", "llamacpp", "Agentic AI", "Local LLMs", "Systems Architecture"]
 status: "Ongoing"
 position: 3
+hidden: true
 ---

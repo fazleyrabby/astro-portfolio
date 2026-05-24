@@ -1,0 +1,228 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import MainLayout from '@layouts/MainLayout.astro';
+import { useTranslations, useTranslatedPath } from '../../i18n/utils';
+
+export async function getStaticPaths() {
+  const all = await getCollection('projects');
+  const en = all.filter(p => (p.data.lang || 'en') === 'en' && !p.data.hidden);
+  return en.map(project => ({
+    params: { slug: project.slug.replace(/-bn$/, '') },
+    props: { project },
+  }));
+}
+
+type Props = { project: CollectionEntry<'projects'> };
+const { project } = Astro.props;
+const d = project.data;
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
+
+// Resolve BN alt URL if a translation exists
+const all = await getCollection('projects');
+const bnSlug = project.slug + '-bn';
+const hasBn = all.some(p => p.slug === bnSlug && p.data.lang === 'bn');
+const altUrl = hasBn ? `/bn/projects/${project.slug}` : undefined;
+
+const seoDesc = d.description;
+---
+
+<MainLayout
+  title={`${d.title} — Fazley Rabbi`}
+  description={seoDesc}
+  ogTitle={d.title}
+  ogDescription={seoDesc}
+  ogImage={d.thumbnail}
+  ogUrl={`https://fazleyrabbi.xyz/projects/${project.slug}`}
+  ogType="article"
+  twitterCard="summary_large_image"
+  twitterImage={d.thumbnail}
+  altUrl={altUrl}
+>
+  <main class="max-w-3xl mx-auto px-6 pt-24 pb-16">
+    <a href={tp('/projects')} class="font-mono text-xs uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
+      {t('project.backToProjects')}
+    </a>
+
+    <div class="mt-4 mb-6">
+      <div class="flex items-center gap-3 flex-wrap mb-3">
+        {d.type && <span class="tag">{d.type}</span>}
+        {d.status && (
+          <div class="flex items-center gap-2 px-2 py-0.5 rounded-full bg-[var(--accent-dim)] border border-border">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+            </span>
+            <span class="font-mono text-[0.6rem] uppercase tracking-wider text-accent font-bold">{d.status}</span>
+          </div>
+        )}
+      </div>
+      <h1 class="font-display font-bold text-[clamp(1.75rem,4.5vw,2.75rem)] text-[var(--text-primary)] leading-tight mb-3">{d.title}</h1>
+      <p class="text-[0.98rem] text-[var(--text-secondary)] leading-relaxed">{d.description}</p>
+
+      <div class="flex gap-3 mt-4 flex-wrap">
+        {d.live && (
+          <a class="btn-primary btn-magnetic !py-2.5 text-xs tracking-wider" href={d.live} target="_blank" rel="noreferrer">{t('project.liveDemo')}</a>
+        )}
+        {d.github && (
+          <a class="btn-ghost btn-magnetic !py-2.5 text-xs tracking-wider" href={d.github} target="_blank" rel="noreferrer">{t('project.repo')}</a>
+        )}
+      </div>
+    </div>
+
+    {(d.period || d.role || d.commits) && (
+      <dl class="meta-grid mb-8 border-b border-[var(--border)] pb-3">
+        {d.period && (
+          <div>
+            <dt>{t('project.meta.period')}</dt>
+            <dd>{d.period}</dd>
+          </div>
+        )}
+        {d.role && (
+          <div>
+            <dt>{t('project.meta.role')}</dt>
+            <dd>{d.role}</dd>
+          </div>
+        )}
+        {d.commits != null && (
+          <div>
+            <dt>{t('project.meta.commits')}</dt>
+            <dd>{d.commits.toLocaleString()}+</dd>
+          </div>
+        )}
+      </dl>
+    )}
+
+    {d.problem && (
+      <section class="mb-7 !py-0">
+        <h2 class="section-h">{t('project.problem')}</h2>
+        <p class="prose-p">{d.problem}</p>
+      </section>
+    )}
+
+    {d.solution && (
+      <section class="mb-7 !py-0">
+        <h2 class="section-h">{t('project.solution')}</h2>
+        <p class="prose-p">{d.solution}</p>
+      </section>
+    )}
+
+    {d.highlights && d.highlights.length > 0 && (
+      <section class="mb-7 !py-0">
+        <h2 class="section-h">{t('project.highlights')}</h2>
+        <ul class="bullet-list">
+          {d.highlights.map(h => <li>{h}</li>)}
+        </ul>
+      </section>
+    )}
+
+    {d.tech && d.tech.length > 0 && (
+      <section class="mb-7 !py-0">
+        <h2 class="section-h">{t('project.stack')}</h2>
+        <div class="flex gap-2 flex-wrap">
+          {d.tech.map(s => <span class="tag">{s}</span>)}
+        </div>
+      </section>
+    )}
+
+    {d.scope && d.scope.length > 0 && (
+      <section class="mb-7 !py-0">
+        <details class="scope-details" open>
+          <summary>
+            <h2 class="section-h !mb-0 inline">{t('project.scope')}</h2>
+            <span class="scope-count">{d.scope.length}</span>
+          </summary>
+          <ul class="bullet-list mt-5">
+            {d.scope.map(s => <li>{s}</li>)}
+          </ul>
+        </details>
+      </section>
+    )}
+  </main>
+</MainLayout>
+
+<style>
+  .section-h {
+    font-family: var(--font-display, inherit);
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.65rem;
+  }
+  .prose-p {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+  .bullet-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .bullet-list li {
+    position: relative;
+    padding-left: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 0.93rem;
+  }
+  .bullet-list li::before {
+    content: "▹";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 0.85rem;
+    top: 0.15rem;
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1.5rem;
+  }
+  .meta-grid dt {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+  .meta-grid dd {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+  .scope-details summary {
+    cursor: pointer;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    user-select: none;
+  }
+  .scope-details summary::-webkit-details-marker { display: none; }
+  .scope-details summary::after {
+    content: "+";
+    color: var(--accent);
+    font-weight: 700;
+    transition: transform 0.2s ease;
+    display: inline-block;
+  }
+  .scope-details[open] summary::after { content: "−"; }
+  .scope-count {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    padding: 0.1rem 0.45rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+  }
+</style>

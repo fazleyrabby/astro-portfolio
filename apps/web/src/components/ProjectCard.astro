@@ -1,13 +1,18 @@
 ---
 import { Image } from "astro:assets";
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
 
 const { project, index = 10, isHome = false } = Astro.props;
-const { title, tech, live, github, thumbnail, description, type, status } = project.data;
+const { title, tech, live, github, thumbnail, description, type, status, highlights, problem } = project.data;
 const isCritical = !isHome && index < 2;
+
+const baseSlug = project.slug.replace(/-bn$/, '');
+const hasCaseStudy = !!(problem || (highlights && highlights.length));
+const caseUrl = hasCaseStudy ? tp(`/projects/${baseSlug}`) : null;
 ---
 
 <article class="project-card group flex flex-col bg-surface border border-border overflow-hidden h-full">
@@ -36,7 +41,7 @@ const isCritical = !isHome && index < 2;
   <div class="flex flex-col flex-grow p-6">
     <div class="flex items-center justify-between mb-3">
       <h3 class="font-display font-bold text-xl text-text group-hover:text-accent transition-colors">
-        {title}
+        {caseUrl ? <a href={caseUrl} class="hover:text-accent transition-colors">{title}</a> : title}
       </h3>
       {status && (
         <div class="flex items-center gap-2 px-2 py-0.5 rounded-full bg-[var(--accent-dim)] border border-border">
@@ -60,7 +65,11 @@ const isCritical = !isHome && index < 2;
 
     <!-- Actions -->
     <div class="flex gap-4">
-      {live && (
+      {caseUrl && (
+        <a class="flex-1 btn-primary btn-magnetic !py-2.5 text-xs tracking-wider"
+           href={caseUrl}>{t('project.viewCase')}</a>
+      )}
+      {!caseUrl && live && (
         <a class="flex-1 btn-primary btn-magnetic !py-2.5 text-xs tracking-wider"
            href={live} target="_blank">{t('project.liveDemo')}</a>
       )}

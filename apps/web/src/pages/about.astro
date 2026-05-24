@@ -23,11 +23,11 @@ const t = useTranslations(lang);
         <p class="font-serif italic text-[1.2rem] text-[var(--text-secondary)] mt-4">{t('about.tagline')}</p>
       </div>
 
-      <section class="mb-8">
+      <div class="mb-8">
         <div class="prose prose-neutral dark:prose-invert max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-relaxed prose-li:text-[var(--text-secondary)] prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)] prose-strong:text-[var(--text-primary)] prose-strong:font-semibold">
           {lang === 'bn' ? <AboutBn /> : <AboutEn />}
         </div>
-      </section>
+      </div>
 
       <div id="contact" class="mt-8 pt-8 border-t border-[var(--border)]">
         <div class="mb-6">

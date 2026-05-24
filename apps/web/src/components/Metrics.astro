@@ -1,0 +1,72 @@
+---
+import { getCollection } from 'astro:content';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const projects = await getCollection('projects');
+const localized = projects.filter(p => (p.data.lang || 'en') === lang && !p.data.hidden);
+
+const totalCommits = localized.reduce((sum, p) => sum + (p.data.commits || 0), 0);
+const projectCount = localized.length;
+
+const startYear = 2021;
+const years = new Date().getFullYear() - startYear;
+
+const metrics = [
+  { value: `${years}+`, label: t('metrics.years') },
+  { value: `${projectCount}+`, label: t('metrics.projects') },
+  { value: totalCommits > 0 ? `${(totalCommits / 1000).toFixed(1)}k+` : '—', label: t('metrics.commits') },
+  { value: '2', label: t('metrics.languages') },
+];
+---
+
+<section class="metrics-strip">
+  <div class="max-w-6xl mx-auto px-6">
+    <ul class="metrics-grid">
+      {metrics.map(m => (
+        <li class="metric">
+          <div class="metric-value">{m.value}</div>
+          <div class="metric-label">{m.label}</div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .metrics-strip {
+    padding: 2.5rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elevated, transparent);
+  }
+  .metrics-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .metrics-grid { grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+  }
+  .metric { text-align: center; }
+  .metric-value {
+    font-family: var(--font-display, inherit);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .metric-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+</style>

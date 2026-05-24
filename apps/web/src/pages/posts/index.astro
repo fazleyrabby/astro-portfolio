@@ -46,179 +46,266 @@ function extractFirstImage(content) {
   return match ? match[1] : null;
 }
 
-const featuredPosts = publishedPosts.filter(post => post.featured).map(post => ({
-  ...post,
-  cover_image: post.cover_image || extractFirstImage(post.content)
-}));
-const regularPosts = publishedPosts.filter(post => !post.featured);
+const cleanTag = (tag: any) => {
+  if (typeof tag === 'string') {
+    return tag.replace(/^["']|["']$/g, '').trim();
+  }
+  return String(tag);
+};
 
-// Split featured posts into Hero and Others
+const postsWithImages = publishedPosts.map(post => {
+  const cleanedTags = [...new Set((post.tags || []).map(cleanTag))];
+  return {
+    ...post,
+    cover_image: post.cover_image || extractFirstImage(post.content),
+    tags: cleanedTags
+  };
+});
+
+const featuredPosts = postsWithImages.filter(post => post.featured);
+const regularPosts = postsWithImages.filter(post => !post.featured);
 const [heroPost, ...otherFeatured] = featuredPosts;
+
+// Extract all unique tags
+const allTags = [...new Set(postsWithImages.flatMap(post => post.tags || []))].sort();
+
 ---
 
-<MainLayout title="Posts">
-  <section class="max-w-6xl mx-auto px-6 py-8">
-    <div class="section-label font-mono animate-in slide-in-from-bottom-2 duration-500">{t('posts.journal')}</div>
-    <div class="animate-in slide-in-from-bottom-4 duration-700">
-      <h1 class="page-heading" set:html={t('posts.index.title')}></h1>
-      <p class="text-[var(--text-secondary)] max-w-[600px] mb-12 leading-[1.7] text-lg">
-        {t('posts.index.subtitle')}
-      </p>
-    </div>
-
-    {featuredPosts.length > 0 && (
-      <div class="mb-20 animate-in fade-in zoom-in-95 duration-1000">
-        <div class="flex items-center gap-3 mb-8">
-          <h2 class="text-xs font-mono text-[var(--accent)] uppercase tracking-[0.2em] font-semibold">{t('posts.featured.title')}</h2>
-          <div class="h-[1px] flex-grow bg-gradient-to-r from-[var(--border)] to-transparent"></div>
+<MainLayout title={t('posts.journal')}>
+  <div class="max-w-[1200px] mx-auto min-h-[calc(100vh-80px)] flex flex-col mt-4 mb-16 px-4 md:px-6 relative items-start">
+    
+    <!-- Main Content Area -->
+    <main class="w-full min-h-full pb-20">
+      
+      <!-- Header & Filters -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 pb-6 border-b border-[var(--border)]">
+        <div>
+          <h1 class="text-3xl font-display font-bold text-[var(--text-primary)] mb-2" set:html={t('posts.index.title')}></h1>
+          <p class="text-[0.95rem] text-[var(--text-secondary)]">{t('posts.index.subtitle')}</p>
         </div>
         
-        <div class="space-y-8">
-          {/* Main Hero Featured Post */}
-          <article class="featured-hero group relative border border-[var(--border)] rounded-sm overflow-hidden bg-[rgba(255,255,255,0.015)] transition-all hover:border-[var(--accent)] hover:shadow-[0_0_50px_rgba(6,182,212,0.08)]">
-            <a href={translatePath(`/posts/${heroPost.slug}`)} class="grid lg:grid-cols-12 no-underline items-stretch">
-              <div class="lg:col-span-7 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
-                <div class="flex items-center gap-3 font-mono text-[0.65rem] text-[var(--text-muted)] mb-6 uppercase tracking-widest">
-                  <span class="px-2 py-0.5 rounded-full border border-[var(--accent)] text-[var(--accent)]">{t('posts.featured.special')}</span>
-                  {heroPost.published_at ? new Date(heroPost.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : t('posts.unknown')}
-                </div>
-                <h3 class="font-display font-bold text-3xl md:text-4xl lg:text-5xl text-[var(--text-primary)] mb-8 leading-[1.1] group-hover:text-[var(--accent)] transition-all duration-300">
-                  {heroPost.title || heroPost.slug}
-                </h3>
-                <p class="text-[var(--text-secondary)] text-lg mb-10 line-clamp-3 leading-relaxed max-w-[550px]">
-                  {heroPost.description || "An in-depth analysis of critical production engineering patterns and scalable architecture."}
-                </p>
-                <div class="flex items-center gap-4 text-sm font-semibold text-[var(--accent)]">
-                  <span class="h-[1px] w-8 bg-[var(--accent)] transition-all duration-300 group-hover:w-12"></span>
-                  {t('posts.startReading')}
-                </div>
-              </div>
-              
-              <div class="lg:col-span-5 h-[300px] lg:h-auto overflow-hidden bg-[var(--background-secondary)] order-first lg:order-last border-b lg:border-b-0 lg:border-l border-[var(--border)] group-hover:border-[var(--accent)] transition-colors relative">
-                {heroPost.cover_image ? (
-                  <img src={heroPost.cover_image} alt={heroPost.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-60 group-hover:opacity-90 grayscale-[30%] group-hover:grayscale-0" />
-                ) : (
-                  <div class="absolute inset-0 flex items-center justify-center overflow-hidden">
-                    <div class="w-[140%] h-[140%] border-[var(--accent)] border-dashed border opacity-[0.03] rotate-45 pointer-events-none"></div>
-                    <div class="relative z-10 w-48 h-48 rounded-full border border-[var(--accent)] border-dashed animate-spin-slow opacity-10"></div>
-                    <span class="absolute text-8xl font-display font-black opacity-[0.02] italic text-[var(--accent)] -right-10 bottom-0 pointer-events-none">HERO</span>
-                  </div>
-                )}
-                <div class="absolute inset-0 bg-gradient-to-r from-[rgba(0,0,0,0.4)] to-transparent lg:hidden"></div>
-              </div>
-            </a>
-          </article>
-
-          {/* Secondary Featured Posts Grid */}
-          {otherFeatured.length > 0 && (
-            <div class="grid md:grid-cols-2 gap-8">
-              {otherFeatured.map((post) => (
-                <article class="featured-sub-card group relative border border-[var(--border)] rounded-sm overflow-hidden bg-transparent transition-all hover:border-[var(--accent)] hover:shadow-glow">
-                  <a href={translatePath(`/posts/${post.slug}`)} class="flex flex-col h-full no-underline p-8">
-                    <div class="font-mono text-[0.6rem] text-[var(--text-muted)] mb-4 uppercase tracking-[0.2em] flex items-center gap-3">
-                      <span class="inline-block w-1.5 h-1.5 rounded-full bg-[var(--accent)] opacity-50"></span>
-                      {post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'short' }) : t('posts.unknown')}
-                    </div>
-                    <h3 class="font-display font-semibold text-xl text-[var(--text-primary)] mb-6 leading-tight group-hover:text-[var(--accent)] transition-colors">
-                      {post.title || post.slug}
-                    </h3>
-                    <p class="text-[var(--text-secondary)] text-sm mb-8 line-clamp-2 opacity-80 group-hover:opacity-100 transition-opacity">
-                      {post.description || "Exploring advanced system architecture and engineering trade-offs."}
-                    </p>
-                    <div class="mt-auto flex items-center gap-2 text-xs font-bold text-[var(--accent)] uppercase tracking-widest opacity-0 group-hover:opacity-100 translate-x-[-10px] group-hover:translate-x-0 transition-all duration-300">
-                      {t('posts.viewPattern')} <span class="text-lg">→</span>
-                    </div>
-                  </a>
-                </article>
-              ))}
+        <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+          <!-- Search Input -->
+          <div class="relative w-full sm:w-[260px]">
+             <input type="text" id="search-input" placeholder="Search articles..." class="w-full bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-primary)] text-sm rounded-md focus:ring-[var(--accent)] focus:border-[var(--accent)] block px-4 py-2.5 outline-none transition-all placeholder:text-[var(--text-muted)]" />
+             <svg class="w-4 h-4 text-[var(--text-muted)] absolute right-3 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+          
+          <!-- Tag Select -->
+          <div class="relative w-full sm:w-auto min-w-[160px]">
+            <select id="tag-select" class="w-full bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-primary)] text-sm rounded-md focus:ring-[var(--accent)] focus:border-[var(--accent)] block px-4 py-2.5 outline-none appearance-none pr-10 cursor-pointer transition-all">
+               <option value="all">All Tags</option>
+               {allTags.map(tag => (
+                 <option value={tag}>{tag}</option>
+               ))}
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[var(--text-muted)]">
+              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
             </div>
-          )}
+          </div>
         </div>
       </div>
-    )}
 
-    {/* Regular Feed */}
-    <div class="animate-in fade-in duration-1000 delay-300">
-      <div class="flex items-center gap-3 mb-8">
-        <h2 class="text-xs font-mono text-[var(--text-muted)] uppercase tracking-[0.2em]">{t('posts.archive.title')}</h2>
+      <!-- Featured Posts Section -->
+      {featuredPosts.length > 0 && (
+        <div class="mb-16">
+          <div class="flex items-center gap-3 mb-8 featured-header">
+            <h2 class="text-xs font-mono text-[var(--text-muted)] uppercase tracking-[0.2em]">{t('posts.featured.title') || "Featured"}</h2>
+            <div class="h-[1px] flex-grow bg-gradient-to-r from-[var(--border)] to-transparent opacity-40"></div>
+          </div>
+          
+          <div class="space-y-6">
+            {/* Main Hero Featured Post */}
+            {heroPost && (
+            <article class="post-card featured-hero group relative border border-[var(--border)] rounded-lg overflow-hidden bg-[var(--bg-card)] transition-all hover:border-[var(--accent)] hover:shadow-glow flex" data-tags={JSON.stringify(heroPost.tags || [])} data-title={heroPost.title || heroPost.slug}>
+              <a href={translatePath(`/posts/${heroPost.slug}`)} class="flex flex-col lg:flex-row w-full no-underline items-stretch">
+                <div class="p-8 lg:p-12 flex flex-col justify-center flex-1">
+                  <div class="flex items-center gap-3 font-mono text-[0.65rem] text-[var(--text-muted)] mb-5 uppercase tracking-widest">
+                    <span class="px-2 py-0.5 rounded border border-[var(--accent)] text-[var(--accent)]">{t('posts.featured.special') || "Featured"}</span>
+                    {heroPost.published_at ? new Date(heroPost.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : (t('posts.unknown') || "Draft")}
+                  </div>
+                  <h3 class="font-display font-bold text-2xl md:text-3xl lg:text-4xl text-[var(--text-primary)] mb-6 leading-tight group-hover:text-[var(--accent)] transition-colors">
+                    {heroPost.title || heroPost.slug}
+                  </h3>
+                  <p class="text-[var(--text-secondary)] text-[0.95rem] mb-8 line-clamp-3 leading-relaxed max-w-[550px]">
+                    {heroPost.description || "An in-depth analysis of critical production engineering patterns and scalable architecture."}
+                  </p>
+                  
+                  {/* Tags list */}
+                  <div class="flex flex-wrap gap-2 mt-auto mb-6">
+                    {heroPost.tags && heroPost.tags.slice(0,3).map(tag => (
+                      <span class="px-2 py-0.5 rounded border border-[var(--border)] bg-[var(--bg-surface)] text-[0.6rem] font-mono text-[var(--text-secondary)] uppercase tracking-widest">{tag}</span>
+                    ))}
+                  </div>
+
+                  <div class="flex items-center gap-4 text-xs font-semibold font-mono text-[var(--accent)] uppercase tracking-widest">
+                    <span class="h-[1px] w-6 bg-[var(--accent)] transition-all duration-300 group-hover:w-10"></span>
+                    {t('posts.startReading') || "Start Reading"}
+                  </div>
+                </div>
+                
+                {heroPost.cover_image && (
+                <div class="w-full lg:w-[45%] h-[250px] lg:h-auto overflow-hidden bg-[var(--bg-surface)] order-first lg:order-last border-b lg:border-b-0 lg:border-l border-[var(--border)] relative">
+                  <img src={heroPost.cover_image} alt={heroPost.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100" />
+                </div>
+                )}
+              </a>
+            </article>
+            )}
+
+            {/* Secondary Featured Posts Grid */}
+            {otherFeatured.length > 0 && (
+              <div class="grid md:grid-cols-2 gap-6">
+                {otherFeatured.map((post) => (
+                  <article class="post-card featured-sub-card flex flex-col group relative border border-[var(--border)] rounded-lg overflow-hidden bg-[var(--bg-card)] transition-all hover:border-[var(--accent)] hover:shadow-glow" data-tags={JSON.stringify(post.tags || [])} data-title={post.title || post.slug}>
+                    
+                    {post.cover_image && (
+                      <a href={translatePath(`/posts/${post.slug}`)} class="block h-40 w-full overflow-hidden border-b border-[var(--border)] bg-[var(--bg-surface)]">
+                        <img src={post.cover_image} alt={post.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100" />
+                      </a>
+                    )}
+
+                    <a href={translatePath(`/posts/${post.slug}`)} class="flex flex-col h-full no-underline p-6">
+                      <div class="font-mono text-[0.6rem] text-[var(--text-muted)] mb-3 uppercase tracking-widest flex items-center gap-2">
+                        <span class="inline-block w-1 h-1 rounded-full bg-[var(--accent)] opacity-70"></span>
+                        {post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : "Draft"}
+                      </div>
+                      <h3 class="font-display font-bold text-lg text-[var(--text-primary)] mb-4 leading-tight group-hover:text-[var(--accent)] transition-colors">
+                        {post.title || post.slug}
+                      </h3>
+                      <p class="text-[var(--text-secondary)] text-[0.85rem] mb-6 line-clamp-2 leading-relaxed opacity-90">
+                        {post.description || "Exploring advanced system architecture and engineering trade-offs."}
+                      </p>
+                      
+                      <!-- Tags list -->
+                      <div class="flex flex-wrap gap-2 mt-auto mb-4">
+                        {post.tags && post.tags.slice(0,2).map(tag => (
+                          <span class="px-2 py-0.5 rounded border border-[var(--border)] bg-[var(--bg-surface)] text-[0.55rem] font-mono text-[var(--text-secondary)] uppercase tracking-widest">{tag}</span>
+                        ))}
+                      </div>
+
+                      <div class="flex items-center gap-2 text-xs font-semibold font-mono text-[var(--text-primary)] uppercase tracking-widest group-hover:text-[var(--accent)] transition-colors">
+                        {t('posts.viewPattern') || "Read Article"} <span class="group-hover:translate-x-1 transition-transform">→</span>
+                      </div>
+                    </a>
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <!-- Archive Header -->
+      <div class="flex items-center gap-3 mb-6 archive-header">
+        <h2 class="text-xs font-mono text-[var(--text-muted)] uppercase tracking-[0.2em]">{t('posts.archive.title') || "All Articles"}</h2>
         <div class="h-[1px] flex-grow bg-gradient-to-r from-[var(--border)] to-transparent opacity-40"></div>
       </div>
-      
-      <div id="posts-grid" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {regularPosts.map((post, index) => (
-          <article 
-            class={`post-card group card border border-[var(--border)] rounded-sm transition-all hover:bg-[rgba(255,255,255,0.01)] h-full ${index >= 12 ? 'hidden' : ''}`}
-            data-index={index}
-          >
-            <a href={translatePath(`/posts/${post.slug}`)} class="flex flex-col p-6 no-underline h-full">
-              <div class="font-mono text-[0.72rem] text-[var(--text-muted)] mb-3 flex justify-between items-center">
-                <span>{post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : t('posts.unknown')}</span>
-                <span class="opacity-0 group-hover:opacity-100 transition-opacity text-[var(--accent)]">→</span>
-              </div>
-              <h3 class="font-display font-bold text-lg text-[var(--text-primary)] mb-3 leading-snug group-hover:text-[var(--accent)] transition-colors">
+
+      <!-- Grid (Masonry Layout) -->
+      <div class="columns-1 md:columns-2 xl:columns-3 gap-5" id="posts-grid">
+        {regularPosts.map(post => (
+          <article class="post-card flex flex-col break-inside-avoid mb-5 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden transition-all hover:border-[var(--accent)] hover:shadow-glow group relative" data-tags={JSON.stringify(post.tags || [])} data-title={post.title || post.slug}>
+            
+            {post.cover_image && (
+              <a href={translatePath(`/posts/${post.slug}`)} class="block h-48 w-full overflow-hidden border-b border-[var(--border)] bg-[var(--bg-surface)]">
+                <img src={post.cover_image} alt={post.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100" />
+              </a>
+            )}
+            
+            <a href={translatePath(`/posts/${post.slug}`)} class="p-5 flex-1 flex flex-col no-underline">
+              <h2 class="font-display text-xl font-bold text-[var(--text-primary)] mb-2 leading-tight group-hover:text-[var(--accent)] transition-colors line-clamp-2">
                 {post.title || post.slug}
-              </h3>
+              </h2>
+              <p class="text-[0.9rem] text-[var(--text-secondary)] line-clamp-3 mb-6 leading-relaxed flex-1">
+                {post.description || "In-depth analysis and technical implementation details."}
+              </p>
+
+              <!-- Tags list -->
+              <div class="flex flex-wrap gap-2 mt-auto">
+                {post.tags && post.tags.slice(0,3).map(tag => (
+                  <span class="px-2 py-0.5 rounded border border-[var(--border)] bg-[var(--bg-surface)] text-[0.55rem] font-mono text-[var(--text-secondary)] uppercase tracking-widest">{tag}</span>
+                ))}
+                {post.tags && post.tags.length > 3 && (
+                  <span class="px-2 py-0.5 rounded border border-[var(--border)] bg-[var(--bg-surface)] text-[0.55rem] font-mono text-[var(--text-muted)] uppercase tracking-widest">+{post.tags.length - 3}</span>
+                )}
+              </div>
             </a>
+
+            <!-- Footer Action -->
+            <div class="px-5 py-3 border-t border-[var(--border)] flex justify-between items-center transition-colors">
+              <div class="text-[0.65rem] font-mono text-[var(--text-muted)] uppercase tracking-widest">
+                 {post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : "Draft"}
+              </div>
+              <a href={translatePath(`/posts/${post.slug}`)} class="text-[0.7rem] font-semibold font-sans text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors flex items-center gap-2 border border-[var(--border)] px-3 py-1 rounded hover:border-[var(--accent)]">
+                Read Article
+              </a>
+            </div>
           </article>
         ))}
       </div>
-
-      {regularPosts.length > 12 && (
-        <div class="mt-12 flex justify-center">
-          <button 
-            id="show-more-btn"
-            class="px-8 py-3 rounded-full border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] hover:shadow-glow-sm transition-all duration-300 font-mono text-sm uppercase tracking-widest bg-transparent cursor-pointer"
-          >
-            {t('posts.archive.readMore')}
-          </button>
-        </div>
-      )}
-    </div>
-
-    {publishedPosts.length === 0 && (
-      <div class="text-center py-24 border border-dashed border-[var(--border)] rounded-sm">
-        <div class="text-4xl mb-6 opacity-30">📚</div>
-        <p class="text-[var(--text-muted)] font-mono text-sm">{t('posts.emptyMsg')}</p>
+      
+      <!-- Empty state -->
+      <div id="no-results" class="hidden text-center py-24 border border-dashed border-[var(--border)] rounded-lg mt-4 bg-[var(--bg-card)]">
+        <div class="text-4xl mb-4 opacity-30">🔍</div>
+        <p class="text-[var(--text-secondary)] font-medium mb-1">No posts found</p>
+        <p class="text-[var(--text-muted)] font-mono text-sm">Try adjusting your search or filters.</p>
       </div>
-    )}
-  </section>
+
+    </main>
+  </div>
 </MainLayout>
 
 <script>
-  const showMoreBtn = document.getElementById('show-more-btn');
-  const postsGrid = document.getElementById('posts-grid');
-  
-  if (showMoreBtn && postsGrid) {
-    showMoreBtn.addEventListener('click', () => {
-      const hiddenPosts = postsGrid.querySelectorAll('.hidden');
-      hiddenPosts.forEach(post => {
-        post.classList.remove('hidden');
-        post.classList.add('animate-in', 'fade-in', 'slide-in-from-bottom-4', 'duration-500');
-      });
-      showMoreBtn.remove();
-    });
-  }
-</script>
+  const tagSelect = document.getElementById('tag-select');
+  const searchInput = document.getElementById('search-input');
+  const cards = document.querySelectorAll('.post-card');
+  const noResults = document.getElementById('no-results');
+  const featuredHeader = document.querySelector('.featured-header');
+  const archiveHeader = document.querySelector('.archive-header');
 
-<style>
-  .animate-spin-slow {
-    animation: spin 30s linear infinite;
+  function filterPosts() {
+    const selectedTag = tagSelect ? (tagSelect as HTMLSelectElement).value : 'all';
+    const searchQuery = searchInput ? (searchInput as HTMLInputElement).value.toLowerCase() : '';
+    let visibleCount = 0;
+
+    const isFiltering = selectedTag !== 'all' || searchQuery.trim() !== '';
+
+    cards.forEach(card => {
+      const tags = JSON.parse(card.getAttribute('data-tags') || '[]');
+      const title = card.getAttribute('data-title') || '';
+      
+      const matchesTag = selectedTag === 'all' || tags.includes(selectedTag);
+      const matchesSearch = title.toLowerCase().includes(searchQuery);
+
+      if (matchesTag && matchesSearch) {
+        card.classList.remove('hidden');
+        card.classList.add('flex');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+        card.classList.remove('flex');
+      }
+    });
+
+    if (isFiltering) {
+      if(featuredHeader) featuredHeader.parentElement?.classList.remove('hidden');
+      if(featuredHeader) featuredHeader.classList.add('hidden');
+      if(archiveHeader) archiveHeader.classList.add('hidden');
+    } else {
+      if(featuredHeader) featuredHeader.parentElement?.classList.remove('hidden');
+      if(featuredHeader) featuredHeader.classList.remove('hidden');
+      if(archiveHeader) archiveHeader.classList.remove('hidden');
+    }
+
+    if (visibleCount === 0 && noResults) {
+      noResults.classList.remove('hidden');
+      if(featuredHeader) featuredHeader.parentElement?.classList.add('hidden');
+    } else if (noResults) {
+      noResults.classList.add('hidden');
+    }
   }
-  @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-  .featured-hero {
-    position: relative;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  }
-  .featured-hero:hover {
-    box-shadow: 0 0 50px rgba(6, 182, 212, 0.08);
-  }
-  .featured-sub-card:hover {
-    background: linear-gradient(145deg, rgba(255,255,255,0.02) 0%, transparent 100%);
-  }
-  .animate-in {
-    animation-fill-mode: both;
-  }
-</style>
+
+  if (tagSelect) tagSelect.addEventListener('change', filterPosts);
+  if (searchInput) searchInput.addEventListener('input', filterPosts);
+</script>

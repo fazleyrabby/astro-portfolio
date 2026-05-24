@@ -2,8 +2,11 @@
 import { getCollection } from 'astro:content';
 import MainLayout from '@layouts/MainLayout.astro';
 import ProjectCard from '@components/ProjectCard.astro';
+import { getLangFromUrl } from '@i18n/utils';
 
-const projects = await getCollection('projects');
+const lang = getLangFromUrl(Astro.url);
+const all = await getCollection('projects');
+const projects = all.filter(p => (p.data.lang || 'en') === lang && !p.data.hidden);
 projects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
 
 const mainProjects = projects.filter(p => p.data.type !== 'frontend');

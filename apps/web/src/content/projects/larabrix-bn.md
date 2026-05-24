@@ -9,6 +9,6 @@ github: "https://github.com/fazleyrabby/larabrix"
 thumbnail: "/projects/7.png"
 description: "Larabrix is a collection of dynamic Laravel modules based on latest Tabler admin panel"
 tech: ["PHP", "Laravel 12+", "JavaScript", "Tabler UI"]
-position: 4
+position: 5
 lang: bn
 ---

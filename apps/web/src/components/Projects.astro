@@ -8,7 +8,7 @@ const t = useTranslations(lang);
 
 const { type = "home" } = Astro.props;
 const allProjects = await getCollection('projects');
-const localizedProjects = allProjects.filter(p => (p.data.lang || 'en') === lang);
+const localizedProjects = allProjects.filter(p => (p.data.lang || 'en') === lang && !p.data.hidden);
 localizedProjects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
 
 const projects = type === "home" 

@@ -168,9 +168,11 @@ ${content}`;
             model: 'qwen/qwen3-32b',
             messages: [{ role: 'user', content: prompt }],
             temperature: 0.1,
+            max_tokens: 8000,
         });
 
-        let translatedText = completion.choices[0].message.content.trim();
+        let translatedText = completion.choices[0].message.content || '';
+        translatedText = translatedText.replace(/<think>[\s\S]*?<\/think>\n*/gi, '').trim();
         translatedText = translatedText.replace(/^```(?:markdown|md)?\s*\n?/i, '').replace(/\n?```\s*$/, '');
         return translatedText;
     } catch (err) {

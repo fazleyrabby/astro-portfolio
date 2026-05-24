@@ -1,11 +1,11 @@
 ---
-// TableOfContents.astro — Sticky sidebar TOC with scroll-spy
+// TableOfContents.astro — Floating sidebar TOC with scroll-spy
 // Auto-populates from h2–h4 in #article-content
 ---
 
 <button id="mobile-toc-btn" class="hidden" aria-label="Toggle Table of Contents"></button>
 
-<aside id="toc-sidebar" class="toc-sidebar hidden lg:block lg:col-span-4">
+<aside id="toc-sidebar" class="toc-sidebar">
   <nav id="toc" class="toc-nav" aria-label="Table of Contents">
     <span class="toc-label">On this page</span>
     <div id="toc-links" class="toc-links"></div>
@@ -13,8 +13,22 @@
 </aside>
 
 <style>
+  /* Floating TOC — fixed on right side */
   .toc-sidebar {
-    position: relative;
+    position: fixed;
+    right: max(1rem, calc((100vw - 72rem) / 2 - 16rem));
+    top: 50%;
+    transform: translateY(-50%) translateX(20px);
+    width: 220px;
+    z-index: 40;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .toc-sidebar.toc-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) translateX(0);
   }
 
   /* Mobile TOC Modal overlay mode */
@@ -23,6 +37,8 @@
     position: fixed !important;
     bottom: 5rem;
     right: 1.5rem;
+    top: auto !important;
+    transform: none !important;
     width: 250px;
     max-height: 400px;
     background: var(--bg-card);
@@ -31,6 +47,8 @@
     padding: 1.5rem;
     padding-bottom: 0.5rem;
     z-index: 49;
+    opacity: 1 !important;
+    pointer-events: auto !important;
     box-shadow: 0 10px 40px rgba(0,0,0,0.4);
     animation: slideUp 0.3s var(--ease-out-expo) forwards;
   }
@@ -40,21 +58,6 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  @media (min-width: 1024px) {
-    :global(.toc-mobile-open) {
-      position: relative !important;
-      background: none;
-      border: none;
-      padding: 0;
-      box-shadow: none;
-      bottom: auto;
-      right: auto;
-      width: auto;
-      max-height: none;
-      animation: none;
-    }
-  }
-
   :global(.toc-mobile-open) .toc-nav {
     position: relative !important;
     top: 0 !important;
@@ -62,11 +65,9 @@
   }
 
   .toc-nav {
-    position: sticky;
-    top: 6rem;
     max-height: calc(100vh - 8rem);
     overflow-y: auto;
-    overscroll-behavior: contain; /* Prevent scroll momentum from leaking to background page */
+    overscroll-behavior: contain;
     padding-right: 0.5rem;
 
     /* Sleek thin scrollbar */
@@ -88,7 +89,7 @@
   .toc-label {
     display: block;
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: 0.58rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-secondary);
@@ -107,8 +108,8 @@
   .toc-links :global(a) {
     display: block;
     font-family: var(--font-sans);
-    font-size: 0.78rem;
-    line-height: 1.4;
+    font-size: 0.7rem;
+    line-height: 1.35;
     color: var(--text-secondary);
     text-decoration: none;
     padding: 0.35rem 0.6rem;
@@ -139,14 +140,22 @@
   /* Indentation levels */
   .toc-links :global(a[data-level="3"]) {
     padding-left: 1.2rem;
-    font-size: 0.74rem;
+    font-size: 0.66rem;
   }
   .toc-links :global(a[data-level="4"]) {
     padding-left: 1.8rem;
-    font-size: 0.7rem;
+    font-size: 0.62rem;
   }
 
-
+  /* Hide floating TOC on smaller screens — mobile uses the popup button instead */
+  @media (max-width: 1279px) {
+    .toc-sidebar {
+      display: none;
+    }
+    .toc-sidebar.toc-visible {
+      display: none;
+    }
+  }
 </style>
 
 <script>
@@ -275,6 +284,18 @@
       const link = tocLinks.querySelector(`[data-id="${hashId}"]`);
       link?.classList.add('toc-active');
     }
+
+    // Show/hide TOC based on article scroll position (desktop only)
+    const tocObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          sidebar.classList.add('toc-visible');
+        } else {
+          sidebar.classList.remove('toc-visible');
+        }
+      });
+    }, { threshold: 0, rootMargin: '-100px 0px -100px 0px' });
+    tocObserver.observe(article);
   }
 
   // Run on page load and after Astro page transitions

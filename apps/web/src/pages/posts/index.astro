@@ -1,9 +1,10 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
 import { supabase } from "@lib/supabase";
-import { getLangFromUrl } from "../../i18n/utils";
+import { getLangFromUrl, useTranslations } from "../../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 
 // Fetch strictly from Supabase at build time
 const { data: allPosts, error } = await supabase

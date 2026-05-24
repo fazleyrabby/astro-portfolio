@@ -31,10 +31,7 @@ const navItems = [
                     </a>
                 ))}
                 
-                <div class="flex items-center gap-2 ml-4 px-3 py-1.5 border border-[var(--border)] rounded-full bg-[var(--bg-surface)]">
-                    <span class="avail-dot"></span>
-                    <span class="font-mono text-[0.7rem] text-[var(--text-muted)] uppercase tracking-wider">{t('status.available')}</span>
-                </div>
+
 
                 <div class="ml-2 pl-4 border-l border-[var(--border)] flex items-center gap-2">
                     <LangToggle />
@@ -80,12 +77,7 @@ const navItems = [
                 </a>
             ))}
             
-            <div class="pt-4 border-t border-[var(--border)]">
-                <div class="flex items-center gap-2 px-3 py-1.5 border border-[var(--border)] rounded-full bg-[var(--bg-surface)] w-fit">
-                    <span class="avail-dot"></span>
-                    <span class="font-mono text-[0.7rem] text-[var(--text-muted)] uppercase tracking-wider">{t('status.available')}</span>
-                </div>
-            </div>
+
         </div>
     </nav>
 </header>
@@ -106,18 +98,7 @@ const navItems = [
         width: 100%;
     }
 
-    .avail-dot {
-        width: 6px;
-        height: 6px;
-        background: #4ade80;
-        border-radius: 50%;
-        display: inline-block;
-        animation: pulse-dot 2s ease infinite;
-    }
-    @keyframes pulse-dot {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.5; transform: scale(0.8); }
-    }
+
 
     #mobile-menu {
         opacity: 0;

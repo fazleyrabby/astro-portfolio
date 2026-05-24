@@ -165,7 +165,7 @@ ${content}`;
 
     try {
         const completion = await openai.chat.completions.create({
-            model: 'llama-3.3-70b-versatile',
+            model: 'qwen-2.5-32b',
             messages: [{ role: 'user', content: prompt }],
             temperature: 0.1,
         });

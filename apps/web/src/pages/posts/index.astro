@@ -56,18 +56,18 @@ const [heroPost, ...otherFeatured] = featuredPosts;
 
 <MainLayout title="Posts">
   <section class="max-w-6xl mx-auto px-6 py-8">
-    <div class="section-label font-mono animate-in slide-in-from-bottom-2 duration-500">Journal</div>
+    <div class="section-label font-mono animate-in slide-in-from-bottom-2 duration-500">{t('posts.journal')}</div>
     <div class="animate-in slide-in-from-bottom-4 duration-700">
-      <h1 class="page-heading">Backend Engineering <span class="text-[var(--accent)]">&</span> Insights</h1>
+      <h1 class="page-heading" set:html={t('posts.index.title')}></h1>
       <p class="text-[var(--text-secondary)] max-w-[600px] mb-12 leading-[1.7] text-lg">
-        Deep dives into production Laravel patterns, system architecture, and technical challenges solved in the real world.
+        {t('posts.index.subtitle')}
       </p>
     </div>
 
     {featuredPosts.length > 0 && (
       <div class="mb-20 animate-in fade-in zoom-in-95 duration-1000">
         <div class="flex items-center gap-3 mb-8">
-          <h2 class="text-xs font-mono text-[var(--accent)] uppercase tracking-[0.2em] font-semibold">Featured Highlights</h2>
+          <h2 class="text-xs font-mono text-[var(--accent)] uppercase tracking-[0.2em] font-semibold">{t('posts.featured.title')}</h2>
           <div class="h-[1px] flex-grow bg-gradient-to-r from-[var(--border)] to-transparent"></div>
         </div>
         
@@ -77,8 +77,8 @@ const [heroPost, ...otherFeatured] = featuredPosts;
             <a href={`/posts/${heroPost.slug}`} class="grid lg:grid-cols-12 no-underline items-stretch">
               <div class="lg:col-span-7 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
                 <div class="flex items-center gap-3 font-mono text-[0.65rem] text-[var(--text-muted)] mb-6 uppercase tracking-widest">
-                  <span class="px-2 py-0.5 rounded-full border border-[var(--accent)] text-[var(--accent)]">Special</span>
-                  {heroPost.published_at ? new Date(heroPost.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Unknown'}
+                  <span class="px-2 py-0.5 rounded-full border border-[var(--accent)] text-[var(--accent)]">{t('posts.featured.special')}</span>
+                  {heroPost.published_at ? new Date(heroPost.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : t('posts.unknown')}
                 </div>
                 <h3 class="font-display font-bold text-3xl md:text-4xl lg:text-5xl text-[var(--text-primary)] mb-8 leading-[1.1] group-hover:text-[var(--accent)] transition-all duration-300">
                   {heroPost.title || heroPost.slug}
@@ -88,7 +88,7 @@ const [heroPost, ...otherFeatured] = featuredPosts;
                 </p>
                 <div class="flex items-center gap-4 text-sm font-semibold text-[var(--accent)]">
                   <span class="h-[1px] w-8 bg-[var(--accent)] transition-all duration-300 group-hover:w-12"></span>
-                  Start Reading
+                  {t('posts.startReading')}
                 </div>
               </div>
               
@@ -115,7 +115,7 @@ const [heroPost, ...otherFeatured] = featuredPosts;
                   <a href={`/posts/${post.slug}`} class="flex flex-col h-full no-underline p-8">
                     <div class="font-mono text-[0.6rem] text-[var(--text-muted)] mb-4 uppercase tracking-[0.2em] flex items-center gap-3">
                       <span class="inline-block w-1.5 h-1.5 rounded-full bg-[var(--accent)] opacity-50"></span>
-                      {post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'Unknown'}
+                      {post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'short' }) : t('posts.unknown')}
                     </div>
                     <h3 class="font-display font-semibold text-xl text-[var(--text-primary)] mb-6 leading-tight group-hover:text-[var(--accent)] transition-colors">
                       {post.title || post.slug}
@@ -124,7 +124,7 @@ const [heroPost, ...otherFeatured] = featuredPosts;
                       {post.description || "Exploring advanced system architecture and engineering trade-offs."}
                     </p>
                     <div class="mt-auto flex items-center gap-2 text-xs font-bold text-[var(--accent)] uppercase tracking-widest opacity-0 group-hover:opacity-100 translate-x-[-10px] group-hover:translate-x-0 transition-all duration-300">
-                      View Pattern <span class="text-lg">→</span>
+                      {t('posts.viewPattern')} <span class="text-lg">→</span>
                     </div>
                   </a>
                 </article>
@@ -138,7 +138,7 @@ const [heroPost, ...otherFeatured] = featuredPosts;
     {/* Regular Feed */}
     <div class="animate-in fade-in duration-1000 delay-300">
       <div class="flex items-center gap-3 mb-8">
-        <h2 class="text-xs font-mono text-[var(--text-muted)] uppercase tracking-[0.2em]">Latest Archive</h2>
+        <h2 class="text-xs font-mono text-[var(--text-muted)] uppercase tracking-[0.2em]">{t('posts.archive.title')}</h2>
         <div class="h-[1px] flex-grow bg-gradient-to-r from-[var(--border)] to-transparent opacity-40"></div>
       </div>
       
@@ -150,7 +150,7 @@ const [heroPost, ...otherFeatured] = featuredPosts;
           >
             <a href={`/posts/${post.slug}`} class="flex flex-col p-6 no-underline h-full">
               <div class="font-mono text-[0.72rem] text-[var(--text-muted)] mb-3 flex justify-between items-center">
-                <span>{post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Unknown'}</span>
+                <span>{post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : t('posts.unknown')}</span>
                 <span class="opacity-0 group-hover:opacity-100 transition-opacity text-[var(--accent)]">→</span>
               </div>
               <h3 class="font-display font-bold text-lg text-[var(--text-primary)] mb-3 leading-snug group-hover:text-[var(--accent)] transition-colors">
@@ -167,7 +167,7 @@ const [heroPost, ...otherFeatured] = featuredPosts;
             id="show-more-btn"
             class="px-8 py-3 rounded-full border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] hover:shadow-glow-sm transition-all duration-300 font-mono text-sm uppercase tracking-widest bg-transparent cursor-pointer"
           >
-            Read More Archive
+            {t('posts.archive.readMore')}
           </button>
         </div>
       )}
@@ -176,7 +176,7 @@ const [heroPost, ...otherFeatured] = featuredPosts;
     {publishedPosts.length === 0 && (
       <div class="text-center py-24 border border-dashed border-[var(--border)] rounded-sm">
         <div class="text-4xl mb-6 opacity-30">📚</div>
-        <p class="text-[var(--text-muted)] font-mono text-sm">Synchronizing brain dump... no articles found yet.</p>
+        <p class="text-[var(--text-muted)] font-mono text-sm">{t('posts.emptyMsg')}</p>
       </div>
     )}
   </section>

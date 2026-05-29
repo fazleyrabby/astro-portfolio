@@ -1,30 +1,42 @@
 [
   {
-    "topic": "Building Multi-Tenant SaaS with Laravel",
-    "focus": "Tenant isolation strategies, subdomain routing, per-tenant settings, data partitioning, and billing integration"
+    "topic": "Building a Robust Event-Driven Architecture in Laravel",
+    "focus": "Decoupling systems using Laravel events and listeners, handling high-volume background tasks, avoiding tight coupling, and event sourcing patterns"
   },
   {
-    "topic": "Laravel Testing Strategies for Production",
-    "focus": "Dusk browser testing, feature tests, API contract testing, mutation testing, and CI/CD testing pipelines"
+    "topic": "Mastering Database Indexing and Query Optimization for Large Datasets",
+    "focus": "Composite indexes, analyzing slow queries with EXPLAIN, covering indexes, partial indexes, and when to denormalize for performance"
   },
   {
-    "topic": "Advanced Eloquent Patterns and Query Optimization",
-    "focus": "Lazy loading vs eager loading, polymorphic relationships, query scopes, computed attributes, and N+1 elimination"
+    "topic": "Implementing Idempotency in Payment Webhooks using Redis",
+    "focus": "Preventing duplicate webhook processing with Redis locks and idempotency keys, exactly-once semantics, and safe retry strategies"
   },
   {
-    "topic": "Laravel Broadcasting and Real-Time Features",
-    "focus": "WebSocket architecture, private/presence channels, Pusher alternatives, real-time notifications, and echo integration"
+    "topic": "Zero-Downtime Deployments with Laravel Envoy and CI/CD",
+    "focus": "Symlink-based deployment, database migration safety during deploys, blue-green deployments, and CI/CD pipeline automation"
   },
   {
-    "topic": "Securing Laravel Applications Against Common Attacks",
-    "focus": "SQL injection prevention, XSS protection, CSRF tokens, secure file uploads, and security header implementation"
+    "topic": "Demystifying the Node.js Event Loop for Backend Engineers",
+    "focus": "libuv internals, phases of the event loop, blocking vs non-blocking operations, and practical patterns to avoid event loop starvation"
   },
   {
-    "topic": "Laravel Octane and Swoole for High Performance",
-    "focus": "Server acceleration, swoole workers, persistent applications, background tasks, and benchmarking results"
+    "topic": "Effective Background Job Processing at Scale",
+    "focus": "Job rate limiting, exponential backoff, dead-letter queues, worker autoscaling, and monitoring queue health in production"
   },
   {
-    "topic": "Building Domain-Driven Design in Laravel",
-    "focus": "DDD architecture, value objects, aggregates, repository pattern, domain events, and tactical design in Laravel"
+    "topic": "Scaling WebSockets to 100k+ Concurrent Connections",
+    "focus": "Redis Pub/Sub for cross-node broadcasting, horizontal scaling of WebSocket servers, memory optimization, and load balancing sticky sessions"
+  },
+  {
+    "topic": "API Rate Limiting Strategies in Laravel for Production",
+    "focus": "Token bucket vs sliding window algorithms, per-user and per-IP throttling, Redis-backed rate limiters, and graceful 429 responses"
+  },
+  {
+    "topic": "Building a Custom Authorization System Beyond Laravel Gates",
+    "focus": "RBAC vs ABAC, dynamic permissions, policy caching, row-level security, and multi-tenant permission isolation"
+  },
+  {
+    "topic": "Mastering Laravel Service Container and Dependency Injection",
+    "focus": "Binding interfaces, contextual binding, tagged services, lazy resolution, and designing testable service classes"
   }
 ]

@@ -94,19 +94,6 @@ const seoDesc = d.description;
       </dl>
     )}
 
-    {d.problem && (
-      <section class="mb-7 !py-0">
-        <h2 class="section-h">{t('project.problem')}</h2>
-        <p class="prose-p">{d.problem}</p>
-      </section>
-    )}
-
-    {d.solution && (
-      <section class="mb-7 !py-0">
-        <h2 class="section-h">{t('project.solution')}</h2>
-        <p class="prose-p">{d.solution}</p>
-      </section>
-    )}
 
     {d.highlights && d.highlights.length > 0 && (
       <section class="mb-7 !py-0">
@@ -151,12 +138,6 @@ const seoDesc = d.description;
     text-transform: uppercase;
     color: var(--accent);
     margin-bottom: 0.65rem;
-  }
-  .prose-p {
-    font-size: 0.95rem;
-    line-height: 1.65;
-    color: var(--text-secondary);
-    margin: 0;
   }
   .bullet-list {
     list-style: none;

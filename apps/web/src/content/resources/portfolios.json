@@ -1,7 +1,18 @@
 [
-  { "text": "aliciasykes", "link": "https://www.aliciasykes.com/projects" },
-  { "text": "hirok", "link": "https://hirok.io/" },
-  { "text": "jackmcdade", "link": "https://jackmcdade.com/" },
-  { "text": "navbar.gallery", "link": "https://www.navbar.gallery/" },
-  { "text": "stefanobartoletti", "link": "https://www.stefanobartoletti.it/" }
+  { "text": "Brittany Chiang", "link": "https://brittanychiang.com/" },
+  { "text": "Lee Robinson", "link": "https://leerob.io/" },
+  { "text": "Paco Coursey", "link": "https://paco.me/" },
+  { "text": "Rauno Freiberg", "link": "https://rauno.me/" },
+  { "text": "Emil Kowalski", "link": "https://emilkowal.ski/" },
+  { "text": "Anthony Fu", "link": "https://antfu.me/" },
+  { "text": "Josh W. Comeau", "link": "https://www.joshwcomeau.com/" },
+  { "text": "Cassidy Williams", "link": "https://cassidoo.co/" },
+  { "text": "Alicia Sykes", "link": "https://www.aliciasykes.com/projects" },
+  { "text": "Hirok", "link": "https://hirok.io/" },
+  { "text": "Jack McDade", "link": "https://jackmcdade.com/" },
+  { "text": "Stefano Bartoletti", "link": "https://www.stefanobartoletti.it/" },
+  { "text": "Navbar Gallery", "link": "https://www.navbar.gallery/" },
+  { "text": "Godly (web design inspiration)", "link": "https://godly.website/" },
+  { "text": "Awwwards", "link": "https://www.awwwards.com/" },
+  { "text": "Land-book", "link": "https://land-book.com/" }
 ]

@@ -99,7 +99,7 @@ const bnHref = currentLang === 'en' && alternateUrl ? alternateUrl : `${siteUrl}
       // 2. Theme engine (data-theme attribute — additive)
       ;(function() {
         var saved = localStorage.getItem("data-theme");
-        if (saved && saved !== "sass") {
+        if (saved && saved !== "classic" && saved !== "sass") {
           document.documentElement.setAttribute("data-theme", saved);
         }
       })();
@@ -125,7 +125,7 @@ const bnHref = currentLang === 'en' && alternateUrl ? alternateUrl : `${siteUrl}
       }
       /* Pre-style Hero to avoid layout shift */
       .hero-section {
-        min-height: 85svh;
+        min-height: 70svh;
         display: flex;
         align-items: center;
         background-color: var(--bg-base);

@@ -1,14 +1,19 @@
 [
-    {
-        "text": "Zen Browser",
-        "link": "https://zen-browser.app/"
-    },
-    {
-        "text": "Warp (Terminal)",
-        "link": "https://www.warp.dev/"
-    },
-    {
-        "text": "Sequel Ace (DB management for macOS)",
-        "link": "https://sequel-ace.com/"
-    }
+  { "text": "Zen Browser", "link": "https://zen-browser.app/" },
+  { "text": "Arc Browser", "link": "https://arc.net/" },
+  { "text": "Warp (Terminal)", "link": "https://www.warp.dev/" },
+  { "text": "Raycast", "link": "https://www.raycast.com/" },
+  { "text": "Sequel Ace (DB management, macOS)", "link": "https://sequel-ace.com/" },
+  { "text": "TablePlus", "link": "https://tableplus.com/" },
+  { "text": "DBeaver", "link": "https://dbeaver.io/" },
+  { "text": "Postman", "link": "https://www.postman.com/" },
+  { "text": "Insomnia", "link": "https://insomnia.rest/" },
+  { "text": "Obsidian", "link": "https://obsidian.md/" },
+  { "text": "Excalidraw", "link": "https://excalidraw.com/" },
+  { "text": "tldraw", "link": "https://www.tldraw.com/" },
+  { "text": "Carbon (code screenshots)", "link": "https://carbon.now.sh/" },
+  { "text": "RegExr", "link": "https://regexr.com/" },
+  { "text": "Can I Use", "link": "https://caniuse.com/" },
+  { "text": "DevDocs", "link": "https://devdocs.io/" },
+  { "text": "Shields.io (badges)", "link": "https://shields.io/" }
 ]

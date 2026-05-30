@@ -1,14 +1,16 @@
 [
-    {
-        "text": "Securing e-commerce api with laravel sanctum",
-        "link": "https://sauvikkundu.medium.com/securing-your-e-commerce-api-with-laravel-sanctum-a-complete-guide-3cbbfd450a27"
-    },
-    {
-        "text": "Web Developement with php (comprehensive guide)",
-        "link": "https://medium.com/@mohitsaraswat108/web-development-with-php-a-comprehensive-guide-643378f6270c"
-    },
-    {
-        "text": "Refactoring Guru",
-        "link": "https://refactoring.guru/"
-    }
+  { "text": "Martin Fowler", "link": "https://martinfowler.com/" },
+  { "text": "Refactoring Guru", "link": "https://refactoring.guru/" },
+  { "text": "Smashing Magazine", "link": "https://www.smashingmagazine.com/" },
+  { "text": "CSS-Tricks", "link": "https://css-tricks.com/" },
+  { "text": "web.dev (Google)", "link": "https://web.dev/" },
+  { "text": "MDN Web Docs", "link": "https://developer.mozilla.org/" },
+  { "text": "Josh W. Comeau", "link": "https://www.joshwcomeau.com/" },
+  { "text": "Kent C. Dodds", "link": "https://kentcdodds.com/blog" },
+  { "text": "Overreacted (Dan Abramov)", "link": "https://overreacted.io/" },
+  { "text": "Lea Verou", "link": "https://lea.verou.me/" },
+  { "text": "Julia Evans (Wizard Zines)", "link": "https://jvns.ca/" },
+  { "text": "High Scalability", "link": "http://highscalability.com/" },
+  { "text": "Securing E-commerce API with Laravel Sanctum", "link": "https://sauvikkundu.medium.com/securing-your-e-commerce-api-with-laravel-sanctum-a-complete-guide-3cbbfd450a27" },
+  { "text": "Web Development with PHP (Comprehensive Guide)", "link": "https://medium.com/@mohitsaraswat108/web-development-with-php-a-comprehensive-guide-643378f6270c" }
 ]

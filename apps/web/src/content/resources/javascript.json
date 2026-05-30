@@ -1,10 +1,15 @@
 [
-    {
-        "text": "React drag to select",
-        "link": "https://www.joshuawootonn.com/react-drag-to-select"
-    },
-    {
-        "text": "Three js resources",
-        "link": "https://threejsresources.com/"
-    }
+  { "text": "MDN JavaScript Reference", "link": "https://developer.mozilla.org/en-US/docs/Web/JavaScript" },
+  { "text": "javascript.info", "link": "https://javascript.info/" },
+  { "text": "You Don't Know JS (Kyle Simpson)", "link": "https://github.com/getify/You-Dont-Know-JS" },
+  { "text": "Eloquent JavaScript", "link": "https://eloquentjavascript.net/" },
+  { "text": "Node.js Documentation", "link": "https://nodejs.org/en/docs" },
+  { "text": "TypeScript Handbook", "link": "https://www.typescriptlang.org/docs/handbook/intro.html" },
+  { "text": "React Documentation", "link": "https://react.dev/" },
+  { "text": "Vue.js Documentation", "link": "https://vuejs.org/guide/introduction.html" },
+  { "text": "Astro Documentation", "link": "https://docs.astro.build/" },
+  { "text": "Lydia Hallie Blog", "link": "https://www.lydiahallie.com/blog" },
+  { "text": "Three.js Resources", "link": "https://threejsresources.com/" },
+  { "text": "Patterns.dev", "link": "https://www.patterns.dev/" },
+  { "text": "React Drag to Select (Joshua Wootonn)", "link": "https://www.joshuawootonn.com/react-drag-to-select" }
 ]

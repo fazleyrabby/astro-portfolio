@@ -1,6 +1,14 @@
 [
-    {
-        "text": "Laravel Daily",
-        "link": "https://www.youtube.com/@LaravelDaily"
-    }
+  { "text": "Laracasts", "link": "https://laracasts.com/" },
+  { "text": "Laravel Daily", "link": "https://www.youtube.com/@LaravelDaily" },
+  { "text": "Fireship", "link": "https://www.youtube.com/@Fireship" },
+  { "text": "Web Dev Simplified", "link": "https://www.youtube.com/@WebDevSimplified" },
+  { "text": "Traversy Media", "link": "https://www.youtube.com/@TraversyMedia" },
+  { "text": "The Net Ninja", "link": "https://www.youtube.com/@NetNinja" },
+  { "text": "ThePrimeagen", "link": "https://www.youtube.com/@ThePrimeagen" },
+  { "text": "Theo - t3.gg", "link": "https://www.youtube.com/@t3dotgg" },
+  { "text": "Kevin Powell (CSS)", "link": "https://www.youtube.com/@KevinPowell" },
+  { "text": "Hussein Nasser (Backend)", "link": "https://www.youtube.com/@hnasr" },
+  { "text": "Frontend Masters", "link": "https://frontendmasters.com/" },
+  { "text": "Egghead.io", "link": "https://egghead.io/" }
 ]

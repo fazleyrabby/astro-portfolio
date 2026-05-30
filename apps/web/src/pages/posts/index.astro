@@ -119,7 +119,7 @@ const allTags = [...new Set(postsWithImages.flatMap(post => post.tags || []))].s
             {heroPost && (
             <article class="post-card featured-hero group relative border border-[var(--border)] rounded-lg overflow-hidden bg-[var(--bg-card)] transition-all hover:border-[var(--accent)] hover:shadow-glow flex" data-tags={JSON.stringify(heroPost.tags || [])} data-title={heroPost.title || heroPost.slug}>
               <a href={translatePath(`/posts/${heroPost.slug}`)} class="flex flex-col lg:flex-row w-full no-underline items-stretch">
-                <div class="p-8 lg:p-12 flex flex-col justify-center flex-1">
+                <div class="p-5 sm:p-8 lg:p-12 flex flex-col justify-center flex-1">
                   <div class="flex items-center gap-3 font-mono text-[0.65rem] text-[var(--text-muted)] mb-5 uppercase tracking-widest">
                     <span class="px-2 py-0.5 rounded border border-[var(--accent)] text-[var(--accent)]">{t('posts.featured.special') || "Featured"}</span>
                     {heroPost.published_at ? new Date(heroPost.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : (t('posts.unknown') || "Draft")}
@@ -165,7 +165,7 @@ const allTags = [...new Set(postsWithImages.flatMap(post => post.tags || []))].s
                       </a>
                     )}
 
-                    <a href={translatePath(`/posts/${post.slug}`)} class="flex flex-col h-full no-underline p-6">
+                    <a href={translatePath(`/posts/${post.slug}`)} class="flex flex-col h-full no-underline p-4 sm:p-5 md:p-6">
                       <div class="font-mono text-[0.6rem] text-[var(--text-muted)] mb-3 uppercase tracking-widest flex items-center gap-2">
                         <span class="inline-block w-1 h-1 rounded-full bg-[var(--accent)] opacity-70"></span>
                         {post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : "Draft"}
@@ -213,7 +213,7 @@ const allTags = [...new Set(postsWithImages.flatMap(post => post.tags || []))].s
               </a>
             )}
             
-            <a href={translatePath(`/posts/${post.slug}`)} class="p-5 flex-1 flex flex-col no-underline">
+            <a href={translatePath(`/posts/${post.slug}`)} class="p-4 sm:p-5 flex-1 flex flex-col no-underline">
               <h2 class="font-display text-xl font-bold text-[var(--text-primary)] mb-2 leading-tight group-hover:text-[var(--accent)] transition-colors line-clamp-2">
                 {post.title || post.slug}
               </h2>

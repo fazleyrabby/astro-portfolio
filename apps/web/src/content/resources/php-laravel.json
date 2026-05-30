@@ -1,7 +1,20 @@
 [
+  { "text": "Laravel Documentation", "link": "https://laravel.com/docs" },
+  { "text": "Laravel News", "link": "https://laravel-news.com/" },
+  { "text": "Laracasts", "link": "https://laracasts.com/" },
+  { "text": "PHP The Right Way", "link": "https://phptherightway.com/" },
+  { "text": "PHP Documentation", "link": "https://www.php.net/docs.php" },
+  { "text": "PHP-FIG (PSR Standards)", "link": "https://www.php-fig.org/" },
+  { "text": "Symfony Blog", "link": "https://symfony.com/blog/" },
+  { "text": "Spatie Blog", "link": "https://spatie.be/blog" },
+  { "text": "Freek.dev (Freek Van der Herten)", "link": "https://freek.dev/" },
+  { "text": "Stitcher.io (Brent Roose)", "link": "https://stitcher.io/" },
   { "text": "php.watch", "link": "https://php.watch/" },
-  { "text": "securinglaravel.com", "link": "https://securinglaravel.com/" },
-  { "text": "builtwithlaravel.com", "link": "https://builtwithlaravel.com/" },
-  { "text": "artisan.page", "link": "https://artisan.page/" },
-  { "text": "harrisrafto", "link": "https://www.harrisrafto.eu/" }
+  { "text": "Securing Laravel", "link": "https://securinglaravel.com/" },
+  { "text": "Built With Laravel", "link": "https://builtwithlaravel.com/" },
+  { "text": "Artisan.page (CLI reference)", "link": "https://artisan.page/" },
+  { "text": "Harris Rafto", "link": "https://www.harrisrafto.eu/" },
+  { "text": "Laravel Daily Blog", "link": "https://laraveldaily.com/" },
+  { "text": "Beyond Code Blog", "link": "https://beyondco.de/blog" },
+  { "text": "Christoph Rumpel", "link": "https://christoph-rumpel.com/" }
 ]

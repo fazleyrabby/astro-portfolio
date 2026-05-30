@@ -43,7 +43,7 @@ const navItems = [
                       id="theme-select"
                       class="theme-select font-mono text-[0.65rem] uppercase tracking-wider bg-transparent border border-[var(--border)] text-[var(--text-muted)] rounded px-2 py-1 cursor-pointer hover:border-[var(--accent)] transition-colors outline-none"
                       aria-label="Select theme"
-                    >                      <option value="sass">Sass</option>
+                    >                      <option value="classic">Classic</option>
                       <option value="brutal">Brutal</option>
                       <option value="cyberpunk">Cyber</option>
                       <option value="nord">Nord</option>
@@ -59,7 +59,7 @@ const navItems = [
                     class="theme-select font-mono text-[0.65rem] uppercase tracking-wider bg-transparent border border-[var(--border)] text-[var(--text-muted)] rounded px-2 py-1 cursor-pointer hover:border-[var(--accent)] transition-colors outline-none"
                     aria-label="Select theme"
                 >
-                    <option value="sass">Sass</option>
+                    <option value="classic">Classic</option>
                     <option value="brutal">Brutal</option>
                     <option value="cyberpunk">Cyber</option>
                     <option value="nord">Nord</option>
@@ -141,7 +141,7 @@ const navItems = [
 <script>
     // Theme Selector Logic
     function setTheme(themeName) {
-        if (themeName === "sass") {
+        if (themeName === "classic" || themeName === "sass") {
             document.documentElement.removeAttribute("data-theme");
             localStorage.removeItem("data-theme");
         } else {
@@ -151,8 +151,9 @@ const navItems = [
     }
 
     // Init: sync select to current theme
-    const currentTheme = document.documentElement.getAttribute("data-theme") || 
-                          localStorage.getItem("data-theme") || "sass";
+    let currentTheme = document.documentElement.getAttribute("data-theme") || 
+                          localStorage.getItem("data-theme") || "classic";
+    if (currentTheme === "sass") currentTheme = "classic";
     const selects = document.querySelectorAll("#theme-select, #theme-select-mobile");
     selects.forEach(s => { s.value = currentTheme; });
 

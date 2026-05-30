@@ -56,7 +56,7 @@
   --text-secondary: #A8A29E;
   --text-muted: #57534E;
 
-  /* Theme Tokens (Dark Sass) */
+  /* Theme Tokens (Classic Dark) */
   --color-bg: var(--bg-base);
   --color-text: var(--text-primary);
   --color-surface: var(--bg-card);
@@ -512,7 +512,7 @@ html[data-theme="brutal"] #article-content li > code {
   }
 
   .editorial-break {
-    padding: clamp(4rem, 8vw, 7rem) 0;
+    padding: clamp(3rem, 6vw, 4.5rem) 0;
     text-align: center;
     position: relative;
     z-index: 1;

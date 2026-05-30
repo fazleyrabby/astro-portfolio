@@ -1,7 +1,11 @@
 ---
 import ThemeIcon from "@components/ThemeIcon.astro";
 import LangToggle from "@components/LangToggle.astro";
-import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
+import {
+    getLangFromUrl,
+    useTranslations,
+    useTranslatedPath,
+} from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -9,44 +13,54 @@ const translatePath = useTranslatedPath(lang);
 const { altUrl } = Astro.props;
 
 const navItems = [
-    { href: translatePath("/#projects"), label: t('nav.work') },
-    { href: translatePath("/posts/"), label: t('nav.blog') },
-    { href: translatePath("/about/"), label: t('nav.about') },
-    { href: translatePath("/uses/"), label: t('nav.uses') },
+    { href: translatePath("/#projects"), label: t("nav.work") },
+    { href: translatePath("/posts/"), label: t("nav.blog") },
+    { href: translatePath("/about/"), label: t("nav.about") },
+    { href: translatePath("/uses/"), label: t("nav.uses") },
 ];
 ---
 
-<header class="sticky top-0 z-50 w-full backdrop-blur-xl border-b border-[var(--border)]" style="background: color-mix(in srgb, var(--bg-base) 85%, transparent);">
-    <nav class="max-w-6xl mx-auto px-6 py-4">
+<header
+    class="sticky top-0 z-50 w-full backdrop-blur-xl border-b border-[var(--border)]"
+    style="background: color-mix(in srgb, var(--bg-base) 85%, transparent);"
+>
+    <nav class="max-w-6xl mx-auto px-6 py-3">
         <div class="flex items-center justify-between">
             <!-- Logo -->
             <a href={translatePath("/")} class="flex items-center gap-2 group">
-                <span class="text-xl text-[var(--text-primary)] font-display font-bold tracking-tight">
+                <span
+                    class="text-xl text-[var(--text-primary)] font-display font-bold tracking-tight"
+                >
                     Fazley<span class="text-[var(--accent)]">.</span>
                 </span>
             </a>
 
             <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center gap-8">
-                {navItems.map((item) => (
-                    <a href={item.href} class="nav-link-item text-[0.75rem] font-mono uppercase tracking-[0.08em] text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors relative py-1">
-                        {item.label}
-                    </a>
-                ))}
-                
+                {
+                    navItems.map((item) => (
+                        <a
+                            href={item.href}
+                            class="nav-link-item text-[0.75rem] font-mono uppercase tracking-[0.08em] text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors relative py-1"
+                        >
+                            {item.label}
+                        </a>
+                    ))
+                }
 
-
-                <div class="ml-2 pl-4 border-l border-[var(--border)] flex items-center gap-2">
+                <div
+                    class="ml-2 pl-4 border-l border-[var(--border)] flex items-center gap-2"
+                >
                     <LangToggle altUrl={altUrl} />
                     <!-- <ThemeIcon /> -->
                     <select
-                      id="theme-select"
-                      class="theme-select font-mono text-[0.65rem] uppercase tracking-wider bg-transparent border border-[var(--border)] text-[var(--text-muted)] rounded px-2 py-1 cursor-pointer hover:border-[var(--accent)] transition-colors outline-none"
-                      aria-label="Select theme"
-                    >                      <option value="classic">Classic</option>
-                      <option value="brutal">Brutal</option>
-                      <option value="cyberpunk">Cyber</option>
-                      <option value="nord">Nord</option>
+                        id="theme-select"
+                        class="theme-select font-mono text-[0.65rem] uppercase tracking-wider bg-transparent border border-[var(--border)] text-[var(--text-muted)] rounded px-2 py-1 cursor-pointer hover:border-[var(--accent)] transition-colors outline-none"
+                        aria-label="Select theme"
+                    >
+                        <option value="classic">Classic</option>
+                        <option value="brutal">Brutal</option>
+                        <option value="mono">Mono</option>
                     </select>
                 </div>
             </div>
@@ -61,33 +75,51 @@ const navItems = [
                 >
                     <option value="classic">Classic</option>
                     <option value="brutal">Brutal</option>
-                    <option value="cyberpunk">Cyber</option>
-                    <option value="nord">Nord</option>
+                    <option value="mono">Mono</option>
                 </select>
-                <button id="mobile-menu-button" class="p-2 text-[var(--text-secondary)] hover:text-[var(--accent)]" aria-label="Toggle menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                <button
+                    id="mobile-menu-button"
+                    class="p-2 text-[var(--text-secondary)] hover:text-[var(--accent)]"
+                    aria-label="Toggle menu"
+                >
+                    <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
             </div>
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 space-y-4 border-t border-[var(--border)] pt-4">
-            {navItems.map((item) => (
-                <a href={item.href} class="block text-sm font-mono uppercase tracking-widest text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors">
-                    {item.label}
-                </a>
-            ))}
-            
-
+        <div
+            id="mobile-menu"
+            class="hidden md:hidden mt-4 pb-4 space-y-4 border-t border-[var(--border)] pt-4"
+        >
+            {
+                navItems.map((item) => (
+                    <a
+                        href={item.href}
+                        class="block text-sm font-mono uppercase tracking-widest text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors"
+                    >
+                        {item.label}
+                    </a>
+                ))
+            }
         </div>
     </nav>
 </header>
 
 <style>
     .nav-link-item::after {
-        content: '';
+        content: "";
         position: absolute;
         bottom: 0;
         left: 0;
@@ -101,12 +133,12 @@ const navItems = [
         width: 100%;
     }
 
-
-
     #mobile-menu {
         opacity: 0;
         transform: translateY(-10px);
-        transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        transition:
+            opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
     #mobile-menu.menu-open {
         opacity: 1;
@@ -117,10 +149,10 @@ const navItems = [
 <script>
     const mobileMenuButton = document.getElementById("mobile-menu-button");
     const mobileMenu = document.getElementById("mobile-menu");
-    
+
     mobileMenuButton?.addEventListener("click", () => {
         if (!mobileMenu) return;
-        
+
         if (mobileMenu.classList.contains("hidden")) {
             mobileMenu.classList.remove("hidden");
             // Trigger reflow to apply the transition
@@ -151,18 +183,26 @@ const navItems = [
     }
 
     // Init: sync select to current theme
-    let currentTheme = document.documentElement.getAttribute("data-theme") || 
-                          localStorage.getItem("data-theme") || "classic";
+    let currentTheme =
+        document.documentElement.getAttribute("data-theme") ||
+        localStorage.getItem("data-theme") ||
+        "classic";
     if (currentTheme === "sass") currentTheme = "classic";
-    const selects = document.querySelectorAll("#theme-select, #theme-select-mobile");
-    selects.forEach(s => { s.value = currentTheme; });
+    const selects = document.querySelectorAll(
+        "#theme-select, #theme-select-mobile",
+    );
+    selects.forEach((s) => {
+        s.value = currentTheme;
+    });
 
     // Listen for changes
-    selects.forEach(s => {
+    selects.forEach((s) => {
         s.addEventListener("change", (e) => {
             setTheme(e.target.value);
             // Sync all selects
-            selects.forEach(other => { other.value = e.target.value; });
+            selects.forEach((other) => {
+                other.value = e.target.value;
+            });
         });
     });
 </script>

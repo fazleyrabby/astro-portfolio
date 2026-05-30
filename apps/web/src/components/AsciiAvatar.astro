@@ -177,11 +177,11 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
 
     function isDark() {
       const theme = document.documentElement.getAttribute('data-theme');
-      // Cyberpunk and Nord have dark backgrounds
-      if (theme === 'cyberpunk' || theme === 'nord') return true;
-      // Brutal is always light
+      // Mono has a dark background
+      if (theme === 'mono') return true;
+      // Brutal is light
       if (theme === 'brutal') return false;
-      // Sass/default: use the dark class
+      // Classic/default: use the dark class
       return document.documentElement.classList.contains('dark');
     }
 
@@ -248,7 +248,8 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
     let data = buildParticles(currentTheme === "dark" ? DARK_ART : LIGHT_ART);
 
     let width, height, offsetX, offsetY, scale, dpr;
-    let mouseX = -9999, mouseY = -9999;
+    let mouseX = -9999,
+      mouseY = -9999;
     let isVisible = false;
     let isHovering = false;
     let animating = false;
@@ -284,7 +285,7 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
 
     const observerOptions = { threshold: 0.1 };
     const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         isVisible = entry.isIntersecting;
         if (isVisible) {
           // Short delay to prioritize initial page load / LCP
@@ -294,7 +295,9 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
     }, observerOptions);
     io.observe(cnv);
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
     function draw() {
       if (!isVisible && !isHovering) {
@@ -392,9 +395,9 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
           const nx = p.homeX / data.artW;
           const wavePhase = nx * Math.PI * 2.5 - frameTime * 2.0;
           const wave = Math.sin(wavePhase);
-          const crest = (wave * 0.5) + 0.5;
+          const crest = wave * 0.5 + 0.5;
           alpha *= 0.75 + crest * 0.25;
-          needsNextFrame = true; 
+          needsNextFrame = true;
         }
 
         ctx.globalAlpha = Math.max(0, Math.min(1, alpha));

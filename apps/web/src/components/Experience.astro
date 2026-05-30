@@ -19,19 +19,19 @@ const renderedExperiences = await Promise.all(experiences.map(async (exp) => {
 }));
 ---
 
-<section id="experience" class="py-16">
+<section id="experience" class="py-10">
   <div class="max-w-6xl mx-auto px-6">
-    <div class="flex items-center gap-6 mb-12">
+    <div class="flex items-center gap-6 mb-8">
       <div>
         <span class="section-label">{t('experience.label')}</span>
-        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.8rem,5vw,2.5rem)] leading-tight">{t('experience.title')}</h2>
+        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.4rem,3.5vw,2rem)] leading-tight">{t('experience.title')}</h2>
       </div>
       <div class="flex-1 hidden md:block h-[1px] bg-accent opacity-20 dark:opacity-30"></div>
     </div>
 
     <div class="timeline relative ml-3">
       {renderedExperiences.map((item) => (
-        <div class="timeline-entry relative pl-10 pb-8 last:pb-0 group">
+        <div class="timeline-entry relative pl-10 pb-6 last:pb-0 group">
           <div class="timeline-dot absolute left-[-4.5px] top-2"></div>
           <div class="timeline-date font-mono text-[0.68rem] text-[var(--text-muted)] mb-1 uppercase tracking-widest">
             {item.data.from} — {item.data.to}

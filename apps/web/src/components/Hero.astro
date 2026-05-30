@@ -8,7 +8,7 @@ const t = useTranslations(lang);
 
 <section
   id="hero"
-  class="hero-section min-h-[85svh] relative flex items-center overflow-hidden pt-20 pb-20"
+  class="hero-section min-h-[65svh] relative flex items-center overflow-hidden pt-14 pb-14"
 >
   <!-- Cursor-reactive light -->
   <div class="hero-cursor-light" aria-hidden="true"></div>
@@ -53,12 +53,12 @@ const t = useTranslations(lang);
           {t('hero.body')}
         </p>
 
-        <div class="flex gap-3 flex-wrap mt-8">
+        <div class="flex gap-3 flex-wrap mt-6">
           <a href="/resume" class="btn-primary btn-magnetic">{t('nav.resume')}</a>
           <a href="#projects" class="btn-ghost">{t('hero.viewProjects')}</a>
         </div>
 
-        <div class="connect-block mt-8">
+        <div class="connect-block mt-6">
           <span class="section-label font-mono" style="margin-bottom:0.4rem;"
             >{t('hero.connect')}</span
           >
@@ -144,7 +144,7 @@ const t = useTranslations(lang);
   }
 
   h1 {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
     line-height: 1.2;
     color: var(--text-primary);
   }
@@ -154,7 +154,7 @@ const t = useTranslations(lang);
   }
 
   .hero-tagline {
-    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
     color: var(--text-secondary);
     margin-top: 0;
     margin-bottom: 1.25rem;

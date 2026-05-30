@@ -99,7 +99,11 @@ const bnHref = currentLang === 'en' && alternateUrl ? alternateUrl : `${siteUrl}
       // 2. Theme engine (data-theme attribute — additive)
       ;(function() {
         var saved = localStorage.getItem("data-theme");
-        if (saved && saved !== "classic" && saved !== "sass") {
+        if (saved === "cyberpunk" || saved === "nord" || saved === "sass" || saved === "retro" || saved === "sketch") {
+          localStorage.removeItem("data-theme");
+          saved = null;
+        }
+        if (saved && saved !== "classic") {
           document.documentElement.setAttribute("data-theme", saved);
         }
       })();
@@ -125,7 +129,7 @@ const bnHref = currentLang === 'en' && alternateUrl ? alternateUrl : `${siteUrl}
       }
       /* Pre-style Hero to avoid layout shift */
       .hero-section {
-        min-height: 70svh;
+        min-height: 65svh;
         display: flex;
         align-items: center;
         background-color: var(--bg-base);

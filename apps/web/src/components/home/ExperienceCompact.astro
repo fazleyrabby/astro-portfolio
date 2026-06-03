@@ -30,8 +30,7 @@ const rendered = await Promise.all(
   <ol class="exp-list">
     {rendered.map((item) => (
       <li class="exp-item">
-        <div class="exp-period">{item.data.from} — {item.data.to}</div>
-        <div class="exp-main">
+        <div class="exp-head">
           <a
             href={item.data.link ?? "#"}
             target="_blank"
@@ -40,9 +39,10 @@ const rendered = await Promise.all(
           >
             {item.data.title}
           </a>
-          <span class="exp-role">{item.data.role}</span>
-          <div class="exp-desc"><item.Content /></div>
+          <span class="exp-period">{item.data.from} — {item.data.to}</span>
         </div>
+        <span class="exp-role">{item.data.role}</span>
+        <div class="exp-desc"><item.Content /></div>
       </li>
     ))}
   </ol>
@@ -76,22 +76,21 @@ const rendered = await Promise.all(
     flex-direction: column;
   }
   .exp-item {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    gap: 16px;
-    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 0;
     border-bottom: 1px dashed var(--border);
   }
-  .exp-item:last-child { border-bottom: none; }
-  .exp-period {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    color: var(--text-muted);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding-top: 2px;
+  .exp-item:first-child { padding-top: 4px; }
+  .exp-item:last-child { border-bottom: none; padding-bottom: 4px; }
+  .exp-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
   }
-  .exp-main { display: flex; flex-direction: column; gap: 4px; }
   .exp-company {
     font-family: var(--font-sans);
     font-weight: 700;
@@ -100,6 +99,14 @@ const rendered = await Promise.all(
     transition: color 0.2s ease;
   }
   .exp-company:hover { color: var(--accent); }
+  .exp-period {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
   .exp-role {
     font-family: var(--font-sans);
     font-style: italic;
@@ -109,12 +116,9 @@ const rendered = await Promise.all(
   .exp-desc {
     font-size: 0.82rem;
     color: var(--text-secondary);
-    line-height: 1.5;
-    margin-top: 2px;
+    line-height: 1.55;
+    margin-top: 4px;
   }
   .exp-desc :global(ul) { margin: 4px 0 0; padding-left: 18px; }
   .exp-desc :global(li) { margin-bottom: 2px; }
-  @media (max-width: 640px) {
-    .exp-item { grid-template-columns: 1fr; gap: 4px; }
-  }
 </style>

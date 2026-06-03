@@ -47,23 +47,25 @@ const meta = [
     </div>
   </div>
 
-  <div class="strip-row strip-row--meta">
-    {meta.map((m) => (
-      <div class="meta-cell">
-        <span class="meta-k">{m.k}</span>
-        <span class="meta-v">{m.v}</span>
-      </div>
-    ))}
-  </div>
+  <table class="strip-row--meta">
+    <tbody>
+      <tr class="meta-head-row">
+        {meta.map((m) => <th>{m.k}</th>)}
+      </tr>
+      <tr class="meta-val-row">
+        {meta.map((m) => <td data-k={m.k}>{m.v}</td>)}
+      </tr>
+    </tbody>
+  </table>
 </section>
 
 <style>
   .identity-strip {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--bg-card);
-    box-shadow: var(--shadow-main);
-    padding: 16px 20px;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    padding: 20px 16px;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -189,39 +191,87 @@ const meta = [
   .strip-links .dot { color: var(--border); }
 
   .strip-row--meta {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 0;
-    border-top: 1px solid var(--border);
-    padding-top: 12px;
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    margin-right: -16px;
+    border-collapse: collapse;
+    table-layout: auto;
+    margin-top: 4px;
+    border-top: 1px solid var(--grid-line);
+    border-bottom: 1px solid var(--grid-line);
+    border-left: none;
+    border-right: none;
+  }
+  .strip-row--meta th,
+  .strip-row--meta td {
+    border: 1px solid var(--grid-line);
+    padding: 8px 14px;
+    text-align: left;
+    min-width: 0;
+    white-space: normal;
+    word-break: break-word;
+    vertical-align: middle;
+  }
+  .strip-row--meta tr > th:first-child,
+  .strip-row--meta tr > td:first-child { border-left: none; }
+  .strip-row--meta tr > th:last-child,
+  .strip-row--meta tr > td:last-child { border-right: none; }
+  .strip-row--meta th {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: color-mix(in srgb, var(--text-primary) 3%, var(--bg-base));
+  }
+  .strip-row--meta td {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-primary);
   }
   @media (max-width: 1024px) {
-    .strip-row--meta { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .strip-row--meta,
+    .strip-row--meta tbody,
+    .strip-row--meta tr { display: block; }
+    .strip-row--meta tr { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .meta-head-row { display: none !important; }
+    .strip-row--meta td {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      white-space: normal;
+    }
+    .strip-row--meta td::before {
+      content: attr(data-k);
+      font-size: 0.55rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
   }
   @media (max-width: 540px) {
-    .strip-row--meta { grid-template-columns: repeat(2, 1fr); }
+    .strip-row--meta tr { grid-template-columns: repeat(2, 1fr); }
   }
-  .meta-cell {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 0 12px;
-    border-right: 1px solid var(--border);
-  }
-  .meta-cell:first-child { padding-left: 0; }
-  .meta-cell:last-child { border-right: none; }
   .meta-k {
     font-family: var(--font-mono);
     font-size: 0.55rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-muted);
+    line-height: 1;
   }
   .meta-v {
     font-family: var(--font-mono);
     font-size: 0.78rem;
     font-weight: 600;
     color: var(--text-primary);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 </style>

@@ -17,47 +17,72 @@ const { data } = await supabase
 const latestPosts = data || [];
 ---
 
-<section id="posts" class="py-10">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="flex items-center gap-6 mb-8">
-      <div>
-        <span class="section-label">{t('posts.label')}</span>
-        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.4rem,3.5vw,2rem)] leading-tight">{t('posts.title')}</h2>
-      </div>
-      <div class="flex-1 hidden md:block h-[1px] bg-accent opacity-20 dark:opacity-30"></div>
+<section id="posts" class="posts-panel">
+  <div class="panel-header">
+    <div class="panel-title">
+      <span>{t('posts.title').toUpperCase()}</span>
     </div>
-
-    <div class="post-list border-t border-border">
-      {latestPosts.map((post, i) => (
-        <a href={translatePath(`/posts/${post.slug}`)} class="post-row flex flex-col sm:flex-row sm:items-center py-4 sm:py-3 border-b border-border group transition-all duration-300 hover:bg-[var(--accent-dim)] hover:pl-4">
-          <div class="flex items-start gap-4 sm:gap-6 flex-1 min-w-0">
-            <span class="post-number font-mono text-[0.7rem] text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors shrink-0">
-              {lang === 'bn' ? 'বিএন' : 'BN'}-0{i + 1}
-            </span>
-            <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 min-w-0">
-              <span class="post-date font-mono text-[0.68rem] text-[var(--text-muted)] shrink-0">
-                {post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { month: 'short', day: '2-digit', year: 'numeric' }) : t('posts.unknown')}
-              </span>
-              <span class="post-title font-display font-semibold text-[1.02rem] text-[var(--text-primary)] group-hover:text-[var(--text-primary)] truncate">
-                {post.title}
-              </span>
-            </div>
-          </div>
-          <span class="post-arrow font-mono text-[var(--text-secondary)] group-hover:text-[var(--accent)] group-hover:translate-x-1 transition-all mt-2 sm:mt-0 ml-auto sm:ml-0 hidden sm:inline-block">→</span>
-        </a>
-      ))}
-    </div>
-
-    {latestPosts.length === 0 && (
-      <div class="text-center py-12">
-        <p class="text-[var(--text-muted)] font-mono text-xs">{t('posts.empty')}</p>
-      </div>
-    )}
-
-    {latestPosts.length > 0 && (
-      <div class="mt-6 text-center">
-        <a href="/posts" class="btn-ghost">{t('posts.showMore')}</a>
-      </div>
-    )}
   </div>
+
+  <div class="post-list border-t border-border mt-3">
+    {latestPosts.map((post, i) => (
+      <a href={translatePath(`/posts/${post.slug}`)} class="post-row flex flex-col sm:flex-row sm:items-center py-2.5 sm:py-2 border-b border-border group transition-all duration-300 hover:bg-[var(--accent-dim)] hover:pl-4">
+        <div class="flex items-start gap-4 sm:gap-6 flex-1 min-w-0">
+          <span class="post-number font-mono text-[0.7rem] text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors shrink-0">
+            0{i + 1}
+          </span>
+          <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 min-w-0">
+            <span class="post-date font-mono text-[0.68rem] text-[var(--text-muted)] shrink-0">
+              {post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { month: 'short', day: '2-digit', year: 'numeric' }) : t('posts.unknown')}
+            </span>
+            <span class="post-title font-display font-semibold text-[1.02rem] text-[var(--text-primary)] group-hover:text-[var(--text-primary)] truncate">
+              {post.title}
+            </span>
+          </div>
+        </div>
+        <span class="post-arrow font-mono text-[var(--text-secondary)] group-hover:text-[var(--accent)] group-hover:translate-x-1 transition-all mt-2 sm:mt-0 ml-auto sm:ml-0 hidden sm:inline-block">→</span>
+      </a>
+    ))}
+  </div>
+
+  {latestPosts.length === 0 && (
+    <div class="text-center py-8">
+      <p class="text-[var(--text-muted)] font-mono text-xs">{t('posts.empty')}</p>
+    </div>
+  )}
+
+  {latestPosts.length > 0 && (
+    <div class="mt-4 text-center">
+      <a href="/posts" class="btn-ghost">{t('posts.showMore')}</a>
+    </div>
+  )}
 </section>
+
+<style>
+  .posts-panel {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-main);
+    transition: all var(--t-base) ease;
+  }
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+  }
+
+</style>

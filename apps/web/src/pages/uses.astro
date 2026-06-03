@@ -4,14 +4,84 @@ import { Content as UsesMarkdown } from "../content/uses.md";
 ---
 
 <MainLayout title="Uses">
-    <main class="max-w-3xl mx-auto px-6 py-12">
-        <div class="mb-14">
-            <span class="section-label">Uses</span>
-            <h1 class="font-display font-bold text-[clamp(1.85rem,4.5vw,2.75rem)] text-[var(--text-primary)] leading-tight">Uses</h1>
-            <p class="font-serif italic text-[1.2rem] text-[var(--text-secondary)] mt-4">Tools & setup I use for my daily work.</p>
+    <main class="page-workspace">
+        <header class="page-header">
+            <div class="page-header-inner">
+                <span class="page-kicker">/ USES</span>
+                <h1 class="page-title">Tools &amp; Setup</h1>
+                <p class="page-sub">Hardware, software, and daily-driver tools.</p>
+            </div>
+        </header>
+
+        <div class="uses-card">
+            <article class="prose prose-neutral dark:prose-invert max-w-none">
+                <UsesMarkdown />
+            </article>
         </div>
-        <article class="prose prose-neutral dark:prose-invert w-full max-w-none prose-p:text-[var(--text-secondary)] prose-p:leading-[1.7] prose-li:text-[var(--text-secondary)] prose-headings:font-display prose-headings:font-bold prose-headings:text-[var(--text-primary)] prose-strong:text-[var(--text-primary)] prose-strong:font-semibold prose-hr:my-6 prose-h2:mt-8 prose-h2:mb-4 prose-h3:mt-6 prose-h3:mb-3 prose-p:my-3 prose-ul:my-3 prose-li:my-1 text-[0.95rem]">
-            <UsesMarkdown />
-        </article>
     </main>
 </MainLayout>
+
+<style>
+    .page-workspace { max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; }
+    .page-header {
+        padding: 16px 0 12px;
+        border-bottom: 1px solid var(--grid-line-strong);
+    }
+    .page-header-inner { display: flex; flex-direction: column; gap: 2px; }
+    .page-kicker {
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        color: var(--accent);
+    }
+    .page-title {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(1.5rem, 2.6vw, 2rem);
+        line-height: 1.05;
+        color: var(--text-primary);
+        margin: 0;
+    }
+    .page-sub {
+        font-family: var(--font-serif, var(--font-sans));
+        font-style: italic;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin: 2px 0 0;
+    }
+    .uses-card {
+        background: color-mix(in srgb, var(--text-primary) 4%, var(--bg-base));
+        border: 1px solid var(--grid-line-strong);
+        padding: 20px 28px;
+        margin-top: 16px;
+    }
+    .uses-card :global(.prose) {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+    .uses-card :global(.prose h2) {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin: 20px 0 8px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--grid-line-strong);
+    }
+    .uses-card :global(.prose h2:first-child) { margin-top: 0; }
+    .uses-card :global(.prose h3) {
+        font-family: var(--font-display);
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 12px 0 4px;
+    }
+    .uses-card :global(.prose p) { margin: 6px 0; line-height: 1.55; }
+    .uses-card :global(.prose ul) { margin: 6px 0; padding-left: 18px; }
+    .uses-card :global(.prose li) { margin: 2px 0; line-height: 1.55; }
+    .uses-card :global(.prose hr) { margin: 16px 0; border-color: var(--grid-line-strong); }
+    .uses-card :global(.prose strong) { color: var(--text-primary); font-weight: 600; }
+</style>

@@ -19,34 +19,60 @@ const renderedExperiences = await Promise.all(experiences.map(async (exp) => {
 }));
 ---
 
-<section id="experience" class="py-10">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="flex items-center gap-6 mb-8">
-      <div>
-        <span class="section-label">{t('experience.label')}</span>
-        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.4rem,3.5vw,2rem)] leading-tight">{t('experience.title')}</h2>
-      </div>
-      <div class="flex-1 hidden md:block h-[1px] bg-accent opacity-20 dark:opacity-30"></div>
-    </div>
-
-    <div class="timeline relative ml-3">
-      {renderedExperiences.map((item) => (
-        <div class="timeline-entry relative pl-10 pb-6 last:pb-0 group">
-          <div class="timeline-dot absolute left-[-4.5px] top-2"></div>
-          <div class="timeline-date font-mono text-[0.68rem] text-[var(--text-muted)] mb-1 uppercase tracking-widest">
-            {item.data.from} — {item.data.to}
-          </div>
-          <a href={item.data.link ?? "#"} target="_blank" rel="noreferrer" class="timeline-company font-sans font-bold text-[1.1rem] text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors mb-0.5 block">
-            {item.data.title}
-          </a>
-          <div class="timeline-role font-sans italic text-[0.92rem] text-[var(--text-secondary)] mb-2">
-            {item.data.role}
-          </div>
-          <div class="timeline-desc font-sans text-[0.92rem] text-[var(--text-secondary)] leading-relaxed max-w-2xl opacity-90">
-            <item.Content />
-          </div>
-        </div>
-      ))}
+<section id="experience" class="experience-panel">
+  <div class="panel-header">
+    <div class="panel-title">
+      <span>{t('experience.title').toUpperCase()}</span>
     </div>
   </div>
+
+  <div class="timeline relative ml-3 mt-3">
+    {renderedExperiences.map((item) => (
+      <div class="timeline-entry relative pl-8 pb-4 last:pb-0 group">
+        <div class="timeline-dot absolute left-[-4.5px] top-2"></div>
+        <div class="timeline-date font-mono text-[0.68rem] text-[var(--text-muted)] mb-1 uppercase tracking-widest">
+          {item.data.from} — {item.data.to}
+        </div>
+        <a href={item.data.link ?? "#"} target="_blank" rel="noreferrer" class="timeline-company font-sans font-bold text-[1.1rem] text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors mb-0.5 block">
+          {item.data.title}
+        </a>
+        <div class="timeline-role font-sans italic text-[0.92rem] text-[var(--text-secondary)] mb-2">
+          {item.data.role}
+        </div>
+        <div class="timeline-desc font-sans text-[0.92rem] text-[var(--text-secondary)] leading-relaxed max-w-2xl opacity-90">
+          <item.Content />
+        </div>
+      </div>
+    ))}
+  </div>
 </section>
+
+<style>
+  .experience-panel {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-main);
+    transition: all var(--t-base) ease;
+  }
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+  }
+
+
+</style>

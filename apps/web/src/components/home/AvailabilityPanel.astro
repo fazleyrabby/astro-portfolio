@@ -1,0 +1,142 @@
+---
+import { getLangFromUrl, useTranslations } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const services = [
+  "Backend Development",
+  "Small fixes",
+  "Payment gateway / API integration",
+  "POS, E-commerce solutions",
+];
+---
+
+<section class="avail-panel">
+  <div class="panel-head">
+    <span class="panel-title">AVAILABILITY</span>
+    <span class="status-pill">
+      <span class="status-dot"></span>
+      OPEN
+    </span>
+  </div>
+
+  <div class="avail-body">
+    <span class="avail-label">Available for</span>
+    <ul class="avail-list">
+      {services.map((s) => <li>{s}</li>)}
+    </ul>
+  </div>
+
+  <div class="avail-actions">
+    <a href="mailto:fazley111@gmail.com" class="avail-btn avail-btn--primary">Email</a>
+    <a href="/resume" class="avail-btn">Resume</a>
+    <a href="https://www.linkedin.com/in/fazley-rabby/" target="_blank" rel="noreferrer" class="avail-btn">LinkedIn</a>
+  </div>
+</section>
+
+<style>
+  .avail-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-main);
+    padding: 16px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-title {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--accent-dim);
+  }
+  .status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .avail-body { display: flex; flex-direction: column; gap: 6px; }
+  .avail-label {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+  .avail-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .avail-list li {
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    padding-left: 12px;
+    position: relative;
+  }
+  .avail-list li::before {
+    content: "›";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+  .avail-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: auto;
+  }
+  .avail-btn {
+    flex: 1;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 6px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    transition: all 0.2s ease;
+  }
+  .avail-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .avail-btn--primary {
+    background: var(--accent);
+    color: var(--bg-base);
+    border-color: var(--accent);
+  }
+  .avail-btn--primary:hover { background: transparent; color: var(--accent); }
+</style>

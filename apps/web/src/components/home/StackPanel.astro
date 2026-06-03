@@ -1,0 +1,82 @@
+---
+const groups = [
+  { k: "BACKEND", v: ["Laravel", "PHP", "REST API"] },
+  { k: "INFRA", v: ["Docker", "Linux VPS", "Redis"] },
+  { k: "DATA", v: ["MySQL", "ClickHouse", "Supabase"] },
+  { k: "FRONTEND", v: ["JavaScript", "Astro", "Tailwind"] },
+  { k: "AI / TOOLS", v: ["RAG", "Embeddings", "Async Pipelines"] },
+  { k: "DEVOPS", v: ["GitHub Actions", "Vercel", "Cloudflare"] },
+];
+---
+
+<section class="stack-panel">
+  <div class="panel-head">
+    <span class="panel-title">STACK / INFRA</span>
+  </div>
+  <div class="stack-grid">
+    {groups.map((g) => (
+      <div class="stack-cell">
+        <span class="stack-k">{g.k}</span>
+        <div class="stack-tags">
+          {g.v.map((tag) => <span class="stack-tag">{tag}</span>)}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .stack-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-main);
+    padding: 16px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .panel-head {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .panel-title {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 16px;
+  }
+  .stack-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stack-k {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+  .stack-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+  }
+  .stack-tag {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    padding: 2px 6px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-primary);
+    background: var(--bg-surface);
+  }
+</style>

@@ -1,6 +1,7 @@
 ---
 import Head from "./Head.astro";
-import Nav from "./Nav.astro";
+import LeftRail from "./LeftRail.astro";
+import TopBar from "./TopBar.astro";
 import Footer from "./Footer.astro";
 import "../styles/global.css";
 import ScrollToTop from "@components/ScrollToTop.astro";
@@ -12,16 +13,34 @@ const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twit
 
 <html lang={lang}>
   <Head {title} {description} {ogTitle} {ogDescription} {ogImage} {ogUrl} {ogType} {twitterCard} {twitterImage} {twitterTitle} {twitterDescription} {articlePublishedTime} {articleModifiedTime} {articleAuthor} {articleTags} />
-  <body class="font-sans min-h-screen relative overflow-x-hidden">
+  <body class="font-sans min-h-screen relative bg-[var(--bg-base)] text-[var(--text-primary)] antialiased overflow-hidden">
     <Analytics />
     <div class="page-gradient-layer" aria-hidden="true"></div>
-    <div class="cursor" aria-hidden="true"></div>
-    <Nav altUrl={altUrl} />
-    <div class="w-full relative z-10">
-      <slot />
+    <div class="grid-overlay" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
     </div>
-    <Footer />
+    <div class="cursor" aria-hidden="true"></div>
+
+    <div class="flex min-h-screen w-screen overflow-hidden">
+      <!-- Left persistent sidebar dock -->
+      <LeftRail />
+
+      <!-- Main Content pane -->
+      <div class="flex-1 flex flex-col min-h-screen h-screen overflow-hidden relative">
+        <TopBar altUrl={altUrl} />
+
+        <!-- Main Workspace scrollable content container -->
+        <div class="flex-1 overflow-y-auto w-full relative z-10 flex flex-col scroll-container">
+          <div class="flex-1 workspace-shell">
+            <slot />
+          </div>
+          <Footer />
+        </div>
+      </div>
+    </div>
+    
     <ScrollToTop />
+    
     <script>
       const initAnimations = async () => {
         const { default: Lenis } = await import('lenis');
@@ -29,33 +48,23 @@ const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twit
         const { ScrollTrigger } = await import('gsap/ScrollTrigger');
         gsap.registerPlugin(ScrollTrigger);
 
-        // Initialize Lenis
-        const lenis = new Lenis({ 
-          duration: 1.2, 
-          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) 
-        });
+        // Initialize Lenis on scrollable container instead of window (essential for sidebar setup)
+        const scrollContainer = document.querySelector('.scroll-container');
+        if (scrollContainer) {
+          const lenis = new Lenis({ 
+            wrapper: scrollContainer as HTMLElement,
+            content: scrollContainer.firstElementChild as HTMLElement,
+            duration: 1.2, 
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) 
+          });
 
-        lenis.on('scroll', ScrollTrigger.update);
+          lenis.on('scroll', ScrollTrigger.update);
 
-        gsap.ticker.add((time) => {
-          lenis.raf(time * 1000);
-        });
+          gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+          });
 
-        gsap.ticker.lagSmoothing(0);
-
-        // Hero Cursor Light
-        const cursorLight = document.querySelector('.hero-cursor-light') as HTMLElement;
-        if (cursorLight && window.matchMedia('(pointer: fine)').matches) {
-          document.addEventListener('mousemove', (e) => {
-            gsap.to(cursorLight, {
-              x: e.clientX,
-              y: e.clientY,
-              xPercent: -50,
-              yPercent: -50,
-              duration: 0.6,
-              ease: 'power2.out'
-            });
-          }, { passive: true });
+          gsap.ticker.lagSmoothing(0);
         }
 
         await import("../scripts/animations.js");
@@ -83,6 +92,64 @@ const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twit
         setTimeout(initAnimations, 1000);
       }
     </script>
+    
+    <script is:inline>
+      // Pin grid lines to actual rendered shell edges
+      (function() {
+        const root = document.documentElement;
+        let raf = 0;
+        function update() {
+          const shell = document.querySelector('.workspace-shell');
+          if (!shell) return;
+          const r = shell.getBoundingClientRect();
+          root.style.setProperty('--shell-actual-left', Math.round(r.left) + 'px');
+          root.style.setProperty('--shell-actual-right', Math.round(r.right) + 'px');
+          root.style.setProperty('--shell-actual-width', Math.round(r.width) + 'px');
+        }
+        function schedule() {
+          if (raf) cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(update);
+        }
+        schedule();
+        window.addEventListener('resize', schedule);
+        window.addEventListener('load', schedule);
+        document.addEventListener('DOMContentLoaded', schedule);
+      })();
+    </script>
+
+    <script is:inline>
+      // Theme Switcher Syncing Logic
+      ;(function() {
+        function setTheme(themeName) {
+          if (themeName === "classic" || themeName === "sass") {
+            document.documentElement.removeAttribute("data-theme");
+            localStorage.removeItem("data-theme");
+          } else {
+            document.documentElement.setAttribute("data-theme", themeName);
+            localStorage.setItem("data-theme", themeName);
+          }
+        }
+
+        // Sync theme dropdowns
+        const currentTheme = document.documentElement.getAttribute("data-theme") || 
+                             localStorage.getItem("data-theme") || "classic";
+        const themeSelects = document.querySelectorAll("#theme-select, #theme-select-mobile");
+        themeSelects.forEach(s => {
+          s.value = currentTheme === "sass" ? "classic" : currentTheme;
+        });
+
+        themeSelects.forEach(s => {
+          s.addEventListener("change", (e) => {
+            setTheme(e.target.value);
+            // Sync all selectors
+            themeSelects.forEach(other => {
+              other.value = e.target.value;
+            });
+          });
+        });
+      })();
+    </script>
+    
     <script is:inline define:vars={{ apiUrl: import.meta.env.PUBLIC_API_URL || 'https://cms.fazleyrabbi.xyz' }}>
       const trackVisitor = () => {
         if (!sessionStorage.getItem("visitor_ip")) {

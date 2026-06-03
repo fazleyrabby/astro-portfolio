@@ -1,0 +1,120 @@
+---
+import { getCollection, render } from "astro:content";
+import { getLangFromUrl, useTranslations } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const all = await getCollection("experiences");
+const items = all
+  .filter((e) => (e.data.lang || "en") === lang)
+  .sort((a, b) => {
+    const da = a.data.timeline ? new Date(a.data.timeline) : new Date(0);
+    const db = b.data.timeline ? new Date(b.data.timeline) : new Date(0);
+    return db.getTime() - da.getTime();
+  });
+
+const rendered = await Promise.all(
+  items.map(async (e) => {
+    const { Content } = await render(e);
+    return { ...e, Content };
+  })
+);
+---
+
+<section class="exp-panel">
+  <div class="panel-head">
+    <span class="panel-title">{t("experience.title").toUpperCase()}</span>
+  </div>
+
+  <ol class="exp-list">
+    {rendered.map((item) => (
+      <li class="exp-item">
+        <div class="exp-period">{item.data.from} — {item.data.to}</div>
+        <div class="exp-main">
+          <a
+            href={item.data.link ?? "#"}
+            target="_blank"
+            rel="noreferrer"
+            class="exp-company"
+          >
+            {item.data.title}
+          </a>
+          <span class="exp-role">{item.data.role}</span>
+          <div class="exp-desc"><item.Content /></div>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .exp-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-main);
+    padding: 16px;
+  }
+  .panel-head {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .panel-title {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+  .exp-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .exp-item {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .exp-item:last-child { border-bottom: none; }
+  .exp-period {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding-top: 2px;
+  }
+  .exp-main { display: flex; flex-direction: column; gap: 4px; }
+  .exp-company {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-primary);
+    transition: color 0.2s ease;
+  }
+  .exp-company:hover { color: var(--accent); }
+  .exp-role {
+    font-family: var(--font-sans);
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+  .exp-desc {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+  .exp-desc :global(ul) { margin: 4px 0 0; padding-left: 18px; }
+  .exp-desc :global(li) { margin-bottom: 2px; }
+  @media (max-width: 640px) {
+    .exp-item { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>

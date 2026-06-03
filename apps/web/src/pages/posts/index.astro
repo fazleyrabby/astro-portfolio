@@ -7,7 +7,6 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-// Fetch strictly from Supabase at build time
 const { data: allPosts, error } = await supabase
   .from('posts')
   .select('*')
@@ -15,297 +14,422 @@ const { data: allPosts, error } = await supabase
   .in('lang', ['en', lang])
   .order('published_at', { ascending: false });
 
-if (error) {
-  console.error("Supabase error:", error);
-}
+if (error) console.error("Supabase error:", error);
 
-let publishedPosts = [];
-
+let publishedPosts: any[] = [];
 if (allPosts) {
   if (lang === 'bn') {
     const bnPosts = allPosts.filter(p => p.lang === 'bn');
-    
-    // Find IDs of English posts that have already been translated
     const translatedEnIds = new Set(bnPosts.map(p => p.translation_of).filter(Boolean));
-    
-    // Keep the original date-sorted order from Supabase
     publishedPosts = allPosts.filter(p => {
       if (p.lang === 'bn') return true;
       if (p.lang === 'en' && !translatedEnIds.has(p.id)) return true;
       return false;
     });
   } else {
-    // Just show English posts
     publishedPosts = allPosts.filter(p => p.lang === 'en');
   }
 }
 
-function extractFirstImage(content) {
+function extractFirstImage(content: string) {
   if (!content) return null;
   const match = content.match(/!\[.*?\]\((.*?)\)/);
   return match ? match[1] : null;
 }
 
 const cleanTag = (tag: any) => {
-  if (typeof tag === 'string') {
-    return tag.replace(/^["']|["']$/g, '').trim();
-  }
+  if (typeof tag === 'string') return tag.replace(/^["']|["']$/g, '').trim();
   return String(tag);
 };
 
-const postsWithImages = publishedPosts.map(post => {
-  const cleanedTags = [...new Set((post.tags || []).map(cleanTag))];
-  return {
-    ...post,
-    cover_image: post.cover_image || extractFirstImage(post.content),
-    tags: cleanedTags
-  };
-});
+const postsWithImages = publishedPosts.map((post: any) => ({
+  ...post,
+  cover_image: post.cover_image || extractFirstImage(post.content),
+  tags: [...new Set((post.tags || []).map(cleanTag))]
+}));
 
-const featuredPosts = postsWithImages.filter(post => post.featured);
-const regularPosts = postsWithImages.filter(post => !post.featured);
+const featuredPosts = postsWithImages.filter((p: any) => p.featured);
+const regularPosts = postsWithImages.filter((p: any) => !p.featured);
 const [heroPost, ...otherFeatured] = featuredPosts;
+const allTags = [...new Set(postsWithImages.flatMap((post: any) => post.tags || []))].sort();
 
-// Extract all unique tags
-const allTags = [...new Set(postsWithImages.flatMap(post => post.tags || []))].sort();
-
+const gridCols = 3;
+const fillerCount = (gridCols - (regularPosts.length % gridCols)) % gridCols;
+const fillers = Array.from({ length: fillerCount });
 ---
 
 <MainLayout title={t('posts.journal')}>
-  <div class="max-w-[1200px] mx-auto min-h-[calc(100vh-80px)] flex flex-col mt-4 mb-16 px-4 md:px-6 relative items-start">
-    
-    <!-- Main Content Area -->
-    <main class="w-full min-h-full pb-20">
-      
-      <!-- Header & Filters -->
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 pb-6 border-b border-[var(--border)]">
-        <div>
-          <h1 class="text-3xl font-display font-bold text-[var(--text-primary)] mb-2" set:html={t('posts.index.title')}></h1>
-          <p class="text-[0.95rem] text-[var(--text-secondary)]">{t('posts.index.subtitle')}</p>
-        </div>
-        
-        <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-          <!-- Search Input -->
-          <div class="relative w-full sm:w-[260px]">
-             <input type="text" id="search-input" placeholder="Search articles..." class="w-full bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-primary)] text-sm rounded-md focus:ring-[var(--accent)] focus:border-[var(--accent)] block px-4 py-2.5 outline-none transition-all placeholder:text-[var(--text-muted)]" />
-             <svg class="w-4 h-4 text-[var(--text-muted)] absolute right-3 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-          </div>
-          
-          <!-- Tag Select -->
-          <div class="relative w-full sm:w-auto min-w-[160px]">
-            <select id="tag-select" class="w-full bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-primary)] text-sm rounded-md focus:ring-[var(--accent)] focus:border-[var(--accent)] block px-4 py-2.5 outline-none appearance-none pr-10 cursor-pointer transition-all">
-               <option value="all">All Tags</option>
-               {allTags.map(tag => (
-                 <option value={tag}>{tag}</option>
-               ))}
-            </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[var(--text-muted)]">
-              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-            </div>
-          </div>
-        </div>
+  <main class="page-workspace">
+    <header class="page-header">
+      <div class="page-header-inner">
+        <span class="page-kicker">/ NOTES</span>
+        <h1 class="page-title" set:html={t('posts.index.title')}></h1>
+        <p class="page-sub">{t('posts.index.subtitle')}</p>
       </div>
 
-      <!-- Featured Posts Section -->
-      {featuredPosts.length > 0 && (
-        <div class="mb-16">
-          <div class="flex items-center gap-3 mb-8 featured-header">
-            <h2 class="text-xs font-mono text-[var(--text-muted)] uppercase tracking-[0.2em]">{t('posts.featured.title') || "Featured"}</h2>
-            <div class="h-[1px] flex-grow bg-gradient-to-r from-[var(--border)] to-transparent opacity-40"></div>
-          </div>
-          
-          <div class="space-y-6">
-            {/* Main Hero Featured Post */}
-            {heroPost && (
-            <article class="post-card featured-hero group relative border border-[var(--border)] rounded-lg overflow-hidden bg-[var(--bg-card)] transition-all hover:border-[var(--accent)] hover:shadow-glow flex" data-tags={JSON.stringify(heroPost.tags || [])} data-title={heroPost.title || heroPost.slug}>
-              <a href={translatePath(`/posts/${heroPost.slug}`)} class="flex flex-col lg:flex-row w-full no-underline items-stretch">
-                <div class="p-5 sm:p-8 lg:p-12 flex flex-col justify-center flex-1">
-                  <div class="flex items-center gap-3 font-mono text-[0.65rem] text-[var(--text-muted)] mb-5 uppercase tracking-widest">
-                    <span class="px-2 py-0.5 rounded border border-[var(--accent)] text-[var(--accent)]">{t('posts.featured.special') || "Featured"}</span>
-                    {heroPost.published_at ? new Date(heroPost.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : (t('posts.unknown') || "Draft")}
-                  </div>
-                  <h3 class="font-display font-bold text-2xl md:text-3xl lg:text-4xl text-[var(--text-primary)] mb-6 leading-tight group-hover:text-[var(--accent)] transition-colors">
-                    {heroPost.title || heroPost.slug}
-                  </h3>
-                  <p class="text-[var(--text-secondary)] text-[0.95rem] mb-8 line-clamp-3 leading-relaxed max-w-[550px]">
-                    {heroPost.description || "An in-depth analysis of critical production engineering patterns and scalable architecture."}
-                  </p>
-                  
-                  {/* Tags list */}
-                  <div class="flex flex-wrap gap-2 mt-auto mb-6">
-                    {heroPost.tags && heroPost.tags.slice(0,3).map(tag => (
-                      <span class="px-2 py-0.5 rounded border border-[var(--border)] bg-[var(--bg-surface)] text-[0.6rem] font-mono text-[var(--text-secondary)] uppercase tracking-widest">{tag}</span>
-                    ))}
-                  </div>
+      <div class="page-controls">
+        <div class="control-input">
+          <input type="text" id="search-input" placeholder="Search articles…" />
+          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+        <select id="tag-select" class="control-select">
+          <option value="all">All Tags</option>
+          {allTags.map(tag => <option value={tag}>{tag}</option>)}
+        </select>
+      </div>
+    </header>
 
-                  <div class="flex items-center gap-4 text-xs font-semibold font-mono text-[var(--accent)] uppercase tracking-widest">
-                    <span class="h-[1px] w-6 bg-[var(--accent)] transition-all duration-300 group-hover:w-10"></span>
-                    {t('posts.startReading') || "Start Reading"}
+    {featuredPosts.length > 0 && (
+      <section class="grid-section">
+        <div class="grid-section-head">
+          <span>FEATURED</span>
+          <span class="counter">{String(featuredPosts.length).padStart(2, '0')}</span>
+        </div>
+
+        <div class="featured-grid">
+          {heroPost && (
+            <article class="post-card post-card--hero" data-tags={JSON.stringify(heroPost.tags || [])} data-title={heroPost.title || heroPost.slug}>
+              <a href={translatePath(`/posts/${heroPost.slug}`)} class="post-card-link">
+                {heroPost.cover_image && (
+                  <div class="post-thumb post-thumb--hero">
+                    <img src={heroPost.cover_image} alt={heroPost.title} loading="lazy" />
+                  </div>
+                )}
+                <div class="post-body">
+                  <div class="post-meta">
+                    <span class="post-badge">FEATURED</span>
+                    <span>{heroPost.published_at ? new Date(heroPost.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Draft'}</span>
+                  </div>
+                  <h3 class="post-title post-title--hero">{heroPost.title || heroPost.slug}</h3>
+                  <p class="post-desc">{heroPost.description}</p>
+                  <div class="post-tags">
+                    {heroPost.tags && heroPost.tags.slice(0,4).map((tag: string) => <span class="tg">{tag}</span>)}
                   </div>
                 </div>
-                
-                {heroPost.cover_image && (
-                <div class="w-full lg:w-[45%] h-[250px] lg:h-auto overflow-hidden bg-[var(--bg-surface)] order-first lg:order-last border-b lg:border-b-0 lg:border-l border-[var(--border)] relative">
-                  <img src={heroPost.cover_image} alt={heroPost.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100" />
-                </div>
-                )}
               </a>
             </article>
-            )}
+          )}
 
-            {/* Secondary Featured Posts Grid */}
-            {otherFeatured.length > 0 && (
-              <div class="grid md:grid-cols-2 gap-6">
-                {otherFeatured.map((post) => (
-                  <article class="post-card featured-sub-card flex flex-col group relative border border-[var(--border)] rounded-lg overflow-hidden bg-[var(--bg-card)] transition-all hover:border-[var(--accent)] hover:shadow-glow" data-tags={JSON.stringify(post.tags || [])} data-title={post.title || post.slug}>
-                    
-                    {post.cover_image && (
-                      <a href={translatePath(`/posts/${post.slug}`)} class="block h-40 w-full overflow-hidden border-b border-[var(--border)] bg-[var(--bg-surface)]">
-                        <img src={post.cover_image} alt={post.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100" />
-                      </a>
-                    )}
-
-                    <a href={translatePath(`/posts/${post.slug}`)} class="flex flex-col h-full no-underline p-4 sm:p-5 md:p-6">
-                      <div class="font-mono text-[0.6rem] text-[var(--text-muted)] mb-3 uppercase tracking-widest flex items-center gap-2">
-                        <span class="inline-block w-1 h-1 rounded-full bg-[var(--accent)] opacity-70"></span>
-                        {post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : "Draft"}
-                      </div>
-                      <h3 class="font-display font-bold text-lg text-[var(--text-primary)] mb-4 leading-tight group-hover:text-[var(--accent)] transition-colors">
-                        {post.title || post.slug}
-                      </h3>
-                      <p class="text-[var(--text-secondary)] text-[0.85rem] mb-6 line-clamp-2 leading-relaxed opacity-90">
-                        {post.description || "Exploring advanced system architecture and engineering trade-offs."}
-                      </p>
-                      
-                      <!-- Tags list -->
-                      <div class="flex flex-wrap gap-2 mt-auto mb-4">
-                        {post.tags && post.tags.slice(0,2).map(tag => (
-                          <span class="px-2 py-0.5 rounded border border-[var(--border)] bg-[var(--bg-surface)] text-[0.55rem] font-mono text-[var(--text-secondary)] uppercase tracking-widest">{tag}</span>
-                        ))}
-                      </div>
-
-                      <div class="flex items-center gap-2 text-xs font-semibold font-mono text-[var(--text-primary)] uppercase tracking-widest group-hover:text-[var(--accent)] transition-colors">
-                        {t('posts.viewPattern') || "Read Article"} <span class="group-hover:translate-x-1 transition-transform">→</span>
-                      </div>
-                    </a>
-                  </article>
-                ))}
-              </div>
-            )}
-          </div>
+          {otherFeatured.slice(0, 2).map((post: any) => (
+            <article class="post-card post-card--sub" data-tags={JSON.stringify(post.tags || [])} data-title={post.title || post.slug}>
+              <a href={translatePath(`/posts/${post.slug}`)} class="post-card-link post-card-link--row">
+                {post.cover_image && (
+                  <div class="post-thumb post-thumb--sub">
+                    <img src={post.cover_image} alt={post.title} loading="lazy" />
+                  </div>
+                )}
+                <div class="post-body">
+                  <div class="post-meta">
+                    <span>{post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Draft'}</span>
+                  </div>
+                  <h3 class="post-title">{post.title || post.slug}</h3>
+                  <p class="post-desc post-desc--sm">{post.description}</p>
+                </div>
+              </a>
+            </article>
+          ))}
         </div>
-      )}
+      </section>
+    )}
 
-      <!-- Archive Header -->
-      <div class="flex items-center gap-3 mb-6 archive-header">
-        <h2 class="text-xs font-mono text-[var(--text-muted)] uppercase tracking-[0.2em]">{t('posts.archive.title') || "All Articles"}</h2>
-        <div class="h-[1px] flex-grow bg-gradient-to-r from-[var(--border)] to-transparent opacity-40"></div>
+    <section class="grid-section">
+      <div class="grid-section-head">
+        <span class="archive-header">ALL ARTICLES</span>
+        <span class="counter">{String(regularPosts.length).padStart(2, '0')}</span>
       </div>
 
-      <!-- Grid (Masonry Layout) -->
-      <div class="columns-1 md:columns-2 xl:columns-3 gap-5" id="posts-grid">
-        {regularPosts.map(post => (
-          <article class="post-card flex flex-col break-inside-avoid mb-5 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg overflow-hidden transition-all hover:border-[var(--accent)] hover:shadow-glow group relative" data-tags={JSON.stringify(post.tags || [])} data-title={post.title || post.slug}>
-            
-            {post.cover_image && (
-              <a href={translatePath(`/posts/${post.slug}`)} class="block h-48 w-full overflow-hidden border-b border-[var(--border)] bg-[var(--bg-surface)]">
-                <img src={post.cover_image} alt={post.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100" />
-              </a>
-            )}
-            
-            <a href={translatePath(`/posts/${post.slug}`)} class="p-4 sm:p-5 flex-1 flex flex-col no-underline">
-              <h2 class="font-display text-xl font-bold text-[var(--text-primary)] mb-2 leading-tight group-hover:text-[var(--accent)] transition-colors line-clamp-2">
-                {post.title || post.slug}
-              </h2>
-              <p class="text-[0.9rem] text-[var(--text-secondary)] line-clamp-3 mb-6 leading-relaxed flex-1">
-                {post.description || "In-depth analysis and technical implementation details."}
-              </p>
-
-              <!-- Tags list -->
-              <div class="flex flex-wrap gap-2 mt-auto">
-                {post.tags && post.tags.slice(0,3).map(tag => (
-                  <span class="px-2 py-0.5 rounded border border-[var(--border)] bg-[var(--bg-surface)] text-[0.55rem] font-mono text-[var(--text-secondary)] uppercase tracking-widest">{tag}</span>
-                ))}
-                {post.tags && post.tags.length > 3 && (
-                  <span class="px-2 py-0.5 rounded border border-[var(--border)] bg-[var(--bg-surface)] text-[0.55rem] font-mono text-[var(--text-muted)] uppercase tracking-widest">+{post.tags.length - 3}</span>
+      <div class="posts-grid" id="posts-grid">
+        {regularPosts.map((post: any) => (
+          <article class="post-card post-card--cell" data-tags={JSON.stringify(post.tags || [])} data-title={post.title || post.slug}>
+            <a href={translatePath(`/posts/${post.slug}`)} class="post-card-link">
+              <div class="post-body">
+                <h3 class="post-title">{post.title || post.slug}</h3>
+                {post.description && <p class="post-desc post-desc--sm">{post.description}</p>}
+                {post.tags && post.tags.length > 0 && (
+                  <div class="post-tags">
+                    {post.tags.slice(0,3).map((tag: string) => <span class="tg">{tag}</span>)}
+                  </div>
                 )}
               </div>
-            </a>
-
-            <!-- Footer Action -->
-            <div class="px-5 py-3 border-t border-[var(--border)] flex justify-between items-center transition-colors">
-              <div class="text-[0.65rem] font-mono text-[var(--text-muted)] uppercase tracking-widest">
-                 {post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : "Draft"}
+              <div class="post-foot">
+                <span>{post.published_at ? new Date(post.published_at).toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Draft'}</span>
+                <span class="post-foot-arrow">→</span>
               </div>
-              <a href={translatePath(`/posts/${post.slug}`)} class="text-[0.7rem] font-semibold font-sans text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors flex items-center gap-2 border border-[var(--border)] px-3 py-1 rounded hover:border-[var(--accent)]">
-                Read Article
-              </a>
-            </div>
+            </a>
           </article>
         ))}
-      </div>
-      
-      <!-- Empty state -->
-      <div id="no-results" class="hidden text-center py-24 border border-dashed border-[var(--border)] rounded-lg mt-4 bg-[var(--bg-card)]">
-        <div class="text-4xl mb-4 opacity-30">🔍</div>
-        <p class="text-[var(--text-secondary)] font-medium mb-1">No posts found</p>
-        <p class="text-[var(--text-muted)] font-mono text-sm">Try adjusting your search or filters.</p>
+        {fillers.map(() => <div class="post-card-filler" aria-hidden="true"></div>)}
       </div>
 
-    </main>
-  </div>
+      <div id="no-results" class="empty-state hidden">
+        <p class="empty-title">No posts found</p>
+        <p class="empty-sub">Try adjusting your search or filters.</p>
+      </div>
+    </section>
+  </main>
 </MainLayout>
 
+<style>
+  .page-workspace { display: flex; flex-direction: column; }
+  .page-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: end;
+    padding: 24px 0 20px;
+    border-bottom: 1px solid var(--grid-line-strong);
+  }
+  @media (max-width: 768px) { .page-header { grid-template-columns: 1fr; } }
+  .page-header-inner { display: flex; flex-direction: column; gap: 4px; }
+  .page-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+  .page-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    line-height: 1.05;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  .page-sub {
+    font-family: var(--font-serif, var(--font-sans));
+    font-style: italic;
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    margin: 4px 0 0;
+  }
+  .page-controls {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .control-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .control-input input {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 6px 28px 6px 10px;
+    outline: none;
+    border-radius: var(--radius);
+    width: 200px;
+  }
+  .control-input input:focus { border-color: var(--accent); }
+  .control-input svg { position: absolute; right: 8px; color: var(--text-muted); pointer-events: none; }
+  .control-select {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 6px 24px 6px 10px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    outline: none;
+  }
+  .control-select:focus { border-color: var(--accent); }
+
+  .grid-section { position: relative; padding: 16px 0 24px; }
+  .grid-section + .grid-section { border-top: 1px solid var(--grid-line-strong); }
+  .grid-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    padding: 8px 0 12px;
+  }
+  .counter { color: var(--text-muted); }
+
+  /* Featured grid */
+  .featured-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    grid-auto-rows: 1fr;
+    gap: 1px;
+    background: var(--grid-line-strong);
+    border: 1px solid var(--grid-line-strong);
+  }
+  @media (max-width: 900px) { .featured-grid { grid-template-columns: 1fr; grid-auto-rows: auto; } }
+  .post-card--hero { grid-row: 1 / -1; grid-column: 1; }
+  .post-card--sub { grid-column: 2; }
+  @media (max-width: 900px) {
+    .post-card--hero, .post-card--sub { grid-column: auto; grid-row: auto; }
+  }
+
+  /* Posts grid */
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--grid-line-strong);
+    border: 1px solid var(--grid-line-strong);
+  }
+  @media (max-width: 900px) { .posts-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .posts-grid { grid-template-columns: 1fr; } }
+
+  /* Card */
+  .post-card { background: var(--bg-base); display: flex; flex-direction: column; transition: background 0.2s ease; }
+  .post-card:hover { background: var(--bg-surface); }
+  .post-card-link {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    text-decoration: none;
+  }
+  .post-card-link--row { flex-direction: row; }
+  .post-thumb {
+    overflow: hidden;
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--grid-line-strong);
+  }
+  .post-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease, filter 0.3s ease;
+    filter: grayscale(15%);
+  }
+  .post-card:hover .post-thumb img { transform: scale(1.03); filter: grayscale(0%); }
+  .post-thumb--hero { aspect-ratio: 16/9; }
+  .post-thumb--sub {
+    width: 38%;
+    aspect-ratio: auto;
+    flex-shrink: 0;
+    border-bottom: none;
+    border-right: 1px solid var(--grid-line-strong);
+  }
+  .post-card--cell .post-thumb { aspect-ratio: 16/9; }
+  .post-card-filler { background: var(--bg-base); }
+  @media (max-width: 900px) { .post-card-filler { display: none; } }
+  @media (max-width: 600px) { .post-card-filler { display: none; } }
+
+  .post-body {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .post-badge {
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+    font-size: 0.52rem;
+  }
+  .post-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-primary);
+    line-height: 1.25;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .post-title--hero {
+    font-size: 1.2rem;
+  }
+  .post-card:hover .post-title { color: var(--accent); }
+  .post-desc {
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .post-desc--sm { font-size: 0.78rem; -webkit-line-clamp: 2; }
+  .post-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: auto; }
+  .tg {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    padding: 2px 6px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-muted);
+  }
+  .post-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    border-top: 1px solid var(--grid-line-strong);
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .post-foot-arrow { transition: transform 0.2s ease, color 0.2s ease; }
+  .post-card:hover .post-foot-arrow { color: var(--accent); transform: translateX(3px); }
+
+  .empty-state {
+    padding: 40px;
+    border: 1px dashed var(--grid-line-strong);
+    text-align: center;
+  }
+  .empty-title { color: var(--text-secondary); font-weight: 600; margin: 0 0 4px; }
+  .empty-sub { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.7rem; }
+  .hidden { display: none !important; }
+</style>
+
 <script>
-  const tagSelect = document.getElementById('tag-select');
-  const searchInput = document.getElementById('search-input');
-  const cards = document.querySelectorAll('.post-card');
+  const tagSelect = document.getElementById('tag-select') as HTMLSelectElement | null;
+  const searchInput = document.getElementById('search-input') as HTMLInputElement | null;
+  const cards = document.querySelectorAll<HTMLElement>('.post-card');
   const noResults = document.getElementById('no-results');
-  const featuredHeader = document.querySelector('.featured-header');
-  const archiveHeader = document.querySelector('.archive-header');
 
   function filterPosts() {
-    const selectedTag = tagSelect ? (tagSelect as HTMLSelectElement).value : 'all';
-    const searchQuery = searchInput ? (searchInput as HTMLInputElement).value.toLowerCase() : '';
+    const selectedTag = tagSelect?.value || 'all';
+    const searchQuery = (searchInput?.value || '').toLowerCase();
     let visibleCount = 0;
-
-    const isFiltering = selectedTag !== 'all' || searchQuery.trim() !== '';
 
     cards.forEach(card => {
       const tags = JSON.parse(card.getAttribute('data-tags') || '[]');
-      const title = card.getAttribute('data-title') || '';
-      
+      const title = (card.getAttribute('data-title') || '').toLowerCase();
       const matchesTag = selectedTag === 'all' || tags.includes(selectedTag);
-      const matchesSearch = title.toLowerCase().includes(searchQuery);
-
+      const matchesSearch = title.includes(searchQuery);
       if (matchesTag && matchesSearch) {
         card.classList.remove('hidden');
-        card.classList.add('flex');
         visibleCount++;
       } else {
         card.classList.add('hidden');
-        card.classList.remove('flex');
       }
     });
 
-    if (isFiltering) {
-      if(featuredHeader) featuredHeader.parentElement?.classList.remove('hidden');
-      if(featuredHeader) featuredHeader.classList.add('hidden');
-      if(archiveHeader) archiveHeader.classList.add('hidden');
-    } else {
-      if(featuredHeader) featuredHeader.parentElement?.classList.remove('hidden');
-      if(featuredHeader) featuredHeader.classList.remove('hidden');
-      if(archiveHeader) archiveHeader.classList.remove('hidden');
-    }
-
-    if (visibleCount === 0 && noResults) {
-      noResults.classList.remove('hidden');
-      if(featuredHeader) featuredHeader.parentElement?.classList.add('hidden');
-    } else if (noResults) {
-      noResults.classList.add('hidden');
-    }
+    if (noResults) noResults.classList.toggle('hidden', visibleCount !== 0);
   }
 
-  if (tagSelect) tagSelect.addEventListener('change', filterPosts);
-  if (searchInput) searchInput.addEventListener('input', filterPosts);
+  tagSelect?.addEventListener('change', filterPosts);
+  searchInput?.addEventListener('input', filterPosts);
 </script>

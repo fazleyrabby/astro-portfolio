@@ -5,42 +5,98 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<section id="contact-cta" class="py-24 relative overflow-hidden">
-  <div class="absolute inset-0 z-0 opacity-10 pointer-events-none">
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent rounded-full blur-[120px]"></div>
+<section id="contact-cta" class="contact-cta-panel">
+  <div class="panel-header">
+    <div class="panel-title">
+      <span>{t('contact.sectionTitle') || "CONTACT"}</span>
+    </div>
   </div>
 
-  <div class="max-w-6xl mx-auto px-6 relative z-10 text-center">
-    <div class="inline-block mb-6">
-      <span class="section-label">{t('contact.label')}</span>
-    </div>
-    
-    <h2 class="font-display text-[clamp(2.5rem,8vw,5rem)] leading-[1.05] mb-8 text-[var(--text-primary)]">
-      {t('contact.title1')}<br />
-      <span class="italic text-[var(--accent)]">{t('contact.title2')}</span>
+  <div class="panel-content">
+    <h2 class="panel-heading">
+      {t('contact.title1')} <span class="italic text-[var(--accent)]">{t('contact.title2')}</span>
     </h2>
 
-    <p class="font-sans text-[var(--text-secondary)] text-lg max-w-xl mx-auto mb-12 opacity-90">
+    <p class="panel-description">
       {t('contact.subtitle')}
     </p>
 
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
-      <a href="mailto:fazley111@gmail.com" class="btn-primary flex items-center gap-2 group px-8 py-4 text-lg">
+    <div class="panel-actions">
+      <a href="mailto:fazley111@gmail.com" class="btn-primary flex items-center gap-2 group">
         {t('contact.startBtn')}
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
       </a>
-      <a href="/resume" class="btn-ghost px-8 py-4 text-lg">{t('contact.resumeBtn')}</a>
-    </div>
-
-    <div class="mt-20 pt-10 border-t border-border flex flex-wrap justify-center gap-x-12 gap-y-6">
-      <a href="https://github.com/fazleyrabby" target="_blank" class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">GitHub</a>
-      <a href="https://www.linkedin.com/in/fazley-rabby/" target="_blank" class="font-mono text-[0.7rem] uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">LinkedIn</a>
+      <a href="/resume" class="btn-ghost">{t('contact.resumeBtn')}</a>
     </div>
   </div>
 </section>
 
 <style>
-  #contact-cta {
-    background: transparent;
+  .contact-cta-panel {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-main);
+    transition: all var(--t-base) ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.75rem;
+  }
+  .panel-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+  }
+
+  .panel-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0.5rem;
+  }
+  .panel-heading {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.2rem, 2.8vw, 1.65rem);
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+  .panel-description {
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    max-width: 36rem;
+    margin-bottom: 0.75rem;
+    opacity: 0.95;
+  }
+  .panel-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+  @media (min-width: 640px) {
+    .panel-actions {
+      flex-direction: row;
+      width: auto;
+    }
   }
 </style>

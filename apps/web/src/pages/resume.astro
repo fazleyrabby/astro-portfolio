@@ -3,20 +3,21 @@ import MainLayout from '@layouts/MainLayout.astro';
 ---
 
 <MainLayout title="Resume — Fazley Rabbi">
-    <main class="max-w-4xl mx-auto px-6 py-12">
-        <div class="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-            <div>
-                <span class="section-label">Resume</span>
-                <h1 class="font-display font-bold text-[clamp(1.85rem,4.5vw,2.75rem)] text-[var(--text-primary)] leading-tight">My CV</h1>
+    <main class="page-workspace">
+        <header class="page-header">
+            <div class="page-header-inner">
+                <span class="page-kicker">/ RESUME</span>
+                <h1 class="page-title">Curriculum Vitae</h1>
+                <p class="page-sub">Backend Engineer · Laravel / Distributed Systems</p>
             </div>
-            <a href="/Fazley_Rabby_cv.pdf" download="Fazley_Rabby_cv.pdf" class="btn-ghost text-sm gap-2 w-fit">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            <a href="/Fazley_Rabby_cv.pdf" download="Fazley_Rabby_cv.pdf" class="download-btn">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                 Download PDF
             </a>
-        </div>
+        </header>
 
         <!-- Resume Card -->
-        <div class="cv-card bg-[var(--bg-card)] border border-[var(--border)] rounded-sm overflow-hidden">
+        <div class="cv-card">
 
             <!-- Header -->
             <div class="px-6 sm:px-10 pt-8 pb-6 border-b border-[var(--border)] text-center">
@@ -204,19 +205,72 @@ import MainLayout from '@layouts/MainLayout.astro';
 </MainLayout>
 
 <style>
-    .cv-card section {
-        padding: 0 !important;
+    .page-workspace { display: flex; flex-direction: column; gap: 0; max-width: 920px; margin: 0 auto; }
+    .page-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: end;
+      padding: 16px 0 12px;
+      border-bottom: 1px solid var(--grid-line-strong);
     }
+    .page-header-inner { display: flex; flex-direction: column; gap: 2px; }
+    .page-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .page-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.5rem, 2.6vw, 2rem);
+      line-height: 1.05;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .page-sub {
+      font-family: var(--font-serif, var(--font-sans));
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin: 2px 0 0;
+    }
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      background: var(--bg-surface);
+      transition: all 0.2s ease;
+    }
+    .download-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+    .cv-card {
+      background: color-mix(in srgb, var(--text-primary) 4%, var(--bg-base));
+      border: 1px solid var(--grid-line-strong);
+      padding: 20px 28px;
+      margin-top: 16px;
+    }
+    .cv-card section { padding: 0 !important; }
     .cv-body {
         display: flex;
         flex-direction: column;
-        gap: 1.25rem;
+        gap: 16px;
     }
 
     .cv-section {
-        padding-bottom: 1.25rem;
-        border-bottom: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--grid-line-strong);
     }
 
     .cv-section:last-child {
@@ -226,14 +280,14 @@ import MainLayout from '@layouts/MainLayout.astro';
 
     .cv-section-title {
         font-family: var(--font-mono);
-        font-size: 0.75rem;
-        font-weight: 600;
+        font-size: 0.68rem;
+        font-weight: 700;
         letter-spacing: 0.12em;
         text-transform: uppercase;
         color: var(--accent-text);
-        padding-bottom: 0.35rem;
-        margin-bottom: 0.5rem;
-        border-bottom: 1px solid var(--border);
+        padding-bottom: 4px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid var(--grid-line-strong);
     }
 
     .cv-list {
@@ -244,18 +298,25 @@ import MainLayout from '@layouts/MainLayout.astro';
 
     .cv-list li {
         position: relative;
-        padding-left: 1rem;
-        font-size: 0.92rem;
-        line-height: 1.6;
+        padding-left: 14px;
+        font-size: 0.84rem;
+        line-height: 1.5;
         color: var(--text-secondary);
     }
 
     .cv-list li::before {
-        content: "•";
+        content: "›";
         position: absolute;
         left: 0;
-        color: var(--text-muted);
+        color: var(--accent);
     }
+
+    /* Compact internal sizes */
+    .cv-card :global(h2) { font-size: 1.4rem !important; }
+    .cv-card :global(h3.cv-section-title) { font-size: 0.68rem !important; }
+    .cv-card :global(h4) { font-size: 0.95rem !important; }
+    .cv-card :global(p), .cv-card :global(span), .cv-card :global(div) { font-size: 0.86rem; }
+    .cv-card :global(.font-mono) { font-size: 0.68rem !important; }
 
     @media print {
         main {

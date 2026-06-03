@@ -17,51 +17,166 @@ const skillsMatrix = [
 ];
 ---
 
-<section id="skills" class="py-10 overflow-hidden">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="flex items-center gap-6 mb-8">
-      <div>
-        <span class="section-label">{t('skills.label')}</span>
-        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.4rem,3.5vw,2rem)] leading-tight">{t('skills.title')}</h2>
+<section id="skills" class:list={["skills-panel", Astro.props.class]}>
+  <div class="panel-header">
+    <div class="panel-title">
+      <span>{t('skills.title').toUpperCase()}</span>
+    </div>
+  </div>
+
+  <!-- Dual-row marquee, contained nicely in a sub-recessed block -->
+  <div class="skills-marquee-block">
+    <div class="skills-marquee-track">
+      <div class="skills-marquee-inner skills-marquee-inner--left">
+        {[...marqueeItems, ...marqueeItems].map(item => (
+          <div class="skills-marquee-item">
+            {item.toUpperCase()}
+          </div>
+        ))}
       </div>
-      <div class="flex-1 hidden md:block h-[1px] bg-accent opacity-20 dark:opacity-30"></div>
     </div>
-  </div>
 
-  <!-- Dual-row marquee -->
-  <div class="marquee-track">
-    <div class="marquee-inner marquee-inner--left">
-      {[...marqueeItems, ...marqueeItems].map(item => (
-        <div class="marquee-item">
-          {item.toUpperCase()}
-        </div>
-      ))}
-    </div>
-  </div>
-
-  <div class="marquee-track">
-    <div class="marquee-inner marquee-inner--right">
-      {[...marqueeItems.slice().reverse(), ...marqueeItems.slice().reverse()].map(item => (
-        <div class="marquee-item">
-          {item.toUpperCase()}
-        </div>
-      ))}
-    </div>
-  </div>
-
-  <div class="max-w-6xl mx-auto px-6 mt-8">
-    <!-- Skills Matrix -->
-    <div class="border-t border-border">
-      {skillsMatrix.map(row => (
-        <div class="skills-row flex flex-col md:flex-row md:items-start group transition-colors hover:bg-[var(--accent-dim)] px-4 -mx-4">
-          <div class="skills-cat w-full md:w-[180px] shrink-0">
-            {row.label.toUpperCase()}
+    <div class="skills-marquee-track">
+      <div class="skills-marquee-inner skills-marquee-inner--right">
+        {[...marqueeItems.slice().reverse(), ...marqueeItems.slice().reverse()].map(item => (
+          <div class="skills-marquee-item">
+            {item.toUpperCase()}
           </div>
-          <div class="skills-val flex-1">
-            {row.values.toUpperCase()}
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
+  </div>
+
+  <!-- Skills Matrix -->
+  <div class="matrix-list">
+    {skillsMatrix.map(row => (
+      <div class="skills-row">
+        <span class="skills-cat">{row.label.toUpperCase()}</span>
+        <span class="skills-val">{row.values.toUpperCase()}</span>
+      </div>
+    ))}
   </div>
 </section>
+
+<style>
+  .skills-panel {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-main);
+    transition: all var(--t-base) ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow: hidden;
+  }
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+  }
+
+  .skills-marquee-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.3rem 0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-inset);
+    margin: 0;
+  }
+  .skills-marquee-track {
+    overflow: hidden;
+    display: flex;
+    user-select: none;
+    width: 100%;
+  }
+  .skills-marquee-inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    white-space: nowrap;
+    width: max-content;
+  }
+  .skills-marquee-inner--left {
+    animation: scroll-left 25s linear infinite;
+  }
+  .skills-marquee-inner--right {
+    animation: scroll-right 25s linear infinite;
+  }
+  .skills-marquee-item {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-right: 1rem;
+  }
+  .skills-marquee-item::after {
+    content: "·";
+    color: var(--accent);
+    margin-left: 1rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+  .matrix-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--border);
+    padding-top: 0.5rem;
+    margin-top: auto;
+  }
+  .skills-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--border);
+    gap: 1rem;
+  }
+  .skills-row:last-child {
+    border-bottom: none;
+  }
+  .skills-cat {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+  .skills-val {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-align: right;
+    word-break: break-all;
+  }
+  @keyframes scroll-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes scroll-right {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+</style>

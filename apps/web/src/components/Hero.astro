@@ -8,7 +8,7 @@ const t = useTranslations(lang);
 
 <section
   id="hero"
-  class="hero-section min-h-[65svh] relative flex items-center overflow-hidden pt-14 pb-14"
+  class="hero-section relative flex items-center overflow-hidden py-5 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] mb-4"
 >
   <!-- Cursor-reactive light -->
   <div class="hero-cursor-light" aria-hidden="true"></div>
@@ -18,170 +18,109 @@ const t = useTranslations(lang);
 
   <!-- Diagonal grid - subtle -->
   <div
-    class="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
-    style="background-image:linear-gradient(var(--text-primary) 1px,transparent 1px),linear-gradient(90deg,var(--text-primary) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);"
+    class="pointer-events-none absolute inset-0 opacity-[0.02] dark:opacity-[0.04]"
+    style="background-image:linear-gradient(var(--text-primary) 1px,transparent 1px),linear-gradient(90deg,var(--text-primary) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);"
     aria-hidden="true"
   >
   </div>
 
-  <!-- Smooth merge fade at bottom -->
-  <div
-    class="absolute bottom-0 left-0 right-0 h-56 pointer-events-none z-20"
-    style="background: linear-gradient(to bottom, transparent 0%, var(--bg-base) 100%);"
-  >
-  </div>
-
-  <div class="relative z-10 w-full max-w-6xl mx-auto px-6">
-    <div class="hero-grid">
-      <div class="max-w-2xl relative z-10">
-        <div class="badge-pill">
-          <span class="badge-dot"></span>
+  <div class="relative z-10 w-full max-w-6xl mx-auto px-5 lg:px-6">
+    <div class="hero-grid grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch w-full">
+      
+      <!-- Identity Panel (Left Column) -->
+      <div class="lg:col-span-7 flex flex-col justify-center relative z-10">
+        <div class="badge-pill mb-2 self-start flex items-center gap-1.5 font-mono text-[0.62rem] text-[var(--accent)] tracking-widest uppercase border border-[var(--border)] px-2.5 py-0.5 rounded-full bg-[var(--accent-dim)]">
+          <span class="badge-dot w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse"></span>
           {t('hero.available')}
         </div>
 
-        <h1 class="mb-1">
-          <span class="block">{t('hero.hi')}</span>
-          <span>{t('hero.name')}</span
-          >
+        <h1 class="font-display font-bold text-2xl md:text-3xl text-[var(--text-primary)] leading-tight mb-1">
+          {t('hero.name') || "Fazley Rabbi"}
         </h1>
-
-        <p class="hero-tagline font-serif italic">
-          {t('hero.tagline')}
+        
+        <p class="font-mono text-[0.7rem] text-[var(--accent)] uppercase tracking-wider mb-2.5">
+          Backend & Distributed Systems Engineer
         </p>
 
-        <p class="hero-body max-w-[550px] font-sans mt-4">
-          {t('hero.body')}
+        <p class="hero-tagline font-serif italic text-[0.92rem] text-[var(--text-secondary)] leading-relaxed mb-3 max-w-[500px]">
+          {t('hero.tagline') || "Building tools and systems that make software faster, cleaner, and more reliable."}
         </p>
 
-        <div class="flex gap-3 flex-wrap mt-6">
-          <a href="/resume" class="btn-primary btn-magnetic">{t('nav.resume')}</a>
-          <a href="#projects" class="btn-ghost">{t('hero.viewProjects')}</a>
+        <!-- Key Details -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 border-t border-[var(--border)] pt-2.5 pb-3.5 mb-3.5 font-mono text-[0.62rem] max-w-[480px]">
+          <div class="flex items-center justify-between py-0.5 border-b border-[var(--border)] border-dashed">
+            <span class="text-[var(--text-muted)] uppercase">Experience</span>
+            <span class="text-[var(--text-primary)] font-semibold">4+ Years</span>
+          </div>
+          <div class="flex items-center justify-between py-0.5 border-b border-[var(--border)] border-dashed">
+            <span class="text-[var(--text-muted)] uppercase">Location</span>
+            <span class="text-[var(--text-primary)] font-semibold">Chittagong, BD (UTC+6)</span>
+          </div>
+          <div class="flex items-center justify-between py-0.5 border-b border-[var(--border)] border-dashed">
+            <span class="text-[var(--text-muted)] uppercase">Infrastructure</span>
+            <span class="text-[var(--text-primary)] font-semibold">Docker / Cloud / VPS</span>
+          </div>
+          <div class="flex items-center justify-between py-0.5 border-b border-[var(--border)] border-dashed">
+            <span class="text-[var(--text-muted)] uppercase">Core Stack</span>
+            <span class="text-[var(--text-primary)] font-semibold">Laravel / PHP / MySQL</span>
+          </div>
         </div>
 
-        <div class="connect-block mt-6">
-          <span class="section-label font-mono" style="margin-bottom:0.4rem;"
-            >{t('hero.connect')}</span
-          >
-          <div class="flex gap-5">
-            <a
-              href="https://github.com/fazleyrabby"
-              target="_blank"
-              class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider"
-              >GitHub</a
-            >
-            <a
-              href="https://www.linkedin.com/in/fazley-rabby/"
-              target="_blank"
-              class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider"
-              >LinkedIn</a
-            >
-            <a
-              href="mailto:fazley111@gmail.com"
-              class="link-underline text-[var(--text-secondary)] text-[0.7rem] font-mono uppercase tracking-wider"
-              >Email</a
-            >
+        <!-- Call Actions (Compact inline) -->
+        <div class="flex flex-wrap items-center gap-3 font-mono text-[0.62rem]">
+          <a href="/resume" class="btn-primary !py-1.5 !px-3.5 uppercase tracking-wider font-semibold">{t('nav.resume') || "Resume"}</a>
+          <a href="#projects" class="btn-ghost !py-1.5 !px-3.5 uppercase tracking-wider font-semibold">{t('hero.viewProjects') || "View Projects"}</a>
+          <div class="h-4 w-[1px] bg-[var(--border)] hidden sm:block"></div>
+          <div class="flex items-center gap-3.5 text-[var(--text-secondary)] mt-1 sm:mt-0">
+            <a href="https://github.com/fazleyrabby" target="_blank" class="hover:text-[var(--accent)] transition-colors">GITHUB</a>
+            <a href="https://www.linkedin.com/in/fazley-rabby/" target="_blank" class="hover:text-[var(--accent)] transition-colors">LINKEDIN</a>
           </div>
         </div>
       </div>
 
-      <div class="hero-avatar-col">
-        <AsciiAvatar />
-      </div>
-    </div>
-  </div>
+      <!-- Portrait Panel (Right Column - Hidden on mobile) -->
+      <div class="lg:col-span-5 hidden lg:flex flex-col items-center justify-center p-3.5 border border-[var(--border)] rounded relative">
+        <div class="w-full flex-grow relative overflow-hidden flex justify-center items-center h-[220px]">
+          <AsciiAvatar />
+        </div>
 
-  <!-- Scroll Down Indicator -->
-  <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 opacity-50 hidden md:block">
-    <div class="flex flex-col items-center gap-2">
-      <span class="font-mono text-[0.6rem] uppercase tracking-widest text-[var(--text-muted)]">{t('hero.scroll')}</span>
-      <div class="w-[1px] h-12 bg-gradient-to-b from-accent to-transparent"></div>
+        <!-- Real site info -->
+        <div class="w-full mt-1.5 space-y-0.5 text-[0.58rem] text-[var(--text-muted)] border-t border-[var(--border)] pt-2 font-mono">
+          <div class="flex justify-between">
+            <span class="uppercase">Site</span>
+            <span class="text-[var(--text-primary)] font-medium">fazleyrabby.xyz</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="uppercase">Built with</span>
+            <span class="text-[var(--text-primary)] font-medium">Astro · Cloudflare</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="uppercase">Source</span>
+            <span class="text-[var(--text-primary)] font-medium">Open Source</span>
+          </div>
+        </div>
+      </div>
+      
     </div>
   </div>
 </section>
 
 <style>
   .hero-section {
-    background: var(--bg-base);
-  }
-
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    align-items: center;
-    gap: 2rem;
-    position: relative;
-  }
-
-  @media (min-width: 1025px) {
-    .hero-grid {
-      grid-template-columns: 1.2fr 1fr;
-      gap: 4rem;
-    }
-  }
-
-  .hero-avatar-col {
-    display: flex;
-    position: absolute;
-    inset: 0;
-    justify-content: center;
-    align-items: center;
-    opacity: 0.15;
-    z-index: -1;
-    pointer-events: none;
-  }
-
-  @media (min-width: 1025px) {
-    .hero-avatar-col {
-      position: relative;
-      opacity: 1;
-      inset: auto;
-      min-height: 500px;
-      margin-left: 0;
-      margin-right: 0;
-      z-index: 1;
-      pointer-events: auto;
-    }
-  }
-
-  h1 {
-    font-size: clamp(2rem, 4.5vw, 3.25rem);
-    line-height: 1.2;
-    color: var(--text-primary);
-  }
-
-  .hero-name {
-    padding-bottom: 0.15em;
-  }
-
-  .hero-tagline {
-    font-size: clamp(0.95rem, 2vw, 1.1rem);
-    color: var(--text-secondary);
-    margin-top: 0;
-    margin-bottom: 1.25rem;
-  }
-
-  .hero-body {
-    font-size: clamp(0.92rem, 1.8vw, 1rem);
-    color: var(--text-secondary);
-    line-height: 1.7;
+    background: var(--bg-card);
   }
 
   .badge-dot {
-    width: 6px;
-    height: 6px;
-    background: var(--accent);
-    border-radius: 50%;
     animation: pulse-dot 2s ease infinite;
   }
   @keyframes pulse-dot {
-    0%,
-    100% {
+    0%, 100% {
       opacity: 1;
       transform: scale(1);
     }
     50% {
       opacity: 0.5;
-      transform: scale(0.8);
+      transform: scale(0.85);
     }
   }
 
@@ -189,8 +128,8 @@ const t = useTranslations(lang);
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 500px;
-    height: 500px;
+    width: 450px;
+    height: 450px;
     transform: translate(-50%, -50%);
     border-radius: 50%;
     background: radial-gradient(
@@ -204,14 +143,13 @@ const t = useTranslations(lang);
   }
 
   @keyframes breathe {
-    0%,
-    100% {
+    0%, 100% {
       transform: translate(-50%, -50%) scale(1);
-      opacity: 0.3;
+      opacity: 0.25;
     }
     50% {
-      transform: translate(-50%, -50%) scale(1.1);
-      opacity: 0.5;
+      transform: translate(-50%, -50%) scale(1.08);
+      opacity: 0.45;
     }
   }
 
@@ -219,8 +157,8 @@ const t = useTranslations(lang);
     position: fixed;
     top: 0;
     left: 0;
-    width: 350px;
-    height: 350px;
+    width: 500px;
+    height: 500px;
     border-radius: 50%;
     background: radial-gradient(
       circle,

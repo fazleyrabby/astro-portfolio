@@ -1,0 +1,137 @@
+---
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
+import LangToggle from "@components/LangToggle.astro";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+const { altUrl } = Astro.props;
+
+// Determine breadcrumbs based on URL path
+const pathname = Astro.url.pathname;
+const cleanPath = pathname.replace(/^\/bn/, '').replace(/\/$/, '');
+const segments = cleanPath.split('/').filter(Boolean);
+
+let sectionName = "Dashboard";
+if (segments.length > 0) {
+  const primarySegment = segments[0];
+  if (primarySegment === "posts") sectionName = t('nav.blog');
+  else if (primarySegment === "about") sectionName = t('nav.about');
+  else if (primarySegment === "uses") sectionName = t('nav.uses');
+  else if (primarySegment === "resume") sectionName = t('nav.resume');
+  else if (primarySegment === "projects") sectionName = t('nav.projects');
+}
+---
+
+<div class="top-system-bar flex items-center justify-between h-12 px-6 border-b border-[var(--border)] bg-[var(--bg-base)] w-full z-30">
+  <!-- Left: Breadcrumb -->
+  <div class="flex items-center gap-2 font-mono text-[0.68rem] tracking-wider text-[var(--text-muted)] uppercase">
+    <a href={translatePath("/")} class="hover:text-[var(--accent)] transition-colors">WORKSPACE</a>
+    <span class="text-[var(--border-hover)]">/</span>
+    <span class="text-[var(--text-primary)] font-semibold">{sectionName}</span>
+    {segments.length > 1 && (
+      <>
+        <span class="text-[var(--border-hover)]">/</span>
+        <span class="text-[var(--accent)] max-w-[120px] truncate">{segments[1]}</span>
+      </>
+    )}
+  </div>
+
+  <!-- Right: Status / Actions -->
+  <div class="flex items-center gap-4">
+    <!-- Mobile Navigation Toggle / Hamburger -->
+    <div class="flex md:hidden items-center gap-2">
+      <select
+        id="theme-select-mobile"
+        class="theme-select font-mono text-[0.6rem] uppercase tracking-wider bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-muted)] rounded px-2 py-0.5 cursor-pointer hover:border-[var(--accent)] transition-colors outline-none"
+        aria-label="Select theme"
+      >
+        <option value="classic">Classic</option>
+        <option value="swiss">Swiss Systems</option>
+        <option value="fui">FUI Experimental</option>
+      </select>
+      <LangToggle altUrl={altUrl} />
+      <button id="mobile-menu-toggle" class="p-1.5 text-[var(--text-secondary)] hover:text-[var(--accent)] rounded border border-[var(--border)]" aria-label="Toggle Menu">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Desktop Lang & availability badge -->
+    <div class="hidden md:flex items-center gap-4">
+      <select
+        id="theme-select"
+        class="theme-select font-mono text-[0.68rem] uppercase tracking-wider bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-muted)] rounded px-2 py-0.5 cursor-pointer hover:border-[var(--accent)] transition-colors outline-none"
+        aria-label="Select theme"
+      >
+        <option value="classic">Classic</option>
+        <option value="swiss">Swiss Systems</option>
+        <option value="fui">FUI Experimental</option>
+      </select>
+      <LangToggle altUrl={altUrl} />
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Drawer Menu (Hidden by default) -->
+<div id="mobile-drawer" class="fixed inset-0 bg-black/60 z-50 hidden md:hidden flex justify-end">
+  <div class="w-64 bg-[var(--bg-base)] h-full border-l border-[var(--border)] p-6 flex flex-col justify-between">
+    <div class="flex flex-col gap-6">
+      <div class="flex items-center justify-between pb-4 border-b border-[var(--border)]">
+        <span class="font-display font-bold text-lg text-[var(--text-primary)]">Fazley<span class="text-[var(--accent)]">.</span></span>
+        <button id="mobile-drawer-close" class="p-1 text-[var(--text-secondary)] hover:text-[var(--accent)]">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <nav class="flex flex-col gap-4">
+        <a href={translatePath("/")} class="mobile-drawer-link text-sm font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.home')}</a>
+        <a href={translatePath("/projects/")} class="mobile-drawer-link text-sm font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.work')}</a>
+        <a href={translatePath("/posts/")} class="mobile-drawer-link text-sm font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.blog')}</a>
+        <a href={translatePath("/uses/")} class="mobile-drawer-link text-sm font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.uses')}</a>
+        <a href={translatePath("/resume/")} class="mobile-drawer-link text-sm font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.resume')}</a>
+        <a href={translatePath("/about/")} class="mobile-drawer-link text-sm font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.contact')}</a>
+      </nav>
+    </div>
+    
+    <div class="border-t border-[var(--border)] pt-4 text-center text-[0.65rem] font-mono text-[var(--text-muted)]">
+      © {new Date().getFullYear()} FAZLEY.XYZ
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile drawer interaction logic
+  const toggleBtn = document.getElementById("mobile-menu-toggle");
+  const closeBtn = document.getElementById("mobile-drawer-close");
+  const drawer = document.getElementById("mobile-drawer");
+  const drawerLinks = document.querySelectorAll(".mobile-drawer-link");
+
+  const openDrawer = () => {
+    drawer?.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeDrawer = () => {
+    drawer?.classList.add("hidden");
+    document.body.style.overflow = "";
+  };
+
+  toggleBtn?.addEventListener("click", openDrawer);
+  closeBtn?.addEventListener("click", closeDrawer);
+  
+  // Close drawer when clicking layout links or clicking outside
+  drawerLinks.forEach(link => link.addEventListener("click", closeDrawer));
+  drawer?.addEventListener("click", (e) => {
+    if (e.target === drawer) closeDrawer();
+  });
+</script>
+
+<style>
+  .top-system-bar {
+    transition: background-color var(--t-base), border-color var(--t-base);
+  }
+</style>

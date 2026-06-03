@@ -41,11 +41,12 @@ const seoDesc = d.description;
   twitterImage={d.thumbnail}
   altUrl={altUrl}
 >
-  <main class="max-w-3xl mx-auto px-6 pt-16 pb-12">
-    <a href={tp('/projects')} class="font-mono text-xs uppercase tracking-widest text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors">
-      {t('project.backToProjects')}
+  <main class="case-study">
+    <a href={tp('/projects')} class="back-link">
+      ← {t('project.backToProjects')}
     </a>
 
+    <article class="case-card">
     <div class="mt-4 mb-6">
       <div class="flex items-center gap-3 flex-wrap mb-3">
         {d.type && <span class="tag">{d.type}</span>}
@@ -71,6 +72,17 @@ const seoDesc = d.description;
         )}
       </div>
     </div>
+
+    {d.thumbnail && (
+      <div class="project-thumbnail mb-8 rounded overflow-hidden border border-[var(--border)]">
+        <img
+          src={d.thumbnail}
+          alt={`${d.title} screenshot`}
+          class="w-full h-auto object-cover"
+          loading="eager"
+        />
+      </div>
+    )}
 
     {(d.period || d.role || d.commits) && (
       <dl class="meta-grid mb-8 border-b border-[var(--border)] pb-3">
@@ -127,10 +139,32 @@ const seoDesc = d.description;
         </details>
       </section>
     )}
+    </article>
   </main>
 </MainLayout>
 
 <style>
+  .case-study {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 16px 0 32px;
+  }
+  .back-link {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    transition: color 0.2s ease;
+  }
+  .back-link:hover { color: var(--accent); }
+  .case-card {
+    background: color-mix(in srgb, var(--text-primary) 4%, var(--bg-base));
+    border: 1px solid var(--grid-line-strong);
+    padding: 24px 28px;
+  }
   .section-h {
     font-family: var(--font-display, inherit);
     font-weight: 700;

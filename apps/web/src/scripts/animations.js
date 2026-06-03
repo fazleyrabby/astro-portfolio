@@ -3,6 +3,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Set default scroller to the custom layout container
+ScrollTrigger.defaults({ scroller: '.scroll-container' });
+
 if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 
   // ── Hero word stagger ──────────────────────────────────────────────────────
@@ -156,10 +159,13 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     sections.forEach(section => observer.observe(section));
   }
 
-  window.addEventListener('scroll', () => {
-    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
+  const scrollContainer = document.querySelector('.scroll-container');
+  const scrollTarget = scrollContainer || window;
+  scrollTarget.addEventListener('scroll', () => {
+    const el = scrollContainer || document.documentElement;
+    const winScroll = el.scrollTop;
+    const height = el.scrollHeight - el.clientHeight;
+    const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
     document.documentElement.style.setProperty('--scroll-percent', `${scrolled}%`);
   }, { passive: true });
 }

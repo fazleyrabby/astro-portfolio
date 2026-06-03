@@ -1,0 +1,89 @@
+---
+const items = [
+  { area: "Distributed Systems", note: "Event-driven architectures, queue patterns" },
+  { area: "AI Tooling", note: "RAG pipelines, embeddings, async inference" },
+  { area: "Observability", note: "Tracing, structured logging, metrics" },
+  { area: "Infrastructure", note: "Docker, Redis, container orchestration" },
+];
+---
+
+<section class="focus-panel">
+  <div class="panel-head">
+    <span class="panel-title">CURRENTLY EXPLORING</span>
+  </div>
+  <ul class="focus-list">
+    {items.map((it) => (
+      <li class="focus-item">
+        <span class="focus-marker"></span>
+        <div class="focus-text">
+          <span class="focus-area">{it.area}</span>
+          <span class="focus-note">{it.note}</span>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .focus-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-main);
+    padding: 16px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .panel-head {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .panel-title {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+  .focus-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .focus-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .focus-marker {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+  .focus-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .focus-area {
+    font-family: var(--font-sans);
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+  .focus-note {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+</style>

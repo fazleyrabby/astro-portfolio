@@ -275,7 +275,9 @@
       }
     };
 
-    window.addEventListener('scroll', updateScrollSpyAndProgress, { passive: true });
+    const scrollContainer = document.querySelector('.scroll-container');
+    const scrollTarget = scrollContainer || window;
+    scrollTarget.addEventListener('scroll', updateScrollSpyAndProgress, { passive: true });
     updateScrollSpyAndProgress();
 
     // Highlight heading from URL hash on load

@@ -16,29 +16,55 @@ const projects = type === "home"
   : localizedProjects;
 ---
 
-<section id="projects" class="py-10">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="flex items-center gap-6 mb-8">
-      <div>
-        <span class="section-label">{t('projects.label')}</span>
-        <h2 class="reveal-heading text-[var(--text-primary)] font-display font-bold text-[clamp(1.5rem,3.5vw,2.25rem)] leading-tight">{t('projects.title')}</h2>
-      </div>
-      <div class="flex-1 hidden md:block h-[1px] bg-accent opacity-20 dark:opacity-30"></div>
+<section id="projects" class="projects-panel">
+  <div class="panel-header">
+    <div class="panel-title">
+      <span>{t('projects.title').toUpperCase()}</span>
     </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-      {projects.map((project, index) => (
-        <ProjectCard project={project} index={index} isHome={type === "home"} />
-      ))}
-    </div>
-
-    {type === "home" && localizedProjects.length > 4 && (
-      <div class="mt-8 text-center">
-        <a href="/projects" class="btn-ghost group">
-          {t('projects.viewAll')}
-          <span class="inline-block transition-transform group-hover:translate-x-1 ml-1">→</span>
-        </a>
-      </div>
-    )}
   </div>
+
+  <div class={`grid grid-cols-1 md:grid-cols-2 ${type === "home" ? "lg:grid-cols-4" : "lg:grid-cols-3"} gap-4 mt-3`}>
+    {projects.map((project, index) => (
+      <ProjectCard project={project} index={index} isHome={type === "home"} />
+    ))}
+  </div>
+
+  {type === "home" && localizedProjects.length > 4 && (
+    <div class="mt-4 text-center">
+      <a href="/projects" class="btn-ghost group">
+        {t('projects.viewAll')}
+        <span class="inline-block transition-transform group-hover:translate-x-1 ml-1">→</span>
+      </a>
+    </div>
+  )}
 </section>
+
+<style>
+  .projects-panel {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-main);
+    transition: all var(--t-base) ease;
+  }
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+  }
+
+
+</style>

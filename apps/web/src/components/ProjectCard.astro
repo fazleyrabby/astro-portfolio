@@ -7,78 +7,186 @@ const t = useTranslations(lang);
 const tp = useTranslatedPath(lang);
 
 const { project, index = 10, isHome = false } = Astro.props;
-const { title, tech, live, github, thumbnail, description, type, status, highlights, problem } = project.data;
+const { title, tech, live, github, thumbnail, description, type, status, highlights, problem, role } = project.data;
 const isCritical = !isHome && index < 2;
 
 const baseSlug = project.slug.replace(/-bn$/, '');
 const hasCaseStudy = !!(problem || (highlights && highlights.length));
 const caseUrl = hasCaseStudy ? tp(`/projects/${baseSlug}`) : null;
+
+// Dynamic architectural meta mapper to inject system diagnostics fields
+const getProjectMeta = (slug: string, techStack: string[] = []) => {
+  const s = slug.replace(/-bn$/, '');
+  
+  let arch = "Monolithic / MVC Architecture";
+  let infra = "VPS / Linux Deployment";
+  
+  if (s === "electronic-first") {
+    arch = "Transactional / Fraud Detection Engine";
+    infra = "Read Replicas / ClickHouse Analytics";
+  } else if (s === "signalstack") {
+    arch = "Event-Driven Feed Aggregation & AI Failover";
+    infra = "Redis Queue / Multi-Tier AI Inference";
+  } else if (s === "hujjah") {
+    arch = "Semantic Vector Search & LLM Pipeline";
+    infra = "Supabase pgvector / Vercel Edge";
+  } else if (s === "litepos") {
+    arch = "Multi-Tenant Database Isolation (SaaS)";
+    infra = "Isolated DBs / Live Sync";
+  } else if (s === "larabrix") {
+    arch = "CMS Framework Component Architecture";
+    infra = "CI/CD / Package Registry";
+  } else if (s === "lenden" || s === "e-bank") {
+    arch = "Ledger Transaction / Double-Entry System";
+    infra = "Stripe / SSLCommerz Integrations";
+  } else if (s === "prompts-library") {
+    arch = "Content Directory System";
+    infra = "Supabase REST API / Edge Functions";
+  } else if (s === "routine-management-system") {
+    arch = "Algorithmic Scheduling Engine";
+    infra = "Relational DB / Academic Logic";
+  } else if (s === "timelock") {
+    arch = "Cryptographic Lock / Unlock System";
+    infra = "Local Browser Crypto APIs";
+  }
+  
+  // Fallbacks based on tech stack
+  if (arch === "Monolithic / MVC Architecture") {
+    if (techStack.includes("Redis") && techStack.includes("Docker")) {
+      arch = "Event-Driven / Queue-Based System";
+      infra = "Docker / Redis / VPS Linux";
+    } else if (techStack.includes("ClickHouse")) {
+      arch = "Analytical / OLAP DB System";
+      infra = "ClickHouse / MySQL Cluster";
+    }
+  }
+
+  return { arch, infra };
+};
+
+const { arch, infra } = getProjectMeta(project.slug, tech || []);
 ---
 
 <article class="project-card group flex flex-col bg-surface border border-border overflow-hidden h-full">
-  <!-- Thumbnail -->
-  <a href={live || github || "#"} target="_blank" rel="noreferrer" aria-label={title}
-     class="block relative overflow-hidden aspect-video flex-shrink-0">
-    {thumbnail && (
-      <>
-        <Image
-          src={thumbnail}
-          class="object-cover object-left-top w-full h-full transition-all duration-700 grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105"
-          alt={`${title} screenshot`}
-          width={600} height={338} 
-          format="webp"
-          loading={isCritical ? "eager" : "lazy"}
-          fetchpriority={isCritical ? "high" : "auto"}
-          quality={80}
-        />
-        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-      </>
-    )}
-    {type && <span class="tag absolute top-3 right-3">{type}</span>}
-  </a>
-
-  <!-- Content -->
-  <div class="flex flex-col flex-grow p-4 sm:p-5 md:p-6">
-    <div class="flex items-center justify-between mb-3">
-      <h3 class="font-display font-bold text-xl text-text group-hover:text-accent transition-colors">
+  {isHome ? (
+    <!-- Homepage High-Density Dashboard Card View -->
+    <div class="px-4 py-2 border-b border-border flex justify-between items-center font-mono text-[0.62rem] text-[var(--text-muted)] bg-[var(--bg-base)]">
+      <span class="uppercase tracking-widest">{type || "SYSTEM"}</span>
+      <div class="flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse"></span>
+        <span class="uppercase text-[var(--text-primary)] font-bold">{status || "ACTIVE"}</span>
+      </div>
+    </div>
+    <div class="flex flex-col flex-grow p-4">
+      <h3 class="font-display font-bold text-[1rem] text-[var(--text-primary)] group-hover:text-accent transition-colors mb-1.5">
         {caseUrl ? <a href={caseUrl} class="hover:text-accent transition-colors">{title}</a> : title}
       </h3>
-      {status && (
-        <div class="flex items-center gap-2 px-2 py-0.5 rounded-full bg-[var(--accent-dim)] border border-border">
-          <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
-          </span>
-          <span class="font-mono text-[0.6rem] uppercase tracking-wider text-accent font-bold">{status}</span>
+      <p class="text-[0.78rem] text-[var(--text-secondary)] mb-2.5 line-clamp-2 leading-relaxed">
+        {description}
+      </p>
+
+      <!-- System Parameter Grid -->
+      <div class="space-y-1 mb-3 font-mono text-[0.6rem] border-t border-b border-border py-2 text-[var(--text-muted)]">
+        <div class="flex justify-between">
+          <span>ROLE:</span>
+          <span class="text-[var(--text-primary)] font-semibold uppercase">{role || "Solo Developer"}</span>
         </div>
-      )}
-    </div>
+        <div class="flex justify-between">
+          <span>ARCH:</span>
+          <span class="text-[var(--text-primary)] font-semibold truncate max-w-[170px]" title={arch}>{arch}</span>
+        </div>
+        <div class="flex justify-between">
+          <span>INFRA:</span>
+          <span class="text-[var(--text-primary)] font-semibold truncate max-w-[170px]" title={infra}>{infra}</span>
+        </div>
+      </div>
 
-    <p class="text-[0.9rem] text-[var(--text-secondary)] mb-3 line-clamp-3 leading-relaxed">
-      {description}
-    </p>
+      <!-- Core Stack Mini-Tags -->
+      <div class="flex gap-1.5 flex-wrap mb-1 mt-auto">
+        {tech?.slice(0, 3).map((t: string) => <span class="tag !py-0.5 !px-1.5 text-[0.58rem]">{t}</span>)}
+        {tech && tech.length > 3 && (
+          <span class="tag !py-0.5 !px-1.5 text-[0.58rem] opacity-60">+{tech.length - 3}</span>
+        )}
+      </div>
 
-    <!-- Tech Stack -->
-    <div class="flex gap-2 flex-wrap mb-4 mt-auto">
-      {tech?.map((t: string) => <span class="tag">{t}</span>)}
+      <!-- Compact Row Actions -->
+      <div class="flex gap-2 w-full mt-3 font-mono text-[0.62rem]">
+        {caseUrl && (
+          <a class="flex-1 text-center py-1.5 border border-border rounded text-[var(--text-primary)] hover:border-accent hover:text-accent transition-colors uppercase tracking-wider"
+             href={caseUrl}>{t('project.viewCase')}</a>
+        )}
+        {!caseUrl && live && (
+          <a class="flex-1 text-center py-1.5 border border-border rounded text-[var(--text-primary)] hover:border-accent hover:text-accent transition-colors uppercase tracking-wider"
+             href={live} target="_blank">{t('project.liveDemo')}</a>
+        )}
+        {github && (
+          <a class="flex-1 text-center py-1.5 border border-border rounded text-[var(--text-muted)] hover:border-accent hover:text-accent transition-colors uppercase tracking-wider bg-[var(--bg-base)]"
+             href={github} target="_blank">{t('project.repo')}</a>
+        )}
+      </div>
     </div>
+  ) : (
+    <!-- Original Detail / Archive Page View -->
+    <a href={live || github || "#"} target="_blank" rel="noreferrer" aria-label={title}
+       class="block relative overflow-hidden aspect-video flex-shrink-0">
+      {thumbnail && (
+        <>
+          <Image
+            src={thumbnail}
+            class="object-cover object-left-top w-full h-full transition-all duration-700 grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105"
+            alt={`${title} screenshot`}
+            width={600} height={338} 
+            format="webp"
+            loading={isCritical ? "eager" : "lazy"}
+            fetchpriority={isCritical ? "high" : "auto"}
+            quality={80}
+          />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+        </>
+      )}
+      {type && <span class="tag absolute top-3 right-3">{type}</span>}
+    </a>
 
-    <!-- Actions -->
-    <div class="flex gap-4">
-      {caseUrl && (
-        <a class="flex-1 btn-primary btn-magnetic !py-2.5 text-xs tracking-wider"
-           href={caseUrl}>{t('project.viewCase')}</a>
-      )}
-      {!caseUrl && live && (
-        <a class="flex-1 btn-primary btn-magnetic !py-2.5 text-xs tracking-wider"
-           href={live} target="_blank">{t('project.liveDemo')}</a>
-      )}
-      {github && (
-        <a class="flex-1 btn-ghost btn-magnetic !py-2.5 text-xs tracking-wider"
-           href={github} target="_blank">{t('project.repo')}</a>
-      )}
+    <div class="flex flex-col flex-grow p-4 sm:p-5">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="font-display font-bold text-lg text-text group-hover:text-accent transition-colors">
+          {caseUrl ? <a href={caseUrl} class="hover:text-accent transition-colors">{title}</a> : title}
+        </h3>
+        {status && (
+          <div class="flex items-center gap-2 px-2 py-0.5 rounded-full bg-[var(--accent-dim)] border border-border">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+            </span>
+            <span class="font-mono text-[0.6rem] uppercase tracking-wider text-accent font-bold">{status}</span>
+          </div>
+        )}
+      </div>
+
+      <p class="text-[0.85rem] text-[var(--text-secondary)] mb-2 line-clamp-3 leading-relaxed">
+        {description}
+      </p>
+
+      <div class="flex gap-2 flex-wrap mb-3 mt-auto">
+        {tech?.map((t: string) => <span class="tag">{t}</span>)}
+      </div>
+
+      <div class="project-actions">
+        {caseUrl && (
+          <a class="w-full btn-primary btn-magnetic !py-2 text-[0.7rem] uppercase font-mono tracking-widest"
+             href={caseUrl}>{t('project.viewCase')}</a>
+        )}
+        {!caseUrl && live && (
+          <a class="w-full btn-primary btn-magnetic !py-2 text-[0.7rem] uppercase font-mono tracking-widest"
+             href={live} target="_blank">{t('project.liveDemo')}</a>
+        )}
+        {github && (
+          <a class="w-full btn-ghost btn-magnetic !py-2 text-[0.7rem] uppercase font-mono tracking-widest"
+             href={github} target="_blank">{t('project.repo')}</a>
+        )}
+      </div>
     </div>
-  </div>
+  )}
 </article>
 
 <style>
@@ -89,5 +197,12 @@ const caseUrl = hasCaseStudy ? tp(`/projects/${baseSlug}`) : null;
     border-color: var(--border-hover);
     box-shadow: var(--accent-glow);
     transform: translateY(-4px);
+  }
+  .project-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    margin-top: auto;
+    width: 100%;
   }
 </style>

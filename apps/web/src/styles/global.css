@@ -5,14 +5,14 @@
 :root {
   --noise-opacity: 0.12;
   --bg-base: #fafaf9;
-  --bg-surface: #f5f5f4;
-  --bg-card: #ffffff;
+  --bg-surface: transparent;
+  --bg-card: transparent;
   --border: rgba(0, 0, 0, 0.08);
   --border-hover: rgba(232, 130, 58, 0.5);
   --accent: #E8823A;
   --accent-dim: rgba(232, 130, 58, 0.1);
   --accent-glow: 0 0 40px rgba(232, 130, 58, 0.1);
-  --accent-text: var(--accent);
+  --accent-text: #c25e17;
   --text-primary: #1c1917;
   --text-secondary: #44403c;
   --text-muted: #78716c;
@@ -39,13 +39,33 @@
   --shadow-main: 0 4px 12px rgba(0, 0, 0, 0.05);
   --radius: 4px;
   --border-width: 1px;
+
+  /* Spatial grid system tokens */
+  --rail-w: 76px;
+  --content-max: 1280px;
+  --shell-pad: 16px;
+  --shell-gutter: clamp(40px, 12vw, 240px);
+  --grid-line: rgba(0, 0, 0, 0.12);
+  --grid-line-strong: rgba(0, 0, 0, 0.18);
+
+  /* Spacing scale (4px base) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
 }
 
 .dark {
   --noise-opacity: 0.08;
   --bg-base: #080808;
-  --bg-surface: #0f0f0f;
-  --bg-card: #141414;
+  --bg-surface: transparent;
+  --bg-card: transparent;
+  --grid-line: rgba(255, 255, 255, 0.10);
+  --grid-line-strong: rgba(255, 255, 255, 0.16);
   --border: rgba(255, 255, 255, 0.07);
   --border-hover: rgba(232, 130, 58, 0.4);
   --accent: #E8823A;
@@ -72,35 +92,33 @@
    these always win when a theme is active.
    ============================================ */
 
-html[data-theme="brutal"] {
-  --bg-base: #ffffff;
-  --bg-surface: #ffffff;
-  --bg-card: #ffffff;
-  --border: #000000;
-  --border-hover: #000000;
-  --accent: #FFD23F;
-  --accent-dim: rgba(255, 210, 63, 0.15);
+html[data-theme="swiss"] {
+  --grid-line: rgba(0, 0, 0, 0.14);
+  --grid-line-strong: rgba(0, 0, 0, 0.22);
+  --bg-base: #f5f5f4;
+  --bg-surface: transparent;
+  --bg-card: transparent;
+  --border: #dddddc;
+  --border-hover: #d8232a;
+  --accent: #d8232a;
+  --accent-dim: rgba(216, 35, 42, 0.06);
   --accent-glow: none;
-  --accent-text: #B8860B;
-  /* Dark goldenrod — WCAG AA on white */
+  --accent-text: #d8232a;
   --text-primary: #000000;
-  --text-secondary: #1a1a1a;
-  --text-muted: #4d4d4d;
-  --noise-opacity: 0;
-  --color-bg: #ffffff;
+  --text-secondary: #2c2c2c;
+  --text-muted: #6e6e6e;
+  --noise-opacity: 0.02;
+  --color-bg: #f5f5f4;
   --color-text: #000000;
-  --color-surface: #ffffff;
-  --color-border: #000000;
-  --color-accent: #FFD23F;
-  --shadow-main: 4px 4px 0px #000000;
+  --color-surface: var(--bg-card);
+  --color-border: #dddddc;
+  --color-accent: #d8232a;
+  --shadow-main: none;
   --radius: 0px;
-  --border-width: 2px;
-
-  /* End of Brutal HTML tokens */
+  --border-width: 1px;
 }
 
-/* Force prose colors for Brutal (Light) theme to avoid dark:prose-invert interference */
-html[data-theme="brutal"] .prose {
+html[data-theme="swiss"] .prose {
   --tw-prose-body: var(--text-secondary);
   --tw-prose-headings: var(--text-primary);
   --tw-prose-lead: var(--text-secondary);
@@ -118,7 +136,6 @@ html[data-theme="brutal"] .prose {
   --tw-prose-th-borders: var(--border);
   --tw-prose-td-borders: var(--border);
 
-  /* Override invert variables to neutralize dark:prose-invert when class="dark" is present */
   --tw-prose-invert-body: var(--text-secondary);
   --tw-prose-invert-headings: var(--text-primary);
   --tw-prose-invert-lead: var(--text-secondary);
@@ -135,35 +152,74 @@ html[data-theme="brutal"] .prose {
   --tw-prose-invert-pre-bg: var(--bg-card);
   --tw-prose-invert-th-borders: var(--border);
   --tw-prose-invert-td-borders: var(--border);
-
-  /* Table content colors */
+  
   --tw-prose-invert-th: var(--text-primary);
-
-  /* Make sure plain text inherits the overridden body color */
   color: var(--tw-prose-invert-body) !important;
 }
 
-html[data-theme="mono"] {
-  --bg-base: #000000;
-  --bg-surface: #0a0a0a;
-  --bg-card: #0a0a0a;
-  --border: #222222;
-  --border-hover: #ffffff;
-  --accent: #ffffff;
-  --accent-dim: rgba(255, 255, 255, 0.08);
-  --accent-glow: 0 0 20px rgba(255, 255, 255, 0.15);
-  --accent-text: var(--accent);
-  --text-primary: #ffffff;
-  --text-secondary: #bbbbbb;
-  --text-muted: #777777;
-  --noise-opacity: 0.02;
-  --color-bg: #000000;
-  --color-text: #ffffff;
-  --color-surface: #0a0a0a;
-  --color-border: #222222;
-  --color-accent: #ffffff;
-  --shadow-main: 0 0 0 1px #222222, 0 4px 20px rgba(0, 0, 0, 0.6);
-  --radius: 4px;
+html[data-theme="fui"] {
+  --grid-line: rgba(255, 107, 0, 0.16);
+  --grid-line-strong: rgba(255, 107, 0, 0.28);
+  --bg-base: #030406;
+  --bg-surface: transparent;
+  --bg-card: transparent;
+  --border: rgba(255, 107, 0, 0.25);
+  --border-hover: #00e5ff;
+  --accent: #ff6b00;
+  --accent-dim: rgba(255, 107, 0, 0.08);
+  --accent-glow: 0 0 10px rgba(255, 107, 0, 0.15);
+  --accent-text: #ff6b00;
+  --text-primary: #f0ede8;
+  --text-secondary: #ff9e59;
+  --text-muted: #88644e;
+  --noise-opacity: 0.04;
+  --color-bg: #030406;
+  --color-text: #f0ede8;
+  --color-surface: var(--bg-card);
+  --color-border: rgba(255, 107, 0, 0.25);
+  --color-accent: #ff6b00;
+  --shadow-main: 0 0 10px rgba(255, 107, 0, 0.15);
+  --radius: 2px;
+  --border-width: 1px;
+}
+
+html[data-theme="fui"] .prose {
+  --tw-prose-body: var(--text-secondary);
+  --tw-prose-headings: var(--text-primary);
+  --tw-prose-lead: var(--text-secondary);
+  --tw-prose-links: var(--accent-text);
+  --tw-prose-bold: var(--text-primary);
+  --tw-prose-counters: var(--text-primary);
+  --tw-prose-bullets: var(--text-primary);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--text-secondary);
+  --tw-prose-quote-borders: var(--accent);
+  --tw-prose-captions: var(--text-muted);
+  --tw-prose-code: var(--text-primary);
+  --tw-prose-pre-code: var(--text-primary);
+  --tw-prose-pre-bg: var(--bg-card);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+
+  --tw-prose-invert-body: var(--text-secondary);
+  --tw-prose-invert-headings: var(--text-primary);
+  --tw-prose-invert-lead: var(--text-secondary);
+  --tw-prose-invert-links: var(--accent-text);
+  --tw-prose-invert-bold: var(--text-primary);
+  --tw-prose-invert-counters: var(--text-primary);
+  --tw-prose-invert-bullets: var(--text-primary);
+  --tw-prose-invert-hr: var(--border);
+  --tw-prose-invert-quotes: var(--text-secondary);
+  --tw-prose-invert-quote-borders: var(--accent);
+  --tw-prose-invert-captions: var(--text-muted);
+  --tw-prose-invert-code: var(--text-primary);
+  --tw-prose-invert-pre-code: var(--text-primary);
+  --tw-prose-invert-pre-bg: var(--bg-card);
+  --tw-prose-invert-th-borders: var(--border);
+  --tw-prose-invert-td-borders: var(--border);
+  
+  --tw-prose-invert-th: var(--text-primary);
+  color: var(--tw-prose-invert-body) !important;
 }
 
 
@@ -218,44 +274,91 @@ html[data-theme="mono"] {
 }
 
 /* Theme specific overrides for all bordered elements */
-html[data-theme="brutal"] .border,
-html[data-theme="brutal"] .border-t,
-html[data-theme="brutal"] .border-b,
-html[data-theme="brutal"] .border-l,
-html[data-theme="brutal"] .border-r,
-html[data-theme="brutal"] .border-x,
-html[data-theme="brutal"] .border-y {
-  border-color: #000000;
+html[data-theme="swiss"] .border,
+html[data-theme="swiss"] .border-t,
+html[data-theme="swiss"] .border-b,
+html[data-theme="swiss"] .border-l,
+html[data-theme="swiss"] .border-r,
+html[data-theme="swiss"] .border-x,
+html[data-theme="swiss"] .border-y {
+  border-color: #dddddc !important;
 }
 
-html[data-theme="brutal"] .border {
-  box-shadow: var(--shadow-main);
+html[data-theme="fui"] .border,
+html[data-theme="fui"] .border-t,
+html[data-theme="fui"] .border-b,
+html[data-theme="fui"] .border-l,
+html[data-theme="fui"] .border-r,
+html[data-theme="fui"] .border-x,
+html[data-theme="fui"] .border-y {
+  border-color: rgba(255, 107, 0, 0.25) !important;
 }
 
-html[data-theme="mono"] .border,
-html[data-theme="mono"] .border-t,
-html[data-theme="mono"] .border-b,
-html[data-theme="mono"] .border-l,
-html[data-theme="mono"] .border-r,
-html[data-theme="mono"] .border-x,
-html[data-theme="mono"] .border-y {
-  border-color: #222222;
+html[data-theme="swiss"] .post-card,
+html[data-theme="swiss"] .post-card-filler,
+html[data-theme="swiss"] .cv-card,
+html[data-theme="swiss"] .uses-card,
+html[data-theme="swiss"] .about-card,
+html[data-theme="swiss"] .contact-card,
+html[data-theme="swiss"] .case-card {
+  background: #ffffff !important;
 }
 
-html[data-theme="mono"] .border {
-  box-shadow: var(--shadow-main);
+html[data-theme="swiss"] .project-card,
+html[data-theme="swiss"] .post-card-legacy {
+  border: 1px solid #dddddc !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0px !important;
+  transition: border-color 0.2s ease !important;
 }
-
-html[data-theme="mono"] .project-card,
-html[data-theme="mono"] .post-card {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
-}
-
-html[data-theme="mono"] .project-card:hover,
-html[data-theme="mono"] .post-card:hover {
-  border-color: #ffffff !important;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1) !important;
+html[data-theme="swiss"] .project-card:hover,
+html[data-theme="swiss"] .post-card:hover {
+  border-color: #d8232a !important;
   transform: none !important;
+}
+
+html[data-theme="fui"] .project-card,
+html[data-theme="fui"] .post-card {
+  position: relative;
+  border: 1px solid rgba(255, 107, 0, 0.25) !important;
+  background-color: transparent !important;
+  box-shadow: 0 0 10px rgba(255, 107, 0, 0.05) !important;
+  transition: all 0.25s ease !important;
+}
+html[data-theme="fui"] .project-card:hover,
+html[data-theme="fui"] .post-card:hover {
+  border-color: #00e5ff !important;
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.15) !important;
+  transform: translateY(-2px);
+}
+html[data-theme="fui"] .project-card::before,
+html[data-theme="fui"] .post-card::before,
+html[data-theme="fui"] .project-card::after,
+html[data-theme="fui"] .post-card::after {
+  content: "";
+  position: absolute;
+  width: 6px; height: 6px;
+  pointer-events: none;
+  transition: border-color 0.25s ease;
+}
+html[data-theme="fui"] .project-card::before,
+html[data-theme="fui"] .post-card::before {
+  top: -1px; left: -1px;
+  border-top: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+}
+html[data-theme="fui"] .project-card::after,
+html[data-theme="fui"] .post-card::after {
+  bottom: -1px; right: -1px;
+  border-bottom: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+}
+html[data-theme="fui"] .project-card:hover::before,
+html[data-theme="fui"] .post-card:hover::before,
+html[data-theme="fui"] .project-card:hover::after,
+html[data-theme="fui"] .post-card:hover::after {
+  border-color: #00e5ff;
 }
 
 /* Enforce theme radius globally */
@@ -271,36 +374,25 @@ html[data-theme="mono"] .post-card:hover {
   border-radius: 9999px !important;
 }
 
-/* Enforce light Shiki theme for light themes like Brutal */
-html[data-theme="brutal"] .astro-code,
-html[data-theme="brutal"] .shiki {
+/* Enforce light Shiki theme for Swiss theme */
+html[data-theme="swiss"] .astro-code,
+html[data-theme="swiss"] .shiki {
   background-color: #ffffff !important;
   color: #24292e !important;
-  /* GitHub light text color */
+  border: 1px solid #dddddc !important;
 }
 
-/* Re-expose the light theme tokens if they exist */
-html[data-theme="brutal"] .astro-code span,
-html[data-theme="brutal"] .shiki span {
+html[data-theme="swiss"] .astro-code span,
+html[data-theme="swiss"] .shiki span {
   filter: none !important;
 }
 
-/* Force light theme colors for common syntax highlighting groups if needed */
-/* Since Astro/Shiki often uses CSS variables or specific colors for light/dark */
-html[data-theme="brutal"] .shiki.nord {
+html[data-theme="swiss"] .shiki.nord {
   display: none !important;
 }
 
-html[data-theme="brutal"] .shiki.github-light {
+html[data-theme="swiss"] .shiki.github-light {
   display: block !important;
-}
-
-/* Override inline code for Brutal theme (yellow on white is invisible) */
-html[data-theme="brutal"] #article-content p>code,
-html[data-theme="brutal"] #article-content li>code {
-  background: var(--accent);
-  color: #000000;
-  border-color: #000000;
 }
 
 @layer base {
@@ -497,7 +589,7 @@ html[data-theme="brutal"] #article-content li>code {
     border-radius: var(--radius);
   }
 
-  .btn-primary {
+  .btn-primary, .submit-btn {
     background: var(--accent);
     color: #080808;
     font-family: var(--font-sans);
@@ -510,12 +602,23 @@ html[data-theme="brutal"] #article-content li>code {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    transition: all var(--t-base) ease;
-    border: var(--border-width) solid transparent;
+    border: var(--border-width) solid var(--border);
+    box-shadow: var(--shadow-raised);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s ease;
+  }
+
+  .btn-primary:hover, .submit-btn:hover {
+    box-shadow: var(--shadow-main);
+    transform: translateY(0.5px);
+  }
+
+  .btn-primary:active, .submit-btn:active {
+    box-shadow: var(--shadow-inset);
+    transform: translateY(1.5px);
   }
 
   .btn-ghost {
-    background: transparent;
+    background: var(--bg-card);
     color: var(--text-primary);
     border: var(--border-width) solid var(--border);
     padding: 0.6rem 1.2rem;
@@ -528,51 +631,70 @@ html[data-theme="brutal"] #article-content li>code {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    transition: all var(--t-base) ease;
+    box-shadow: var(--shadow-main);
+    transition: transform 0.15s var(--ease-out-expo), box-shadow 0.15s var(--ease-out-expo);
   }
 
-  /* Theme-specific button overrides */
-  html[data-theme="brutal"] .btn-primary,
-  html[data-theme="brutal"] .btn-ghost {
-    border: 2px solid #000000;
-    box-shadow: 4px 4px 0px #000000;
+  .btn-ghost:hover {
+    box-shadow: var(--shadow-raised);
+    transform: translateY(-1px);
   }
 
-  html[data-theme="brutal"] .btn-primary:hover,
-  html[data-theme="brutal"] .btn-ghost:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0px #000000;
+  .btn-ghost:active {
+    box-shadow: var(--shadow-inset);
+    transform: translateY(1px);
   }
 
-  html[data-theme="brutal"] .btn-primary:active,
-  html[data-theme="brutal"] .btn-ghost:active {
-    transform: translate(2px, 2px);
-    box-shadow: 0px 0px 0px #000000;
-  }
 
-  /* Mono theme: black and white buttons */
-  html[data-theme="mono"] .btn-primary {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-    border: 1px solid #ffffff !important;
-    box-shadow: none !important;
-  }
 
-  html[data-theme="mono"] .btn-primary:hover {
-    background-color: #cccccc !important;
-    border-color: #cccccc !important;
-  }
-
-  html[data-theme="mono"] .btn-ghost {
-    background-color: transparent !important;
+  /* Swiss theme buttons */
+  html[data-theme="swiss"] .btn-primary {
+    border: 1px solid var(--accent) !important;
+    background-color: var(--accent) !important;
     color: #ffffff !important;
-    border: 1px solid #222222 !important;
+    border-radius: 0px !important;
     box-shadow: none !important;
+    transition: all 0.2s ease !important;
+  }
+  html[data-theme="swiss"] .btn-primary:hover {
+    background-color: #a5181e !important;
+    border-color: #a5181e !important;
+  }
+  html[data-theme="swiss"] .btn-ghost {
+    border: 1px solid var(--border) !important;
+    background-color: transparent !important;
+    color: var(--text-primary) !important;
+    border-radius: 0px !important;
+  }
+  html[data-theme="swiss"] .btn-ghost:hover {
+    background-color: var(--bg-surface) !important;
+    border-color: var(--text-primary) !important;
   }
 
-  html[data-theme="mono"] .btn-ghost:hover {
-    border-color: #ffffff !important;
+  /* FUI theme buttons */
+  html[data-theme="fui"] .btn-primary {
+    border: 1px solid var(--accent) !important;
+    background-color: var(--accent-dim) !important;
+    color: var(--accent) !important;
+    box-shadow: 0 0 8px rgba(255, 107, 0, 0.1) !important;
+    border-radius: 2px !important;
+  }
+  html[data-theme="fui"] .btn-primary:hover {
+    border-color: #00e5ff !important;
+    color: #00e5ff !important;
+    background-color: rgba(0, 229, 255, 0.08) !important;
+    box-shadow: 0 0 12px rgba(0, 229, 255, 0.2) !important;
+  }
+  html[data-theme="fui"] .btn-ghost {
+    border: 1px solid var(--border) !important;
     background-color: transparent !important;
+    color: var(--text-secondary) !important;
+    border-radius: 2px !important;
+  }
+  html[data-theme="fui"] .btn-ghost:hover {
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+    background-color: var(--accent-dim) !important;
   }
 
   .editorial-break {
@@ -593,10 +715,11 @@ html[data-theme="brutal"] #article-content li>code {
     padding: 0 1rem;
   }
 
-  .project-card {
+  .project-card, .post-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
+    box-shadow: var(--shadow-main);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -604,10 +727,31 @@ html[data-theme="brutal"] #article-content li>code {
     transition: border-color var(--t-base) ease, box-shadow var(--t-base) ease, transform var(--t-base) var(--ease-out-expo);
   }
 
-  .project-card:hover {
+  .project-card:hover, .post-card:hover {
     border-color: var(--border-hover);
-    box-shadow: var(--accent-glow);
+    box-shadow: var(--shadow-raised);
     transform: translateY(-2px);
+  }
+
+  /* Ensure card titles are always visible regardless of link color inheritance */
+  .post-card h3,
+  .post-card a h3,
+  .project-card h3,
+  .project-card a h3 {
+    color: var(--text-primary) !important;
+  }
+
+  .post-card a:hover h3,
+  .project-card a:hover h3,
+  .post-card.group:hover h3,
+  .project-card.group:hover h3 {
+    color: var(--accent) !important;
+  }
+
+  .post-card a,
+  .project-card a {
+    color: inherit;
+    text-decoration: none;
   }
 
   .tag {
@@ -739,84 +883,6 @@ html[data-theme="brutal"] #article-content li>code {
     box-shadow: 0 0 6px var(--accent-dim);
   }
 
-  /* Brutal theme color overrides for text visibility */
-  html[data-theme="brutal"] .toc-links a.toc-active {
-    color: #000000 !important;
-    font-weight: 800;
-  }
-
-  html[data-theme="brutal"] .marquee-item::after {
-    color: #000000;
-  }
-
-  html[data-theme="brutal"] .timeline-entry:hover .timeline-dot {
-    box-shadow: none;
-    border-color: #000000;
-  }
-
-  /* Brutal theme: fix all accent-as-text to use readable dark gold */
-  html[data-theme="brutal"] .toc-links a.toc-active {
-    color: var(--accent-text) !important;
-  }
-
-  html[data-theme="brutal"] #article-content p>code,
-  html[data-theme="brutal"] #article-content li>code {
-    color: #000000 !important;
-  }
-
-  /* Global fix for bold/strong text in Brutal theme inside article content */
-  html[data-theme="brutal"] #article-content strong,
-  html[data-theme="brutal"] #article-content b {
-    color: var(--text-primary) !important;
-  }
-
-  /* Enforce list marker color in Brutal theme */
-  html[data-theme="brutal"] .prose ol>li::before,
-  html[data-theme="brutal"] .prose ul>li::before {
-    color: var(--text-primary) !important;
-  }
-
-  /* Enforce table cell and header colors in Brutal theme */
-  html[data-theme="brutal"] .prose table td,
-  html[data-theme="brutal"] .prose table th {
-    color: var(--text-secondary) !important;
-  }
-
-  html[data-theme="brutal"] .prose table th {
-    color: var(--text-primary) !important;
-  }
-
-  /* Nav hover states */
-  html[data-theme="brutal"] nav a:hover,
-  html[data-theme="brutal"] .nav-link-item:hover {
-    color: var(--accent-text) !important;
-  }
-
-  /* Blog post page accent text */
-  html[data-theme="brutal"] .text-\[var\(--accent\)\] {
-    color: var(--accent-text) !important;
-  }
-
-  /* Contact CTA italic accent */
-  html[data-theme="brutal"] .italic.text-\[var\(--accent\)\] {
-    color: var(--accent-text) !important;
-  }
-
-  /* Post hover states */
-  html[data-theme="brutal"] .group:hover .group-hover\:text-\[var\(--accent\)\] {
-    color: var(--accent-text) !important;
-  }
-
-  /* Footer accent dots */
-  html[data-theme="brutal"] .text-\[var\(--accent\)\].opacity-50 {
-    color: var(--accent-text) !important;
-  }
-
-  /* Post featured labels and read more arrows */
-  html[data-theme="brutal"] [class*="text-[var(--accent)]"] {
-    color: var(--accent-text);
-  }
-
   .cursor {
     position: fixed;
     width: 8px;
@@ -839,9 +905,140 @@ html[data-theme="brutal"] #article-content li>code {
     border: 1px solid var(--accent);
     opacity: 1;
   }
+
+  /* Tactile form controls - Neumorphism Hybrid */
+  input[type="text"], 
+  input[type="email"], 
+  textarea, 
+  select {
+    background-color: color-mix(in srgb, var(--bg-base) 96%, var(--text-primary) 4%);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-inset);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    padding: 0.6rem 1rem;
+    transition: border-color var(--t-base) ease, box-shadow var(--t-base) ease;
+  }
+
+  input[type="text"]:focus, 
+  input[type="email"]:focus, 
+  textarea:focus, 
+  select:focus {
+    outline: none;
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-inset), var(--accent-glow);
+  }
+
+  /* Glassmorphic backdrop filter for cards and panels */
+  .project-card,
+  .post-card,
+  .metrics-panel,
+  .skills-panel,
+  .experience-panel,
+  .posts-panel,
+  .projects-panel,
+  .cta-panel,
+  .hero-section {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
 }
 
 @layer utilities {
+  /* Persistent spatial grid overlay (Zed-style structural guides) */
+  .grid-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    --shell-w: round(down, calc(100vw - var(--rail-w) - var(--shell-gutter) * 2.3), 2px);
+    --col: calc((var(--shell-w) - var(--shell-pad) * 2) / 6);
+    --content-left: round(down, calc((100vw - var(--rail-w) - var(--shell-w)) / 2 + var(--rail-w) + var(--shell-pad)), 1px);
+    --gutter-half: calc((100vw - var(--rail-w) - var(--shell-w)) / 4);
+  }
+  .grid-overlay > i {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-image: linear-gradient(
+      to bottom,
+      var(--grid-line) 0,
+      var(--grid-line) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+    background-size: 1px 8px;
+    background-repeat: repeat-y;
+  }
+  /* Lines pinned to actual shell-rendered edges (JS-measured) + inner column lines */
+  .grid-overlay > i:nth-child(1) { left: calc((var(--shell-actual-left, 0px) - var(--rail-w)) / 2 + var(--rail-w)); }
+  .grid-overlay > i:nth-child(2) { left: calc(var(--shell-actual-left, 0px) - 1px); }
+  .grid-overlay > i:nth-child(3) { left: calc(var(--shell-actual-left, 0px) + var(--shell-actual-width, 0px) * 0.333); }
+  .grid-overlay > i:nth-child(4) { left: calc(var(--shell-actual-left, 0px) + var(--shell-actual-width, 0px) * 0.5); }
+  .grid-overlay > i:nth-child(5) { left: calc(var(--shell-actual-left, 0px) + var(--shell-actual-width, 0px) * 0.667); }
+  .grid-overlay > i:nth-child(6) { left: calc(var(--shell-actual-right, 0px)); }
+  .grid-overlay > i:nth-child(7) { left: calc((100vw - var(--shell-actual-right, 0px)) / 2 + var(--shell-actual-right, 0px)); }
+  .grid-overlay > i:nth-child(8),
+  .grid-overlay > i:nth-child(9) { display: none; }
+  @media (max-width: 768px) {
+    .grid-overlay { display: none; }
+  }
+
+  /* Centered workspace shell — symmetric fluid gutters from rail-edge and viewport-right */
+  .workspace-shell {
+    width: 100%;
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding-inline: var(--shell-pad);
+    padding-block: var(--sp-4);
+  }
+  @media (min-width: 1024px) {
+    .workspace-shell {
+      width: round(down, calc(100vw - var(--rail-w) - var(--shell-gutter) * 2.3), 2px);
+      max-width: none;
+      padding-inline: 0;
+    }
+  }
+
+  /* Constrained reading column for long-form article content */
+  .read-width {
+    width: 100%;
+    max-width: 760px;
+    margin-inline: auto;
+  }
+
+  /* Horizontal grid divider that extends viewport-wide via pseudo */
+  .grid-divider,
+  .page-workspace > *,
+  .workspace > * {
+    position: relative;
+  }
+  .grid-divider::before,
+  .page-workspace > *::before,
+  .page-workspace > *:last-child::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 100vw;
+    height: 1px;
+    transform: translateX(-50%);
+    background-image: linear-gradient(
+      to right,
+      var(--grid-line-strong) 0,
+      var(--grid-line-strong) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+    background-size: 8px 1px;
+    background-repeat: repeat-x;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .grid-divider::before,
+  .page-workspace > *::before { top: 0; }
+  .page-workspace > *:last-child::after { bottom: 0; }
+
   .page-gradient-layer {
     position: fixed;
     inset: 0;
@@ -849,9 +1046,6 @@ html[data-theme="brutal"] #article-content li>code {
     pointer-events: none;
     background: radial-gradient(ellipse 80% 50% at 10% 0%,
         rgba(232, 130, 58, 0.03) 0%,
-        transparent 60%),
-      radial-gradient(ellipse 60% 40% at 90% 50%,
-        rgba(100, 80, 200, 0.02) 0%,
         transparent 60%);
   }
 
@@ -887,7 +1081,7 @@ html[data-theme="brutal"] #article-content li>code {
     margin: 2rem 0;
     overflow: hidden;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 10px 30px rgba(0, 0, 0, 0.1);
-    background-color: var(--bg-card);
+    background-color: color-mix(in srgb, var(--bg-base) 95%, var(--text-primary) 5%);
     max-height: 500px;
     display: flex;
     flex-direction: column;
@@ -911,7 +1105,7 @@ html[data-theme="brutal"] #article-content li>code {
     align-items: center;
     justify-content: space-between;
     padding: 0.65rem 1rem;
-    background-color: var(--bg-card);
+    background-color: color-mix(in srgb, var(--bg-base) 92%, var(--text-primary) 8%);
     border-bottom: 1px solid var(--border);
   }
 
@@ -977,7 +1171,7 @@ html[data-theme="brutal"] #article-content li>code {
   }
 
   .code-modal-content {
-    background: var(--bg-card);
+    background: var(--bg-base);
     border: 1px solid var(--border);
     border-radius: 0.75rem;
     width: 100%;
@@ -994,7 +1188,7 @@ html[data-theme="brutal"] #article-content li>code {
     justify-content: space-between;
     padding: 1rem 1.25rem;
     border-bottom: 1px solid var(--border);
-    background: var(--bg-card);
+    background: color-mix(in srgb, var(--bg-base) 95%, var(--text-primary) 5%);
     border-radius: var(--radius) var(--radius) 0 0;
   }
 
@@ -1057,7 +1251,7 @@ html[data-theme="brutal"] #article-content li>code {
     padding: 1.25rem !important;
     margin: 0 !important;
     overflow: auto !important;
-    background: var(--bg-card) !important;
+    background: color-mix(in srgb, var(--bg-base) 97%, var(--text-primary) 3%) !important;
     flex: 1;
     white-space: pre-wrap;
     word-break: break-all;
@@ -1098,7 +1292,7 @@ html[data-theme="brutal"] #article-content li>code {
 
   /* Code blocks inside wrapper — no extra decoration needed */
   .code-block-wrapper pre {
-    background-color: var(--bg-card) !important;
+    background-color: transparent !important;
     border: none !important;
     border-radius: 0 !important;
     padding: 1.25rem !important;
@@ -1109,7 +1303,7 @@ html[data-theme="brutal"] #article-content li>code {
 
   /* Fallback: un-wrapped pre (shouldn't happen in posts but just in case) */
   #article-content pre:not(.code-block-wrapper pre) {
-    background-color: var(--bg-card) !important;
+    background-color: color-mix(in srgb, var(--bg-base) 95%, var(--text-primary) 5%) !important;
     border: 1px solid var(--border);
     border-radius: 0.5rem;
     padding: 2.5rem 1.25rem 1.25rem 1.25rem !important;
@@ -1120,8 +1314,8 @@ html[data-theme="brutal"] #article-content li>code {
   }
 
   /* Override structural syntax coloring in dark mode for maximum contrast */
-  .dark:not([data-theme="brutal"]) #article-content pre .line,
-  .dark:not([data-theme="brutal"]) #article-content pre span {
+  .dark:not([data-theme="swiss"]) #article-content pre .line,
+  .dark:not([data-theme="swiss"]) #article-content pre span {
     filter: brightness(1.7) contrast(1.15);
   }
 

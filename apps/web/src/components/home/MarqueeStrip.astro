@@ -1,0 +1,74 @@
+---
+const { direction = "left" } = Astro.props;
+const items = [
+  "PHP", "Laravel", "MySQL", "REST API", "Docker", "Vercel", "GitHub", "CI/CD",
+  "JavaScript", "Tailwind CSS", "Bootstrap", "Astro", "Linux", "VPS", "API Design",
+  "Redis", "ClickHouse", "Supabase", "RAG", "Event-Driven"
+];
+const seq = direction === "right" ? items.slice().reverse() : items;
+---
+
+<section class="marquee-panel">
+  <div class="marquee-track">
+    <div class={`marquee-inner marquee-inner--${direction}`}>
+      {[...seq, ...seq].map((it) => (
+        <span class="marquee-item">{it.toUpperCase()}</span>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .marquee-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-main);
+    padding: 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden;
+  }
+  .marquee-track {
+    overflow: hidden;
+    display: flex;
+    user-select: none;
+    width: 100%;
+    mask-image: linear-gradient(to right, transparent 0, black 8%, black 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 8%, black 92%, transparent 100%);
+  }
+  .marquee-inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    white-space: nowrap;
+    width: max-content;
+  }
+  .marquee-inner--left { animation: scroll-left 30s linear infinite; }
+  .marquee-inner--right { animation: scroll-right 30s linear infinite; }
+  .marquee-item {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    font-weight: 500;
+    padding: 4px 0;
+    position: relative;
+    padding-right: 1rem;
+  }
+  .marquee-item::after {
+    content: "·";
+    color: var(--accent);
+    margin-left: 1rem;
+    font-weight: bold;
+  }
+  @keyframes scroll-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes scroll-right {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+</style>

@@ -1,0 +1,233 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
+
+const all = await getCollection("projects");
+const localized = all
+  .filter((p) => (p.data.lang || "en") === lang && !p.data.hidden)
+  .sort((a, b) => (a.data.position || 0) - (b.data.position || 0))
+  .slice(0, 4);
+
+const archMap: Record<string, { arch: string; infra: string }> = {
+  "electronic-first": { arch: "Transactional / Fraud Detection", infra: "Read Replicas / ClickHouse" },
+  signalstack: { arch: "Event-Driven Feed / AI Failover", infra: "Redis Queue / Multi-Tier AI" },
+  hujjah: { arch: "Semantic Vector Search / LLM", infra: "Supabase pgvector / Vercel Edge" },
+  litepos: { arch: "Multi-Tenant Isolation (SaaS)", infra: "Isolated DBs / Live Sync" },
+  larabrix: { arch: "CMS Framework Components", infra: "CI/CD / Package Registry" },
+  lenden: { arch: "Ledger / Double-Entry", infra: "Stripe / SSLCommerz" },
+  "e-bank": { arch: "Ledger / Double-Entry", infra: "Stripe / SSLCommerz" },
+};
+
+const getMeta = (slug: string) => {
+  const s = slug.replace(/-bn$/, "");
+  return archMap[s] || { arch: "Monolithic / MVC", infra: "VPS / Linux" };
+};
+---
+
+<section id="projects" class="projects-grid-panel">
+  <div class="panel-head">
+    <span class="panel-title">{t("projects.title").toUpperCase()}</span>
+    <a href="/projects" class="panel-link">{t("projects.viewAll")} →</a>
+  </div>
+
+  <div class="grid">
+    {localized.map((project) => {
+      const { title, description, tech, type, status, role, problem, highlights, thumbnail } = project.data;
+      const baseSlug = project.slug.replace(/-bn$/, "");
+      const hasCase = !!(problem || (highlights && highlights.length));
+      const href = hasCase ? tp(`/projects/${baseSlug}`) : (project.data.live || project.data.github || "#");
+      const { arch, infra } = getMeta(project.slug);
+      return (
+        <a href={href} class="card">
+          {thumbnail && (
+            <div class="card-thumb">
+              <Image
+                src={thumbnail}
+                alt={`${title} screenshot`}
+                width={400}
+                height={225}
+                format="webp"
+                quality={75}
+                loading="lazy"
+              />
+            </div>
+          )}
+          <div class="card-top">
+            <span class="card-type">{(type || "SYSTEM").toUpperCase()}</span>
+            <span class="card-status">
+              <span class="card-status-dot"></span>
+              {(status || "ACTIVE").toUpperCase()}
+            </span>
+          </div>
+          <h3 class="card-title">{title}</h3>
+          <p class="card-desc">{description}</p>
+          <div class="card-meta">
+            <div class="row"><span class="row-k">ROLE</span><span class="row-v">{role || "Solo Developer"}</span></div>
+            <div class="row"><span class="row-k">ARCH</span><span class="row-v" title={arch}>{arch}</span></div>
+            <div class="row"><span class="row-k">INFRA</span><span class="row-v" title={infra}>{infra}</span></div>
+          </div>
+          <div class="card-tags">
+            {tech?.slice(0, 4).map((tg: string) => <span class="tg">{tg}</span>)}
+            {tech && tech.length > 4 && <span class="tg tg-more">+{tech.length - 4}</span>}
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</section>
+
+<style>
+  .projects-grid-panel {
+    background: var(--bg-base);
+    padding: 0;
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--grid-line-strong);
+  }
+  .panel-title {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+  .panel-link {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+  }
+  .panel-link:hover { color: var(--accent); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--grid-line-strong);
+  }
+  @media (max-width: 1024px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    background: var(--bg-base);
+    transition: background 0.2s ease;
+  }
+  .card:hover {
+    background: var(--bg-surface);
+  }
+  .card-thumb {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--grid-line-strong);
+    margin: -16px -16px 4px;
+  }
+  .card-thumb :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: left top;
+    filter: grayscale(20%);
+    transition: filter 0.3s ease, transform 0.4s ease;
+  }
+  .card:hover .card-thumb :global(img) {
+    filter: grayscale(0%);
+    transform: scale(1.04);
+  }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+  .card-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+  .card-status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease infinite;
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.98rem;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.2;
+  }
+  .card:hover .card-title { color: var(--accent); }
+  .card-desc {
+    font-size: 0.74rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-meta {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+  }
+  .row { display: flex; justify-content: space-between; gap: 8px; }
+  .row-k { color: var(--text-muted); letter-spacing: 0.06em; }
+  .row-v {
+    color: var(--text-primary);
+    font-weight: 600;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 65%;
+  }
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: auto;
+  }
+  .tg {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    padding: 2px 6px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-muted);
+    background: var(--bg-base);
+  }
+  .tg-more { opacity: 0.6; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+</style>

@@ -1,0 +1,81 @@
+---
+import AsciiAvatar from "../AsciiAvatar.astro";
+---
+
+<section class="avatar-panel">
+  <div class="panel-head">
+    <span class="panel-title">OPERATOR</span>
+    <span class="panel-meta">fazleyrabby.xyz</span>
+  </div>
+  <div class="avatar-wrap">
+    <AsciiAvatar />
+  </div>
+  <div class="avatar-foot">
+    <div class="row"><span class="k">BUILT</span><span class="v">Astro · Cloudflare</span></div>
+    <div class="row"><span class="k">SOURCE</span><span class="v">Open Source</span></div>
+  </div>
+</section>
+
+<style>
+  .avatar-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-main);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    overflow: hidden;
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-title {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+  .panel-meta {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+  .avatar-wrap {
+    flex: 1;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-surface);
+    overflow: hidden;
+  }
+  .avatar-wrap :global(.ascii-avatar) {
+    min-height: 220px;
+  }
+  .avatar-wrap :global(#ascii-smoke-canvas) {
+    min-height: 220px;
+  }
+  .avatar-foot {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+  }
+  .row { display: flex; justify-content: space-between; }
+  .k { color: var(--text-muted); letter-spacing: 0.06em; }
+  .v { color: var(--text-primary); font-weight: 600; }
+</style>

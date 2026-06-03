@@ -1,44 +1,115 @@
 ---
-import Projects from "@components/Projects.astro";
-import Metrics from "@components/Metrics.astro";
-import Experience from "@components/Experience.astro";
-import LatestPosts from "@components/LatestPosts.astro";
-import Skills from "@components/Skills.astro";
 import MainLayout from "@layouts/MainLayout.astro";
-import Hero from "@components/Hero.astro";
-import ContactCTA from "@components/ContactCTA.astro";
-import { getLangFromUrl, useTranslations } from "@i18n/utils";
-
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
+import IdentityStrip from "@components/home/IdentityStrip.astro";
+import ProjectsGrid from "@components/home/ProjectsGrid.astro";
+import CurrentFocus from "@components/home/CurrentFocus.astro";
+import StackPanel from "@components/home/StackPanel.astro";
+import LatestNotes from "@components/home/LatestNotes.astro";
+import AvailabilityPanel from "@components/home/AvailabilityPanel.astro";
+import ExperienceCompact from "@components/home/ExperienceCompact.astro";
+import AvatarPanel from "@components/home/AvatarPanel.astro";
+import MarqueeStrip from "@components/home/MarqueeStrip.astro";
 ---
 
 <MainLayout title="Fazley Rabbi — Laravel & Backend Engineer">
-  <main>
-    <Hero />
+  <main class="workspace">
+    <!-- Identity Strip (compact hero) -->
+    <IdentityStrip />
 
-    <Metrics />
+    <!-- Marquee under hero (left) -->
+    <MarqueeStrip direction="left" />
 
-    <div class="editorial-break">
-      <p class="editorial-phrase">
-        {t('home.editorial1')}
-      </p>
+    <!-- Featured Projects (operational cards) -->
+    <ProjectsGrid />
+
+    <!-- Bento: Focus + Stack + Avatar + Availability -->
+    <div class="bento-4">
+      <CurrentFocus />
+      <StackPanel />
+      <AvatarPanel />
+      <AvailabilityPanel />
     </div>
 
-    <Projects />
+    <!-- Marquee before career journey (right) -->
+    <MarqueeStrip direction="right" />
 
-    <Skills />
-
-    <Experience />
-
-    <div class="editorial-break">
-      <p class="editorial-phrase">
-        {t('home.editorial2')}
-      </p>
+    <!-- Bento: Experience + Notes -->
+    <div class="bento-2">
+      <ExperienceCompact />
+      <LatestNotes />
     </div>
-
-    <LatestPosts />
-    
-    <ContactCTA />
   </main>
 </MainLayout>
+
+<style>
+  /* Workspace: stack of full-width sections with horizontal divider lines that extend full viewport */
+  .workspace {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .workspace > * {
+    position: relative;
+  }
+  .workspace > *::before,
+  .workspace > *:last-child::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 100vw;
+    height: 1px;
+    background-image: linear-gradient(
+      to right,
+      var(--grid-line-strong) 0,
+      var(--grid-line-strong) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+    background-size: 8px 1px;
+    background-repeat: repeat-x;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .workspace > *::before { top: 0; }
+  .workspace > *:last-child::after { bottom: 0; }
+
+  /* Bento grids: cells share borders via 1px gap + container bg */
+  .bento-4,
+  .bento-2 {
+    display: grid;
+    gap: 1px;
+    background: var(--grid-line-strong);
+    border-top: 1px solid var(--grid-line-strong);
+    border-bottom: 1px solid var(--grid-line-strong);
+    align-items: stretch;
+  }
+  .bento-4 { grid-template-columns: 2fr 2fr 1fr 2fr; }
+  .bento-2 { grid-template-columns: 2fr 1fr; }
+
+  @media (max-width: 1024px) {
+    .bento-4 { grid-template-columns: 1fr 1fr; }
+    .bento-2 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .bento-4 { grid-template-columns: 1fr; }
+  }
+
+  /* Strip individual panel chrome — grid lines come from the gap */
+  .workspace :global(.identity-strip),
+  .workspace :global(.projects-grid-panel),
+  .workspace :global(.focus-panel),
+  .workspace :global(.stack-panel),
+  .workspace :global(.avatar-panel),
+  .workspace :global(.avail-panel),
+  .workspace :global(.exp-panel),
+  .workspace :global(.notes-panel),
+  .workspace :global(.marquee-panel) {
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: var(--bg-base);
+  }
+
+</style>

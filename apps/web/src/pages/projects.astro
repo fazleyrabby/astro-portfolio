@@ -14,55 +14,153 @@ const frontendProjects = projects.filter(p => p.data.type === 'frontend');
 ---
 
 <MainLayout title="Projects — Fazley Rabbi">
-  <main class="py-12">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="mb-10">
-        <span class="section-label">Projects</span>
-        <h1 class="font-display font-bold text-[clamp(1.85rem,4.5vw,2.75rem)] text-[var(--text-primary)] leading-tight">Selected Work</h1>
-        <p class="font-serif italic text-[1.2rem] text-[var(--text-secondary)] mt-4">Selected work and experimental labs.</p>
+  <main class="page-workspace">
+    <header class="page-header">
+      <div class="page-header-inner">
+        <span class="page-kicker">/ PROJECTS</span>
+        <h1 class="page-title">Selected Work</h1>
+        <p class="page-sub">Selected work and experimental labs.</p>
       </div>
+      <dl class="page-meta">
+        <div><dt>TOTAL</dt><dd>{mainProjects.length + frontendProjects.length}</dd></div>
+        <div><dt>PRODUCTION</dt><dd>{mainProjects.length}</dd></div>
+        <div><dt>LABS</dt><dd>{frontendProjects.length}</dd></div>
+      </dl>
+    </header>
 
+    <section class="grid-section">
+      <div class="grid-section-head">
+        <span>PRODUCTION SYSTEMS</span>
+        <span class="counter">{String(mainProjects.length).padStart(2, '0')}</span>
+      </div>
       <div class="project-grid">
         {mainProjects.map((p, i) => <ProjectCard project={p} index={i} />)}
       </div>
+    </section>
 
-      {frontendProjects.length > 0 && (
-        <div class="mt-24 pt-16 border-t border-[var(--border)]">
-          <div class="mb-10">
-            <span class="section-label">More</span>
-            <h2 class="font-display font-bold text-3xl text-[var(--text-primary)]">Other Works & Experiments</h2>
-            <p class="text-sm text-[var(--text-muted)] mt-2 font-mono uppercase tracking-widest">Frontend experiments & templates.</p>
-          </div>
-          <div class="project-grid">
-            {frontendProjects.map((p, i) => <ProjectCard project={p} index={i} />)}
-          </div>
+    {frontendProjects.length > 0 && (
+      <section class="grid-section">
+        <div class="grid-section-head">
+          <span>LABS &amp; EXPERIMENTS</span>
+          <span class="counter">{String(frontendProjects.length).padStart(2, '0')}</span>
         </div>
-      )}
-    </div>
+        <div class="project-grid">
+          {frontendProjects.map((p, i) => <ProjectCard project={p} index={i} />)}
+        </div>
+      </section>
+    )}
   </main>
 </MainLayout>
 
 <style>
+  .page-workspace {
+    display: flex;
+    flex-direction: column;
+  }
+  .page-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: end;
+    padding: 24px 0 20px;
+    border-bottom: 1px solid var(--grid-line-strong);
+  }
+  .page-header-inner { display: flex; flex-direction: column; gap: 4px; }
+  .page-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+  .page-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    line-height: 1.05;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  .page-sub {
+    font-family: var(--font-serif, var(--font-sans));
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin: 4px 0 0;
+  }
+  .page-meta {
+    display: flex;
+    gap: 0;
+    margin: 0;
+    align-self: end;
+  }
+  .page-meta > div {
+    padding: 0 16px;
+    border-right: 1px solid var(--grid-line-strong);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .page-meta > div:last-child { border-right: none; padding-right: 0; }
+  .page-meta dt {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin: 0;
+  }
+  .page-meta dd {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .grid-section {
+    position: relative;
+    padding: 16px 0 24px;
+  }
+  .grid-section + .grid-section { border-top: 1px solid var(--grid-line-strong); }
+  .grid-section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    padding: 8px 0 12px;
+  }
+  .counter { color: var(--text-muted); }
+
   .project-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1px;
+    background: var(--grid-line-strong);
+    border: 1px solid var(--grid-line-strong);
   }
-
   @media (min-width: 640px) {
-    .project-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+    .project-grid { grid-template-columns: repeat(2, 1fr); }
   }
-
   @media (min-width: 1024px) {
-    .project-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    /* Last card alone in its row → center it */
-    .project-grid > :global(*:last-child:nth-child(3n+1)) {
-      grid-column: 2 / 3;
-    }
+    .project-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .project-grid :global(.project-card) {
+    background: transparent;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  :global(html[data-theme="swiss"]) .project-grid :global(.project-card) {
+    background: #ffffff !important;
+  }
+  .project-grid :global(.project-card:hover) {
+    transform: none !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
   }
 </style>

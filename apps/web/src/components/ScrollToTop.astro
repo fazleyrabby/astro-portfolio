@@ -24,15 +24,21 @@
 </div>
 
 <script is:inline>
+    const getScrollContainer = () => document.querySelector('.scroll-container');
+
     const scrollToTop = () => {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-        });
+        const sc = getScrollContainer();
+        if (sc) {
+            sc.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
     };
 
     const toggleVisibility = () => {
-        const showButtons = window.scrollY > 500;
+        const sc = getScrollContainer();
+        const scrollTop = sc ? sc.scrollTop : window.scrollY;
+        const showButtons = scrollTop > 300;
         const tocBtn = document.getElementById('toc-toggle-btn');
         const scrollBtn = document.querySelector('.scrollTop');
         const hasToc = !!document.getElementById('toc-sidebar');
@@ -68,16 +74,21 @@
         });
     };
 
-    window.addEventListener("scroll", toggleVisibility);
-    window.addEventListener("resize", toggleVisibility);
-
-    document.addEventListener("astro:page-load", () => {
+    const bindScrollListeners = () => {
+        const sc = getScrollContainer();
+        if (sc) {
+            sc.addEventListener('scroll', toggleVisibility, { passive: true });
+        } else {
+            window.addEventListener('scroll', toggleVisibility, { passive: true });
+        }
+        window.addEventListener('resize', toggleVisibility);
         toggleVisibility();
         initTocToggle();
-    });
+    };
 
-    document.addEventListener("DOMContentLoaded", initTocToggle);
+    document.addEventListener('astro:page-load', bindScrollListeners);
+    document.addEventListener('DOMContentLoaded', bindScrollListeners);
     if (document.readyState !== 'loading') {
-        initTocToggle();
+        bindScrollListeners();
     }
 </script>

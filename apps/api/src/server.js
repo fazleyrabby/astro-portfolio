@@ -11,8 +11,14 @@ import OpenAI from 'openai';
 import { slug as slugify } from 'github-slugger';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const logFile = path.join(process.cwd(), 'debug.log');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const logFile = path.join(__dirname, 'debug.log');
+const draftsFile = path.join(__dirname, 'drafts.json');
+
 function log(msg) {
     const timestamp = new Date().toISOString();
     const formatted = `[${timestamp}] ${msg}\n`;
@@ -22,6 +28,39 @@ function log(msg) {
         console.error('Log write failed:', e.message);
     }
     console.log(msg);
+}
+
+function loadDrafts() {
+    try {
+        const data = fs.readFileSync(draftsFile, 'utf-8');
+        return JSON.parse(data);
+    } catch {
+        return [];
+    }
+}
+
+function saveDrafts(drafts) {
+    fs.writeFileSync(draftsFile, JSON.stringify(drafts, null, 2));
+}
+
+function addDraft(slug, post) {
+    const drafts = loadDrafts();
+    drafts.push({ slug, post, timestamp: Date.now() });
+    saveDrafts(drafts);
+}
+
+function getDraft(slug) {
+    const drafts = loadDrafts();
+    return drafts.find(d => d.slug === slug);
+}
+
+function removeDraft(slug) {
+    const drafts = loadDrafts();
+    saveDrafts(drafts.filter(d => d.slug !== slug));
+}
+
+function listDrafts() {
+    return loadDrafts();
 }
 
 const app = express();
@@ -256,7 +295,7 @@ bot.on('callback_query', async (ctx) => {
     const data = ctx.callbackQuery.data;
     if (data.startsWith('p_app:')) {
         const slug = data.replace('p_app:', '');
-        const post = aiDrafts.get(slug);
+        const post = aiDrafts.get(slug) || getDraft(slug)?.post;
 
         if (!post) return ctx.answerCbQuery('Draft expired or not found.');
 
@@ -275,6 +314,7 @@ bot.on('callback_query', async (ctx) => {
 
             await ctx.editMessageText(`✅ <b>PUBLISHED!</b>\n\n<b>Title:</b> ${post.title}\n<b>Status:</b> Live on Supabase. Site rebuilding...`, { parse_mode: 'HTML' });
             aiDrafts.delete(slug);
+            removeDraft(slug);
         } catch (err) {
             log(`[BOT] Bot publish error: ${err.message}`);
             await ctx.reply(`❌ Publish failed: ${err.message}`);
@@ -282,6 +322,7 @@ bot.on('callback_query', async (ctx) => {
     } else if (data.startsWith('p_rej:')) {
         const slug = data.replace('p_rej:', '');
         aiDrafts.delete(slug);
+        removeDraft(slug);
         await ctx.editMessageText('❌ Post draft rejected and discarded.');
     }
     await ctx.answerCbQuery();

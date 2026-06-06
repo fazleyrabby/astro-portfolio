@@ -7,7 +7,7 @@ import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
 import { slug as slugify } from "github-slugger";
 
-const __dir = "/home/fazley/apps/cms";
+const __dir = dirname(fileURLToPath(import.meta.url));
 const logFile = join(__dir, "auto-generate.log");
 const contextsFile = join(__dir, "contexts.json");
 const draftsFile = join(__dir, "drafts.json");

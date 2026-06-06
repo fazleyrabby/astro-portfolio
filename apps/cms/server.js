@@ -11,9 +11,13 @@ import OpenAI from 'openai';
 import { slug as slugify } from 'github-slugger';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const logFile = path.join(process.cwd(), 'debug.log');
-const draftsFile = path.join(process.cwd(), 'drafts.json');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const logFile = path.join(__dirname, 'debug.log');
+const draftsFile = path.join(__dirname, 'drafts.json');
 
 function log(msg) {
     const timestamp = new Date().toISOString();

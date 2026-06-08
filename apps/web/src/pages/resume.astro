@@ -10,10 +10,10 @@ import MainLayout from '@layouts/MainLayout.astro';
                 <h1 class="page-title">Curriculum Vitae</h1>
                 <p class="page-sub">Backend Engineer · Laravel / Distributed Systems</p>
             </div>
-            <a href="/Fazley_Rabby_cv.pdf" download="Fazley_Rabby_cv.pdf" class="download-btn">
+            <button id="print-resume" class="download-btn cursor-pointer">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                 Download PDF
-            </a>
+            </button>
         </header>
 
         <!-- Resume Card -->
@@ -34,13 +34,6 @@ import MainLayout from '@layouts/MainLayout.astro';
 
             <div class="px-6 sm:px-10 py-6 cv-body">
 
-                <!-- Summary -->
-                <div class="cv-section">
-                    <h3 class="cv-section-title">Summary</h3>
-                    <p class="text-[0.95rem] text-[var(--text-secondary)] leading-relaxed">
-                        Backend engineer with 4+ years of experience building scalable Laravel applications, REST APIs, async processing systems, and internal platform tooling. Experienced in performance optimization, data-heavy systems, and production debugging. Currently focused on system design, real-time pipelines, infrastructure, and AI-assisted developer tooling.
-                    </p>
-                </div>
 
                 <!-- Work Experience -->
                 <div class="cv-section">
@@ -58,16 +51,15 @@ import MainLayout from '@layouts/MainLayout.astro';
                                 <span class="font-mono text-[0.75rem] text-[var(--text-muted)] tracking-wider shrink-0">Oct 2021 – Present</span>
                             </div>
                             <ul class="cv-list mt-1.5">
-                                <li>Developed and maintained backend systems for high-traffic Laravel applications</li>
-                                <li>Optimized complex MySQL queries and refactored legacy code to improve scalability and maintainability</li>
-                                <li>Designed and implemented REST APIs for internal services and external integrations</li>
-                                <li>Integrated payment gateways and third-party services across multiple systems</li>
-                                <li>Debugged and resolved production issues in live environments to improve stability and reliability</li>
-                                <li>Worked with automation and scraping workflows using Puppeteer and BrowserKit</li>
-                                <li>Managed Laravel upgrades, deployment workflows, and backend architecture improvements</li>
+                                <li>Developed and maintained backend systems for a high-volume digital games marketplace processing thousands of daily orders.</li>
+                                <li>Designed a multi-rule checkout fraud detection engine (velocity, fingerprinting, and checkouts) that significantly reduced chargebacks.</li>
+                                <li>Eliminated manual processes by building real-time PayPal and Checkout.com dispute sync via webhooks and proxy files.</li>
+                                <li>Engineered ClickHouse-backed analytics, providing dashboards for customer spending, gateway fees, and sales trends.</li>
+                                <li>Designed versioned REST APIs and endpoints powering web applications, mobile apps, and customer-facing AI support bots.</li>
+                                <li>Optimized application performance by introducing database read replicas for high-frequency user search and listing queries.</li>
                             </ul>
                             <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
-                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, MySQL, ClickHouse, REST APIs, Livewire, Alpine.js, Docker, Git, Linux
+                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, PHP, MySQL, ClickHouse, Redis, Checkout.com, PayPal, APIs, Docker, Linux
                             </p>
                         </div>
 
@@ -82,10 +74,10 @@ import MainLayout from '@layouts/MainLayout.astro';
                                 <span class="font-mono text-[0.75rem] text-[var(--text-muted)] tracking-wider shrink-0">Jan 2021 – Jul 2021</span>
                             </div>
                             <ul class="cv-list mt-1.5">
-                                <li>Built Laravel-based systems including ticketing and management platforms</li>
-                                <li>Implemented authentication systems (multi-auth, 2FA, email verification)</li>
-                                <li>Integrated APIs and payment gateways (Stripe, PayPal, Twilio, Mailchimp)</li>
-                                <li>Developed dynamic UI features using jQuery and AJAX</li>
+                                <li>Built custom Laravel booking and management applications to improve client operational efficiency.</li>
+                                <li>Implemented security features including multi-factor authentication (2FA) and email verification.</li>
+                                <li>Integrated payment gateways (Stripe, PayPal) and communication tools (Twilio, Mailchimp) for client portals.</li>
+                                <li>Created interactive interfaces and dynamic workflows using jQuery and AJAX.</li>
                             </ul>
                             <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
                                 <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, MySQL, jQuery, AJAX, Git
@@ -98,37 +90,39 @@ import MainLayout from '@layouts/MainLayout.astro';
                 <div class="cv-section">
                     <h3 class="cv-section-title">Projects</h3>
 
-                    <div class="space-y-3">
+                    <div class="space-y-4">
                         <div>
                             <h4 class="text-[1rem] text-[var(--text-primary)]">
-                                <span class="font-display font-bold">SignalStack</span>
+                                <span class="font-display font-bold">Electronic First Core Platform</span>
                                 <span class="text-[var(--text-muted)]"> — </span>
-                                <span class="italic text-[0.9rem] text-[var(--text-secondary)]">Real-time data pipeline (ingestion → processing → enrichment → serving)</span>
+                                <span class="italic text-[0.9rem] text-[var(--text-secondary)]">High-volume digital retail marketplace processing thousands of daily orders</span>
                             </h4>
                             <ul class="cv-list mt-1">
-                                <li>Designed async ingestion and processing pipeline using queue-based architecture</li>
-                                <li>Implemented caching and data-serving strategies for high-throughput workloads</li>
-                                <li>Built AI-assisted enrichment workflows for processing and classifying incoming signals</li>
-                                <li>Conducted load testing and bottleneck analysis to improve system performance</li>
+                                <li>Built order checkout flows supporting card, PayPal, Coinbase, and internal e-wallet transactions.</li>
+                                <li>Implemented Automated Gift Card and License Delivery flows using queue workers and stock syncing.</li>
+                                <li>Developed business dashboard tools for tracking gate transaction fees, salary distributions, and store metrics.</li>
                             </ul>
+                            <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
+                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, MySQL, ClickHouse, Queue Workers, Redis, Docker
+                            </p>
                         </div>
 
                         <div>
                             <h4 class="text-[1rem] text-[var(--text-primary)]">
-                                <span class="font-display font-bold">Hujjah</span>
+                                <span class="font-display font-bold">SignalStack</span>
                                 <span class="text-[var(--text-muted)]"> — </span>
-                                <span class="italic text-[0.9rem] text-[var(--text-secondary)]">Privacy-first, offline Islamic research engine</span>
+                                <span class="italic text-[0.9rem] text-[var(--text-secondary)]">Real-time data ingestion and processing pipeline</span>
                             </h4>
                             <ul class="cv-list mt-1">
-                                <li>Built full-text and semantic search across Quran (6,236 verses) and 36K+ hadith records</li>
-                                <li>Implemented local AI chat with RAG pipeline using llama.cpp and Transformers.js</li>
-                                <li>Designed interactive sanad-chain visualization and narrator exploration system</li>
-                                <li>Developed cross-platform desktop application using Tauri 2.0 with SQLite + FTS5</li>
+                                <li>Designed an asynchronous data pipeline using queue architecture to handle high workloads.</li>
+                                <li>Implemented caching strategies to deliver low-latency updates for real-time dashboards.</li>
+                                <li>Built automated workflows to filter and tag incoming signals for quicker data analysis.</li>
                             </ul>
                             <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
-                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Next.js, React, Tauri, SQLite, Transformers.js, Tailwind
+                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Next.js, React, Node.js, Caching, Queue Systems, Tailwind
                             </p>
                         </div>
+
 
                         <p class="text-[0.88rem] text-[var(--text-muted)]">
                             <span class="font-semibold text-[var(--text-secondary)]">Other Projects:</span> Faculty Routine Management System, E-Bank System, Lenden Payment Gateway, Timelock Project Management System
@@ -153,12 +147,12 @@ import MainLayout from '@layouts/MainLayout.astro';
                         <span class="text-[var(--text-secondary)]">Docker, Linux, Git, GitHub Actions</span>
 
                         <span class="font-semibold text-[var(--text-primary)]">AI / Data</span>
-                        <span class="text-[var(--text-secondary)]">RAG Pipelines, Transformers.js, llama.cpp, Async Processing</span>
+                        <span class="text-[var(--text-secondary)]">RAG Pipelines, Transformers.js, llama.cpp, MLX</span>
                     </div>
                 </div>
 
                 <!-- Current Focus -->
-                <div class="cv-section">
+                <div class="cv-section cv-current-focus">
                     <h3 class="cv-section-title">Current Focus</h3>
                     <ul class="cv-list">
                         <li>System design and scalable backend architecture</li>
@@ -203,6 +197,10 @@ import MainLayout from '@layouts/MainLayout.astro';
 
     </main>
 </MainLayout>
+
+<script>
+    document.getElementById("print-resume")?.addEventListener("click", () => window.print());
+</script>
 
 <style>
     .page-workspace { display: flex; flex-direction: column; gap: 0; max-width: 920px; margin: 0 auto; }
@@ -318,12 +316,213 @@ import MainLayout from '@layouts/MainLayout.astro';
     .cv-card :global(p), .cv-card :global(span), .cv-card :global(div) { font-size: 0.86rem; }
     .cv-card :global(.font-mono) { font-size: 0.68rem !important; }
 
-    @media print {
-        main {
-            padding: 0 !important;
+    @media (max-width: 640px) {
+        .page-header {
+            padding: 12px 4px 8px;
         }
-        .btn-ghost, .btn-primary {
-            display: none !important;
+        .cv-card {
+            padding: 12px 14px;
+            margin-top: 8px;
+        }
+        .cv-card > div:first-child {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+            padding-top: 16px !important;
+            padding-bottom: 12px !important;
+        }
+        .cv-body {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
+            gap: 12px;
+        }
+        .cv-section {
+            padding-bottom: 12px;
+        }
+    }
+
+    @media print {
+        @page {
+            size: A4;
+            margin: 8mm 10mm;
+        }
+
+        :global(*),
+        :global(*::before),
+        :global(*::after),
+        :global(html[data-theme] *),
+        :global(html[data-theme] *::before),
+        :global(html[data-theme] *::after) {
+            background: none !important;
+            background-color: transparent !important;
+            background-image: none !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            color-scheme: light !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+        }
+
+        :global(a),
+        :global(a *),
+        :global(html[data-theme] a),
+        :global(html[data-theme] a *) {
+            color: #0056b3 !important;
+            -webkit-text-fill-color: #0056b3 !important;
+            text-decoration: underline !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+        }
+
+        :global(html),
+        :global(body) {
+            background: #fff !important;
+            color: #000000 !important;
+            overflow: visible !important;
+            height: auto !important;
+            min-height: auto !important;
+            position: static !important;
+            font-size: 9.2pt !important;
+            line-height: 1.35 !important;
+        }
+
+
+        /* Override layout scroll wrappers to prevent content truncation */
+        :global(.scroll-container),
+        :global(.workspace-shell),
+        :global(.page-workspace),
+        :global(.flex-1),
+        :global(.flex),
+        :global(main) {
+            overflow: visible !important;
+            height: auto !important;
+            min-height: auto !important;
+            max-height: none !important;
+            position: static !important;
+            display: block !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+        }
+
+        :global(.left-rail),
+        :global(.top-system-bar),
+        :global(footer),
+        :global(.page-header),
+        :global(.download-btn),
+        :global(.page-gradient-layer),
+        :global(.grid-overlay),
+        :global(.cursor),
+        :global(#scroll-to-top),
+        :global(.scroll-to-top-btn),
+        :global(#mobile-drawer),
+        :global(.page-workspace > *::before),
+        :global(.page-workspace > *::after),
+        .page-header,
+        .download-btn,
+        .cv-current-focus {
+             display: none !important;
+             content: none !important;
+        }
+
+        .cv-card {
+            border: none !important;
+            background: transparent !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+            color: #000000 !important;
+        }
+
+        .cv-card :global(h2) {
+            font-size: 1.45rem !important;
+            margin-bottom: 2px !important;
+        }
+
+        .cv-card > div:first-child {
+            padding-top: 0 !important;
+            padding-bottom: 6px !important;
+            margin-bottom: 4px !important;
+            border-bottom: none !important;
+        }
+
+        .cv-body {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            gap: 8px !important;
+        }
+
+        .cv-section {
+            padding-bottom: 8px !important;
+            margin-bottom: 4px !important;
+            border-bottom: none !important;
+        }
+
+        .cv-section:last-of-type {
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        .cv-section-title {
+            font-size: 7.2pt !important;
+            margin-bottom: 4px !important;
+            padding-bottom: 2px !important;
+            border-bottom: 0.5px solid #000000 !important;
+            color: #000000 !important;
+        }
+
+        .cv-list li {
+            font-size: 8.4pt !important;
+            line-height: 1.3 !important;
+            margin-bottom: 1px !important;
+            padding-left: 10px !important;
+        }
+
+        .cv-list li::before {
+            content: "•" !important;
+            font-size: 8.4pt !important;
+            color: #000000 !important;
+            left: 0 !important;
+        }
+
+        .cv-card :global(h4) {
+            font-size: 9.5pt !important;
+        }
+
+        .cv-card :global(p),
+        .cv-card :global(span),
+        .cv-card :global(div) {
+            color: #000000 !important;
+            font-size: 8.6pt !important;
+        }
+
+        .cv-card :global(a) {
+            color: #0056b3 !important;
+            text-decoration: underline !important;
+            font-size: 8.6pt !important;
+        }
+
+        .cv-card :global(.text-\[0\.82rem\]),
+        .cv-card :global(.text-\[var\(--text-secondary\)\]),
+        .cv-card :global(.text-\[var\(--text-muted\)\]),
+        .cv-card :global(span.font-mono) {
+            color: #000000 !important;
+            font-size: 8.2pt !important;
+        }
+
+        /* Tighten spacing between list items and headers */
+        .cv-section :global(.space-y-5),
+        .cv-section :global(.space-y-4) {
+            margin-top: 2px !important;
+        }
+        .cv-section :global(.space-y-5 > * + *),
+        .cv-section :global(.space-y-4 > * + *),
+        .cv-section :global(.space-y-2 > * + *) {
+            margin-top: 5px !important;
         }
     }
 </style>

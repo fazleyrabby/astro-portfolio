@@ -2,7 +2,8 @@
 
 ## Setup
 
-<img width="2306" height="1700" alt="CleanShot 2026-03-30 at 17 12 55@2x" src="https://github.com/user-attachments/assets/b762afda-c4f6-4b58-85a6-982bb787549b" />
+<img width="2668" height="1844" alt="CleanShot 2026-06-08 at 17 12 42@2x" src="https://github.com/user-attachments/assets/dca3379b-3a12-4bb1-bdee-449cee39e316" />
+
 
 1. Set GitHub Repo Secrets:
    - `GROQ_API_KEY`: Your Groq API key

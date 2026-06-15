@@ -17,19 +17,20 @@ const [owner, repo] = (process.env.GITHUB_REPOSITORY || '').split('/');
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-async function loadTopics() {
+async function loadContext() {
   try {
     const { data } = await octokit.repos.getContent({ owner, repo, path: 'data/blog-context.json' });
-    const parsed = JSON.parse(Buffer.from(data.content, 'base64').toString('utf8'));
-    return parsed.topics || [];
+    return JSON.parse(Buffer.from(data.content, 'base64').toString('utf8'));
   } catch {
-    return [];
+    return {};
   }
 }
 
 async function removeUsedTopic(remainingTopics) {
   const { data } = await octokit.repos.getContent({ owner, repo, path: 'data/blog-context.json' });
-  const content = JSON.stringify({ topics: remainingTopics }, null, 2) + '\n';
+  const parsed = JSON.parse(Buffer.from(data.content, 'base64').toString('utf8'));
+  parsed.topics = remainingTopics;
+  const content = JSON.stringify(parsed, null, 2) + '\n';
   await octokit.repos.createOrUpdateFileContents({
     owner, repo,
     path: 'data/blog-context.json',
@@ -158,11 +159,19 @@ async function main() {
   if (!TELEGRAM_TOKEN) throw new Error('TELEGRAM_TOKEN must be set');
   if (!CHAT_ID) throw new Error('TELEGRAM_CHAT_ID must be set');
 
-  let topics = await loadTopics();
+  const contextRaw = await loadContext();
+  let topics = contextRaw.topics || [];
 
   while (topics.length > 0) {
-    const context = topics[0];
+    const nextTopic = topics[0];
     const remainingTopics = topics.slice(1);
+
+    const context = {
+      topic: nextTopic.topic,
+      category: nextTopic.category || contextRaw.category || 'backend',
+      context: nextTopic.context || contextRaw.context || '',
+      notes: nextTopic.notes || contextRaw.notes || '',
+    };
 
     console.log(`Generating post for topic: ${context.topic} (${remainingTopics.length} remaining in queue)`);
     const post = await generatePost(context);

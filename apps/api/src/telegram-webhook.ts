@@ -75,10 +75,21 @@ export const POST: APIRoute = async ({ request }) => {
     if (text.startsWith("/status")) {
       const ctx = await loadContext();
       const topics = ctx.topics || [];
-      if (!topics.length) return reply(chatId, "📝 Queue is empty. Add topics with /topic");
+      
+      const globalDetails = `🌐 *Global Config (Fallbacks):*\n• *Category*: ${ctx.category || "backend"}\n• *Context*: ${ctx.context || "None"}\n• *Notes*: ${ctx.notes || "None"}`;
+      
+      if (!topics.length) {
+        return reply(chatId, `📝 *Queue is empty.*\n\n${globalDetails}\n\nAdd topics with /topic <title>`);
+      }
+      
       const next = topics[0];
+      const nextDetails = `🎯 *Next Up Details:*\n• *Topic*: ${next.topic}\n• *Category*: ${next.category || "Inherited"}\n• *Context*: ${next.context || "Inherited"}\n• *Notes*: ${next.notes || "Inherited"}`;
+      
       const list = topics.map((t, i) => `${i + 1}. ${t.topic}`).join("\n");
-      return reply(chatId, `📝 Queue: ${topics.length} topic(s)\n\nNext Up:\n• ${next.topic}\n\nFull List:\n${list}`);
+      return reply(
+        chatId, 
+        `📝 *Queue: ${topics.length} topic(s)*\n\n${nextDetails}\n\n${globalDetails}\n\n*Full List:*\n${list}`
+      );
     }
 
     if (text.startsWith("/reset")) {
@@ -166,7 +177,7 @@ async function loadContext() {
   }
 }
 
-async function saveContext(ctx: Record<string, string>) {
+async function saveContext(ctx: Record<string, any>) {
   const [owner, repo] = GITHUB_REPOSITORY.split("/");
 
   // Get current sha if file exists
@@ -201,11 +212,15 @@ async function saveContext(ctx: Record<string, string>) {
 
 async function generateAndCommit() {
   const contextRaw = await loadContext();
+  const topics = contextRaw.topics || [];
+  if (!topics.length) throw new Error("No topics in queue. Use /topic first.");
+
+  const nextTopic = topics[0];
   const context = {
-    topic: contextRaw.topic?.split("\n")[0] || "",
-    category: contextRaw.category || "",
-    context: contextRaw.context || "",
-    notes: contextRaw.notes || "",
+    topic: nextTopic.topic,
+    category: nextTopic.category || contextRaw.category || "backend",
+    context: nextTopic.context || contextRaw.context || "",
+    notes: nextTopic.notes || contextRaw.notes || "",
   };
 
   if (!context.topic) throw new Error("No topic set. Use /topic first.");

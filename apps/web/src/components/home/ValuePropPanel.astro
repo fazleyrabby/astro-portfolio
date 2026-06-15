@@ -1,0 +1,151 @@
+---
+import { getLangFromUrl, useTranslations } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<section class="value-prop-panel">
+  <div class="prop-grid">
+    <!-- Left Column: What I Build -->
+    <div class="prop-column">
+      <div class="panel-head">
+        <span class="panel-title">{t('valueprop.whatIBuild.title')}</span>
+      </div>
+      <p class="column-subtitle">{t('valueprop.whatIBuild.desc')}</p>
+      
+      <div class="items-list">
+        <div class="prop-item">
+          <h4 class="item-title">
+            <span class="accent-bullet">■</span> {t('valueprop.whatIBuild.saas')}
+          </h4>
+          <p class="item-desc">{t('valueprop.whatIBuild.saasDesc')}</p>
+        </div>
+        <div class="prop-item">
+          <h4 class="item-title">
+            <span class="accent-bullet">■</span> {t('valueprop.whatIBuild.ecommerce')}
+          </h4>
+          <p class="item-desc">{t('valueprop.whatIBuild.ecommerceDesc')}</p>
+        </div>
+        <div class="prop-item">
+          <h4 class="item-title">
+            <span class="accent-bullet">■</span> {t('valueprop.whatIBuild.payments')}
+          </h4>
+          <p class="item-desc">{t('valueprop.whatIBuild.paymentsDesc')}</p>
+        </div>
+        <div class="prop-item">
+          <h4 class="item-title">
+            <span class="accent-bullet">■</span> {t('valueprop.whatIBuild.apis')}
+          </h4>
+          <p class="item-desc">{t('valueprop.whatIBuild.apisDesc')}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Why Companies Hire Me -->
+    <div class="prop-column">
+      <div class="panel-head">
+        <span class="panel-title">{t('valueprop.whyHire.title')}</span>
+      </div>
+      <p class="column-subtitle">{t('valueprop.whyHire.desc')}</p>
+
+      <div class="items-list">
+        <div class="prop-item">
+          <h4 class="item-title">
+            <span class="accent-bullet">▲</span> {t('valueprop.whyHire.experience')}
+          </h4>
+          <p class="item-desc">{t('valueprop.whyHire.experienceDesc')}</p>
+        </div>
+        <div class="prop-item">
+          <h4 class="item-title">
+            <span class="accent-bullet">▲</span> {t('valueprop.whyHire.laravel')}
+          </h4>
+          <p class="item-desc">{t('valueprop.whyHire.laravelDesc')}</p>
+        </div>
+        <div class="prop-item">
+          <h4 class="item-title">
+            <span class="accent-bullet">▲</span> {t('valueprop.whyHire.architecture')}
+          </h4>
+          <p class="item-desc">{t('valueprop.whyHire.architectureDesc')}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .value-prop-panel {
+    background: var(--bg-base);
+    padding: 0;
+  }
+  .prop-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--grid-line-strong);
+  }
+  @media (max-width: 768px) {
+    .prop-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .prop-column {
+    background: var(--bg-base);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .panel-head {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--grid-line-strong);
+  }
+  .panel-title {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+  }
+  .column-subtitle {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.94rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin: 0;
+  }
+  .items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .prop-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .item-title {
+    font-family: var(--font-sans);
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .accent-bullet {
+    color: var(--accent);
+    font-size: 0.7rem;
+  }
+  .item-desc {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0;
+    padding-left: 14px;
+  }
+</style>

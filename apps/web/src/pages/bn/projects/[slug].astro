@@ -94,6 +94,29 @@ const seoDesc = d.description;
       </dl>
     )}
 
+    {(d.problem || d.solution || d.impact) && (
+      <section class="mb-8 border-b border-[var(--border)] pb-6 flex flex-col gap-5">
+        {d.problem && (
+          <div>
+            <h3 class="font-mono text-[0.62rem] text-[var(--text-muted)] uppercase tracking-wider mb-1">চ্যালেঞ্জ</h3>
+            <p class="text-[0.93rem] text-[var(--text-secondary)] leading-relaxed">{d.problem}</p>
+          </div>
+        )}
+        {d.solution && (
+          <div>
+            <h3 class="font-mono text-[0.62rem] text-[var(--text-muted)] uppercase tracking-wider mb-1">পদ্ধতি ও আর্কিটেকচার</h3>
+            <p class="text-[0.93rem] text-[var(--text-secondary)] leading-relaxed">{d.solution}</p>
+          </div>
+        )}
+        {d.impact && (
+          <div>
+            <h3 class="font-mono text-[0.62rem] text-[var(--accent)] uppercase tracking-wider mb-1">ব্যবসায়িক ও টেকনিক্যাল প্রভাব</h3>
+            <p class="text-[0.93rem] text-[var(--accent)] font-semibold leading-relaxed">{d.impact}</p>
+          </div>
+        )}
+      </section>
+    )}
+
 
     {d.highlights && d.highlights.length > 0 && (
       <section class="mb-7 !py-0">

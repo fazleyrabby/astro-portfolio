@@ -38,7 +38,7 @@ const getMeta = (slug: string) => {
 
   <div class="grid">
     {localized.map((project) => {
-      const { title, description, tech, type, status, role, problem, highlights, thumbnail } = project.data;
+      const { title, description, tech, type, status, role, problem, solution, impact, highlights, thumbnail } = project.data;
       const baseSlug = project.slug.replace(/-bn$/, "");
       const hasCase = !!(problem || (highlights && highlights.length));
       const href = hasCase ? tp(`/projects/${baseSlug}`) : (project.data.live || project.data.github || "#");
@@ -66,7 +66,23 @@ const getMeta = (slug: string) => {
             </span>
           </div>
           <h3 class="card-title">{title}</h3>
-          <p class="card-desc">{description}</p>
+          
+          <div class="card-outcome">
+            <span class="outcome-k">PROBLEM</span>
+            <span class="outcome-v">{problem}</span>
+          </div>
+
+          <div class="card-outcome">
+            <span class="outcome-k">SOLUTION</span>
+            <span class="outcome-v">{solution}</span>
+          </div>
+
+          {impact && (
+            <div class="card-outcome highlight-impact">
+              <span class="outcome-k">IMPACT</span>
+              <span class="outcome-v">{impact}</span>
+            </div>
+          )}
           <div class="card-meta">
             <div class="row"><span class="row-k">ROLE</span><span class="row-v">{role || "Solo Developer"}</span></div>
             <div class="row"><span class="row-k">ARCH</span><span class="row-v" title={arch}>{arch}</span></div>
@@ -191,15 +207,30 @@ const getMeta = (slug: string) => {
     line-height: 1.2;
   }
   .card:hover .card-title { color: var(--accent); }
-  .card-desc {
-    font-size: 0.74rem;
+  .card-outcome {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+  .outcome-k {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+  .outcome-v {
     color: var(--text-secondary);
-    line-height: 1.45;
-    margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+  .highlight-impact .outcome-v {
+    color: var(--accent);
+    font-weight: 600;
   }
   .card-meta {
     border-top: 1px solid var(--border);

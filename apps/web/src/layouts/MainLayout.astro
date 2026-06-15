@@ -128,6 +128,13 @@ const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twit
             document.documentElement.setAttribute("data-theme", themeName);
             localStorage.setItem("data-theme", themeName);
           }
+          if (themeName === "swiss") {
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("color-mode", "light");
+          } else {
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("color-mode", "dark");
+          }
         }
 
         // Sync theme dropdowns

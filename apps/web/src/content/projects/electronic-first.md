@@ -4,6 +4,7 @@ type: "E-commerce / Backend"
 featured: true
 problem: "A high-volume digital marketplace bleeding revenue to chargebacks, manual dispute reconciliation, and missing analytics — with no unified bundle commerce, no fraud engine, and no real-time visibility into customer or product performance."
 solution: "Five years of deep backend work: a multi-rule fraud detection engine, real-time PayPal + Checkout.com dispute sync, ClickHouse-backed analytics, an end-to-end Personalized Gift Card platform, and a versioned REST API powering web, mobile, and an AI chatbot."
+impact: "Reduced chargeback rates, automated dispute tracking, and enabled data-driven decisions on thousands of daily transactions."
 live: "https://www.electronicfirst.com/"
 thumbnail: "https://i.ibb.co.com/bMMPQfw5/image.png"
 description: "High-volume digital gaming & eSIM marketplace processing thousands of daily orders — fraud, disputes, bundles, analytics, and APIs."

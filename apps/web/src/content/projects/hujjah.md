@@ -4,6 +4,7 @@ type: "Web Application / Research Tools"
 featured: true
 problem: "Islamic research tools leak privacy to third-party APIs and lack proper hadith chain analysis."
 solution: "A privacy-first Islamic research engine with AI inference, full Quran/hadith search, and sanad chain visualization."
+impact: "Achieved zero-hallucination semantic search and sub-second hadith sanad chain visualizations completely client-side."
 github: "https://github.com/fazleyrabby/hujjah"
 live: "https://hujjah.fazleyrabbi.xyz/"
 thumbnail: "https://i.ibb.co.com/9mvHKKSD/Chat-GPT-Image-May-1-2026-02-07-30-PM.png"

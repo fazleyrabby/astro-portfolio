@@ -4,6 +4,7 @@ type: "Personal Productivity / Life OS"
 featured: true
 problem: "Individuals need a unified, high-density, and private single source of truth for notes, tasks, reflections, and learning paths without database bloat or vendor lock-in."
 solution: "A personal Life OS dashboard combining bi-directional note linking, structured daily journals, and priority-driven task boards into a fast, self-hostable monolith."
+impact: "Created a private, zero-lock-in dashboard combining bidirectional note-linking, calendar reflections, and tasks."
 github: "https://github.com/fazleyrabby/dailylog"
 thumbnail: "/projects/dailylog.png"
 description: "Personal Life OS & productivity dashboard with bidirectional notes, task boards, and structured journals."

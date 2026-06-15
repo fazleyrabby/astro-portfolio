@@ -83,28 +83,28 @@ const bnHref = currentLang === 'en' && alternateUrl ? alternateUrl : `${siteUrl}
         )
     }
     <script is:inline>
-      // 1. Dark mode (Always default to dark)
+      // 1. Theme and color mode loader
       ;(function() {
-        var t = localStorage.getItem("color-mode");
-        if (!t) {
-          t = "dark";
-        }
-        if (t === "dark") {
-          document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
-        }
-      })();
-
-      // 2. Theme engine (data-theme attribute — additive)
-      ;(function() {
-        var saved = localStorage.getItem("data-theme");
+        var saved = localStorage.getItem("data-theme") || "classic";
         if (saved === "cyberpunk" || saved === "nord" || saved === "sass" || saved === "retro" || saved === "sketch" || saved === "brutal" || saved === "mono" || saved === "terminal") {
           localStorage.removeItem("data-theme");
-          saved = null;
+          saved = "classic";
         }
+
+        // Apply theme attribute
         if (saved && saved !== "classic") {
           document.documentElement.setAttribute("data-theme", saved);
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+        }
+
+        // Classic and FUI are dark themes by default. Swiss is light.
+        if (saved === "swiss") {
+          document.documentElement.classList.remove("dark");
+          localStorage.setItem("color-mode", "light");
+        } else {
+          document.documentElement.classList.add("dark");
+          localStorage.setItem("color-mode", "dark");
         }
       })();
     </script>

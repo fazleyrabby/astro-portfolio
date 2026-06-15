@@ -180,6 +180,13 @@ const navItems = [
             document.documentElement.setAttribute("data-theme", themeName);
             localStorage.setItem("data-theme", themeName);
         }
+        if (themeName === "swiss") {
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("color-mode", "light");
+        } else {
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("color-mode", "dark");
+        }
     }
 
     // Init: sync select to current theme
@@ -198,10 +205,10 @@ const navItems = [
     // Listen for changes
     selects.forEach((s) => {
         s.addEventListener("change", (e) => {
-            setTheme(e.target.value);
+            setTheme((e.target as HTMLSelectElement).value);
             // Sync all selects
             selects.forEach((other) => {
-                other.value = e.target.value;
+                (other as HTMLSelectElement).value = (e.target as HTMLSelectElement).value;
             });
         });
     });

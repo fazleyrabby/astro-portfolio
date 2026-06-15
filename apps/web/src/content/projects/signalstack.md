@@ -4,6 +4,7 @@ type: "AI / Analytics Engine"
 featured: true
 problem: "Global geopolitical and tech news cycles move too fast for manual monitoring, creating a massive noise-to-signal ratio."
 solution: "A high-density analytical terminal that distills vast world-event feeds into real-time summaries and severity scores via multi-provider AI failover."
+impact: "Automated real-time international feed processing, routing multi-provider AI failovers with near-zero inference cost."
 live: "https://signal.fazleyrabbi.xyz/"
 github: "https://github.com/fazleyrabby/signal-stack"
 thumbnail: "https://i.ibb.co.com/1fj68nzp/Clean-Shot-2026-05-25-at-01-57-27.png"

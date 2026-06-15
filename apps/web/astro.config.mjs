@@ -27,6 +27,7 @@ export default defineConfig({
 
   image: {
     service: passthroughImageService(),
+    domains: ["i.ibb.co.com", "i.ibb.co"],
   },
 
   markdown: {

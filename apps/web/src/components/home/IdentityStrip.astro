@@ -29,8 +29,9 @@ const meta = [
         {t("hero.available")}
       </div>
       <h1 class="strip-name">{t("hero.name") || "Fazley Rabbi"}</h1>
-      <p class="strip-role">Backend & Distributed Systems Engineer</p>
+      <p class="strip-role">Laravel & Backend Engineer</p>
       <p class="strip-tagline">{t("hero.tagline")}</p>
+      <p class="strip-body">{t("hero.body")}</p>
     </div>
 
     <div class="strip-actions">
@@ -131,6 +132,14 @@ const meta = [
     max-width: 560px;
     line-height: 1.5;
     margin: 0;
+  }
+  .strip-body {
+    font-family: var(--font-sans);
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    max-width: 560px;
+    line-height: 1.5;
+    margin: 8px 0 0;
   }
   .strip-actions {
     display: flex;

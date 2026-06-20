@@ -7,10 +7,11 @@ solution: "A unified Laravel POS + 3-theme e-commerce storefront on a single cod
 live: "https://pos.fazleyrabbi.xyz/"
 thumbnail: "https://i.ibb.co.com/fYMNZjqd/Clean-Shot-2026-05-25-at-01-58-30.png"
 description: "Unified POS + multi-theme e-commerce on Laravel — sales, stock, returns, storefronts, and Dockerized deploy."
-tech: ["Laravel", "DaisyUI", "Tailwind", "Alpine.js", "MySQL 8", "Redis", "Docker", "Cloudflare Tunnel"]
+tech: ["Laravel", "DaisyUI", "Tailwind", "Alpine.js", "MySQL 8", "Redis", "Docker", "Cloudflare Tunnel", "SSLCommerz", "bKash", "Stripe"]
 status: "Active"
+commits: 87
 position: 4
-period: "Mar 2026 – May 2026"
+period: "Mar 2026 – Present"
 role: "Full-stack Engineer"
 highlights:
   - "Replaced fragmented shop management with a unified POS — sales, purchases, returns, stock movement reports — giving owners a single source of truth."
@@ -26,4 +27,9 @@ scope:
   - "Added LogsActivity trait on core models, Sale/Purchase policies, try-catch-transaction pattern."
   - "Docker stack with Cloudflare Tunnel support and trust proxies; rsync deploy script with rollback."
   - "Comprehensive product seeder (5 categories), demo accounts, OrderSeeder."
+  - "Built professional PDF receipt generation with thermal printer layouts, float overlapping fixes, and font fallbacks."
+  - "Unified report builder across sales, purchases, and stock with date-range filtering."
+  - "Integrated SSLCommerz, bKash, and Stripe payment gateways with per-store payment settings."
+  - "Added shop login before checkout with cart preservation across sessions."
+  - "Compact sidebar layout with toggle, POS keyboard navigation, and fullscreen mode."
 ---

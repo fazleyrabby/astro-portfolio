@@ -52,7 +52,7 @@ import MainLayout from '@layouts/MainLayout.astro';
                             </div>
                             <ul class="cv-list mt-1.5">
                                 <li>Developed and maintained backend systems for a high-volume digital games marketplace processing thousands of daily orders.</li>
-                                <li>Designed a multi-rule checkout fraud detection engine (velocity, fingerprinting, and checkouts) that significantly reduced chargebacks.</li>
+                                <li>Designed a multi-rule checkout fraud detection engine (IP/card/email velocity, BIN/ASN checks, bot fingerprinting, and auth-capture flow) that auto-blocks high-risk payments before fulfilment.</li>
                                 <li>Eliminated manual processes by building real-time PayPal and Checkout.com dispute sync via webhooks and proxy files.</li>
                                 <li>Engineered ClickHouse-backed analytics, providing dashboards for customer spending, gateway fees, and sales trends.</li>
                                 <li>Designed versioned REST APIs and endpoints powering web applications, mobile apps, and customer-facing AI support bots.</li>
@@ -74,13 +74,13 @@ import MainLayout from '@layouts/MainLayout.astro';
                                 <span class="font-mono text-[0.75rem] text-[var(--text-muted)] tracking-wider shrink-0">Jan 2021 – Jul 2021</span>
                             </div>
                             <ul class="cv-list mt-1.5">
-                                <li>Built custom Laravel booking and management applications to improve client operational efficiency.</li>
-                                <li>Implemented security features including multi-factor authentication (2FA) and email verification.</li>
-                                <li>Integrated payment gateways (Stripe, PayPal) and communication tools (Twilio, Mailchimp) for client portals.</li>
-                                <li>Created interactive interfaces and dynamic workflows using jQuery and AJAX.</li>
+                                <li>Built a Bus Ticket booking system with Laravel 8 and Inertia.js.</li>
+                                <li>Developed a CV/Portfolio builder and a Project Management System for clients.</li>
+                                <li>Integrated multiple payment gateways: Razorpay, PayPal, Stripe, and Paystack.</li>
+                                <li>Contributed to an E-bank banking project and interactive jQuery interfaces.</li>
                             </ul>
                             <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
-                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, MySQL, jQuery, AJAX, Git
+                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, Inertia.js, MySQL, jQuery, Git
                             </p>
                         </div>
                     </div>
@@ -111,21 +111,21 @@ import MainLayout from '@layouts/MainLayout.astro';
                             <h4 class="text-[1rem] text-[var(--text-primary)]">
                                 <span class="font-display font-bold">SignalStack</span>
                                 <span class="text-[var(--text-muted)]"> — </span>
-                                <span class="italic text-[0.9rem] text-[var(--text-secondary)]">Real-time data ingestion and processing pipeline</span>
+                                <span class="italic text-[0.9rem] text-[var(--text-secondary)]">Real-time feed ingestion and distillation pipeline</span>
                             </h4>
                             <ul class="cv-list mt-1">
-                                <li>Designed an asynchronous data pipeline using queue architecture to handle high workloads.</li>
-                                <li>Implemented caching strategies to deliver low-latency updates for real-time dashboards.</li>
-                                <li>Built automated workflows to filter and tag incoming signals for quicker data analysis.</li>
+                                <li>Designed an asynchronous data pipeline using queue architecture to handle high-volume feed processing.</li>
+                                <li>Built a multi-provider failover chain (local → Groq → OpenRouter) to distill feeds at near-zero inference cost.</li>
+                                <li>Implemented Redis caching and automated scoring workflows to filter and tag incoming signals.</li>
                             </ul>
                             <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
-                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Next.js, React, Node.js, Caching, Queue Systems, Tailwind
+                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Node.js, NestJS, Redis, Queue Systems, Groq, OpenRouter
                             </p>
                         </div>
 
 
                         <p class="text-[0.88rem] text-[var(--text-muted)]">
-                            <span class="font-semibold text-[var(--text-secondary)]">Other Projects:</span> Faculty Routine Management System, E-Bank System, Lenden Payment Gateway, Timelock Project Management System
+                            <span class="font-semibold text-[var(--text-secondary)]">Other Projects:</span> Hujjah (privacy-first Islamic research engine), LitePOS (POS + e-commerce), DailyLOG (personal Life OS), Larabrix (Laravel module system)
                         </p>
                     </div>
                 </div>
@@ -141,13 +141,13 @@ import MainLayout from '@layouts/MainLayout.astro';
                         <span class="text-[var(--text-secondary)]">Alpine.js, Tailwind CSS, JavaScript, jQuery, Bootstrap</span>
 
                         <span class="font-semibold text-[var(--text-primary)]">Databases</span>
-                        <span class="text-[var(--text-secondary)]">MySQL, ClickHouse, SQLite, FTS5</span>
+                        <span class="text-[var(--text-secondary)]">MySQL, ClickHouse, SQLite, Redis</span>
 
                         <span class="font-semibold text-[var(--text-primary)]">Infrastructure</span>
                         <span class="text-[var(--text-secondary)]">Docker, Linux, Git, GitHub Actions</span>
 
-                        <span class="font-semibold text-[var(--text-primary)]">AI / Data</span>
-                        <span class="text-[var(--text-secondary)]">RAG Pipelines, Transformers.js, llama.cpp, MLX</span>
+                        <span class="font-semibold text-[var(--text-primary)]">Integrations</span>
+                        <span class="text-[var(--text-secondary)]">Payment Gateways, Webhooks, Queue Workers, LLM APIs (Groq, OpenRouter)</span>
                     </div>
                 </div>
 

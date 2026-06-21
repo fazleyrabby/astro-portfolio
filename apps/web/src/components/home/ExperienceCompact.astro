@@ -119,6 +119,7 @@ const rendered = await Promise.all(
     line-height: 1.55;
     margin-top: 4px;
   }
-  .exp-desc :global(ul) { margin: 4px 0 0; padding-left: 18px; }
-  .exp-desc :global(li) { margin-bottom: 2px; }
+  .exp-desc :global(ul) { margin: 4px 0 0; padding-left: 16px; list-style: disc; }
+  .exp-desc :global(li) { margin-bottom: 4px; padding-left: 2px; }
+  .exp-desc :global(li::marker) { color: var(--accent); }
 </style>

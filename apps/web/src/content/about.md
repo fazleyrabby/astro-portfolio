@@ -1,7 +1,7 @@
 ---
 ---
 
-I'm a software engineer focused on backend systems built with Laravel and PHP. Over the past 4.5+ years I've worked across freelance and full-time employment — building everything from multi-tenant SaaS platforms to REST APIs to internal tooling.
+I'm a software engineer focused on backend systems built with Laravel and PHP. Over the past 5+ years I've worked across freelance and full-time employment — building everything from multi-tenant SaaS platforms to REST APIs to internal tooling.
 
 At Electronic First, I work on a high-traffic e-commerce platform (1,500+ commits to main) — building fraud detection engines, real-time payment dispute sync, ClickHouse-backed analytics, a Gift Card platform, bundle commerce, server-side GA4 tracking, and a versioned REST API with Swagger docs.
 

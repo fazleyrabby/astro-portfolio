@@ -104,7 +104,7 @@ export const en = {
   'blog.copy': 'Copy',
   'blog.copied': 'Copied!',
   'home.editorial1': 'Building scalable systems, not just interfaces.',
-  'home.editorial2': 'Four years of real-world code. Built to ship.',
+  'home.editorial2': 'Five years of real-world code. Built to ship.',
   'about.title': 'About — Fazley Rabbi',
   'about.label': 'About',
   'about.tagline': 'Backend architecture & efficient web solutions.',

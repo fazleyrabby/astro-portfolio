@@ -16,7 +16,7 @@ highlights:
   - "Eliminated repetitive scaffolding with a reusable service-layer CRUD engine, drag-and-drop form builder, and media gallery — cutting new-module setup from days to hours."
   - "Removed developer dependency for content updates via a block-based page builder with Tiptap editor and live frontend preview."
   - "Solved combinatorial variant complexity with an attribute matrix product variant generator — computing all valid SKU combinations automatically."
-  - "Added Kanban task board with drag-and-drop and a SaaS billing system with subscription and feature gating for multi-tenant use cases."
+  - "Added Kanban task board with drag-and-drop and a SaaS billing system with subscription and feature gating."
 scope:
   - "Service-layer CRUD engine with scoped search, reusable across modules."
   - "Drag-and-drop form builder: sortable fields, multi-select, radio/checkbox parsing."

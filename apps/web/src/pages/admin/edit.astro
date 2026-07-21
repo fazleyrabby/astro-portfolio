@@ -301,8 +301,8 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       featuredCheck.checked = !!data.featured;
       if (data.published_at) publishedAtInput.value = data.published_at.split('T')[0];
 
-      // Strip frontmatter from content if present
-      const bodyMatch = raw.match(/^---[\s\S]*?---\s*([\s\S]*)$/m);
+      // Strip frontmatter from content if present at the top of the file
+      const bodyMatch = raw.match(/^\s*---\r?\n[\s\S]*?\r?\n---\s*\n?([\s\S]*)$/);
       const body = bodyMatch ? bodyMatch[1].trim() : raw;
       
       console.log("Calling initEditor");

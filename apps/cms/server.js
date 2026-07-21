@@ -400,12 +400,12 @@ async function triggerDeploy() {
 }
 
 app.post('/cms/posts', cmsAuth, async (req, res) => {
-    const { title, content, draft = false, tags = [], published_at } = req.body || {};
+    const { title, content, draft = false, tags = [], published_at, cover_image = null, lang = 'en', translation_of = null } = req.body || {};
     const slug = toSlug(title);
     const status = draft ? 'draft' : 'published';
     const pubDate = published_at ? new Date(published_at) : (status === 'published' ? new Date() : null);
     try {
-        await supabase.from('posts').upsert({ title, slug, content, tags, status, published_at: pubDate });
+        await supabase.from('posts').upsert({ title, slug, content, tags, status, published_at: pubDate, cover_image, lang, translation_of });
         if (status === 'published') triggerDeploy();
         res.status(201).json({ ok: true, slug });
     } catch (err) {
@@ -414,7 +414,7 @@ app.post('/cms/posts', cmsAuth, async (req, res) => {
 });
 
 app.put('/cms/posts/:slug', cmsAuth, async (req, res) => {
-    const { title, content, draft, tags, published_at, featured = false } = req.body || {};
+    const { title, content, draft, tags, published_at, featured = false, cover_image, lang, translation_of } = req.body || {};
     const slug = req.params.slug;
     const status = draft ? 'draft' : 'published';
     const pubDate = published_at ? new Date(published_at) : (status === 'published' ? new Date() : null);
@@ -423,6 +423,9 @@ app.put('/cms/posts/:slug', cmsAuth, async (req, res) => {
         const updates = { title, slug, status, featured, published_at: pubDate };
         if (content !== undefined) updates.content = content;
         if (tags !== undefined) updates.tags = tags;
+        if (cover_image !== undefined) updates.cover_image = cover_image;
+        if (lang !== undefined) updates.lang = lang;
+        if (translation_of !== undefined) updates.translation_of = translation_of;
         const { error } = await supabase.from('posts').update(updates).eq('slug', slug);
         if (error) throw new Error(error.message);
         if (status === 'published') triggerDeploy();

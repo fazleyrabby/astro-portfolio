@@ -10,7 +10,7 @@ thumbnail: "/projects/dailylog.png"
 description: "Personal Life OS & productivity dashboard with bidirectional notes, task boards, and structured journals."
 tech: ["Laravel 12", "PostgreSQL", "Tailwind CSS v4", "Alpine.js", "Vite", "Tiptap", "LibreSpeed", "Supabase"]
 status: "Active"
-position: 3
+position: 14
 period: "Jun 2026 – Present"
 role: "Solo Developer"
 highlights:

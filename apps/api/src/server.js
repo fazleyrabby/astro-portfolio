@@ -295,7 +295,12 @@ bot.on('callback_query', async (ctx) => {
     const data = ctx.callbackQuery.data;
     if (data.startsWith('p_app:')) {
         const slug = data.replace('p_app:', '');
-        const post = aiDrafts.get(slug) || getDraft(slug)?.post;
+        let post = aiDrafts.get(slug) || getDraft(slug)?.post;
+
+        if (!post) {
+            const { data } = await supabase.from('posts').select('*').eq('slug', slug).eq('status', 'draft').maybeSingle();
+            if (data) post = { title: data.title, content: data.content, tags: data.tags };
+        }
 
         if (!post) return ctx.answerCbQuery('Draft expired or not found.');
 
@@ -323,6 +328,7 @@ bot.on('callback_query', async (ctx) => {
         const slug = data.replace('p_rej:', '');
         aiDrafts.delete(slug);
         removeDraft(slug);
+        await supabase.from('posts').delete().eq('slug', slug).eq('status', 'draft');
         await ctx.editMessageText('❌ Post draft rejected and discarded.');
     }
     await ctx.answerCbQuery();

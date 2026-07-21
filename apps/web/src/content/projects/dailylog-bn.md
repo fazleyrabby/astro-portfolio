@@ -10,7 +10,7 @@ thumbnail: "/projects/dailylog.png"
 description: "দ্বিমুখী নোট, টাস্ক বোর্ড এবং কাঠামোগত দিনলিপি সহ ব্যক্তিগত লাইফ ওএস ও প্রোডাক্টিভিটি ড্যাশবোর্ড।"
 tech: ["Laravel 12", "PostgreSQL", "Tailwind CSS v4", "Alpine.js", "Vite", "Marked"]
 status: "Active"
-position: 3
+position: 14
 period: "Jun 2026 – Present"
 role: "Solo Developer"
 highlights:

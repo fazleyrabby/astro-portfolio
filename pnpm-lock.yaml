@@ -48,6 +48,21 @@ importers:
         specifier: ^3.0.1
         version: 3.1.14
 
+  apps/cms:
+    dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.100.1
+        version: 2.104.0
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.6.1
+      github-slugger:
+        specifier: ^2.0.0
+        version: 2.0.0
+      openai:
+        specifier: ^4.104.0
+        version: 4.104.0(ws@8.20.0)(zod@3.25.76)
+
   apps/web:
     dependencies:
       '@astrojs/sitemap':

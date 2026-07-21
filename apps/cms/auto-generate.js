@@ -1,16 +1,18 @@
-import "dotenv/config";
-import { readFileSync, writeFileSync, appendFileSync } from "fs";
+import { readFileSync, writeFileSync, appendFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import fetch from "node-fetch";
 import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
 import { slug as slugify } from "github-slugger";
 
 const __dir = dirname(fileURLToPath(import.meta.url));
+
+// Load .env from project root
+import { config } from "dotenv";
+config({ path: join(__dir, "..", "..", ".env") });
 const logFile = join(__dir, "auto-generate.log");
 const contextsFile = join(__dir, "contexts.json");
-const draftsFile = join(__dir, "drafts.json");
+const draftsFile = join(__dir, "..", "api", "src", "drafts.json");
 
 function log(msg) {
     const ts = new Date().toISOString();
@@ -155,8 +157,19 @@ async function main() {
         writeFileSync(contextsFile, JSON.stringify(contexts, null, 2));
         log("Removed context from list: " + context.topic);
 
-        // Save draft to file (server.js will handle publish)
-        const drafts = JSON.parse(readFileSync(draftsFile, "utf-8") || "[]");
+        // Save draft to Supabase (shared with production server)
+        await supabase.from("posts").upsert({
+            slug: post.slug,
+            title: post.title,
+            content: post.content,
+            tags: post.tags,
+            status: "draft",
+            published_at: null
+        }, { onConflict: "slug" });
+        log("Draft saved to Supabase: " + post.slug);
+
+        // Save draft to file (local fallback)
+        const drafts = existsSync(draftsFile) ? JSON.parse(readFileSync(draftsFile, "utf-8")) : [];
         drafts.push({ slug: post.slug, post, timestamp: Date.now() });
         writeFileSync(draftsFile, JSON.stringify(drafts, null, 2));
 

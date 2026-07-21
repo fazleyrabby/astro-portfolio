@@ -1,23 +1,11 @@
 [
   {
-    "topic": "Building a Robust Event-Driven Architecture in Laravel",
-    "focus": "Decoupling systems using Laravel events and listeners, handling high-volume background tasks, avoiding tight coupling, and event sourcing patterns"
-  },
-  {
-    "topic": "Mastering Database Indexing and Query Optimization for Large Datasets",
-    "focus": "Composite indexes, analyzing slow queries with EXPLAIN, covering indexes, partial indexes, and when to denormalize for performance"
-  },
-  {
     "topic": "Implementing Idempotency in Payment Webhooks using Redis",
     "focus": "Preventing duplicate webhook processing with Redis locks and idempotency keys, exactly-once semantics, and safe retry strategies"
   },
   {
     "topic": "Zero-Downtime Deployments with Laravel Envoy and CI/CD",
     "focus": "Symlink-based deployment, database migration safety during deploys, blue-green deployments, and CI/CD pipeline automation"
-  },
-  {
-    "topic": "Demystifying the Node.js Event Loop for Backend Engineers",
-    "focus": "libuv internals, phases of the event loop, blocking vs non-blocking operations, and practical patterns to avoid event loop starvation"
   },
   {
     "topic": "Effective Background Job Processing at Scale",
@@ -32,11 +20,39 @@
     "focus": "Token bucket vs sliding window algorithms, per-user and per-IP throttling, Redis-backed rate limiters, and graceful 429 responses"
   },
   {
-    "topic": "Building a Custom Authorization System Beyond Laravel Gates",
-    "focus": "RBAC vs ABAC, dynamic permissions, policy caching, row-level security, and multi-tenant permission isolation"
+    "topic": "Laravel Security Hardening: From Common Vulnerabilities to Production Lockdown",
+    "focus": "XSS, CSRF, SQL injection prevention, mass assignment protection, encryption at rest and in transit, secure authentication with 2FA, rate limiting brute force attacks, and security headers"
   },
   {
-    "topic": "Mastering Laravel Service Container and Dependency Injection",
-    "focus": "Binding interfaces, contextual binding, tagged services, lazy resolution, and designing testable service classes"
+    "topic": "Dockerizing Laravel for Local Development and Production",
+    "focus": "Multi-stage Dockerfiles for Laravel, docker-compose with Nginx, PHP-FPM, MySQL, Redis, optimizing image sizes, using volumes for development, and orchestrating with Docker Swarm or Nomad"
+  },
+  {
+    "topic": "Building a Search Engine with Meilisearch and Laravel Scout",
+    "focus": "Full-text search implementation, typo-tolerant search, faceted filtering, ranking rules, syncing models with Scout, custom search engines, and optimizing search index performance"
+  },
+  {
+    "topic": "Advanced Caching Strategies with Redis in Laravel",
+    "focus": "Cache tags, atomic locks, rate limiting with Redis, session management, pagination caching, query result caching invalidation patterns, and Redis Sentinel for high availability"
+  },
+  {
+    "topic": "Designing RESTful APIs That Scale: Versioning, Pagination, and HATEOAS",
+    "focus": "API versioning strategies (URI vs header), cursor-based pagination vs offset pagination, sparse fieldsets, compound documents, API resource classes, and OpenAPI/Swagger documentation"
+  },
+  {
+    "topic": "Implementing a Robust Observability Stack for Laravel",
+    "focus": "Structured logging with Monolog channels and JSON logs, integrating OpenTelemetry for distributed tracing, metrics collection with Prometheus, alerting with Grafana, and Laravel Pulse for real-time monitoring"
+  },
+  {
+    "topic": "Patterns for Building Multi-Tenant SaaS Applications in Laravel",
+    "focus": "Single database vs separate database tenancy, domain-based tenant resolution, tenant-aware caching, middleware for tenant isolation, billing integration with Laravel Cashier, and onboarding workflows"
+  },
+  {
+    "topic": "From Monolith to Microservices: A Pragmatic Laravel Migration Strategy",
+    "focus": "Strangler Fig pattern, identifying bounded contexts, extracting services incrementally, synchronous vs async communication between services, shared data consistency, and API gateway implementation"
+  },
+  {
+    "topic": "Real-Time Data Synchronization with Laravel Broadcasting and WebSockets",
+    "focus": "Pusher vs Soketi vs Laravel Reverb, channel authorization, presence channels, broadcasting events to specific tenants/users, scaling WebSocket connections, and handling reconnection gracefully"
   }
 ]

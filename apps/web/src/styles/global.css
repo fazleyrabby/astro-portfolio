@@ -721,6 +721,38 @@
   /* Premium Code Block Styling */
   /* ------------------------- */
 
+  /* ----------------------------------------- */
+  /* Code blocks: always dark bg + light text   */
+  /* Same in both light and dark mode           */
+  /* ----------------------------------------- */
+
+  /* Force the wrapper to always be dark */
+  .code-block-wrapper {
+    background-color: #1e1e2e !important;
+  }
+
+  /* Force pre inside wrapper to be dark/transparent */
+  .code-block-wrapper pre,
+  #article-content pre {
+    background-color: #1e1e2e !important;
+    color: #cdd6f4 !important;
+  }
+
+  /* Force all text spans/code inside pre to be light */
+  #article-content pre code,
+  #article-content pre code span,
+  #article-content pre span {
+    color: #cdd6f4 !important;
+    background-color: transparent !important;
+    filter: none !important;
+  }
+
+  /* Code block header stays dark in both modes */
+  .code-header {
+    background-color: #181825 !important;
+    border-bottom-color: rgba(255,255,255,0.08) !important;
+  }
+
   /* Inline code highlighting */
   #article-content p>code,
   #article-content li>code {
@@ -974,10 +1006,14 @@
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02), 0 10px 30px rgba(0, 0, 0, 0.1);
   }
 
-  /* Override structural syntax coloring in dark mode for maximum contrast */
-  .dark:not([data-theme="swiss"]) #article-content pre .line,
-  .dark:not([data-theme="swiss"]) #article-content pre span {
-    filter: brightness(1.7) contrast(1.15);
+  /* Override in dark mode: keep brightness boost for Shiki-highlighted spans */
+  .dark #article-content pre .line span {
+    filter: brightness(1.15);
+  }
+
+  /* Light mode: no filter - colors are already forced light */
+  :root:not(.dark) #article-content pre .line span {
+    filter: none;
   }
 
   /* Custom Shiki Scrollbar */

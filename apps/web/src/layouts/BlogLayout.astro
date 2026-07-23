@@ -59,21 +59,31 @@ const { frontmatter } = Astro.props;
     const displayLang = lang.toUpperCase();
     
     const wrapper = document.createElement('div');
-    wrapper.className = 'code-block-wrapper group relative my-6 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden';
+    wrapper.className = 'code-block-wrapper group relative my-6 rounded-lg overflow-hidden';
+    wrapper.style.cssText = 'background-color:#1e1e2e;border:1px solid rgba(255,255,255,0.08);box-shadow:0 10px 30px rgba(0,0,0,0.2);';
     
     const header = document.createElement('div');
-    header.className = 'code-header flex items-center justify-between px-4 py-2 bg-[var(--bg-elevated)] border-b border-[var(--border)]';
+    header.className = 'code-header flex items-center justify-between px-4 py-2 border-b';
+    header.style.cssText = 'background-color:#181825;border-bottom-color:rgba(255,255,255,0.08);';
     header.innerHTML = `
       <div class="flex items-center gap-2">
         <span class="text-[0.65rem] font-mono font-semibold px-2 py-0.5 rounded bg-[var(--accent)]/10 text-[var(--accent)]">${displayLang}</span>
       </div>
-      <button class="copy-btn text-[0.65rem] font-mono px-2 py-0.5 rounded bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--accent)] transition-all opacity-0 group-hover:opacity-100">${txtCopy}</button>
+      <button class="copy-btn text-[0.65rem] font-mono px-2 py-0.5 rounded border border-[rgba(255,255,255,0.12)] text-[rgba(255,255,255,0.5)] hover:text-white hover:border-[var(--accent)] transition-all opacity-0 group-hover:opacity-100" style="background:transparent;">${txtCopy}</button>
     `;
     
     pre.parentNode.insertBefore(wrapper, pre);
     wrapper.appendChild(header);
     wrapper.appendChild(pre);
     pre.className = '!mt-0 !rounded-none !border-0 overflow-x-auto p-4 text-sm leading-relaxed';
+    pre.style.cssText = 'background-color:#1e1e2e!important;color:#cdd6f4!important;margin:0!important;border:none!important;border-radius:0!important;';
+    
+    // Also force all code/span children to use light text
+    code.style.cssText = 'color:#cdd6f4;background:transparent;';
+    code.querySelectorAll('span').forEach(span => {
+      span.style.color = '#cdd6f4';
+      span.style.backgroundColor = 'transparent';
+    });
     
     const btn = header.querySelector('.copy-btn');
     btn.addEventListener('click', async () => {

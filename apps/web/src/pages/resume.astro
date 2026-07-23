@@ -20,7 +20,7 @@ import MainLayout from '@layouts/MainLayout.astro';
         <div class="cv-card">
 
             <!-- Header -->
-            <div class="px-6 sm:px-10 pt-8 pb-6 border-b border-[var(--border)] text-center">
+            <div class="px-6 sm:px-10 pt-8 pb-6 text-center">
                 <h2 class="font-display font-bold text-[clamp(1.4rem,3vw,1.9rem)] text-[var(--text-primary)] leading-tight">Md Fazley Rabbi</h2>
                 <div class="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[0.85rem] text-[var(--text-secondary)]">
                     <a href="mailto:fazley111@gmail.com" class="hover:text-[var(--accent)] transition-colors">fazley111@gmail.com</a>
@@ -207,13 +207,15 @@ import MainLayout from '@layouts/MainLayout.astro';
 
 <style>
     .page-workspace { display: flex; flex-direction: column; gap: 0; max-width: 920px; margin: 0 auto; }
+    /* Suppress global dashed grid dividers on this page */
+    .page-workspace > *::before,
+    .page-workspace > *::after { display: none !important; }
     .page-header {
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 16px;
       align-items: end;
       padding: 16px 0 12px;
-      border-bottom: 1px solid var(--grid-line-strong);
     }
     .page-header-inner { display: flex; flex-direction: column; gap: 2px; }
     .page-kicker {
@@ -271,12 +273,10 @@ import MainLayout from '@layouts/MainLayout.astro';
 
     .cv-section {
         padding-bottom: 32px;
-        border-bottom: 1px solid var(--grid-line-strong);
     }
 
     .cv-section:last-child {
         padding-bottom: 0;
-        border-bottom: none;
     }
 
     .cv-section-title {
@@ -288,7 +288,6 @@ import MainLayout from '@layouts/MainLayout.astro';
         color: var(--accent-text);
         padding-bottom: 8px;
         margin-bottom: 16px;
-        border-bottom: 1px solid var(--grid-line-strong);
     }
 
     .cv-list {

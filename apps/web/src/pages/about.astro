@@ -86,16 +86,16 @@ const t = useTranslations(lang);
   }
 
   .about-card {
-    background: color-mix(in srgb, var(--text-primary) 4%, var(--bg-base));
-    border: 1px solid var(--grid-line-strong);
-    padding: 20px 28px;
-    margin-top: 16px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-top: 24px;
   }
   .about-card :global(.prose) {
-    font-size: 0.9rem;
+    font-size: 0.9375rem;
     color: var(--text-secondary);
   }
-  .about-card :global(.prose p) { margin: 6px 0; line-height: 1.6; }
+  .about-card :global(.prose p) { margin: 12px 0; line-height: 1.6; }
   .about-card :global(.prose h2) {
     font-family: var(--font-mono);
     font-size: 0.72rem;
@@ -103,7 +103,7 @@ const t = useTranslations(lang);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--accent);
-    margin: 18px 0 8px;
+    margin: 24px 0 12px;
     padding-bottom: 6px;
     border-bottom: 1px solid var(--grid-line-strong);
   }
@@ -113,18 +113,18 @@ const t = useTranslations(lang);
     font-size: 0.95rem;
     font-weight: 700;
     color: var(--text-primary);
-    margin: 10px 0 4px;
+    margin: 16px 0 8px;
   }
-  .about-card :global(.prose ul) { margin: 6px 0; padding-left: 18px; }
-  .about-card :global(.prose li) { margin: 2px 0; line-height: 1.55; }
+  .about-card :global(.prose ul) { margin: 12px 0; padding-left: 18px; }
+  .about-card :global(.prose li) { margin: 4px 0; line-height: 1.6; }
   .about-card :global(.prose strong) { color: var(--text-primary); font-weight: 600; }
 
   .contact-section {
-    margin-top: 16px;
-    padding-top: 16px;
+    margin-top: 32px;
+    padding-top: 32px;
     border-top: 1px solid var(--grid-line-strong);
   }
-  .contact-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 12px; }
+  .contact-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px; }
   .contact-title {
     font-family: var(--font-display);
     font-weight: 700;
@@ -138,9 +138,10 @@ const t = useTranslations(lang);
     margin: 2px 0 0;
   }
   .contact-card {
-    background: color-mix(in srgb, var(--text-primary) 4%, var(--bg-base));
-    border: 1px solid var(--grid-line-strong);
-    padding: 16px 20px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-top: 16px;
   }
 
   .social-row {

@@ -1,0 +1,196 @@
+---
+import AsciiAvatar from "./AsciiAvatar.astro";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<div class="operator-card">
+  <!-- Top Operator Card Terminal Header -->
+  <div class="operator-card__header">
+    <div class="operator-card__title-group">
+      <span class="operator-card__status-dot" aria-hidden="true"></span>
+      <span class="operator-card__status-label">OPERATOR // WORKSTATION ONLINE</span>
+    </div>
+    <span class="operator-card__id">ID: FR-8890</span>
+  </div>
+
+  <!-- ASCII Canvas Avatar Container -->
+  <div class="operator-card__avatar-frame">
+    <AsciiAvatar />
+  </div>
+
+  <!-- Operator Specs & Identity Matrix -->
+  <div class="operator-card__body">
+    <div class="operator-card__name-row">
+      <h3 class="operator-card__name">{t("hero.name") || "Fazley Rabbi"}</h3>
+      <span class="operator-card__badge">OPERATOR</span>
+    </div>
+    <p class="operator-card__role">Laravel & Backend Engineer</p>
+
+    <div class="operator-card__grid">
+      <div class="operator-card__stat">
+        <span class="operator-card__label">LOCATION</span>
+        <span class="operator-card__value">Chittagong, BD · UTC+6</span>
+      </div>
+      <div class="operator-card__stat">
+        <span class="operator-card__label">STACK</span>
+        <span class="operator-card__value">Laravel / PHP / MySQL</span>
+      </div>
+      <div class="operator-card__stat">
+        <span class="operator-card__label">STATUS</span>
+        <span class="operator-card__value operator-card__value--accent">{t("status.available") || "Available"}</span>
+      </div>
+      <div class="operator-card__stat">
+        <span class="operator-card__label">INFRA</span>
+        <span class="operator-card__value">Docker / VPS / Redis</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .operator-card {
+    display: flex;
+    flex-direction: column;
+    background: color-mix(in srgb, var(--text-primary) 2.5%, var(--bg-base));
+    border: 1px solid var(--grid-line-strong);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color var(--t-fast) ease, box-shadow var(--t-fast) ease;
+  }
+
+  .operator-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 24px rgba(232, 130, 58, 0.08);
+  }
+
+  .operator-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: color-mix(in srgb, var(--text-primary) 4%, var(--bg-base));
+    border-bottom: 1px solid var(--grid-line);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+  }
+
+  .operator-card__title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .operator-card__status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--accent);
+  }
+
+  .operator-card__id {
+    color: var(--text-muted);
+    font-size: 0.6rem;
+  }
+
+  .operator-card__avatar-frame {
+    position: relative;
+    width: 100%;
+    min-height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--grid-line);
+    overflow: hidden;
+  }
+
+  .operator-card__avatar-frame :global(.ascii-avatar) {
+    min-height: 240px;
+    transform: scale(1.1);
+    transform-origin: center;
+  }
+
+  .operator-card__body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .operator-card__name-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .operator-card__name {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .operator-card__badge {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid rgba(232, 130, 58, 0.25);
+  }
+
+  .operator-card__role {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
+
+  .operator-card__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--grid-line);
+  }
+
+  .operator-card__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .operator-card__label {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+
+  .operator-card__value {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  .operator-card__value--accent {
+    color: var(--accent);
+    font-weight: 600;
+  }
+</style>

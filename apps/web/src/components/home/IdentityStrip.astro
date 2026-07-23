@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import { getLangFromUrl, useTranslations } from "../../i18n/utils";
+import OperatorCard from "../OperatorCard.astro";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -21,262 +22,254 @@ const meta = [
 ];
 ---
 
-<section class="identity-strip">
-  <div class="strip-row strip-row--top">
-    <div class="strip-id">
-      <div class="badge">
-        <span class="badge-dot"></span>
-        {t("hero.available")}
+<section class="v2-hero-strip">
+  <div class="v2-hero-grid">
+    <!-- Left Hero Column: Exact Original Bio & Identity Details -->
+    <div class="v2-hero-info">
+      <div class="v2-hero-status">
+        <span class="v2-status-text">{t("hero.available")}</span>
       </div>
-      <h1 class="strip-name">{t("hero.name") || "Fazley Rabbi"}</h1>
-      <p class="strip-role">Laravel & Backend Engineer</p>
-      <p class="strip-tagline">{t("hero.tagline")}</p>
-      <p class="strip-body">{t("hero.body")}</p>
+
+      <h1 class="v2-hero-name">{t("hero.name") || "Fazley Rabbi"}</h1>
+      <p class="v2-hero-role">Laravel & Backend Engineer</p>
+
+      {t("hero.tagline") && (
+        <p class="v2-hero-tagline">{t("hero.tagline")}</p>
+      )}
+
+      {t("hero.body") && (
+        <p class="v2-hero-body">{t("hero.body")}</p>
+      )}
+
+      <!-- Primary & Secondary Workstation Actions -->
+      <div class="v2-hero-actions">
+        <a href="/resume" class="v2-btn v2-btn--primary">Resume</a>
+        <a href="#projects" class="v2-btn v2-btn--secondary">Projects</a>
+        <a href="mailto:fazley111@gmail.com" class="v2-btn v2-btn--ghost">Contact</a>
+        <div class="v2-hero-links">
+          <a href="https://github.com/fazleyrabby" target="_blank" rel="noreferrer">GH</a>
+          <span class="dot">·</span>
+          <a href="https://www.linkedin.com/in/fazley-rabby/" target="_blank" rel="noreferrer">LN</a>
+          <span class="dot">·</span>
+          <a href="https://fazleyrabbi.xyz" target="_blank" rel="noreferrer">SITE</a>
+        </div>
+      </div>
+
+      <!-- Original Technical Meta Specs Bar -->
+      <div class="v2-meta-grid">
+        {meta.map((m) => (
+          <div class="v2-meta-item">
+            <span class="v2-meta-k">{m.k}</span>
+            <span class="v2-meta-v">{m.v}</span>
+          </div>
+        ))}
+      </div>
     </div>
 
-    <div class="strip-actions">
-      <a href="/resume" class="strip-btn strip-btn--primary">Resume</a>
-      <a href="#projects" class="strip-btn">Projects</a>
-      <a href="mailto:fazley111@gmail.com" class="strip-btn">Contact</a>
-      <div class="strip-links">
-        <a href="https://github.com/fazleyrabby" target="_blank" rel="noreferrer">GH</a>
-        <span class="dot">·</span>
-        <a href="https://www.linkedin.com/in/fazley-rabby/" target="_blank" rel="noreferrer">LN</a>
-        <span class="dot">·</span>
-        <a href="https://fazleyrabby.xyz" target="_blank" rel="noreferrer">SITE</a>
-      </div>
+    <!-- Right Hero Column: Operator Card -->
+    <div class="v2-hero-operator">
+      <OperatorCard />
     </div>
   </div>
-
-  <table class="strip-row--meta">
-    <tbody>
-      <tr class="meta-head-row">
-        {meta.map((m) => <th>{m.k}</th>)}
-      </tr>
-      <tr class="meta-val-row">
-        {meta.map((m) => <td data-k={m.k}>{m.v}</td>)}
-      </tr>
-    </tbody>
-  </table>
 </section>
 
 <style>
-  .identity-strip {
-    border: none;
-    border-radius: 0;
+  .v2-hero-strip {
+    padding: 24px 0 32px;
     background: transparent;
-    box-shadow: none;
-    padding: 20px 16px;
+  }
+
+  .v2-hero-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 36px;
+    align-items: center;
+    width: 100%;
+  }
+
+  @media (max-width: 992px) {
+    .v2-hero-grid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+  }
+
+  .v2-hero-info {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
   }
-  .strip-row--top {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 20px;
-    align-items: end;
-  }
-  @media (max-width: 768px) {
-    .strip-row--top { grid-template-columns: 1fr; align-items: start; }
-  }
-  .badge {
+
+  .v2-hero-status {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--accent);
-    border: 1px solid var(--border);
-    background: var(--accent-dim);
-    padding: 2px 10px;
+    gap: 8px;
+    padding: 3px 10px;
     border-radius: 999px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(232, 130, 58, 0.25);
     width: fit-content;
-    margin-bottom: 8px;
   }
-  .badge-dot {
+
+  .v2-status-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--accent);
-    animation: pulse 2s ease infinite;
+    background-color: var(--accent);
   }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-  .strip-name {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: clamp(1.6rem, 2.6vw, 2.2rem);
-    line-height: 1.05;
-    color: var(--text-primary);
-    margin: 0 0 4px;
-  }
-  .strip-role {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 8px;
-  }
-  .strip-tagline {
-    font-family: var(--font-serif, var(--font-sans));
-    font-style: italic;
-    font-size: 0.92rem;
-    color: var(--text-secondary);
-    max-width: 560px;
-    line-height: 1.5;
-    margin: 0;
-  }
-  .strip-body {
-    font-family: var(--font-sans);
-    font-size: 0.86rem;
-    color: var(--text-muted);
-    max-width: 560px;
-    line-height: 1.5;
-    margin: 8px 0 0;
-  }
-  .strip-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-  }
-  @media (max-width: 768px) {
-    .strip-actions { align-items: flex-start; }
-  }
-  .strip-actions > div,
-  .strip-actions {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  .strip-actions {
-    flex-direction: row;
-    gap: 8px;
-    align-items: center;
-  }
-  .strip-btn {
+
+  .v2-status-text {
     font-family: var(--font-mono);
     font-size: 0.65rem;
     font-weight: 700;
     letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 6px 12px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text-primary);
-    background: var(--bg-surface);
-    transition: all 0.2s ease;
-  }
-  .strip-btn:hover {
-    border-color: var(--accent);
     color: var(--accent);
+    text-transform: uppercase;
   }
-  .strip-btn--primary {
+
+  .v2-hero-name {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .v2-hero-role {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .v2-hero-tagline {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.1rem;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    max-width: 640px;
+    margin: 0;
+  }
+
+  .v2-hero-body {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    max-width: 640px;
+    margin: 0;
+  }
+
+  .v2-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding-top: 8px;
+  }
+
+  .v2-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    transition: all var(--t-fast) ease;
+    text-decoration: none;
+  }
+
+  .v2-btn--primary {
     background: var(--accent);
-    color: var(--bg-base);
-    border-color: var(--accent);
+    color: #080808;
+    border: 1px solid var(--accent);
   }
-  .strip-btn--primary:hover {
+
+  .v2-btn--primary:hover {
     background: transparent;
     color: var(--accent);
   }
-  .strip-links {
+
+  .v2-btn--secondary {
+    background: color-mix(in srgb, var(--text-primary) 4%, var(--bg-base));
+    color: var(--text-primary);
+    border: 1px solid var(--grid-line-strong);
+  }
+
+  .v2-btn--secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .v2-btn--ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--grid-line);
+  }
+
+  .v2-btn--ghost:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .v2-hero-links {
     display: flex;
     align-items: center;
     gap: 6px;
     font-family: var(--font-mono);
-    font-size: 0.62rem;
+    font-size: 0.65rem;
     letter-spacing: 0.06em;
     color: var(--text-muted);
-    margin-left: 8px;
+    margin-left: 6px;
   }
-  .strip-links a:hover { color: var(--accent); }
-  .strip-links .dot { color: var(--border); }
 
-  .strip-row--meta {
-    width: calc(100% + 32px);
-    margin-left: -16px;
-    margin-right: -16px;
-    border-collapse: collapse;
-    table-layout: auto;
-    margin-top: 4px;
-    border-top: 1px solid var(--grid-line);
-    border-bottom: 1px solid var(--grid-line);
-    border-left: none;
-    border-right: none;
+  .v2-hero-links a:hover { color: var(--accent); }
+  .v2-hero-links .dot { color: var(--grid-line-strong); }
+
+  .v2-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--grid-line-strong);
+    margin-top: 6px;
   }
-  .strip-row--meta th,
-  .strip-row--meta td {
-    border: 1px solid var(--grid-line);
-    padding: 8px 14px;
-    text-align: left;
-    min-width: 0;
-    white-space: normal;
-    word-break: break-word;
-    vertical-align: middle;
-  }
-  .strip-row--meta th {
-    font-family: var(--font-mono);
-    font-size: 0.55rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    background: color-mix(in srgb, var(--text-primary) 3%, var(--bg-base));
-  }
-  .strip-row--meta td {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
-  @media (max-width: 1024px) {
-    .strip-row--meta,
-    .strip-row--meta tbody,
-    .strip-row--meta tr { display: block; }
-    .strip-row--meta tr { display: grid; grid-template-columns: repeat(3, 1fr); }
-    .meta-head-row { display: none !important; }
-    .strip-row--meta td {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      white-space: normal;
-    }
-    .strip-row--meta td::before {
-      content: attr(data-k);
-      font-size: 0.55rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      font-weight: 700;
+
+  @media (max-width: 640px) {
+    .v2-meta-grid {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
-  @media (max-width: 540px) {
-    .strip-row--meta tr { grid-template-columns: repeat(2, 1fr); }
+
+  .v2-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
-  .meta-k {
+
+  .v2-meta-k {
     font-family: var(--font-mono);
-    font-size: 0.55rem;
+    font-size: 0.58rem;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-muted);
-    line-height: 1;
   }
-  .meta-v {
+
+  .v2-meta-v {
     font-family: var(--font-mono);
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-primary);
-    line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 </style>

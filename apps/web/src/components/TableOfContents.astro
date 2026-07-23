@@ -1,5 +1,5 @@
 ---
-// TableOfContents.astro — Floating sidebar TOC with scroll-spy
+// TableOfContents.astro — Floating sidebar TOC with scroll-spy and collapse toggle
 // Auto-populates from h2–h4 in #article-content
 ---
 
@@ -7,23 +7,33 @@
 
 <aside id="toc-sidebar" class="toc-sidebar">
   <nav id="toc" class="toc-nav" aria-label="Table of Contents">
-    <span class="toc-label">On this page</span>
+    <div class="flex items-center justify-between mb-4 pb-2 border-b border-[var(--border)]">
+      <span class="toc-label mb-0 pb-0 border-b-0">On this page</span>
+      <button id="toc-collapse-btn" class="toc-action-btn hover:text-[var(--accent)]" title="Collapse Outline">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+      </button>
+    </div>
     <div id="toc-links" class="toc-links"></div>
   </nav>
 </aside>
+
+<!-- Floating expand outline trigger tab -->
+<button id="toc-expand-btn" class="toc-expand-btn hidden" title="Expand Outline">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+</button>
 
 <style>
   /* Floating TOC — fixed on right side */
   .toc-sidebar {
     position: fixed;
-    right: max(1rem, calc((100vw - 72rem) / 2 - 16rem));
+    right: max(1.5rem, calc((100vw - 72rem) / 2 - 16rem));
     top: 50%;
     transform: translateY(-50%) translateX(20px);
     width: 220px;
     z-index: 40;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     background: var(--bg-base);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -34,6 +44,42 @@
     opacity: 1;
     pointer-events: auto;
     transform: translateY(-50%) translateX(0);
+  }
+
+  /* Collapse / Expand styles */
+  .toc-action-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    transition: color 0.2s ease;
+  }
+  .toc-expand-btn {
+    position: fixed;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 9999px;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 40;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+  }
+  .toc-expand-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
   }
 
   /* Mobile TOC Modal overlay mode */
@@ -55,7 +101,7 @@
     opacity: 1 !important;
     pointer-events: auto !important;
     box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-    animation: slideUp 0.3s var(--ease-out-expo) forwards;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   @keyframes slideUp {
@@ -98,9 +144,6 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-secondary);
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border);
   }
 
   .toc-links {
@@ -160,6 +203,9 @@
     .toc-sidebar.toc-visible {
       display: none;
     }
+    .toc-expand-btn {
+      display: none !important;
+    }
   }
 </style>
 
@@ -169,6 +215,8 @@
     const tocLinks = document.getElementById('toc-links');
     const mobileBtn = document.getElementById('mobile-toc-btn');
     const sidebar = document.getElementById('toc-sidebar');
+    const collapseBtn = document.getElementById('toc-collapse-btn');
+    const expandBtn = document.getElementById('toc-expand-btn');
 
     if (!article || !tocLinks || !sidebar) return;
 
@@ -181,6 +229,21 @@
       sidebar.style.display = 'none';
       if(mobileBtn) mobileBtn.style.display = 'none';
       return;
+    }
+
+    // Collapse / Expand handlers
+    if (collapseBtn && expandBtn) {
+      collapseBtn.addEventListener('click', () => {
+        sidebar.classList.remove('toc-visible');
+        sidebar.classList.add('toc-collapsed-state');
+        expandBtn.classList.remove('hidden');
+      });
+
+      expandBtn.addEventListener('click', () => {
+        sidebar.classList.add('toc-visible');
+        sidebar.classList.remove('toc-collapsed-state');
+        expandBtn.classList.add('hidden');
+      });
     }
 
     // Mobile Toggle Logic
@@ -247,8 +310,6 @@
 
     // Scroll spy via scroll listener
     const updateScrollSpyAndProgress = () => {
-
-      // 2. Scroll Spy
       if (isClickScrolling) return;
 
       const scrollOffset = 150; // pixels from the top
@@ -295,6 +356,10 @@
     // Show/hide TOC based on article scroll position (desktop only)
     const tocObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
+        if (sidebar.classList.contains('toc-collapsed-state')) {
+          sidebar.classList.remove('toc-visible');
+          return;
+        }
         if (entry.isIntersecting) {
           sidebar.classList.add('toc-visible');
         } else {

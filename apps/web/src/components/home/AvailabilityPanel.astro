@@ -5,138 +5,35 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const services = [
-  "Backend Development",
-  "Small fixes",
-  "Payment gateway / API integration",
-  "POS, E-commerce solutions",
+  "Production Laravel Applications & Architectures",
+  "High-Volume REST API & Webhook Systems",
+  "Multi-Gateway Payment Integration & Ledgers",
+  "System Performance, Queue Optimization & Docker",
 ];
 ---
 
-<section class="avail-panel">
-  <div class="panel-head">
-    <span class="panel-title">AVAILABILITY</span>
-    <span class="status-pill">
-      <span class="status-dot"></span>
-      OPEN
+<section class="v3-avail-card bg-surface border border-[var(--border)] rounded-lg p-6 flex flex-col justify-between h-full shadow-sm">
+  <div class="v3-card-head mb-4 pb-3 border-b border-[var(--grid-line)] flex items-center justify-between">
+    <span class="font-mono text-xs font-bold tracking-widest text-[var(--accent)] uppercase">AVAILABILITY & SERVICES</span>
+    <span class="font-mono text-[0.65rem] font-bold tracking-wider px-2 py-0.5 rounded bg-[var(--accent-dim)] text-[var(--accent)] border border-rgba(234,88,12,0.25)">
+      {t("status.available") || "AVAILABLE"}
     </span>
   </div>
 
-  <div class="avail-body">
-    <span class="avail-label">Available for</span>
-    <ul class="avail-list">
-      {services.map((s) => <li>{s}</li>)}
+  <div class="v3-avail-body my-auto space-y-3">
+    <span class="font-mono text-[0.65rem] font-bold uppercase tracking-wider text-theme-muted block">AVAILABLE FOR COLLABORATION</span>
+    <ul class="space-y-2">
+      {services.map((s) => (
+        <li class="font-sans text-base text-theme-primary flex items-start gap-2">
+          <span class="text-[var(--accent)] font-bold shrink-0">›</span>
+          <span>{s}</span>
+        </li>
+      ))}
     </ul>
   </div>
 
-  <div class="avail-actions">
-    <a href="mailto:fazley111@gmail.com" class="avail-btn avail-btn--primary">Email</a>
-    <a href="/resume" class="avail-btn">Resume</a>
-    <a href="https://www.linkedin.com/in/fazley-rabby/" target="_blank" rel="noreferrer" class="avail-btn">LinkedIn</a>
+  <div class="v3-avail-actions flex gap-2 pt-4 border-t border-[var(--grid-line)] mt-4 font-mono text-xs">
+    <a href="mailto:fazley111@gmail.com" class="flex-1 text-center py-2 rounded bg-[var(--accent)] text-[#080808] font-bold uppercase tracking-wider hover:opacity-90 transition-opacity">Email Console</a>
+    <a href="/resume" class="flex-1 text-center py-2 rounded bg-[var(--grid-line)] text-theme-primary font-bold uppercase tracking-wider border border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors">Resume</a>
   </div>
 </section>
-
-<style>
-  .avail-panel {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--bg-card);
-    box-shadow: var(--shadow-main);
-    padding: 16px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .panel-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-  .panel-title {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--text-secondary);
-  }
-  .status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-family: var(--font-mono);
-    font-size: 0.55rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    padding: 2px 8px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: var(--accent-dim);
-  }
-  .status-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--accent);
-    animation: pulse 2s ease infinite;
-  }
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-  .avail-body { display: flex; flex-direction: column; gap: 6px; }
-  .avail-label {
-    font-family: var(--font-mono);
-    font-size: 0.58rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-  }
-  .avail-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .avail-list li {
-    font-size: 0.82rem;
-    color: var(--text-primary);
-    padding-left: 12px;
-    position: relative;
-  }
-  .avail-list li::before {
-    content: "›";
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-  }
-  .avail-actions {
-    display: flex;
-    gap: 6px;
-    margin-top: auto;
-  }
-  .avail-btn {
-    flex: 1;
-    text-align: center;
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 8px 6px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text-primary);
-    background: var(--bg-surface);
-    transition: all 0.2s ease;
-  }
-  .avail-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .avail-btn--primary {
-    background: var(--accent);
-    color: var(--bg-base);
-    border-color: var(--accent);
-  }
-  .avail-btn--primary:hover { background: transparent; color: var(--accent); }
-</style>

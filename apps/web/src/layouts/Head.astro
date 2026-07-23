@@ -92,7 +92,7 @@ const bnHref = currentLang === 'en' && alternateUrl ? alternateUrl : `${siteUrl}
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
     {
         isProduction && (
             <script
@@ -122,28 +122,25 @@ const bnHref = currentLang === 'en' && alternateUrl ? alternateUrl : `${siteUrl}
         )
     }
     <script is:inline>
-      // 1. Theme and color mode loader
+      // 1. Color mode loader
       ;(function() {
-        var saved = localStorage.getItem("data-theme") || "classic";
-        if (saved === "cyberpunk" || saved === "nord" || saved === "sass" || saved === "retro" || saved === "sketch" || saved === "brutal" || saved === "mono" || saved === "terminal") {
-          localStorage.removeItem("data-theme");
-          saved = "classic";
+        var mode = localStorage.getItem("color-mode");
+        if (!mode) {
+          mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
         }
-
-        // Apply theme attribute
-        if (saved && saved !== "classic") {
-          document.documentElement.setAttribute("data-theme", saved);
-        } else {
-          document.documentElement.removeAttribute("data-theme");
-        }
-
-        // Classic and FUI are dark themes by default. Swiss is light.
-        if (saved === "swiss") {
-          document.documentElement.classList.remove("dark");
-          localStorage.setItem("color-mode", "light");
-        } else {
+        if (mode === "dark") {
           document.documentElement.classList.add("dark");
-          localStorage.setItem("color-mode", "dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      })();
+
+      // 2. LeftRail collapse state blocker
+      ;(function() {
+        if (localStorage.getItem("left-rail-collapsed") === "true") {
+          document.documentElement.classList.add("left-rail-collapsed");
+        } else {
+          document.documentElement.classList.remove("left-rail-collapsed");
         }
       })();
     </script>
@@ -153,9 +150,9 @@ const bnHref = currentLang === 'en' && alternateUrl ? alternateUrl : `${siteUrl}
         --bg-base: #fafaf9;
         --text-primary: #1c1917;
         --accent: #E8823A;
-        --font-display: "Spectral", serif;
-        --font-sans: "DM Sans", sans-serif;
-        --font-mono: "JetBrains Mono", monospace;
+        --font-display: "Newsreader", serif;
+        --font-sans: "IBM Plex Sans", sans-serif;
+        --font-mono: "IBM Plex Mono", monospace;
       }
       .dark {
         --bg-base: #080808;

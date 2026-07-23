@@ -22,104 +22,50 @@ const rendered = await Promise.all(
 );
 ---
 
-<section class="exp-panel">
-  <div class="panel-head">
-    <span class="panel-title">{t("experience.title").toUpperCase()}</span>
-  </div>
+<section class="py-12 border-b border-[var(--grid-line)]">
+  <div class="max-w-[1100px] mx-auto px-4">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="font-serif font-bold text-2xl md:text-3xl text-theme-primary">{t("experience.title") || "Career Journey"}</h2>
+      <span class="font-mono text-xs text-theme-muted tracking-wider">2021 — PRESENT</span>
+    </div>
 
-  <ol class="exp-list">
-    {rendered.map((item) => (
-      <li class="exp-item">
-        <div class="exp-head">
-          <a
-            href={item.data.link ?? "#"}
-            target="_blank"
-            rel="noreferrer"
-            class="exp-company"
-          >
-            {item.data.title}
-          </a>
-          <span class="exp-period">{item.data.from} — {item.data.to}</span>
+    <div class="relative pl-6 border-l border-[var(--grid-line-strong)] space-y-12">
+      {rendered.map((item) => (
+        <div class="relative">
+          <!-- Timeline Bullet Node -->
+          <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-base border-2 border-[var(--accent)] flex items-center justify-center">
+            <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+              <a href={item.data.link ?? "#"} target="_blank" rel="noreferrer" class="font-sans font-bold text-lg text-theme-primary hover:text-[var(--accent)] transition-colors">
+                {item.data.title}
+              </a>
+              <span class="font-mono text-xs text-theme-muted">{item.data.from} — {item.data.to}</span>
+            </div>
+            
+            <div class="font-mono text-xs text-[var(--accent)] uppercase tracking-wider mb-3">
+              {item.data.role}
+            </div>
+
+            <div class="font-sans text-sm text-theme-secondary leading-relaxed space-y-2">
+              <item.Content />
+            </div>
+          </div>
         </div>
-        <span class="exp-role">{item.data.role}</span>
-        <div class="exp-desc"><item.Content /></div>
-      </li>
-    ))}
-  </ol>
+      ))}
+    </div>
+  </div>
 </section>
 
 <style>
-  .exp-panel {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--bg-card);
-    box-shadow: var(--shadow-main);
-    padding: 16px;
-  }
-  .panel-head {
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 12px;
-  }
-  .panel-title {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--text-secondary);
-  }
-  .exp-list {
-    list-style: none;
+  :global(.v3-exp-list) {
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
   }
-  .exp-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 14px 0;
-    border-bottom: 1px dashed var(--border);
+  :global(.case-section ul) {
+    list-style-type: disc;
+    padding-left: 1.25rem;
   }
-  .exp-item:first-child { padding-top: 4px; }
-  .exp-item:last-child { border-bottom: none; padding-bottom: 4px; }
-  .exp-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .exp-company {
-    font-family: var(--font-sans);
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--text-primary);
-    transition: color 0.2s ease;
-  }
-  .exp-company:hover { color: var(--accent); }
-  .exp-period {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .exp-role {
-    font-family: var(--font-sans);
-    font-style: italic;
-    font-size: 0.8rem;
-    color: var(--accent);
-  }
-  .exp-desc {
-    font-size: 0.82rem;
-    color: var(--text-secondary);
-    line-height: 1.55;
-    margin-top: 4px;
-  }
-  .exp-desc :global(ul) { margin: 4px 0 0; padding-left: 16px; list-style: disc; }
-  .exp-desc :global(li) { margin-bottom: 4px; padding-left: 2px; }
-  .exp-desc :global(li::marker) { color: var(--accent); }
 </style>

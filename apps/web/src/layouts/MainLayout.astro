@@ -2,63 +2,145 @@
 import Head from "./Head.astro";
 import LeftRail from "./LeftRail.astro";
 import TopBar from "./TopBar.astro";
-import Footer from "./Footer.astro";
 import "../styles/global.css";
 import ScrollToTop from "@components/ScrollToTop.astro";
 import Analytics from "@vercel/analytics/astro";
 import { getLangFromUrl } from "../i18n/utils";
 
-const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twitterCard, twitterImage, twitterTitle, twitterDescription, articlePublishedTime, articleModifiedTime, articleAuthor, articleTags, lang = getLangFromUrl(Astro.url), altUrl } = Astro.props;
+const {
+  title,
+  description,
+  ogTitle,
+  ogDescription,
+  ogImage,
+  ogUrl,
+  ogType,
+  twitterCard,
+  twitterImage,
+  twitterTitle,
+  twitterDescription,
+  articlePublishedTime,
+  articleModifiedTime,
+  articleAuthor,
+  articleTags,
+  lang = getLangFromUrl(Astro.url),
+  altUrl,
+} = Astro.props;
 ---
 
 <html lang={lang}>
-  <Head {title} {description} {ogTitle} {ogDescription} {ogImage} {ogUrl} {ogType} {twitterCard} {twitterImage} {twitterTitle} {twitterDescription} {articlePublishedTime} {articleModifiedTime} {articleAuthor} {articleTags} />
-  <body class="font-sans min-h-screen relative bg-[var(--bg-base)] text-[var(--text-primary)] antialiased overflow-hidden">
+  <Head
+    {title}
+    {description}
+    {ogTitle}
+    {ogDescription}
+    {ogImage}
+    {ogUrl}
+    {ogType}
+    {twitterCard}
+    {twitterImage}
+    {twitterTitle}
+    {twitterDescription}
+    {articlePublishedTime}
+    {articleModifiedTime}
+    {articleAuthor}
+    {articleTags}
+  />
+  <body
+    class="font-sans min-h-screen relative bg-[var(--bg-base)] text-[var(--text-primary)] antialiased overflow-hidden"
+  >
     <Analytics />
-    <div class="page-gradient-layer" aria-hidden="true"></div>
-    <div class="grid-overlay" aria-hidden="true">
-      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-    </div>
-    <div class="cursor" aria-hidden="true"></div>
 
     <div class="flex min-h-screen w-screen overflow-hidden">
       <!-- Left persistent sidebar dock -->
       <LeftRail />
 
       <!-- Main Content pane -->
-      <div class="flex-1 flex flex-col min-h-screen h-screen overflow-hidden relative">
+      <div
+        class="flex-1 flex flex-col min-h-screen h-screen overflow-hidden relative"
+      >
         <TopBar altUrl={altUrl} />
 
         <!-- Main Workspace scrollable content container -->
-        <div class="flex-1 overflow-y-auto w-full relative z-10 flex flex-col scroll-container">
+        <div
+          class="flex-1 overflow-y-auto w-full relative z-10 flex flex-col scroll-container"
+        >
           <div class="flex-1 workspace-shell">
             <slot />
           </div>
-          <Footer />
         </div>
       </div>
     </div>
-    
+
+    <!-- Floating Layout Expand Tabs (Desktop only) -->
+    <button id="v2-desktop-sidebar-expand-btn" class="v2-sidebar-expand-btn" title="Expand Sidebar">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+      </svg>
+    </button>
+
     <ScrollToTop />
-    
+
+    <script>
+      function initLayoutSidebars() {
+        const sidebarToggle = document.getElementById("v2-desktop-sidebar-toggle-aside");
+        const sidebarExpand = document.getElementById("v2-desktop-sidebar-expand-btn");
+
+        // Load initial states from localStorage
+        if (localStorage.getItem("left-rail-collapsed") === "true") {
+          document.documentElement.classList.add("left-rail-collapsed");
+          document.body.classList.add("left-rail-collapsed");
+        } else {
+          document.documentElement.classList.remove("left-rail-collapsed");
+          document.body.classList.remove("left-rail-collapsed");
+        }
+
+        // Bind LeftRail Toggle
+        if (sidebarToggle) {
+          const newBtn = sidebarToggle.cloneNode(true);
+          sidebarToggle.parentNode?.replaceChild(newBtn, sidebarToggle);
+          newBtn.addEventListener("click", () => {
+            document.documentElement.classList.add("left-rail-collapsed");
+            document.body.classList.add("left-rail-collapsed");
+            localStorage.setItem("left-rail-collapsed", "true");
+          });
+        }
+        if (sidebarExpand) {
+          const newBtn = sidebarExpand.cloneNode(true);
+          sidebarExpand.parentNode?.replaceChild(newBtn, sidebarExpand);
+          newBtn.addEventListener("click", () => {
+            document.documentElement.classList.remove("left-rail-collapsed");
+            document.body.classList.remove("left-rail-collapsed");
+            localStorage.setItem("left-rail-collapsed", "false");
+          });
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", initLayoutSidebars);
+      document.addEventListener("astro:page-load", initLayoutSidebars);
+      if (document.readyState !== "loading") {
+        initLayoutSidebars();
+      }
+    </script>
+
     <script>
       const initAnimations = async () => {
-        const { default: Lenis } = await import('lenis');
-        const { gsap } = await import('gsap');
-        const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+        const { default: Lenis } = await import("lenis");
+        const { gsap } = await import("gsap");
+        const { ScrollTrigger } = await import("gsap/ScrollTrigger");
         gsap.registerPlugin(ScrollTrigger);
 
         // Initialize Lenis on scrollable container instead of window (essential for sidebar setup)
-        const scrollContainer = document.querySelector('.scroll-container');
+        const scrollContainer = document.querySelector(".scroll-container");
         if (scrollContainer) {
-          const lenis = new Lenis({ 
+          const lenis = new Lenis({
             wrapper: scrollContainer as HTMLElement,
             content: scrollContainer.firstElementChild as HTMLElement,
-            duration: 1.2, 
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) 
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
           });
 
-          lenis.on('scroll', ScrollTrigger.update);
+          lenis.on("scroll", ScrollTrigger.update);
 
           gsap.ticker.add((time) => {
             lenis.raf(time * 1000);
@@ -70,19 +152,6 @@ const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twit
         await import("../scripts/animations.js");
       };
 
-      // Custom Cursor Logic (Critical - keep it fast but optimized)
-      const cursor = document.querySelector('.cursor') as HTMLElement;
-      if (cursor && window.matchMedia('(pointer: fine)').matches) {
-        document.addEventListener('mousemove', (e) => {
-          cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
-        }, { passive: true });
-
-        document.querySelectorAll('a, button, .btn-magnetic').forEach((el) => {
-          el.addEventListener('mouseenter', () => cursor.classList.add('cursor--hover'));
-          el.addEventListener('mouseleave', () => cursor.classList.remove('cursor--hover'));
-        });
-      }
-
       // Defer non-critical animations
       if (window.requestIdleCallback) {
         requestIdleCallback(() => {
@@ -92,72 +161,13 @@ const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twit
         setTimeout(initAnimations, 1000);
       }
     </script>
-    
-    <script is:inline>
-      // Pin grid lines to actual rendered shell edges
-      (function() {
-        const root = document.documentElement;
-        let raf = 0;
-        function update() {
-          const shell = document.querySelector('.workspace-shell');
-          if (!shell) return;
-          const r = shell.getBoundingClientRect();
-          root.style.setProperty('--shell-actual-left', Math.round(r.left) + 'px');
-          root.style.setProperty('--shell-actual-right', Math.round(r.right) + 'px');
-          root.style.setProperty('--shell-actual-width', Math.round(r.width) + 'px');
-        }
-        function schedule() {
-          if (raf) cancelAnimationFrame(raf);
-          raf = requestAnimationFrame(update);
-        }
-        schedule();
-        window.addEventListener('resize', schedule);
-        window.addEventListener('load', schedule);
-        document.addEventListener('DOMContentLoaded', schedule);
-      })();
-    </script>
 
-    <script is:inline>
-      // Theme Switcher Syncing Logic
-      ;(function() {
-        function setTheme(themeName) {
-          if (themeName === "classic" || themeName === "sass") {
-            document.documentElement.removeAttribute("data-theme");
-            localStorage.removeItem("data-theme");
-          } else {
-            document.documentElement.setAttribute("data-theme", themeName);
-            localStorage.setItem("data-theme", themeName);
-          }
-          if (themeName === "swiss") {
-            document.documentElement.classList.remove("dark");
-            localStorage.setItem("color-mode", "light");
-          } else {
-            document.documentElement.classList.add("dark");
-            localStorage.setItem("color-mode", "dark");
-          }
-        }
-
-        // Sync theme dropdowns
-        const currentTheme = document.documentElement.getAttribute("data-theme") || 
-                             localStorage.getItem("data-theme") || "classic";
-        const themeSelects = document.querySelectorAll("#theme-select, #theme-select-mobile");
-        themeSelects.forEach(s => {
-          s.value = currentTheme === "sass" ? "classic" : currentTheme;
-        });
-
-        themeSelects.forEach(s => {
-          s.addEventListener("change", (e) => {
-            setTheme(e.target.value);
-            // Sync all selectors
-            themeSelects.forEach(other => {
-              other.value = e.target.value;
-            });
-          });
-        });
-      })();
-    </script>
-    
-    <script is:inline define:vars={{ apiUrl: import.meta.env.PUBLIC_API_URL || 'https://cms.fazleyrabbi.xyz' }}>
+    <script
+      is:inline
+      define:vars={{
+        apiUrl: import.meta.env.PUBLIC_API_URL || "https://cms.fazleyrabbi.xyz",
+      }}
+    >
       const trackVisitor = () => {
         if (!sessionStorage.getItem("visitor_ip")) {
           fetch(`${apiUrl}/track`, {
@@ -186,7 +196,7 @@ const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twit
       if (window.requestIdleCallback) {
         requestIdleCallback(trackVisitor);
       } else {
-        window.addEventListener('load', trackVisitor);
+        window.addEventListener("load", trackVisitor);
       }
     </script>
   </body>

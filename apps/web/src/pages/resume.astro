@@ -257,20 +257,20 @@ import MainLayout from '@layouts/MainLayout.astro';
     .download-btn:hover { border-color: var(--accent); color: var(--accent); }
 
     .cv-card {
-      background: color-mix(in srgb, var(--text-primary) 4%, var(--bg-base));
-      border: 1px solid var(--grid-line-strong);
-      padding: 20px 28px;
-      margin-top: 16px;
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin-top: 32px;
     }
     .cv-card section { padding: 0 !important; }
     .cv-body {
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 32px;
     }
 
     .cv-section {
-        padding-bottom: 16px;
+        padding-bottom: 32px;
         border-bottom: 1px solid var(--grid-line-strong);
     }
 
@@ -281,13 +281,13 @@ import MainLayout from '@layouts/MainLayout.astro';
 
     .cv-section-title {
         font-family: var(--font-mono);
-        font-size: 0.68rem;
-        font-weight: 700;
-        letter-spacing: 0.12em;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
         text-transform: uppercase;
         color: var(--accent-text);
-        padding-bottom: 4px;
-        margin-bottom: 8px;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
         border-bottom: 1px solid var(--grid-line-strong);
     }
 
@@ -313,11 +313,11 @@ import MainLayout from '@layouts/MainLayout.astro';
     }
 
     /* Compact internal sizes */
-    .cv-card :global(h2) { font-size: 1.4rem !important; }
-    .cv-card :global(h3.cv-section-title) { font-size: 0.68rem !important; }
-    .cv-card :global(h4) { font-size: 0.95rem !important; }
-    .cv-card :global(p), .cv-card :global(span), .cv-card :global(div) { font-size: 0.86rem; }
-    .cv-card :global(.font-mono) { font-size: 0.68rem !important; }
+    .cv-card :global(h2) { font-size: 1.375rem !important; font-family: var(--font-display) !important; }
+    .cv-card :global(h3.cv-section-title) { font-size: 0.75rem !important; font-family: var(--font-mono) !important; }
+    .cv-card :global(h4) { font-size: 1rem !important; font-family: var(--font-display) !important; }
+    .cv-card :global(p), .cv-card :global(li) { font-size: 0.875rem !important; font-family: var(--font-sans) !important; line-height: 1.55 !important; }
+    .cv-card :global(span.font-mono), .cv-card :global(div.font-mono) { font-size: 0.75rem !important; font-family: var(--font-mono) !important; }
 
     @media (max-width: 640px) {
         .page-header {

@@ -23,81 +23,62 @@ if (segments.length > 0) {
 }
 ---
 
-<div class="top-system-bar flex items-center justify-between h-12 px-6 border-b border-[var(--border)] bg-[var(--bg-base)] w-full z-30">
-  <!-- Left: Breadcrumb -->
-  <div class="flex items-center gap-2 font-mono text-[0.68rem] tracking-wider text-[var(--text-muted)] uppercase">
-    <a href={translatePath("/")} class="hover:text-[var(--accent)] transition-colors">WORKSPACE</a>
-    <span class="text-[var(--border-hover)]">/</span>
+<div class="top-system-bar flex items-center justify-between h-10 px-4 border-b border-[var(--border)] bg-[var(--bg-base)] w-full z-30 select-none">
+  <!-- Left: Breadcrumb / Path -->
+  <div class="flex items-center gap-1.5 font-mono text-[0.65rem] tracking-wider text-[var(--text-muted)] uppercase">
+    <a href={translatePath("/")} class="hover:text-[var(--accent)] transition-colors font-medium">WORKSPACE</a>
+    <span class="text-[var(--border)] font-light">/</span>
     <span class="text-[var(--text-primary)] font-semibold">{sectionName}</span>
     {segments.length > 1 && (
       <>
-        <span class="text-[var(--border-hover)]">/</span>
-        <span class="text-[var(--accent)] max-w-[120px] truncate">{segments[1]}</span>
+        <span class="text-[var(--border)] font-light">/</span>
+        <span class="text-[var(--accent)] font-semibold max-w-[150px] truncate">{segments[1]}</span>
       </>
     )}
   </div>
 
   <!-- Right: Status / Actions -->
-  <div class="flex items-center gap-4">
-    <!-- Mobile Navigation Toggle / Hamburger -->
-    <div class="flex md:hidden items-center gap-2">
-      <select
-        id="theme-select-mobile"
-        class="theme-select font-mono text-[0.6rem] uppercase tracking-wider bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-muted)] rounded px-2 py-0.5 cursor-pointer hover:border-[var(--accent)] transition-colors outline-none"
-        aria-label="Select theme"
-      >
-        <option value="classic">Classic</option>
-        <option value="swiss">Swiss Systems</option>
-        <option value="fui">FUI Experimental</option>
-      </select>
+  <div class="flex items-center gap-3">
+    <!-- Mobile Hamburger & Controls -->
+    <div class="v2-topbar-mobile-controls items-center gap-2">
+      <button id="v2-theme-toggle-mobile" class="p-1 rounded border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--accent)]" title="Toggle Light/Dark Theme">
+        <svg class="w-3.5 h-3.5 dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg class="w-3.5 h-3.5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>
+      </button>
       <LangToggle altUrl={altUrl} />
-      <button id="mobile-menu-toggle" class="p-1.5 text-[var(--text-secondary)] hover:text-[var(--accent)] rounded border border-[var(--border)]" aria-label="Toggle Menu">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <button id="mobile-menu-toggle" class="p-1 text-[var(--text-secondary)] hover:text-[var(--accent)] rounded border border-[var(--border)]" aria-label="Toggle Menu">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
-    </div>
-
-    <!-- Desktop Lang & availability badge -->
-    <div class="hidden md:flex items-center gap-4">
-      <select
-        id="theme-select"
-        class="theme-select font-mono text-[0.68rem] uppercase tracking-wider bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-muted)] rounded px-2 py-0.5 cursor-pointer hover:border-[var(--accent)] transition-colors outline-none"
-        aria-label="Select theme"
-      >
-        <option value="classic">Classic</option>
-        <option value="swiss">Swiss Systems</option>
-        <option value="fui">FUI Experimental</option>
-      </select>
-      <LangToggle altUrl={altUrl} />
     </div>
   </div>
 </div>
 
 <!-- Mobile Drawer Menu (Hidden by default) -->
-<div id="mobile-drawer" class="fixed inset-0 bg-black/60 z-50 hidden md:hidden flex justify-end">
-  <div class="w-64 bg-[var(--bg-base)] h-full border-l border-[var(--border)] p-6 flex flex-col justify-between">
+<div id="mobile-drawer" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex justify-end">
+  <div class="w-64 bg-[var(--bg-base)] h-full border-l border-[var(--border)] p-6 flex flex-col justify-between shadow-xl">
     <div class="flex flex-col gap-6">
       <div class="flex items-center justify-between pb-4 border-b border-[var(--border)]">
         <span class="font-display font-bold text-lg text-[var(--text-primary)]">Fazley<span class="text-[var(--accent)]">.</span></span>
         <button id="mobile-drawer-close" class="p-1 text-[var(--text-secondary)] hover:text-[var(--accent)]">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
       </div>
       
       <nav class="flex flex-col gap-4">
-        <a href={translatePath("/")} class="mobile-drawer-link text-sm font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.home')}</a>
-        <a href={translatePath("/projects/")} class="mobile-drawer-link text-sm font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.work')}</a>
-        <a href={translatePath("/posts/")} class="mobile-drawer-link text-sm font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.blog')}</a>
-        <a href={translatePath("/uses/")} class="mobile-drawer-link text-sm font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.uses')}</a>
-        <a href={translatePath("/resume/")} class="mobile-drawer-link text-sm font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.resume')}</a>
-        <a href={translatePath("/about/")} class="mobile-drawer-link text-sm font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.contact')}</a>
+        <a href={translatePath("/")} class="mobile-drawer-link text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.home')}</a>
+        <a href={translatePath("/projects/")} class="mobile-drawer-link text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.work')}</a>
+        <a href={translatePath("/posts/")} class="mobile-drawer-link text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.blog')}</a>
+        <a href={translatePath("/uses/")} class="mobile-drawer-link text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.uses')}</a>
+        <a href={translatePath("/resume/")} class="mobile-drawer-link text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.resume')}</a>
+        <a href={translatePath("/about/")} class="mobile-drawer-link text-xs font-mono uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--accent)]">{t('nav.contact')}</a>
       </nav>
     </div>
     
-    <div class="border-t border-[var(--border)] pt-4 text-center text-[0.65rem] font-mono text-[var(--text-muted)]">
+    <div class="border-t border-[var(--border)] pt-4 text-center text-[0.6rem] font-mono text-[var(--text-muted)]">
       © {new Date().getFullYear()} FAZLEY.XYZ
     </div>
   </div>
@@ -123,15 +104,43 @@ if (segments.length > 0) {
   toggleBtn?.addEventListener("click", openDrawer);
   closeBtn?.addEventListener("click", closeDrawer);
   
+  // Mobile theme toggle
+  const themeToggleMobile = document.getElementById("v2-theme-toggle-mobile");
+  themeToggleMobile?.addEventListener("click", () => {
+    const isDark = document.documentElement.classList.contains("dark");
+    if (isDark) {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("color-mode", "light");
+    } else {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("color-mode", "dark");
+    }
+  });
+
   // Close drawer when clicking layout links or clicking outside
   drawerLinks.forEach(link => link.addEventListener("click", closeDrawer));
   drawer?.addEventListener("click", (e) => {
     if (e.target === drawer) closeDrawer();
   });
+
+
 </script>
 
 <style>
   .top-system-bar {
     transition: background-color var(--t-base), border-color var(--t-base);
+  }
+  .v2-topbar-mobile-controls {
+    display: none;
+  }
+  @media (max-width: 900px) {
+    .v2-topbar-mobile-controls {
+      display: flex !important;
+    }
+  }
+  @media (min-width: 901px) {
+    #mobile-drawer {
+      display: none !important;
+    }
   }
 </style>

@@ -3,85 +3,79 @@ import MainLayout from "@layouts/MainLayout.astro";
 import { Content as UsesMarkdown } from "../content/uses.md";
 ---
 
-<MainLayout title="Uses">
-    <main class="page-workspace">
-        <header class="page-header">
-            <div class="page-header-inner">
-                <span class="page-kicker">/ USES</span>
-                <h1 class="page-title">Tools &amp; Setup</h1>
-                <p class="page-sub">Hardware, software, and daily-driver tools.</p>
-            </div>
-        </header>
+<MainLayout title="Workbench & Setup — Fazley Rabbi">
+  <main class="v2-uses-workspace max-w-[800px] mx-auto px-4 py-12">
+    <header class="v2-uses-header pb-6 border-b border-[var(--grid-line-strong)] mb-8">
+      <span class="font-mono text-xs text-[var(--accent)] tracking-wider uppercase mb-1 block">/ WORKBENCH</span>
+      <h1 class="font-serif font-bold text-3xl text-theme-primary leading-tight mb-2">Setup & Workbench</h1>
+      <p class="font-sans text-sm text-theme-secondary">Hardware specifications, software workspace components, and learning environments deployed daily.</p>
+    </header>
 
-        <div class="uses-card">
-            <article class="prose prose-neutral dark:prose-invert max-w-none">
-                <UsesMarkdown />
-            </article>
-        </div>
-    </main>
+    <!-- Flat borderless container rendering the exact markdown data -->
+    <div class="v2-uses-content">
+      <article class="prose prose-neutral dark:prose-invert max-w-none">
+        <UsesMarkdown />
+      </article>
+    </div>
+  </main>
 </MainLayout>
 
 <style>
-    .page-workspace { max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; }
-    .page-header {
-        padding: 16px 0 12px;
-        border-bottom: 1px solid var(--grid-line-strong);
-    }
-    .page-header-inner { display: flex; flex-direction: column; gap: 2px; }
-    .page-kicker {
-        font-family: var(--font-mono);
-        font-size: 0.62rem;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        color: var(--accent);
-    }
-    .page-title {
-        font-family: var(--font-display);
-        font-weight: 700;
-        font-size: clamp(1.5rem, 2.6vw, 2rem);
-        line-height: 1.05;
-        color: var(--text-primary);
-        margin: 0;
-    }
-    .page-sub {
-        font-family: var(--font-serif, var(--font-sans));
-        font-style: italic;
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        margin: 2px 0 0;
-    }
-    .uses-card {
-        background: color-mix(in srgb, var(--text-primary) 4%, var(--bg-base));
-        border: 1px solid var(--grid-line-strong);
-        padding: 20px 28px;
-        margin-top: 16px;
-    }
-    .uses-card :global(.prose) {
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-    }
-    .uses-card :global(.prose h2) {
-        font-family: var(--font-mono);
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--accent);
-        margin: 20px 0 8px;
-        padding-bottom: 6px;
-        border-bottom: 1px solid var(--grid-line-strong);
-    }
-    .uses-card :global(.prose h2:first-child) { margin-top: 0; }
-    .uses-card :global(.prose h3) {
-        font-family: var(--font-display);
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin: 12px 0 4px;
-    }
-    .uses-card :global(.prose p) { margin: 6px 0; line-height: 1.55; }
-    .uses-card :global(.prose ul) { margin: 6px 0; padding-left: 18px; }
-    .uses-card :global(.prose li) { margin: 2px 0; line-height: 1.55; }
-    .uses-card :global(.prose hr) { margin: 16px 0; border-color: var(--grid-line-strong); }
-    .uses-card :global(.prose strong) { color: var(--text-primary); font-weight: 600; }
+  .v2-uses-content :global(.prose) {
+    font-size: 1rem;
+    color: var(--text-secondary);
+  }
+  .v2-uses-content :global(.prose h2) {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-top: 32px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--grid-line-strong);
+  }
+  .v2-uses-content :global(.prose h3) {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-style: italic;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 24px;
+    margin-bottom: 8px;
+  }
+  .v2-uses-content :global(.prose p) {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 12px 0;
+  }
+  .v2-uses-content :global(.prose ul) {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin: 12px 0;
+  }
+  .v2-uses-content :global(.prose li) {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 6px 0;
+  }
+  .v2-uses-content :global(.prose strong) {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .v2-uses-content :global(.prose hr) {
+    border: none;
+    border-top: 1px solid var(--grid-line-strong);
+    margin: 24px 0;
+  }
+  .v2-uses-content :global(.prose blockquote) {
+    border-left: 2px solid var(--accent);
+    padding-left: 16px;
+    font-style: italic;
+    color: var(--text-muted);
+  }
 </style>

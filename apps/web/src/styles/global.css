@@ -3,22 +3,23 @@
 @tailwind utilities;
 
 :root {
-  --noise-opacity: 0.12;
-  --bg-base: #fafaf9;
-  --bg-surface: transparent;
-  --bg-card: transparent;
-  --border: rgba(0, 0, 0, 0.08);
-  --border-hover: rgba(232, 130, 58, 0.5);
-  --accent: #E8823A;
-  --accent-dim: rgba(232, 130, 58, 0.1);
-  --accent-glow: 0 0 40px rgba(232, 130, 58, 0.1);
-  --accent-text: #c25e17;
-  --text-primary: #1c1917;
-  --text-secondary: #44403c;
-  --text-muted: #78716c;
-  --font-display: "Spectral", serif;
-  --font-sans: "DM Sans", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --noise-opacity: 0.02;
+  --bg-base: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-card: #ffffff;
+  --border: #e2e8f0;
+  --border-hover: rgba(234, 88, 12, 0.4);
+  --accent: #ea580c;
+  --accent-secondary: #0284c7;
+  --accent-dim: rgba(234, 88, 12, 0.08);
+  --accent-glow: 0 4px 20px rgba(234, 88, 12, 0.08);
+  --accent-text: #ea580c;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #57606a;
+  --font-display: "Newsreader", serif;
+  --font-sans: "Plus Jakarta Sans", "IBM Plex Sans", sans-serif;
+  --font-mono: "Plus Jakarta Sans", "IBM Plex Sans", sans-serif;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -36,45 +37,36 @@
 
   --font-heading: var(--font-display);
   --font-body: var(--font-sans);
-  --shadow-main: 0 4px 12px rgba(0, 0, 0, 0.05);
-  --radius: 4px;
+  --shadow-main: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --radius: 6px;
   --border-width: 1px;
 
   /* Spatial grid system tokens */
-  --rail-w: 76px;
+  --rail-w: 240px;
   --content-max: 1280px;
   --shell-pad: 16px;
   --shell-gutter: clamp(40px, 12vw, 240px);
-  --grid-line: rgba(0, 0, 0, 0.12);
-  --grid-line-strong: rgba(0, 0, 0, 0.18);
-
-  /* Spacing scale (4px base) */
-  --sp-1: 4px;
-  --sp-2: 8px;
-  --sp-3: 12px;
-  --sp-4: 16px;
-  --sp-5: 20px;
-  --sp-6: 24px;
-  --sp-8: 32px;
-  --sp-10: 40px;
+  --grid-line: rgba(148, 163, 184, 0.12);
+  --grid-line-strong: rgba(148, 163, 184, 0.22);
 }
 
 .dark {
-  --noise-opacity: 0.08;
-  --bg-base: #080808;
-  --bg-surface: transparent;
-  --bg-card: transparent;
-  --grid-line: rgba(255, 255, 255, 0.10);
-  --grid-line-strong: rgba(255, 255, 255, 0.16);
-  --border: rgba(255, 255, 255, 0.07);
-  --border-hover: rgba(232, 130, 58, 0.4);
-  --accent: #E8823A;
-  --accent-dim: rgba(232, 130, 58, 0.12);
-  --accent-glow: 0 0 60px rgba(232, 130, 58, 0.14);
+  --noise-opacity: 0.05;
+  --bg-base: #121212;
+  --bg-surface: #18181b;
+  --bg-card: #18181b;
+  --grid-line: rgba(255, 255, 255, 0.06);
+  --grid-line-strong: rgba(255, 255, 255, 0.12);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(234, 88, 12, 0.4);
+  --accent: #ea580c;
+  --accent-secondary: #38bdf8;
+  --accent-dim: rgba(234, 88, 12, 0.12);
+  --accent-glow: 0 4px 20px rgba(234, 88, 12, 0.12);
   --accent-text: var(--accent);
-  --text-primary: #F0EDE8;
-  --text-secondary: #A8A29E;
-  --text-muted: #57534E;
+  --text-primary: #f4f4f5;
+  --text-secondary: #d4d4d8;
+  --text-muted: #a1a1aa;
 
   /* Theme Tokens (Classic Dark) */
   --color-bg: var(--bg-base);
@@ -82,331 +74,52 @@
   --color-surface: var(--bg-card);
   --color-border: var(--border);
   --color-accent: var(--accent);
-  --shadow-main: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-main: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
 /* ============================================
-   THEME OVERRIDES
-   html[data-theme] has higher specificity than
-   both :root (0,0,0) and .dark (0,1,0), so
-   these always win when a theme is active.
+   THEME SYSTEM (Light & Dark)
    ============================================ */
-
-html[data-theme="swiss"] {
-  --grid-line: rgba(0, 0, 0, 0.14);
-  --grid-line-strong: rgba(0, 0, 0, 0.22);
-  --bg-base: #f5f5f4;
-  --bg-surface: transparent;
-  --bg-card: transparent;
-  --border: #dddddc;
-  --border-hover: #d8232a;
-  --accent: #d8232a;
-  --accent-dim: rgba(216, 35, 42, 0.06);
-  --accent-glow: none;
-  --accent-text: #d8232a;
-  --text-primary: #000000;
-  --text-secondary: #2c2c2c;
-  --text-muted: #6e6e6e;
-  --noise-opacity: 0.02;
-  --color-bg: #f5f5f4;
-  --color-text: #000000;
-  --color-surface: var(--bg-card);
-  --color-border: #dddddc;
-  --color-accent: #d8232a;
-  --shadow-main: none;
-  --radius: 0px;
-  --border-width: 1px;
-}
-
-html[data-theme="swiss"] .prose {
-  --tw-prose-body: var(--text-secondary);
-  --tw-prose-headings: var(--text-primary);
-  --tw-prose-lead: var(--text-secondary);
-  --tw-prose-links: var(--accent-text);
-  --tw-prose-bold: var(--text-primary);
-  --tw-prose-counters: var(--text-primary);
-  --tw-prose-bullets: var(--text-primary);
-  --tw-prose-hr: var(--border);
-  --tw-prose-quotes: var(--text-secondary);
-  --tw-prose-quote-borders: var(--accent);
-  --tw-prose-captions: var(--text-muted);
-  --tw-prose-code: var(--text-primary);
-  --tw-prose-pre-code: var(--text-primary);
-  --tw-prose-pre-bg: var(--bg-card);
-  --tw-prose-th-borders: var(--border);
-  --tw-prose-td-borders: var(--border);
-
-  --tw-prose-invert-body: var(--text-secondary);
-  --tw-prose-invert-headings: var(--text-primary);
-  --tw-prose-invert-lead: var(--text-secondary);
-  --tw-prose-invert-links: var(--accent-text);
-  --tw-prose-invert-bold: var(--text-primary);
-  --tw-prose-invert-counters: var(--text-primary);
-  --tw-prose-invert-bullets: var(--text-primary);
-  --tw-prose-invert-hr: var(--border);
-  --tw-prose-invert-quotes: var(--text-secondary);
-  --tw-prose-invert-quote-borders: var(--accent);
-  --tw-prose-invert-captions: var(--text-muted);
-  --tw-prose-invert-code: var(--text-primary);
-  --tw-prose-invert-pre-code: var(--text-primary);
-  --tw-prose-invert-pre-bg: var(--bg-card);
-  --tw-prose-invert-th-borders: var(--border);
-  --tw-prose-invert-td-borders: var(--border);
-  
-  --tw-prose-invert-th: var(--text-primary);
-  color: var(--tw-prose-invert-body) !important;
-}
-
-html[data-theme="fui"] {
-  --grid-line: rgba(255, 107, 0, 0.16);
-  --grid-line-strong: rgba(255, 107, 0, 0.28);
-  --bg-base: #030406;
-  --bg-surface: transparent;
-  --bg-card: transparent;
-  --border: rgba(255, 107, 0, 0.25);
-  --border-hover: #00e5ff;
-  --accent: #ff6b00;
-  --accent-dim: rgba(255, 107, 0, 0.08);
-  --accent-glow: 0 0 10px rgba(255, 107, 0, 0.15);
-  --accent-text: #ff6b00;
-  --text-primary: #f0ede8;
-  --text-secondary: #ff9e59;
-  --text-muted: #88644e;
-  --noise-opacity: 0.04;
-  --color-bg: #030406;
-  --color-text: #f0ede8;
-  --color-surface: var(--bg-card);
-  --color-border: rgba(255, 107, 0, 0.25);
-  --color-accent: #ff6b00;
-  --shadow-main: 0 0 10px rgba(255, 107, 0, 0.15);
-  --radius: 2px;
-  --border-width: 1px;
-}
-
-html[data-theme="fui"] .prose {
-  --tw-prose-body: var(--text-secondary);
-  --tw-prose-headings: var(--text-primary);
-  --tw-prose-lead: var(--text-secondary);
-  --tw-prose-links: var(--accent-text);
-  --tw-prose-bold: var(--text-primary);
-  --tw-prose-counters: var(--text-primary);
-  --tw-prose-bullets: var(--text-primary);
-  --tw-prose-hr: var(--border);
-  --tw-prose-quotes: var(--text-secondary);
-  --tw-prose-quote-borders: var(--accent);
-  --tw-prose-captions: var(--text-muted);
-  --tw-prose-code: var(--text-primary);
-  --tw-prose-pre-code: var(--text-primary);
-  --tw-prose-pre-bg: var(--bg-card);
-  --tw-prose-th-borders: var(--border);
-  --tw-prose-td-borders: var(--border);
-
-  --tw-prose-invert-body: var(--text-secondary);
-  --tw-prose-invert-headings: var(--text-primary);
-  --tw-prose-invert-lead: var(--text-secondary);
-  --tw-prose-invert-links: var(--accent-text);
-  --tw-prose-invert-bold: var(--text-primary);
-  --tw-prose-invert-counters: var(--text-primary);
-  --tw-prose-invert-bullets: var(--text-primary);
-  --tw-prose-invert-hr: var(--border);
-  --tw-prose-invert-quotes: var(--text-secondary);
-  --tw-prose-invert-quote-borders: var(--accent);
-  --tw-prose-invert-captions: var(--text-muted);
-  --tw-prose-invert-code: var(--text-primary);
-  --tw-prose-invert-pre-code: var(--text-primary);
-  --tw-prose-invert-pre-bg: var(--bg-card);
-  --tw-prose-invert-th-borders: var(--border);
-  --tw-prose-invert-td-borders: var(--border);
-  
-  --tw-prose-invert-th: var(--text-primary);
-  color: var(--tw-prose-invert-body) !important;
-}
-
-
-/* * {
-  transition:
-  background-color 0.2s ease,
-  color 0.2s ease,
-  border-color 0.2s ease,
-  box-shadow 0.2s ease,
-  transform 0.1s ease;
-} */
-
-/* Apply dynamic border width and effects for themes */
-.border {
-  border-width: var(--border-width);
-}
-
-.border-t {
-  border-top-width: var(--border-width);
-}
-
-.border-b {
-  border-bottom-width: var(--border-width);
-}
-
-.border-l {
-  border-left-width: var(--border-width);
-}
-
-.border-r {
-  border-right-width: var(--border-width);
-}
-
-.border-x {
-  border-left-width: var(--border-width);
-  border-right-width: var(--border-width);
-}
-
-.border-y {
-  border-top-width: var(--border-width);
-  border-bottom-width: var(--border-width);
-}
-
-.border,
-.border-t,
-.border-b,
-.border-l,
-.border-r,
-.border-x,
-.border-y {
-  border-color: var(--color-border);
-}
-
-/* Theme specific overrides for all bordered elements */
-html[data-theme="swiss"] .border,
-html[data-theme="swiss"] .border-t,
-html[data-theme="swiss"] .border-b,
-html[data-theme="swiss"] .border-l,
-html[data-theme="swiss"] .border-r,
-html[data-theme="swiss"] .border-x,
-html[data-theme="swiss"] .border-y {
-  border-color: #dddddc !important;
-}
-
-html[data-theme="fui"] .border,
-html[data-theme="fui"] .border-t,
-html[data-theme="fui"] .border-b,
-html[data-theme="fui"] .border-l,
-html[data-theme="fui"] .border-r,
-html[data-theme="fui"] .border-x,
-html[data-theme="fui"] .border-y {
-  border-color: rgba(255, 107, 0, 0.25) !important;
-}
-
-html[data-theme="swiss"] .post-card,
-html[data-theme="swiss"] .post-card-filler,
-html[data-theme="swiss"] .cv-card,
-html[data-theme="swiss"] .uses-card,
-html[data-theme="swiss"] .about-card,
-html[data-theme="swiss"] .contact-card,
-html[data-theme="swiss"] .case-card {
-  background: #ffffff !important;
-}
-
-html[data-theme="swiss"] .project-card,
-html[data-theme="swiss"] .post-card-legacy {
-  border: 1px solid #dddddc !important;
-  background-color: transparent !important;
-  box-shadow: none !important;
-  border-radius: 0px !important;
-  transition: border-color 0.2s ease !important;
-}
-html[data-theme="swiss"] .project-card:hover,
-html[data-theme="swiss"] .post-card:hover {
-  border-color: #d8232a !important;
-  transform: none !important;
-}
-
-html[data-theme="fui"] .project-card,
-html[data-theme="fui"] .post-card {
-  position: relative;
-  border: 1px solid rgba(255, 107, 0, 0.25) !important;
-  background-color: transparent !important;
-  box-shadow: 0 0 10px rgba(255, 107, 0, 0.05) !important;
-  transition: all 0.25s ease !important;
-}
-html[data-theme="fui"] .project-card:hover,
-html[data-theme="fui"] .post-card:hover {
-  border-color: #00e5ff !important;
-  box-shadow: 0 0 15px rgba(0, 229, 255, 0.15) !important;
-  transform: translateY(-2px);
-}
-html[data-theme="fui"] .project-card::before,
-html[data-theme="fui"] .post-card::before,
-html[data-theme="fui"] .project-card::after,
-html[data-theme="fui"] .post-card::after {
-  content: "";
-  position: absolute;
-  width: 6px; height: 6px;
-  pointer-events: none;
-  transition: border-color 0.25s ease;
-}
-html[data-theme="fui"] .project-card::before,
-html[data-theme="fui"] .post-card::before {
-  top: -1px; left: -1px;
-  border-top: 2px solid var(--accent);
-  border-left: 2px solid var(--accent);
-}
-html[data-theme="fui"] .project-card::after,
-html[data-theme="fui"] .post-card::after {
-  bottom: -1px; right: -1px;
-  border-bottom: 2px solid var(--accent);
-  border-right: 2px solid var(--accent);
-}
-html[data-theme="fui"] .project-card:hover::before,
-html[data-theme="fui"] .post-card:hover::before,
-html[data-theme="fui"] .project-card:hover::after,
-html[data-theme="fui"] .post-card:hover::after {
-  border-color: #00e5ff;
-}
-
-/* Enforce theme radius globally */
-[class*="rounded"] {
-  border-radius: var(--radius) !important;
-}
-
-/* Except for special cases like circle dots or full-pills if they should stay round */
-.rounded-full,
-.badge-dot,
-.avail-dot,
-.cursor {
-  border-radius: 9999px !important;
-}
-
-/* Enforce light Shiki theme for Swiss theme */
-html[data-theme="swiss"] .astro-code,
-html[data-theme="swiss"] .shiki {
-  background-color: #ffffff !important;
-  color: #24292e !important;
-  border: 1px solid #dddddc !important;
-}
-
-html[data-theme="swiss"] .astro-code span,
-html[data-theme="swiss"] .shiki span {
-  filter: none !important;
-}
-
-html[data-theme="swiss"] .shiki.nord {
-  display: none !important;
-}
-
-html[data-theme="swiss"] .shiki.github-light {
-  display: block !important;
-}
 
 @layer base {
   html {
     scroll-behavior: smooth;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-sans), system-ui, sans-serif;
+    scrollbar-width: thin;
+    scrollbar-color: var(--grid-line-strong) transparent;
   }
+
+  /* Global minimal scrollbar — webkit */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--grid-line-strong);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+  }
+  ::-webkit-scrollbar-corner { background: transparent; }
 
   body {
     background: var(--color-bg);
     color: var(--color-text);
     -webkit-font-smoothing: antialiased;
-    font-size: 1.02rem;
+    font-size: 0.9375rem;
     line-height: 1.5;
+  }
+
+  pre,
+  code,
+  kbd,
+  samp,
+  .prose pre,
+  .prose code,
+  .prose kbd,
+  .prose samp,
+  #article-content pre,
+  #article-content code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
   }
 
   body::before {
@@ -645,57 +358,6 @@ html[data-theme="swiss"] .shiki.github-light {
     transform: translateY(1px);
   }
 
-
-
-  /* Swiss theme buttons */
-  html[data-theme="swiss"] .btn-primary {
-    border: 1px solid var(--accent) !important;
-    background-color: var(--accent) !important;
-    color: #ffffff !important;
-    border-radius: 0px !important;
-    box-shadow: none !important;
-    transition: all 0.2s ease !important;
-  }
-  html[data-theme="swiss"] .btn-primary:hover {
-    background-color: #a5181e !important;
-    border-color: #a5181e !important;
-  }
-  html[data-theme="swiss"] .btn-ghost {
-    border: 1px solid var(--border) !important;
-    background-color: transparent !important;
-    color: var(--text-primary) !important;
-    border-radius: 0px !important;
-  }
-  html[data-theme="swiss"] .btn-ghost:hover {
-    background-color: var(--bg-surface) !important;
-    border-color: var(--text-primary) !important;
-  }
-
-  /* FUI theme buttons */
-  html[data-theme="fui"] .btn-primary {
-    border: 1px solid var(--accent) !important;
-    background-color: var(--accent-dim) !important;
-    color: var(--accent) !important;
-    box-shadow: 0 0 8px rgba(255, 107, 0, 0.1) !important;
-    border-radius: 2px !important;
-  }
-  html[data-theme="fui"] .btn-primary:hover {
-    border-color: #00e5ff !important;
-    color: #00e5ff !important;
-    background-color: rgba(0, 229, 255, 0.08) !important;
-    box-shadow: 0 0 12px rgba(0, 229, 255, 0.2) !important;
-  }
-  html[data-theme="fui"] .btn-ghost {
-    border: 1px solid var(--border) !important;
-    background-color: transparent !important;
-    color: var(--text-secondary) !important;
-    border-radius: 2px !important;
-  }
-  html[data-theme="fui"] .btn-ghost:hover {
-    border-color: var(--accent) !important;
-    color: var(--accent) !important;
-    background-color: var(--accent-dim) !important;
-  }
 
   .editorial-break {
     padding: clamp(2rem, 4vw, 3rem) 0;
@@ -947,6 +609,7 @@ html[data-theme="swiss"] .shiki.github-light {
 @layer utilities {
   /* Persistent spatial grid overlay (Zed-style structural guides) */
   .grid-overlay {
+    display: none !important;
     position: fixed;
     inset: 0;
     pointer-events: none;
@@ -985,19 +648,17 @@ html[data-theme="swiss"] .shiki.github-light {
     .grid-overlay { display: none; }
   }
 
-  /* Centered workspace shell — symmetric fluid gutters from rail-edge and viewport-right */
+  /* Centered workspace shell — simple margin-centered workspace matching app shell */
   .workspace-shell {
     width: 100%;
     max-width: var(--content-max);
     margin-inline: auto;
-    padding-inline: var(--shell-pad);
-    padding-block: var(--sp-4);
+    padding-inline: 24px;
+    padding-block: 24px;
   }
   @media (min-width: 1024px) {
     .workspace-shell {
-      width: round(down, calc(100vw - var(--rail-w) - var(--shell-gutter) * 2.3), 2px);
-      max-width: none;
-      padding-inline: 0;
+      padding-inline: 32px;
     }
   }
 
@@ -1335,5 +996,41 @@ html[data-theme="swiss"] .shiki.github-light {
 
   #article-content pre::-webkit-scrollbar-thumb:hover {
     background: var(--accent);
+  }
+
+  /* Sidebar (LeftRail) Collapse Styles */
+  html.left-rail-collapsed .v2-left-rail,
+  body.left-rail-collapsed .v2-left-rail {
+    display: none !important;
+  }
+
+  /* Floating Layout Expand buttons */
+  .v2-sidebar-expand-btn {
+    position: fixed;
+    left: 1.25rem;
+    top: 7px;
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 52;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+    display: none;
+  }
+  .v2-sidebar-expand-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+  html.left-rail-collapsed .v2-sidebar-expand-btn,
+  body.left-rail-collapsed .v2-sidebar-expand-btn {
+    display: flex !important;
   }
 }

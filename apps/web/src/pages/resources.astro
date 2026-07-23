@@ -20,14 +20,14 @@ const getResources = (id) => allResources.find((r) => r.id === id)?.data || [];
     <main class="max-w-6xl mx-auto px-6 py-12">
         <div class="mb-14">
             <span class="section-label">Resources</span>
-            <h1 class="font-display font-bold text-[clamp(1.85rem,4.5vw,2.75rem)] text-[var(--text-primary)] leading-tight">Resources</h1>
-            <p class="font-serif italic text-[1.2rem] text-[var(--text-secondary)] mt-4">A curated collection of helpful resources and inspirations</p>
+            <h1 class="font-display font-bold text-[clamp(1.85rem,4.5vw,2.75rem)] text-theme-primary leading-tight">Resources</h1>
+            <p class="font-serif italic text-[1.2rem] text-theme-secondary mt-4">A curated collection of helpful resources and inspirations</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             {sections.map((section) => (
                 <div class="card rounded p-6">
-                    <h2 class="font-serif font-bold text-xl text-[var(--text-primary)] mb-5">{section.title}</h2>
+                    <h2 class="font-serif font-bold text-xl text-theme-primary mb-5">{section.title}</h2>
                     <ol class="list-decimal pl-5 space-y-2">
                         {getResources(section.id).map((item) => (
                             <li>

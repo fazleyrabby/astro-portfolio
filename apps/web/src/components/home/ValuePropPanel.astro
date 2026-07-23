@@ -5,68 +5,73 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<section class="value-prop-panel">
-  <div class="prop-grid">
+<section class="v3-value-prop">
+  <div class="v3-prop-grid">
     <!-- Left Column: What I Build -->
-    <div class="prop-column">
-      <div class="panel-head">
-        <span class="panel-title">{t('valueprop.whatIBuild.title')}</span>
+    <div class="v3-prop-card bg-surface border border-[var(--border)] rounded-lg p-6 md:p-8">
+      <div class="v3-card-head mb-4 pb-3 border-b border-[var(--grid-line)]">
+        <span class="font-mono text-xs font-bold tracking-widest text-[var(--accent)] uppercase">{t('valueprop.whatIBuild.title') || "WHAT I BUILD"}</span>
+        <h3 class="font-display font-bold text-xl md:text-2xl text-theme-primary mt-1">{t('valueprop.whatIBuild.desc') || "Commercial-grade applications engineered for speed, security, and scalability."}</h3>
       </div>
-      <p class="column-subtitle">{t('valueprop.whatIBuild.desc')}</p>
       
-      <div class="items-list">
-        <div class="prop-item">
-          <h4 class="item-title">
-            <span class="accent-bullet">■</span> {t('valueprop.whatIBuild.saas')}
+      <div class="v3-items-space space-y-4">
+        <div class="v3-prop-item">
+          <h4 class="font-sans font-bold text-base md:text-lg text-theme-primary flex items-center gap-2">
+            <span class="w-2 h-2 rounded-sm bg-[var(--accent)]"></span> {t('valueprop.whatIBuild.saas')}
           </h4>
-          <p class="item-desc">{t('valueprop.whatIBuild.saasDesc')}</p>
+          <p class="font-sans text-base text-theme-secondary pl-4 leading-relaxed mt-1">{t('valueprop.whatIBuild.saasDesc')}</p>
         </div>
-        <div class="prop-item">
-          <h4 class="item-title">
-            <span class="accent-bullet">■</span> {t('valueprop.whatIBuild.ecommerce')}
+
+        <div class="v3-prop-item">
+          <h4 class="font-sans font-bold text-base md:text-lg text-theme-primary flex items-center gap-2">
+            <span class="w-2 h-2 rounded-sm bg-[var(--accent)]"></span> {t('valueprop.whatIBuild.ecommerce')}
           </h4>
-          <p class="item-desc">{t('valueprop.whatIBuild.ecommerceDesc')}</p>
+          <p class="font-sans text-base text-theme-secondary pl-4 leading-relaxed mt-1">{t('valueprop.whatIBuild.ecommerceDesc')}</p>
         </div>
-        <div class="prop-item">
-          <h4 class="item-title">
-            <span class="accent-bullet">■</span> {t('valueprop.whatIBuild.payments')}
+
+        <div class="v3-prop-item">
+          <h4 class="font-sans font-bold text-base md:text-lg text-theme-primary flex items-center gap-2">
+            <span class="w-2 h-2 rounded-sm bg-[var(--accent)]"></span> {t('valueprop.whatIBuild.payments')}
           </h4>
-          <p class="item-desc">{t('valueprop.whatIBuild.paymentsDesc')}</p>
+          <p class="font-sans text-base text-theme-secondary pl-4 leading-relaxed mt-1">{t('valueprop.whatIBuild.paymentsDesc')}</p>
         </div>
-        <div class="prop-item">
-          <h4 class="item-title">
-            <span class="accent-bullet">■</span> {t('valueprop.whatIBuild.apis')}
+
+        <div class="v3-prop-item">
+          <h4 class="font-sans font-bold text-base md:text-lg text-theme-primary flex items-center gap-2">
+            <span class="w-2 h-2 rounded-sm bg-[var(--accent)]"></span> {t('valueprop.whatIBuild.apis')}
           </h4>
-          <p class="item-desc">{t('valueprop.whatIBuild.apisDesc')}</p>
+          <p class="font-sans text-base text-theme-secondary pl-4 leading-relaxed mt-1">{t('valueprop.whatIBuild.apisDesc')}</p>
         </div>
       </div>
     </div>
 
     <!-- Right Column: Why Companies Hire Me -->
-    <div class="prop-column">
-      <div class="panel-head">
-        <span class="panel-title">{t('valueprop.whyHire.title')}</span>
+    <div class="v3-prop-card bg-surface border border-[var(--border)] rounded-lg p-6 md:p-8">
+      <div class="v3-card-head mb-4 pb-3 border-b border-[var(--grid-line)]">
+        <span class="font-mono text-xs font-bold tracking-widest text-[var(--accent)] uppercase">{t('valueprop.whyHire.title') || "WHY COMPANIES HIRE ME"}</span>
+        <h3 class="font-display font-bold text-xl md:text-2xl text-theme-primary mt-1">{t('valueprop.whyHire.desc') || "Engineering discipline focused on direct business outcomes, uptime, and maintainability."}</h3>
       </div>
-      <p class="column-subtitle">{t('valueprop.whyHire.desc')}</p>
 
-      <div class="items-list">
-        <div class="prop-item">
-          <h4 class="item-title">
-            <span class="accent-bullet">▲</span> {t('valueprop.whyHire.experience')}
+      <div class="v3-items-space space-y-4">
+        <div class="v3-prop-item">
+          <h4 class="font-sans font-bold text-base md:text-lg text-theme-primary flex items-center gap-2">
+            <span class="w-2 h-2 rounded-sm bg-[var(--accent-secondary)]"></span> {t('valueprop.whyHire.experience')}
           </h4>
-          <p class="item-desc">{t('valueprop.whyHire.experienceDesc')}</p>
+          <p class="font-sans text-base text-theme-secondary pl-4 leading-relaxed mt-1">{t('valueprop.whyHire.experienceDesc')}</p>
         </div>
-        <div class="prop-item">
-          <h4 class="item-title">
-            <span class="accent-bullet">▲</span> {t('valueprop.whyHire.laravel')}
+
+        <div class="v3-prop-item">
+          <h4 class="font-sans font-bold text-base md:text-lg text-theme-primary flex items-center gap-2">
+            <span class="w-2 h-2 rounded-sm bg-[var(--accent-secondary)]"></span> {t('valueprop.whyHire.laravel')}
           </h4>
-          <p class="item-desc">{t('valueprop.whyHire.laravelDesc')}</p>
+          <p class="font-sans text-base text-theme-secondary pl-4 leading-relaxed mt-1">{t('valueprop.whyHire.laravelDesc')}</p>
         </div>
-        <div class="prop-item">
-          <h4 class="item-title">
-            <span class="accent-bullet">▲</span> {t('valueprop.whyHire.architecture')}
+
+        <div class="v3-prop-item">
+          <h4 class="font-sans font-bold text-base md:text-lg text-theme-primary flex items-center gap-2">
+            <span class="w-2 h-2 rounded-sm bg-[var(--accent-secondary)]"></span> {t('valueprop.whyHire.architecture')}
           </h4>
-          <p class="item-desc">{t('valueprop.whyHire.architectureDesc')}</p>
+          <p class="font-sans text-base text-theme-secondary pl-4 leading-relaxed mt-1">{t('valueprop.whyHire.architectureDesc')}</p>
         </div>
       </div>
     </div>
@@ -74,78 +79,14 @@ const t = useTranslations(lang);
 </section>
 
 <style>
-  .value-prop-panel {
-    background: var(--bg-base);
-    padding: 0;
-  }
-  .prop-grid {
+  .v3-prop-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: var(--grid-line-strong);
+    gap: 24px;
   }
-  @media (max-width: 768px) {
-    .prop-grid {
+  @media (max-width: 900px) {
+    .v3-prop-grid {
       grid-template-columns: 1fr;
     }
-  }
-  .prop-column {
-    background: var(--bg-base);
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .panel-head {
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--grid-line-strong);
-  }
-  .panel-title {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--text-secondary);
-  }
-  .column-subtitle {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 0.94rem;
-    color: var(--text-secondary);
-    line-height: 1.45;
-    margin: 0;
-  }
-  .items-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 12px;
-  }
-  .prop-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .item-title {
-    font-family: var(--font-sans);
-    font-size: 0.92rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .accent-bullet {
-    color: var(--accent);
-    font-size: 0.7rem;
-  }
-  .item-desc {
-    font-family: var(--font-sans);
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    line-height: 1.5;
-    margin: 0;
-    padding-left: 14px;
   }
 </style>

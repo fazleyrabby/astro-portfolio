@@ -1,88 +1,25 @@
 ---
 const items = [
-  { area: "AI Integration", note: "LLM APIs, multi-provider failover" },
-  { area: "Observability", note: "Structured logging, system metrics, transaction tracing" },
-  { area: "Infrastructure", note: "Docker, Redis, Linux server management" },
+  { area: "AI Engineering & Tooling", note: "Local LLMs, OpenRouter API, agent workflows" },
+  { area: "Observability & Metrics", note: "Structured logging, transaction tracing, ClickHouse OLAP" },
+  { area: "Infrastructure Automation", note: "Docker Compose, Proxmox homelab, Redis Horizon queues" },
 ];
 ---
 
-<section class="focus-panel">
-  <div class="panel-head">
-    <span class="panel-title">CURRENTLY EXPLORING</span>
+<section class="v3-focus-card bg-surface border border-[var(--border)] rounded-lg p-6 flex flex-col justify-between h-full shadow-sm">
+  <div class="v3-card-head mb-4 pb-3 border-b border-[var(--grid-line)]">
+    <span class="font-mono text-xs font-bold tracking-widest text-[var(--accent)] uppercase">CURRENT EXPERIMENTS & FOCUS</span>
   </div>
-  <ul class="focus-list">
+
+  <ul class="v3-focus-list space-y-4 my-auto">
     {items.map((it) => (
-      <li class="focus-item">
-        <span class="focus-marker"></span>
-        <div class="focus-text">
-          <span class="focus-area">{it.area}</span>
-          <span class="focus-note">{it.note}</span>
+      <li class="flex items-start gap-3">
+        <span class="w-2 h-2 rounded-full bg-[var(--accent)] mt-1.5 shrink-0"></span>
+        <div class="flex flex-col gap-0.5">
+          <span class="font-sans font-bold text-base text-theme-primary">{it.area}</span>
+          <span class="font-mono text-xs text-theme-muted leading-normal">{it.note}</span>
         </div>
       </li>
     ))}
   </ul>
 </section>
-
-<style>
-  .focus-panel {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--bg-card);
-    box-shadow: var(--shadow-main);
-    padding: 16px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-  .panel-head {
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 12px;
-  }
-  .panel-title {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--text-secondary);
-  }
-  .focus-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .focus-item {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-  }
-  .focus-marker {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    margin-top: 7px;
-    flex-shrink: 0;
-  }
-  .focus-text {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .focus-area {
-    font-family: var(--font-sans);
-    font-size: 0.84rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    line-height: 1.2;
-  }
-  .focus-note {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    color: var(--text-muted);
-    letter-spacing: 0.02em;
-  }
-</style>

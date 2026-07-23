@@ -123,4 +123,5 @@ export const en = {
   'posts.archive.title': 'Latest Archive',
   'posts.archive.readMore': 'Read More Archive',
   'posts.emptyMsg': 'Synchronizing brain dump... no articles found yet.',
+  'focus.desc': 'Deepening expertise in cloud infrastructure orchestration, Linux systems engineering, and AI integration patterns.',
 };

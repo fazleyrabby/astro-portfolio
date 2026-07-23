@@ -13,23 +13,23 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-			display: ['Spectral', 'serif'],
-			serif: ['Spectral', 'serif'],
-			sans: ['DM Sans', 'system-ui'],
-			mono: ['JetBrains Mono', 'ui-monospace'],
-			logo: ['Spectral', 'cursive'],
+			display: ['Newsreader', 'Spectral', 'serif'],
+			serif: ['Newsreader', 'Spectral', 'serif'],
+			sans: ['Plus Jakarta Sans', 'IBM Plex Sans', 'system-ui', 'sans-serif'],
+			mono: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+			logo: ['Newsreader', 'Spectral', 'serif'],
 		},
 		fontSize: {
-			xs: '0.8125rem',   // 13px
-			sm: '0.9375rem',   // 15px
-			base: '1rem',      // 16px
+			tiny: '0.75rem',   // 12px
+			xs: '0.75rem',     // 12px
+			sm: '0.875rem',    // 14px
+			base: '0.9375rem',  // 15px
 			lg: '1.125rem',    // 18px
-			xl: '1.25rem',     // 20px
-			'2xl': '1.5rem',   // 24px
-			'3xl': '1.875rem', // 30px
-			'4xl': '2.25rem',  // 36px
-			'5xl': '2.75rem',  // 44px
-			'6xl': '3.5rem',   // 56px
+			xl: '1.375rem',    // 22px
+			'2xl': '1.75rem',   // 28px
+			'3xl': '2.25rem',  // 36px
+			'4xl': '3rem',     // 48px
+			'5xl': '3.5rem',   // 56px
 		},
 		container: {
 			padding: {
@@ -47,6 +47,9 @@ export default {
 				surface: 'var(--color-surface)',
 				border: 'var(--color-border)',
 				accent: 'var(--color-accent)',
+				"theme-primary": 'var(--text-primary)',
+				"theme-secondary": 'var(--text-secondary)',
+				"theme-muted": 'var(--text-muted)',
 				// Admin UI colors (Dynamic via AdminLayout)
 				adm: {
 					bg: "var(--adm-bg)",
@@ -67,14 +70,12 @@ export default {
 				theme: 'var(--shadow-main)',
 			},
 			borderRadius: {
-				theme: 'var(--radius)',
-				DEFAULT: 'var(--radius)',
-				sm: 'calc(var(--radius) * 0.5)',
-				md: 'var(--radius)',
-				lg: 'calc(var(--radius) * 1.5)',
-				xl: 'calc(var(--radius) * 2)',
-				'2xl': 'calc(var(--radius) * 3)',
-				'full': '9999px',
+				theme: '6px',
+				DEFAULT: '6px',
+				sm: '4px',
+				md: '6px',
+				lg: '8px',
+				full: '9999px',
 			},
 			animation: {
 				wiggle: 'wiggle 3s ease-in-out infinite',

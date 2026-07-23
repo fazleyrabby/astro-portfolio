@@ -1,173 +1,68 @@
 ---
-import AsciiAvatar from "./AsciiAvatar.astro";
 import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import AsciiAvatar from "./AsciiAvatar.astro";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<section
-  id="hero"
-  class="hero-section relative flex items-center overflow-hidden py-5 rounded-lg border border-[var(--border)] bg-[var(--bg-card)] mb-4"
->
-  <!-- Cursor-reactive light -->
-  <div class="hero-cursor-light" aria-hidden="true"></div>
-
-  <!-- Breathing glow -->
-  <div class="hero-breathe" aria-hidden="true"></div>
-
-  <!-- Diagonal grid - subtle -->
-  <div
-    class="pointer-events-none absolute inset-0 opacity-[0.02] dark:opacity-[0.04]"
-    style="background-image:linear-gradient(var(--text-primary) 1px,transparent 1px),linear-gradient(90deg,var(--text-primary) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);"
-    aria-hidden="true"
-  >
-  </div>
-
-  <div class="relative z-10 w-full max-w-6xl mx-auto px-5 lg:px-6">
-    <div class="hero-grid grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch w-full">
+<section id="hero" class="py-12 md:py-16 border-b border-[var(--grid-line)]">
+  <div class="max-w-[1100px] mx-auto px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
       
-      <!-- Identity Panel (Left Column) -->
-      <div class="lg:col-span-7 flex flex-col justify-center relative z-10">
-        <div class="badge-pill mb-2 self-start flex items-center gap-1.5 font-mono text-[0.62rem] text-[var(--accent)] tracking-widest uppercase border border-[var(--border)] px-2.5 py-0.5 rounded-full bg-[var(--accent-dim)]">
-          <span class="badge-dot w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse"></span>
-          {t('hero.available')}
-        </div>
+      <!-- Identity Section -->
+      <div class="lg:col-span-7 flex flex-col justify-center">
+        
 
-        <h1 class="font-display font-bold text-2xl md:text-3xl text-[var(--text-primary)] leading-tight mb-1">
+        <h1 class="font-serif font-bold text-4xl md:text-5xl text-theme-primary leading-[1.1] mb-2">
           {t('hero.name') || "Fazley Rabbi"}
         </h1>
         
-        <p class="font-mono text-[0.7rem] text-[var(--accent)] uppercase tracking-wider mb-2.5">
+        <p class="font-mono text-sm text-[var(--accent)] uppercase tracking-wider mb-4">
           Laravel & Backend Engineer
         </p>
 
-        <p class="hero-tagline font-serif italic text-[0.92rem] text-[var(--text-secondary)] leading-relaxed mb-3 max-w-[500px]">
-          {t('hero.tagline') || "Building tools and systems that make software faster, cleaner, and more reliable."}
-        </p>
+        {t("hero.tagline") && (
+          <p class="font-sans text-lg text-theme-secondary leading-relaxed mb-4 max-w-[560px]">
+            {t("hero.tagline")}
+          </p>
+        )}
 
-        <!-- Key Details -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 border-t border-[var(--border)] pt-2.5 pb-3.5 mb-3.5 font-mono text-[0.62rem] max-w-[480px]">
-          <div class="flex items-center justify-between py-0.5 border-b border-[var(--border)] border-dashed">
-            <span class="text-[var(--text-muted)] uppercase">Experience</span>
-            <span class="text-[var(--text-primary)] font-semibold">5+ Years</span>
-          </div>
-          <div class="flex items-center justify-between py-0.5 border-b border-[var(--border)] border-dashed">
-            <span class="text-[var(--text-muted)] uppercase">Location</span>
-            <span class="text-[var(--text-primary)] font-semibold">Chittagong, BD (UTC+6)</span>
-          </div>
-          <div class="flex items-center justify-between py-0.5 border-b border-[var(--border)] border-dashed">
-            <span class="text-[var(--text-muted)] uppercase">Infrastructure</span>
-            <span class="text-[var(--text-primary)] font-semibold">Docker / Cloud / VPS</span>
-          </div>
-          <div class="flex items-center justify-between py-0.5 border-b border-[var(--border)] border-dashed">
-            <span class="text-[var(--text-muted)] uppercase">Core Stack</span>
-            <span class="text-[var(--text-primary)] font-semibold">Laravel / PHP / MySQL</span>
-          </div>
+        {t("hero.body") && (
+          <p class="font-sans text-base text-theme-secondary leading-relaxed mb-6 max-w-[560px]">
+            {t("hero.body")}
+          </p>
+        )}
+
+        <!-- Current Focus Section -->
+        <div class="border-t border-[var(--grid-line)] pt-4 mb-6">
+          <span class="font-mono text-xs text-theme-muted uppercase tracking-wider block mb-1">Current Focus</span>
+          <span class="font-sans text-sm text-theme-secondary">{t('focus.desc') || "Designing scale-resilient APIs and high-throughput background processing architectures on Laravel and Redis."}</span>
         </div>
 
-        <!-- Call Actions (Compact inline) -->
-        <div class="flex flex-wrap items-center gap-3 font-mono text-[0.62rem]">
-          <a href="/resume" class="btn-primary !py-1.5 !px-3.5 uppercase tracking-wider font-semibold">{t('nav.resume') || "Resume"}</a>
-          <a href="#projects" class="btn-ghost !py-1.5 !px-3.5 uppercase tracking-wider font-semibold">{t('hero.viewProjects') || "View Projects"}</a>
+        <!-- Call Actions (Compact Editorial Layout) -->
+        <div class="flex flex-wrap items-center gap-4">
+          <a href="/resume" class="px-4 py-2 rounded bg-[var(--accent)] text-[#080808] font-mono text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity">
+            {t('nav.resume') || "Resume"}
+          </a>
+          <a href="#projects" class="px-4 py-2 rounded bg-[var(--grid-line)] border border-[var(--border)] text-theme-primary font-mono text-xs font-bold uppercase tracking-wider hover:border-[var(--accent)] transition-all">
+            {t('hero.viewProjects') || "View Projects"}
+          </a>
           <div class="h-4 w-[1px] bg-[var(--border)] hidden sm:block"></div>
-          <div class="flex items-center gap-3.5 text-[var(--text-secondary)] mt-1 sm:mt-0">
+          <div class="flex items-center gap-4 font-mono text-xs text-theme-muted">
             <a href="https://github.com/fazleyrabby" target="_blank" class="hover:text-[var(--accent)] transition-colors">GITHUB</a>
             <a href="https://www.linkedin.com/in/fazley-rabby/" target="_blank" class="hover:text-[var(--accent)] transition-colors">LINKEDIN</a>
           </div>
         </div>
       </div>
 
-      <!-- Portrait Panel (Right Column - Hidden on mobile) -->
-      <div class="lg:col-span-5 hidden lg:flex flex-col items-center justify-center p-3.5 border border-[var(--border)] rounded relative">
-        <div class="w-full flex-grow relative overflow-hidden flex justify-center items-center h-[220px]">
+      <!-- Right Column: ASCII Portrait -->
+      <div class="lg:col-span-5 hidden lg:flex items-center justify-center p-4 bg-transparent">
+        <div class="w-full flex justify-center items-center overflow-hidden h-[240px]">
           <AsciiAvatar />
         </div>
-
-        <!-- Real site info -->
-        <div class="w-full mt-1.5 space-y-0.5 text-[0.58rem] text-[var(--text-muted)] border-t border-[var(--border)] pt-2 font-mono">
-          <div class="flex justify-between">
-            <span class="uppercase">Site</span>
-            <span class="text-[var(--text-primary)] font-medium">fazleyrabby.xyz</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="uppercase">Built with</span>
-            <span class="text-[var(--text-primary)] font-medium">Astro · Cloudflare</span>
-          </div>
-          <div class="flex justify-between">
-            <span class="uppercase">Source</span>
-            <span class="text-[var(--text-primary)] font-medium">Open Source</span>
-          </div>
-        </div>
       </div>
-      
+
     </div>
   </div>
 </section>
-
-<style>
-  .hero-section {
-    background: var(--bg-card);
-  }
-
-  .badge-dot {
-    animation: pulse-dot 2s ease infinite;
-  }
-  @keyframes pulse-dot {
-    0%, 100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.5;
-      transform: scale(0.85);
-    }
-  }
-
-  .hero-breathe {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 450px;
-    height: 450px;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      var(--accent-dim) 0%,
-      transparent 70%
-    );
-    pointer-events: none;
-    animation: breathe 10s ease-in-out infinite;
-    will-change: transform, opacity;
-  }
-
-  @keyframes breathe {
-    0%, 100% {
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 0.25;
-    }
-    50% {
-      transform: translate(-50%, -50%) scale(1.08);
-      opacity: 0.45;
-    }
-  }
-
-  .hero-cursor-light {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 500px;
-    height: 500px;
-    border-radius: 50%;
-    background: radial-gradient(
-      circle,
-      var(--accent-dim) 0%,
-      transparent 70%
-    );
-    pointer-events: none;
-    z-index: 0;
-    transform: translate(-50%, -50%);
-    mix-blend-mode: plus-lighter;
-  }
-</style>

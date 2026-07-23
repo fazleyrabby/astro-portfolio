@@ -1,6 +1,5 @@
 ---
 import { getCollection } from "astro:content";
-import { Image } from "astro:assets";
 import { getLangFromUrl, useTranslations, useTranslatedPath } from "../../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
@@ -11,8 +10,9 @@ const all = await getCollection("projects");
 const localized = all
   .filter((p) => (p.data.lang || "en") === lang && !p.data.hidden)
   .sort((a, b) => (a.data.position || 0) - (b.data.position || 0))
-  .slice(0, 4);
+  .slice(0, 3); // Top 3 projects
 
+// SVG Architecture schemas mapping for featured section
 const archMap: Record<string, { arch: string; infra: string }> = {
   "electronic-first": { arch: "Transactional / Fraud Detection", infra: "Read Replicas / ClickHouse" },
   signalstack: { arch: "Event-Driven Feed / AI Failover", infra: "Redis Queue / Multi-Tier AI" },
@@ -32,244 +32,86 @@ const getMeta = (slug: string) => {
 };
 ---
 
-<section id="projects" class="projects-grid-panel">
-  <div class="panel-head">
-    <span class="panel-title">{t("projects.title").toUpperCase()}</span>
-    <a href="/projects" class="panel-link">{t("projects.viewAll")} →</a>
-  </div>
+<section id="projects" class="py-12 border-b border-[var(--grid-line)]">
+  <div class="max-w-[1100px] mx-auto px-4">
+    
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="font-serif font-bold text-2xl md:text-3xl text-theme-primary">{t("projects.title") || "Featured Production Systems"}</h2>
+      <a href="/projects" class="font-mono text-xs text-[var(--accent)] uppercase tracking-wider hover:underline">{t("projects.viewAll") || "View All"} →</a>
+    </div>
 
-  <div class="grid">
-    {localized.map((project) => {
-      const { title, description, tech, type, status, role, problem, solution, impact, highlights, thumbnail } = project.data;
-      const baseSlug = project.slug.replace(/-bn$/, "");
-      const hasCase = !!(problem || (highlights && highlights.length));
-      const href = hasCase ? tp(`/projects/${baseSlug}`) : (project.data.live || project.data.github || "#");
-      const { arch, infra } = getMeta(project.slug);
-      return (
-        <a href={href} class="card">
-          {thumbnail && (
-            <div class="card-thumb">
-              <Image
-                src={thumbnail}
-                alt={`${title} screenshot`}
-                width={400}
-                height={225}
-                format="webp"
-                quality={75}
-                loading="lazy"
-              />
+    <!-- Spacious Case Study Previews (Stack list instead of grid cards) -->
+    <div class="space-y-12">
+      {localized.map((project) => {
+        const { title, description, type, status, problem, solution, impact, thumbnail } = project.data;
+        const baseSlug = project.slug.replace(/-bn$/, "");
+        const hasCase = !!(problem || (project.data.highlights && project.data.highlights.length));
+        const href = hasCase ? tp(`/projects/${baseSlug}`) : (project.data.live || project.data.github || "#");
+        
+        return (
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-8 first:pt-0 border-t border-[var(--grid-line)] first:border-none">
+            
+            <!-- Left block: SVG / Screenshot info -->
+            <div class="lg:col-span-5 flex flex-col gap-4">
+              {thumbnail ? (
+                <div class="rounded-md overflow-hidden border border-[var(--border)] bg-[var(--bg-base)] aspect-video">
+                  <img
+                    src={thumbnail}
+                    alt={`${title} thumbnail`}
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              ) : (
+                <div class="rounded-md border border-[var(--border)] p-4 bg-[var(--bg-base)] flex items-center justify-center aspect-video text-theme-muted font-mono text-xs">
+                  NO SCHEMA DETECTED
+                </div>
+              )}
+              
+              <!-- One High-level telemetry metric -->
+              <div class="flex items-center justify-between px-3 py-2 rounded bg-[var(--bg-base)] border border-[var(--border)] font-mono text-[11px] text-theme-secondary">
+                <span>SYSTEM CLASS //</span>
+                <span class="text-[var(--accent)] font-semibold">{type?.toUpperCase() || 'BACKEND ENGINE'}</span>
+              </div>
             </div>
-          )}
-          <div class="card-top">
-            <span class="card-type">{(type || "SYSTEM").toUpperCase()}</span>
-            <span class="card-status">
-              <span class="card-status-dot"></span>
-              {(status || "ACTIVE").toUpperCase()}
-            </span>
-          </div>
-          <h3 class="card-title">{title}</h3>
-          
-          <div class="card-outcome">
-            <span class="outcome-k">PROBLEM</span>
-            <span class="outcome-v">{problem}</span>
-          </div>
 
-          <div class="card-outcome">
-            <span class="outcome-k">SOLUTION</span>
-            <span class="outcome-v">{solution}</span>
-          </div>
+            <!-- Right block: Case study preview details -->
+            <div class="lg:col-span-7 flex flex-col justify-start">
+              <div class="flex items-center gap-3 mb-2 font-mono text-xs text-theme-muted">
+                <span>{type?.toUpperCase() || 'BACKEND'}</span>
+                <span class="opacity-30">•</span>
+                <span class="text-[var(--accent)]">{status?.toUpperCase() || 'ACTIVE'}</span>
+              </div>
 
-          {impact && (
-            <div class="card-outcome highlight-impact">
-              <span class="outcome-k">IMPACT</span>
-              <span class="outcome-v">{impact}</span>
+              <h3 class="font-serif font-bold text-2xl text-theme-primary mb-3">{title}</h3>
+              <p class="text-theme-secondary text-sm leading-relaxed mb-4">{description}</p>
+
+              <!-- One Challenge & One Outcome previews -->
+              <div class="space-y-3 mb-6">
+                {problem && (
+                  <div class="flex flex-col gap-0.5">
+                    <span class="font-mono text-tiny text-theme-muted uppercase tracking-wider">Challenge</span>
+                    <p class="text-theme-secondary text-xs line-clamp-2">{problem}</p>
+                  </div>
+                )}
+                {impact && (
+                  <div class="flex flex-col gap-0.5">
+                    <span class="font-mono text-tiny text-[var(--accent)] uppercase tracking-wider">Outcome</span>
+                    <p class="text-theme-primary font-medium text-xs line-clamp-2">{impact}</p>
+                  </div>
+                )}
+              </div>
+
+              <!-- CTA link to case study -->
+              <a href={href} class="self-start px-3 py-1.5 rounded bg-[var(--grid-line)] border border-[var(--border)] font-mono text-xs text-theme-primary font-bold uppercase tracking-wider hover:border-[var(--accent)] transition-all">
+                Explore Case Study →
+              </a>
             </div>
-          )}
-          <div class="card-meta">
-            <div class="row"><span class="row-k">ROLE</span><span class="row-v">{role || "Solo Developer"}</span></div>
-            <div class="row"><span class="row-k">ARCH</span><span class="row-v" title={arch}>{arch}</span></div>
-            <div class="row"><span class="row-k">INFRA</span><span class="row-v" title={infra}>{infra}</span></div>
+
           </div>
-          <div class="card-tags">
-            {tech?.slice(0, 4).map((tg: string) => <span class="tg">{tg}</span>)}
-            {tech && tech.length > 4 && <span class="tg tg-more">+{tech.length - 4}</span>}
-          </div>
-        </a>
-      );
-    })}
-    <div class="card-filler"></div>
-    <div class="card-filler"></div>
+        );
+      })}
+    </div>
+
   </div>
 </section>
-
-<style>
-  .projects-grid-panel {
-    background: var(--bg-base);
-    padding: 0;
-  }
-  .panel-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--grid-line-strong);
-  }
-  .panel-title {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--text-secondary);
-  }
-  .panel-link {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    transition: color 0.2s ease;
-  }
-  .panel-link:hover { color: var(--accent); }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1px;
-    background: var(--grid-line-strong);
-  }
-  .card-filler { background: var(--bg-base); display: none; }
-  @media (max-width: 1280px) {
-    .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .card-filler { display: block; }
-  }
-  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .card-filler { display: none; } }
-  @media (max-width: 560px) { .grid { grid-template-columns: minmax(0, 1fr); } }
-
-  .card {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 16px;
-    background: var(--bg-base);
-    transition: background 0.2s ease;
-    min-width: 0;
-  }
-  .card:hover {
-    background: var(--bg-surface);
-  }
-  .card-thumb {
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
-    background: var(--bg-base);
-    border-bottom: 1px solid var(--grid-line-strong);
-    margin: -16px -16px 4px;
-  }
-  .card-thumb :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: left top;
-    filter: grayscale(20%);
-    transition: filter 0.3s ease, transform 0.4s ease;
-  }
-  .card:hover .card-thumb :global(img) {
-    filter: grayscale(0%);
-    transform: scale(1.04);
-  }
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: var(--font-mono);
-    font-size: 0.55rem;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-  }
-  .card-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    color: var(--text-primary);
-    font-weight: 700;
-  }
-  .card-status-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--accent);
-    animation: pulse 2s ease infinite;
-  }
-  .card-title {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 0.98rem;
-    color: var(--text-primary);
-    margin: 0;
-    line-height: 1.2;
-  }
-  .card:hover .card-title { color: var(--accent); }
-  .card-outcome {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    font-size: 0.78rem;
-    line-height: 1.4;
-  }
-  .outcome-k {
-    font-family: var(--font-mono);
-    font-size: 0.58rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    letter-spacing: 0.05em;
-  }
-  .outcome-v {
-    color: var(--text-secondary);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .highlight-impact .outcome-v {
-    color: var(--accent);
-    font-weight: 600;
-  }
-  .card-meta {
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 6px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    font-family: var(--font-mono);
-    font-size: 0.58rem;
-  }
-  .row { display: flex; justify-content: space-between; gap: 8px; }
-  .row-k { color: var(--text-muted); letter-spacing: 0.06em; }
-  .row-v {
-    color: var(--text-primary);
-    font-weight: 600;
-    text-align: right;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 65%;
-  }
-  .card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-top: auto;
-  }
-  .tg {
-    font-family: var(--font-mono);
-    font-size: 0.55rem;
-    padding: 2px 6px;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--text-muted);
-    background: var(--bg-base);
-  }
-  .tg-more { opacity: 0.6; }
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-</style>

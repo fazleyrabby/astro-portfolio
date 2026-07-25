@@ -78,12 +78,15 @@ const { arch, infra } = getProjectMeta(activeSlug);
   altUrl={altUrl}
 >
   <!-- Mobile Navigation Toggle Bar -->
-  <div class="v3-mobile-toggle-bar border-b border-[var(--border)] px-4 py-2.5 flex items-center bg-[var(--bg-base)]">
-    <button id="v3-mobile-explorer-trigger" class="flex items-center gap-2 font-sans text-xs font-bold text-theme-primary uppercase">
-      <svg class="w-4 h-4 text-[var(--accent)]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
-      </svg>
-      <span>প্রজেক্ট তালিকা</span>
+  <div class="v3-mobile-toggle-bar border-b border-[var(--border)] px-4 py-2.5 flex items-center bg-[var(--bg-base)] hover:bg-[var(--accent-dim)] transition-colors cursor-pointer">
+    <button id="v3-mobile-explorer-trigger" class="w-full flex items-center justify-between font-sans text-xs font-bold text-theme-primary uppercase text-left">
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-[var(--accent)]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+        </svg>
+        <span>প্রজেক্ট তালিকা</span>
+      </div>
+      <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[var(--accent-dim)] text-[var(--accent)] border border-[var(--accent)] uppercase animate-pulse">সাইডবার খুলুন</span>
     </button>
   </div>
 

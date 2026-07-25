@@ -1,20 +1,12 @@
 ---
-import { supabase } from '@lib/supabase';
+import { getLatestPosts } from '@lib/supabase-cache';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-const { data } = await supabase
-  .from('posts')
-  .select('slug, title, published_at')
-  .eq('status', 'published')
-  // Assume 'lang' column exists in Supabase. If not, this might fail until added.
-  .eq('lang', lang)
-  .order('published_at', { ascending: false })
-  .limit(3);
-const latestPosts = data || [];
+const latestPosts = await getLatestPosts(lang, 3);
 ---
 
 <section id="posts" class="posts-panel">

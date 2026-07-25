@@ -1,14 +1,11 @@
 ---
 import Page from '../../posts/[slug].astro';
-import { supabase } from '../../../lib/supabase';
+import { getPostSlugs } from '../../../lib/supabase-cache';
 
 export async function getStaticPaths() {
-  const { data: posts } = await supabase
-    .from('posts')
-    .select('slug')
-    .eq('status', 'published');
+  const posts = await getPostSlugs();
   
-  return (posts || []).map((post) => ({
+  return posts.map((post) => ({
     params: { slug: post.slug },
   }));
 }

@@ -36,3 +36,6 @@ deploy-api.sh
 apps/api/dist/
 debug.log
 /tmp/bot_debug.log
+.cache/
+.cache
+.cache*

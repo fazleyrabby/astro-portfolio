@@ -2,7 +2,7 @@
 // src/pages/posts/[slug].astro
 import MainLayout from "@layouts/MainLayout.astro";
 import TableOfContents from "@components/TableOfContents.astro";
-import { supabase } from "@lib/supabase";
+import { getPostSlugs, getAllPosts, getFallbackPost, getTranslationPost } from "@lib/supabase-cache";
 import { marked } from "marked";
 import {
   getLangFromUrl,
@@ -18,12 +18,9 @@ renderer.heading = function({ text, depth }) {
 marked.use({ renderer });
 
 export async function getStaticPaths() {
-  const { data: posts } = await supabase
-    .from('posts')
-    .select('slug')
-    .eq('status', 'published');
+  const posts = await getPostSlugs();
   
-  return (posts || []).map((post) => ({
+  return posts.map((post) => ({
     params: { slug: post.slug },
   }));
 }
@@ -35,13 +32,8 @@ const lang = currentLang;
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
-// Fetch all posts for the explorer list
-const { data: allPosts } = await supabase
-  .from("posts")
-  .select("*")
-  .eq("status", "published")
-  .in("lang", ["en", lang])
-  .order("published_at", { ascending: false });
+// Fetch all posts for the explorer list from cache
+const allPosts = await getAllPosts(lang);
 
 let publishedPosts: any[] = [];
 if (allPosts) {
@@ -65,15 +57,9 @@ let activePost = publishedPosts.find((p) => p.slug === activeSlug);
 
 // Fallback to EN if BN version is not found
 if (!activePost && currentLang === 'bn') {
-  const fallback = await supabase
-    .from('posts')
-    .select('*')
-    .eq('slug', activeSlug)
-    .eq('lang', 'en')
-    .maybeSingle();
-    
-  if (fallback.data) {
-    activePost = fallback.data;
+  const fallback = await getFallbackPost(activeSlug);
+  if (fallback) {
+    activePost = fallback;
   }
 }
 
@@ -87,21 +73,13 @@ const activeContent = await marked.parse(activePost.content);
 // Resolve alternate URL for LangToggle
 let altUrl = undefined;
 if (currentLang === 'en') {
-  const { data: altPost } = await supabase
-    .from('posts')
-    .select('slug')
-    .eq('translation_of', activePost.id)
-    .single();
+  const altPost = await getTranslationPost(activePost.id, undefined, 'en');
   if (altPost) {
     altUrl = `/bn/posts/${altPost.slug}`;
   }
 } else {
   if (activePost.lang === 'bn' && activePost.translation_of) {
-    const { data: altPost } = await supabase
-      .from('posts')
-      .select('slug')
-      .eq('id', activePost.translation_of)
-      .single();
+    const altPost = await getTranslationPost(activePost.id, activePost.translation_of, 'bn');
     if (altPost) {
       altUrl = `/posts/${altPost.slug}`;
     }
@@ -157,12 +135,15 @@ const jsonLd = JSON.stringify({
   altUrl={altUrl}
 >
   <!-- Mobile Navigation Toggle Bar -->
-  <div class="v3-mobile-toggle-bar border-b border-[var(--border)] px-4 py-2.5 flex items-center bg-[var(--bg-base)]">
-    <button id="v3-mobile-explorer-trigger" class="flex items-center gap-2 font-sans text-xs font-bold text-theme-primary uppercase">
-      <svg class="w-4 h-4 text-[var(--accent)]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
-      </svg>
-      <span>Select Article</span>
+  <div class="v3-mobile-toggle-bar border-b border-[var(--border)] px-4 py-2.5 flex items-center bg-[var(--bg-base)] hover:bg-[var(--accent-dim)] transition-colors cursor-pointer">
+    <button id="v3-mobile-explorer-trigger" class="w-full flex items-center justify-between font-sans text-xs font-bold text-theme-primary uppercase text-left">
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-[var(--accent)]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+        </svg>
+        <span>Select Article</span>
+      </div>
+      <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[var(--accent-dim)] text-[var(--accent)] border border-[var(--accent)] uppercase animate-pulse">Open Sidebar</span>
     </button>
   </div>
 
@@ -243,7 +224,7 @@ const jsonLd = JSON.stringify({
               <span>•</span>
               <span>{readingTime} min read</span>
             </div>
-            <h1 class="font-serif font-bold text-3xl md:text-4xl text-theme-primary leading-tight mb-4">{activePost.title}</h1>
+            <h1 class="font-serif font-bold text-2xl md:text-3xl text-theme-primary leading-tight mb-4">{activePost.title}</h1>
             <p class="text-theme-secondary text-base leading-relaxed italic mb-6">{activePost.description}</p>
 
             <!-- Inline Bulletproof Share Buttons (Never gets hidden) -->
@@ -301,8 +282,52 @@ const jsonLd = JSON.stringify({
   <script type="application/ld+json" set:html={jsonLd} />
 </MainLayout>
 
-<script is:inline>
+<script is:inline define:vars={{ txtCopy: t('blog.copy'), txtCopied: t('blog.copied') }}>
   (function() {
+    // Wrap code blocks
+    document.querySelectorAll('#article-content pre').forEach(pre => {
+      const code = pre.querySelector('code');
+      if (!code) return;
+      
+      const langClass = Array.from(code.classList).find(c => c.startsWith('language-'));
+      const lang = langClass ? langClass.replace('language-', '') : 'text';
+      const displayLang = lang.toUpperCase();
+      
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-block-wrapper group relative my-6 rounded-lg overflow-hidden';
+      wrapper.style.cssText = 'background-color:#1e1e2e;border:1px solid rgba(255,255,255,0.08);box-shadow:0 10px 30px rgba(0,0,0,0.2);';
+      
+      const header = document.createElement('div');
+      header.className = 'code-header flex items-center justify-between px-4 py-2 border-b';
+      header.style.cssText = 'background-color:#181825;border-bottom-color:rgba(255,255,255,0.08);';
+      header.innerHTML = `
+        <div class="flex items-center gap-2">
+          <span class="text-[0.65rem] font-mono font-semibold px-2 py-0.5 rounded bg-[var(--accent)]/10 text-[var(--accent)]">${displayLang}</span>
+        </div>
+        <button class="copy-btn text-[0.65rem] font-mono px-2 py-0.5 rounded border border-[rgba(255,255,255,0.12)] text-[rgba(255,255,255,0.5)] hover:text-white hover:border-[var(--accent)] transition-all opacity-0 group-hover:opacity-100" style="background:transparent;">${txtCopy}</button>
+      `;
+      
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(header);
+      wrapper.appendChild(pre);
+      pre.className = '!mt-0 !rounded-none !border-0 overflow-x-auto p-4 text-sm leading-relaxed';
+      pre.style.cssText = 'background-color:#1e1e2e!important;color:#cdd6f4!important;margin:0!important;border:none!important;border-radius:0!important;';
+      
+      // Also force all code/span children to use light text
+      code.style.cssText = 'color:#cdd6f4;background:transparent;';
+      code.querySelectorAll('span').forEach(span => {
+        span.style.color = '#cdd6f4';
+        span.style.backgroundColor = 'transparent';
+      });
+      
+      const btn = header.querySelector('.copy-btn');
+      btn.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(code.textContent || '');
+        btn.textContent = txtCopied;
+        setTimeout(() => btn.textContent = txtCopy, 2000);
+      });
+    });
+
     const searchInput = document.getElementById("post-search");
     const projectItems = document.querySelectorAll(".explorer-item");
 

@@ -1,21 +1,12 @@
 ---
-import { supabase } from "@lib/supabase";
+import { getLatestPosts } from "@lib/supabase-cache";
 import { getLangFromUrl, useTranslations, useTranslatedPath } from "../../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const tp = useTranslatedPath(lang);
 
-const { data, error } = await supabase
-  .from("posts")
-  .select("slug, title, published_at")
-  .eq("status", "published")
-  .eq("lang", lang)
-  .order("published_at", { ascending: false })
-  .limit(6);
-
-if (error) console.error("LatestNotes supabase error:", error);
-const posts = data || [];
+const posts = await getLatestPosts(lang, 6);
 ---
 
 <section class="py-12 border-b border-[var(--grid-line)]">

@@ -710,11 +710,22 @@
         transparent 60%);
   }
 
-  /* Heading scroll offset for sticky nav */
   #article-content h2,
   #article-content h3,
   #article-content h4 {
     scroll-margin-top: 100px;
+  }
+
+  /* Article and page body font size consistency and family adjustments */
+  .prose p,
+  .prose li,
+  .prose blockquote p,
+  .prose table,
+  .prose th,
+  .prose td {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 0.9375rem !important; /* Consistent 15px size */
+    line-height: 1.75 !important;
   }
 
   /* ------------------------- */
@@ -964,10 +975,11 @@
 
   /* Fallback: un-wrapped pre (shouldn't happen in posts but just in case) */
   #article-content pre:not(.code-block-wrapper pre) {
-    background-color: color-mix(in srgb, var(--bg-base) 95%, var(--text-primary) 5%) !important;
-    border: 1px solid var(--border);
+    background-color: #1e1e2e !important;
+    color: #cdd6f4 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
     border-radius: 0.5rem;
-    padding: 2.5rem 1.25rem 1.25rem 1.25rem !important;
+    padding: 1.25rem !important;
     margin: 2rem 0;
     overflow-x: auto;
     position: relative;

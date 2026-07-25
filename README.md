@@ -2,7 +2,8 @@
 
 ## Setup
 
-<img width="2668" height="1844" alt="CleanShot 2026-06-08 at 17 12 42@2x" src="https://github.com/user-attachments/assets/dca3379b-3a12-4bb1-bdee-449cee39e316" />
+<img width="1379" height="790" alt="CleanShot 2026-07-26 at 00 50 08" src="https://github.com/user-attachments/assets/7a2e0244-1b65-4551-99e3-82b1e2515506" />
+
 
 
 1. Set GitHub Repo Secrets:

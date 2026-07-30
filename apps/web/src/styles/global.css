@@ -18,7 +18,7 @@
   --text-secondary: #334155;
   --text-muted: #57606a;
   --font-display: "Newsreader", serif;
-  --font-sans: "Plus Jakarta Sans", "IBM Plex Sans", sans-serif;
+  --font-sans: "Cal Sans UI", "Plus Jakarta Sans", "IBM Plex Sans", sans-serif;
   --font-mono: "Plus Jakarta Sans", "IBM Plex Sans", sans-serif;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -82,9 +82,19 @@
    ============================================ */
 
 @layer base {
+  @font-face {
+    font-family: 'Cal Sans UI';
+    src: url('/fonts/CalSansUI[wght,GEOM].woff2') format('woff2-variations'),
+         url('/fonts/CalSansUI[wght,GEOM].woff2') format('woff2');
+    font-weight: 300 800;
+    font-display: swap;
+    font-style: normal;
+  }
+
   html {
     scroll-behavior: smooth;
     font-family: var(--font-sans), system-ui, sans-serif;
+    font-size-adjust: from-font;
     scrollbar-width: thin;
     scrollbar-color: var(--grid-line-strong) transparent;
   }
@@ -723,7 +733,7 @@
   .prose table,
   .prose th,
   .prose td {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     font-size: 0.9375rem !important; /* Consistent 15px size */
     line-height: 1.75 !important;
   }

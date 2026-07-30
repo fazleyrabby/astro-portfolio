@@ -15,7 +15,7 @@ export default {
 		fontFamily: {
 			display: ['Newsreader', 'Spectral', 'serif'],
 			serif: ['Newsreader', 'Spectral', 'serif'],
-			sans: ['Plus Jakarta Sans', 'IBM Plex Sans', 'system-ui', 'sans-serif'],
+			sans: ['Cal Sans UI', 'Plus Jakarta Sans', 'IBM Plex Sans', 'system-ui', 'sans-serif'],
 			mono: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
 			logo: ['Newsreader', 'Spectral', 'serif'],
 		},

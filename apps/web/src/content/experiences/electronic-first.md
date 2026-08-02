@@ -8,11 +8,28 @@ skills: "Laravel, Web Automation, REST API, Version Upgrades, Improve Queries An
 timeline: "2021-10-15"
 ---
 
-- Built a multi-rule checkout fraud detection engine (IP/card/email velocity, BIN/ASN checks, bot fingerprinting, auth-capture flow) — auto-blocking high-risk payments before fulfilment
-- Designed real-time PayPal + Checkout.com dispute sync with webhooks, file proxying, and customer blocking — replacing a manual reconciliation process prone to missed deadlines
-- Engineered server-side GA4 event tracking (add_to_cart, view_item, purchase) with event_id deduplication for accurate marketing attribution
-- Built a versioned REST API with Swagger docs, encrypted IDs, and AI chatbot endpoints (orders, refunds, tickets, product lookup)
-- Delivered ClickHouse-backed analytics: customer behavior, product unit sales, payment gateway performance, HRM costs — with date-range comparison and drill-down breakdowns
-- Built an end-to-end Personalized Gift Card platform with recipient management, card designer, scheduled delivery, and sender/receiver dashboards
-- Integrated payment APIs: Checkout.com, PayPal, Google Pay, Apple Pay
-- Built web automation tools using Puppeteer
+Building and maintaining backend systems for a high-volume digital marketplace serving customers worldwide.
+
+### Payment Infrastructure & Risk
+
+- Designed a configurable fraud detection engine combining IP, card, email velocity, BIN/ASN validation, bot fingerprinting, checkout behaviour analysis, and configurable risk scoring to automatically detect and block high-risk transactions.
+- Designed and implemented webhook-driven PayPal and Checkout.com dispute synchronization, replacing manual reconciliation with an automated workflow that improved operational efficiency.
+- Integrated Checkout.com, PayPal, Apple Pay, and Google Pay into the production checkout pipeline.
+
+### APIs & Platform
+
+- Designed versioned REST APIs powering customer applications, internal tools, mobile applications, and AI-assisted customer support.
+- Built queue-based workflows and background processing for order fulfilment, payment operations, and business automation.
+- Developed internal backend services supporting multiple business domains across the platform.
+
+### Analytics & Performance
+
+- Engineered ClickHouse-powered analytics dashboards covering customer behaviour, product sales, payment gateway performance, operational reporting, and business insights.
+- Optimized database performance using read replicas for high-frequency search and reporting workloads.
+- Improved backend maintainability through refactoring, architecture improvements, and continuous performance optimization.
+
+### Additional Contributions
+
+- Built a personalized gift card platform supporting recipient management, scheduled delivery, and custom gifting workflows.
+- Implemented server-side analytics event tracking with reliable event deduplication.
+- Developed automation tools using Puppeteer for operational workflows.

@@ -43,7 +43,7 @@ import MainLayout from '@layouts/MainLayout.astro';
                         <!-- Electronic First -->
                         <div>
                             <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5">
-                                <h4 class="font-display font-bold text-[1.1rem] text-[var(--text-primary)]">Electronic First FZ</h4>
+                                <h4 class="font-display font-bold text-[1.1rem] text-[var(--text-primary)]">Electronic First FZ LLE</h4>
                                 <span class="font-mono text-[0.75rem] text-[var(--text-muted)] uppercase tracking-wider shrink-0">Remote, UAE</span>
                             </div>
                             <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5">
@@ -51,22 +51,23 @@ import MainLayout from '@layouts/MainLayout.astro';
                                 <span class="font-mono text-[0.75rem] text-[var(--text-muted)] tracking-wider shrink-0">Oct 2021 – Present</span>
                             </div>
                             <ul class="cv-list mt-1.5">
-                                <li>Developed and maintained backend systems for a high-volume digital games marketplace processing thousands of daily orders.</li>
-                                <li>Designed a multi-rule checkout fraud detection engine (IP/card/email velocity, BIN/ASN checks, bot fingerprinting, and auth-capture flow) that auto-blocks high-risk payments before fulfilment.</li>
-                                <li>Eliminated manual processes by building real-time PayPal and Checkout.com dispute sync via webhooks and proxy files.</li>
-                                <li>Engineered ClickHouse-backed analytics, providing dashboards for customer spending, gateway fees, and sales trends.</li>
-                                <li>Designed versioned REST APIs and endpoints powering web applications, mobile apps, and customer-facing AI support bots.</li>
-                                <li>Optimized application performance by introducing database read replicas for high-frequency user search and listing queries.</li>
+                                <li>Develop and maintain backend systems for a high-volume digital marketplace processing thousands of daily orders.</li>
+                                <li>Designed and implemented a configurable checkout fraud detection engine using IP, card, and email velocity checks, BIN/ASN validation, bot detection, and risk scoring to automate payment risk assessment.</li>
+                                <li>Built real-time dispute and chargeback synchronization for PayPal and Checkout.com using webhooks, eliminating manual reconciliation workflows.</li>
+                                <li>Designed versioned REST APIs powering web applications, mobile applications, and AI-assisted customer support services.</li>
+                                <li>Built ClickHouse-powered analytics dashboards for customer behaviour, sales performance, payment gateway metrics, and operational reporting.</li>
+                                <li>Improved backend scalability by introducing database read replicas for high-frequency search and reporting workloads.</li>
+                                <li>Integrated multiple payment providers including Checkout.com, PayPal, Apple Pay, and Google Pay.</li>
                             </ul>
                             <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
-                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, PHP, MySQL, ClickHouse, Redis, Checkout.com, PayPal, APIs, Docker, Linux
+                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, PHP, MySQL, ClickHouse, Redis, Docker, Linux, REST APIs, PayPal, Checkout.com
                             </p>
                         </div>
 
                         <!-- Amcoders -->
                         <div>
                             <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5">
-                                <h4 class="font-display font-bold text-[1.1rem] text-[var(--text-primary)]">Amcoders</h4>
+                                <h4 class="font-display font-bold text-[1.1rem] text-[var(--text-primary)]">AMCoders</h4>
                                 <span class="font-mono text-[0.75rem] text-[var(--text-muted)] uppercase tracking-wider shrink-0">Remote, Bangladesh</span>
                             </div>
                             <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5">
@@ -74,13 +75,35 @@ import MainLayout from '@layouts/MainLayout.astro';
                                 <span class="font-mono text-[0.75rem] text-[var(--text-muted)] tracking-wider shrink-0">Jan 2021 – Jul 2021</span>
                             </div>
                             <ul class="cv-list mt-1.5">
-                                <li>Built a Bus Ticket booking system with Laravel 8 and Inertia.js.</li>
-                                <li>Developed a CV/Portfolio builder and a Project Management System for clients.</li>
-                                <li>Integrated multiple payment gateways: Razorpay, PayPal, Stripe, and Paystack.</li>
-                                <li>Contributed to an E-bank banking project and interactive jQuery interfaces.</li>
+                                <li>Developed client applications using Laravel and modern web technologies.</li>
+                                <li>Built a Bus Ticket Booking platform with Laravel and Inertia.js.</li>
+                                <li>Developed a Portfolio Builder and Project Management System.</li>
+                                <li>Integrated multiple payment gateways including Stripe, PayPal, Razorpay, Flutterwave, Mollie, Paystack, Instamojo, ToyyibPay, and PayU.</li>
+                                <li>Contributed to an online banking platform and business management systems.</li>
                             </ul>
                             <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
-                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, Inertia.js, MySQL, jQuery, Git
+                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> Laravel, PHP, MySQL, Inertia.js, JavaScript, Git
+                            </p>
+                        </div>
+
+                        <!-- Freelance -->
+                        <div>
+                            <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5">
+                                <h4 class="font-display font-bold text-[1.1rem] text-[var(--text-primary)]">Freelance</h4>
+                                <span class="font-mono text-[0.75rem] text-[var(--text-muted)] uppercase tracking-wider shrink-0">Self-Employed</span>
+                            </div>
+                            <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-0.5">
+                                <span class="text-[0.92rem] text-[var(--text-secondary)] italic">Web Developer</span>
+                                <span class="font-mono text-[0.75rem] text-[var(--text-muted)] tracking-wider shrink-0">Jan 2020 – Present</span>
+                            </div>
+                            <ul class="cv-list mt-1.5">
+                                <li>Delivered custom PHP and Laravel solutions for startups and local businesses.</li>
+                                <li>Developed POS, Education Management, Library Management, CMS, and business management systems.</li>
+                                <li>Built REST APIs, authentication systems, and administrative dashboards.</li>
+                                <li>Performed application maintenance, feature development, and performance optimization.</li>
+                            </ul>
+                            <p class="mt-1.5 text-[0.82rem] text-[var(--text-muted)]">
+                                <span class="font-semibold text-[var(--text-secondary)]">Technologies:</span> PHP, Laravel, CodeIgniter, MySQL, REST APIs, JavaScript, jQuery
                             </p>
                         </div>
                     </div>
@@ -324,7 +347,7 @@ import MainLayout from '@layouts/MainLayout.astro';
     @media print {
         @page {
             size: A4;
-            margin: 8mm 10mm;
+            margin: 4mm 6mm;
         }
 
         :global(*),
@@ -364,8 +387,8 @@ import MainLayout from '@layouts/MainLayout.astro';
             height: auto !important;
             min-height: auto !important;
             position: static !important;
-            font-size: 9.2pt !important;
-            line-height: 1.35 !important;
+            font-size: 8.5pt !important;
+            line-height: 1.25 !important;
         }
 
 
@@ -417,26 +440,26 @@ import MainLayout from '@layouts/MainLayout.astro';
         }
 
         .cv-card :global(h2) {
-            font-size: 1.45rem !important;
+            font-size: 1.25rem !important;
             margin-bottom: 2px !important;
         }
 
         .cv-card > div:first-child {
             padding-top: 0 !important;
-            padding-bottom: 6px !important;
-            margin-bottom: 4px !important;
+            padding-bottom: 4px !important;
+            margin-bottom: 2px !important;
             border-bottom: none !important;
         }
 
         .cv-body {
             padding-top: 0 !important;
             padding-bottom: 0 !important;
-            gap: 8px !important;
+            gap: 4px !important;
         }
 
         .cv-section {
-            padding-bottom: 8px !important;
-            margin-bottom: 4px !important;
+            padding-bottom: 4px !important;
+            margin-bottom: 2px !important;
             border-bottom: none !important;
         }
 
@@ -447,42 +470,42 @@ import MainLayout from '@layouts/MainLayout.astro';
         }
 
         .cv-section-title {
-            font-size: 7.2pt !important;
-            margin-bottom: 4px !important;
-            padding-bottom: 2px !important;
+            font-size: 6.8pt !important;
+            margin-bottom: 2px !important;
+            padding-bottom: 1px !important;
             border-bottom: 0.5px solid #000000 !important;
             color: #000000 !important;
         }
 
         .cv-list li {
-            font-size: 8.4pt !important;
-            line-height: 1.3 !important;
-            margin-bottom: 1px !important;
-            padding-left: 10px !important;
+            font-size: 7.4pt !important;
+            line-height: 1.2 !important;
+            margin-bottom: 0.5px !important;
+            padding-left: 8px !important;
         }
 
         .cv-list li::before {
             content: "•" !important;
-            font-size: 8.4pt !important;
+            font-size: 7.4pt !important;
             color: #000000 !important;
             left: 0 !important;
         }
 
         .cv-card :global(h4) {
-            font-size: 9.5pt !important;
+            font-size: 8.5pt !important;
         }
 
         .cv-card :global(p),
         .cv-card :global(span),
         .cv-card :global(div) {
             color: #000000 !important;
-            font-size: 8.6pt !important;
+            font-size: 7.8pt !important;
         }
 
         .cv-card :global(a) {
             color: #0056b3 !important;
             text-decoration: underline !important;
-            font-size: 8.6pt !important;
+            font-size: 7.8pt !important;
         }
 
         .cv-card :global(.text-\[0\.82rem\]),
@@ -490,18 +513,18 @@ import MainLayout from '@layouts/MainLayout.astro';
         .cv-card :global(.text-\[var\(--text-muted\)\]),
         .cv-card :global(span.font-mono) {
             color: #000000 !important;
-            font-size: 8.2pt !important;
+            font-size: 7.5pt !important;
         }
 
         /* Tighten spacing between list items and headers */
         .cv-section :global(.space-y-5),
         .cv-section :global(.space-y-4) {
-            margin-top: 2px !important;
+            margin-top: 1px !important;
         }
         .cv-section :global(.space-y-5 > * + *),
         .cv-section :global(.space-y-4 > * + *),
         .cv-section :global(.space-y-2 > * + *) {
-            margin-top: 5px !important;
+            margin-top: 3px !important;
         }
     }
 </style>

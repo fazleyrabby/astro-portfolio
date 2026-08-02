@@ -13,7 +13,7 @@ status: "Production"
 position: 0
 period: "Oct 2021 – Present"
 role: "Software Engineer"
-commits: 1518
+commits: 2430
 highlights:
   - "Reduced fraudulent chargebacks by designing a multi-rule checkout fraud detection engine — IP/card/email velocity, BIN/ASN checks, bot fingerprinting, and auth-capture flow — auto-blocking high-risk payments before fulfilment."
   - "Eliminated manual dispute reconciliation by building real-time PayPal + Checkout.com dispute sync with webhooks, file proxying, and customer blocking — replacing a process prone to missed deadlines."

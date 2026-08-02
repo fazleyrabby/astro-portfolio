@@ -18,8 +18,8 @@
   --text-secondary: #334155;
   --text-muted: #57606a;
   --font-display: "Newsreader", serif;
-  --font-sans: "Cal Sans UI", "Plus Jakarta Sans", "IBM Plex Sans", sans-serif;
-  --font-mono: "Plus Jakarta Sans", "IBM Plex Sans", sans-serif;
+  --font-sans: "Cal Sans UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -225,6 +225,7 @@
     font-family: var(--font-display);
     font-weight: 400;
     line-height: 1.1;
+    letter-spacing: -0.015em;
   }
 
   code,
@@ -244,6 +245,34 @@
 }
 
 @layer components {
+  .page-header {
+    padding: 16px 0 12px;
+  }
+  .page-header-inner { display: flex; flex-direction: column; gap: 2px; }
+  .page-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .page-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    line-height: 1.05;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  .page-sub {
+    font-family: var(--font-serif, var(--font-sans));
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 2px 0 0;
+  }
+
   .section-label {
     font-family: var(--font-mono);
     font-size: 0.7rem;

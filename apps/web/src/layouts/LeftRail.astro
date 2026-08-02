@@ -234,10 +234,12 @@ const socialItems = [
     border-radius: 0 4px 4px 0;
     background-color: var(--accent);
     opacity: 0;
-    transition: opacity var(--t-fast) ease;
+    transform: scaleY(0.4);
+    transition: opacity var(--t-fast) ease, transform var(--t-fast) var(--ease-out-expo);
   }
 
   .v2-rail-btn--active .v2-rail-active-indicator {
     opacity: 1;
+    transform: scaleY(1);
   }
 </style>

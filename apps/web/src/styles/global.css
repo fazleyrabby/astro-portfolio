@@ -260,7 +260,7 @@
   .page-title {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-size: clamp(1.35rem, 2.4vw, 1.8rem);
     line-height: 1.05;
     color: var(--text-primary);
     margin: 0;

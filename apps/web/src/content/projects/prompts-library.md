@@ -5,11 +5,11 @@ problem: "AI prompts are scattered across docs and chats — copying, editing pl
 solution: "An Astro static site + npm CLI for browsing, filling, and deep-linking AI prompts — with an interactive variable engine, fuzzy terminal search, and 1-click hand-off to ChatGPT/Claude."
 live: "https://prompts.fazleyrabbi.xyz/"
 github: "https://github.com/fazleyrabby/prompts-library"
-thumbnail: "https://i.ibb.co.com/SDBx5XM3/Clean-Shot-2026-05-25-at-02-03-11.png"
+thumbnail: "/projects/8.webp"
 description: "Astro static site + btop-style npm CLI for reusable AI prompts with deep links and variable interpolation."
 tech: ["Astro", "Node.js", "TypeScript", "npm"]
 status: "Active"
-position: 12
+position: 14
 period: "Mar 2026 – May 2026"
 role: "Solo Developer"
 highlights:

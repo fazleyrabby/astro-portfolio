@@ -6,7 +6,7 @@ problem: "একটি উচ্চ-ভলিউম ডিজিটাল মা
 solution: "পাঁচ বছরের গভীর ব্যাকএন্ড কাজ: মাল্টি-রুল ফ্রড ডিটেকশন ইঞ্জিন, রিয়েল-টাইম PayPal + Checkout.com ডিসপিউট সিঙ্ক, ClickHouse-ভিত্তিক অ্যানালিটিক্স, এন্ড-টু-এন্ড পার্সোনালাইজড গিফট কার্ড প্ল্যাটফর্ম এবং ওয়েব, মোবাইল ও AI চ্যাটবটকে শক্তি দেয়া ভার্সনড REST API।"
 impact: "চার্জব্যাক পেমেন্ট ঝুঁকি হ্রাস, স্বয়ংক্রিয় বিবাদ ট্র্যাকিং এবং দৈনিক হাজার হাজার লেনদেনের রিয়েল-টাইম রিপোর্ট তৈরি করা হয়েছে।"
 live: "https://www.electronicfirst.com/"
-thumbnail: "https://i.ibb.co.com/bMMPQfw5/image.png"
+thumbnail: "/projects/electronic-first.png"
 description: "প্রতিদিন হাজার হাজার অর্ডার প্রসেস করা উচ্চ-ভলিউম ডিজিটাল গেমিং ও eSIM মার্কেটপ্লেস — ফ্রড, ডিসপিউট, বান্ডেল, অ্যানালিটিক্স ও API।"
 tech: ["Laravel 9", "PHP 8.2", "MySQL", "Redis", "ClickHouse", "Checkout.com", "PayPal", "RapidAPI"]
 status: "প্রোডাকশন"

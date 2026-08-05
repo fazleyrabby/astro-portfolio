@@ -7,7 +7,7 @@ solution: "A high-density analytical terminal that distills vast world-event fee
 impact: "Automated real-time international feed processing, routing multi-provider AI failovers with near-zero inference cost."
 live: "https://signal.fazleyrabbi.xyz/"
 github: "https://github.com/fazleyrabby/signal-stack"
-thumbnail: "https://i.ibb.co.com/1fj68nzp/Clean-Shot-2026-05-25-at-01-57-27.png"
+thumbnail: "/projects/signalstack.png"
 description: "Next-Gen AI Intelligence Terminal for real-time geopolitical and tech feed distillation."
 tech: ["Node.js", "NestJS", "Groq", "OpenRouter", "Redis", "Real-time AI"]
 status: "Ongoing"

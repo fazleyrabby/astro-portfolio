@@ -5,11 +5,11 @@ featured: true
 problem: "ছোট দোকান মালিকরা আলাদা POS, স্টক ও স্টোরফ্রন্ট টুল নিয়ে ঝামেলায় — পার-স্টোর আইসোলেশন, প্রোডাকশন ডিপ্লয় বা শেয়ার্ড কার্ট/চেকআউট লেয়ার ছাড়া।"
 solution: "একটি কোডবেসে ইউনিফাইড Laravel POS + ৩-থিম ই-কমার্স স্টোরফ্রন্ট: সেলস/পারচেস/রিটার্ন, কঠোর টেন্যান্ট আইসোলেশন, RBAC, রোলব্যাক সহ Dockerized ডিপ্লয়।"
 live: "https://pos.fazleyrabbi.xyz/"
-thumbnail: "https://i.ibb.co.com/fYMNZjqd/Clean-Shot-2026-05-25-at-01-58-30.png"
+thumbnail: "/projects/5.webp"
 description: "Laravel-এ ইউনিফাইড POS + মাল্টি-থিম ই-কমার্স — সেলস, স্টক, রিটার্ন, স্টোরফ্রন্ট ও Dockerized ডিপ্লয়।"
 tech: ["Laravel", "DaisyUI", "Tailwind", "Alpine.js", "MySQL 8", "Redis", "Docker", "Cloudflare Tunnel"]
 status: "চলমান"
-position: 4
+position: 6
 period: "মার্চ ২০২৬ – মে ২০২৬"
 role: "ফুল-স্ট্যাক ইঞ্জিনিয়ার"
 highlights:

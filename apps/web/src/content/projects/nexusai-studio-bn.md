@@ -5,6 +5,6 @@ live: "https://nexusaistudio.netlify.app/"
 thumbnail: "/projects/8.webp"
 description: "Built with React, Tailwind, ShadCN, Framer Motion"
 tech: ["react", "tailwind", "framer motion", "javascript"]
-position: 11
+position: 13
 lang: bn
 ---

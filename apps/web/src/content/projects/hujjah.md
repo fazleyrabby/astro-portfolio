@@ -7,11 +7,11 @@ solution: "A privacy-first Islamic research engine with AI inference, full Quran
 impact: "Achieved zero-hallucination semantic search and sub-second hadith sanad chain visualizations completely client-side."
 github: "https://github.com/fazleyrabby/hujjah"
 live: "https://hujjah.fazleyrabbi.xyz/"
-thumbnail: "https://i.ibb.co.com/9mvHKKSD/Chat-GPT-Image-May-1-2026-02-07-30-PM.png"
+thumbnail: "/projects/hujjah.png"
 description: "Privacy-first Islamic research engine with Quran, hadith, and AI chat."
 tech: ["Next.js", "SQLite", "FTS5", "Groq AI", "Transformers.js", "BGE-M3"]
 status: "Ongoing"
-position: 1
+position: 3
 period: "Apr 2026 – May 2026"
 role: "Solo Developer"
 highlights:

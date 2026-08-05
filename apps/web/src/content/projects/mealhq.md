@@ -10,7 +10,7 @@ thumbnail: "/projects/mealhq.png"
 description: "A premium restaurant platform with an editorial public website, admin dashboard, POS, and an offer management system — built for hospitality brands."
 tech: ["Laravel", "PHP", "Tailwind CSS v4", "Alpine.js", "MySQL", "Docker"]
 status: "Active"
-position: 13
+position: 15
 period: "Jul 2026 – Present"
 role: "Solo Developer"
 highlights:

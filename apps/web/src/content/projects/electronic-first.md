@@ -6,7 +6,7 @@ problem: "A high-volume digital marketplace bleeding revenue to chargebacks, man
 solution: "Five years of deep backend work: a multi-rule fraud detection engine, real-time PayPal + Checkout.com dispute sync, ClickHouse-backed analytics, an end-to-end Personalized Gift Card platform, and a versioned REST API powering web, mobile, and an AI chatbot."
 impact: "Reduced chargeback rates, automated dispute tracking, and enabled data-driven decisions on thousands of daily transactions."
 live: "https://www.electronicfirst.com/"
-thumbnail: "https://i.ibb.co.com/bMMPQfw5/image.png"
+thumbnail: "/projects/electronic-first.png"
 description: "High-volume digital gaming & eSIM marketplace processing thousands of daily orders — fraud, disputes, bundles, analytics, and APIs."
 tech: ["Laravel 9", "PHP 8.2", "MySQL", "Redis", "ClickHouse", "Checkout.com", "PayPal", "RapidAPI"]
 status: "Production"

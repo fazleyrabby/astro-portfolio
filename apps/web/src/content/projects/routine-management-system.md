@@ -9,7 +9,7 @@ github: "https://github.com/fazleyrabby/routine-lte"
 thumbnail: "/projects/4.webp"
 description: "University routine management system for conflict-free scheduling."
 tech: ["PHP", "Laravel 8", "jQuery", "MySQL"]
-position: 9
+position: 11
 period: "2020 – 2024"
 role: "Final Year Project — Solo"
 highlights:

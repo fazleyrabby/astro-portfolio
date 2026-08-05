@@ -10,7 +10,7 @@ thumbnail: "/projects/edubase.png"
 description: "National education discovery, comparison, and fee intelligence platform for 90,000+ institutions across Bangladesh."
 tech: ["Laravel 13", "PHP 8.4", "MySQL", "PostgreSQL", "Redis", "Meilisearch", "Alpine.js", "Tailwind CSS v4", "Docker"]
 status: "Active"
-position: 3
+position: 4
 period: "May 2026 – Present"
 role: "Solo Developer"
 highlights:

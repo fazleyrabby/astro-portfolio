@@ -1,5 +1,3 @@
-# Things I Use
-
 This is my current developer setup — the tools, hardware, and workflow I use for building Laravel applications, REST APIs, and backend systems.
 
 Some of the links below may be affiliate links — I only recommend tools I actually use.
@@ -98,7 +96,7 @@ Used for testing environments and occasional gaming.
 
 ---
 
-### Proxmox Homelab & VMs
+### Homelab & VMs
 
 Used for experimenting with infrastructure, containers, and backend setups.
 

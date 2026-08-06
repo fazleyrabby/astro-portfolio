@@ -217,6 +217,12 @@ const jsonLd = JSON.stringify({
 
           const wrapper = document.createElement("div");
           wrapper.className = "code-block-wrapper";
+          wrapper.setAttribute("data-lenis-prevent", "true");
+
+          pre.setAttribute("data-lenis-prevent", "true");
+          pre.addEventListener("wheel", (e) => {
+            e.stopPropagation();
+          }, { passive: true });
 
           const header = document.createElement("div");
           header.className = "code-block-header";

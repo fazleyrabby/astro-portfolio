@@ -705,17 +705,17 @@
     overflow: hidden;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     background-color: #1e1e2e;
-    max-height: 500px;
+    max-height: 520px;
     display: flex;
     flex-direction: column;
+    overscroll-behavior: contain;
   }
 
   .code-block-wrapper pre {
-    max-height: 440px;
+    max-height: 460px;
     overflow-y: auto;
-    overflow-x: hidden;
-    white-space: pre-wrap;
-    word-break: break-all;
+    overflow-x: auto;
+    overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
   }
 

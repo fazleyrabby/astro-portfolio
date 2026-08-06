@@ -137,7 +137,7 @@ I avoid overcomplicated setups — if something slows me down, I replace it.
 
 - Dockerized Laravel workflows  
 - API performance optimization  
-- Homelab setups with Proxmox & K3s  
+- Homelab setups with Linux  
 
 ---
 

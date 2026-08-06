@@ -642,12 +642,29 @@
 
   #article-content blockquote {
     border-left: 3px solid var(--accent);
-    padding-left: 1.25rem;
-    margin: 2rem 0;
+    padding: 0.875rem 1.5rem;
+    margin: 2.25rem 0;
     font-family: var(--font-display);
     font-style: italic;
     font-size: 1.125rem;
-    color: var(--text-secondary);
+    color: var(--text-primary);
+    background: color-mix(in srgb, var(--bg-surface) 60%, transparent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  #article-content blockquote p {
+    margin: 0 !important;
+    font-family: var(--font-display) !important;
+    font-size: 1.125rem !important;
+    font-style: italic !important;
+    color: var(--text-primary) !important;
+    line-height: 1.6 !important;
+  }
+
+  #article-content hr {
+    border: none;
+    height: 1px;
+    background: var(--border);
+    margin: 3rem 0;
   }
 
   #article-content table {

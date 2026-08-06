@@ -1,10 +1,10 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
-import { Content as JourneyMarkdown } from "../content/journey.md";
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
 ---
 
 <MainLayout 
@@ -12,114 +12,812 @@ const t = useTranslations(lang);
   description="From early computing memories and custom ROM tinkering to backend engineering with Laravel — my personal and professional tech journey."
   ogImage="/images/journey-hero.png"
 >
-  <main class="journey-page">
-    <div class="journey-container">
-      <header class="journey-header reveal">
-        <h1 class="page-title">My Journey</h1>
-      </header>
+  <div class="journey-experience">
+    <!-- Background Grid Lines & Noise -->
+    <div class="journey-grid-bg" aria-hidden="true"></div>
 
-      <!-- Hero Graphic -->
-      <div class="journey-hero reveal">
-        <img 
-          src="/images/journey-hero.png" 
-          alt="My Journey — From 2001 First Computer to Backend Developer"
-          class="journey-hero-img"
-          loading="eager"
-          decoding="async"
-        />
-      </div>
+    <main class="journey-layout">
+      <!-- Left Rail Timeline Indicator (Desktop) -->
+      <aside class="journey-timeline-rail" aria-hidden="true">
+        <div class="timeline-line">
+          <div class="timeline-progress"></div>
+        </div>
+        <div class="timeline-nodes">
+          <a href="#ch-01" class="timeline-node" title="2001: First Computer"><span class="node-year">2001</span></a>
+          <a href="#ch-02" class="timeline-node" title="2010: Symbian & Android"><span class="node-year">2010</span></a>
+          <a href="#ch-03" class="timeline-node" title="2013: Rcreation"><span class="node-year">2013</span></a>
+          <a href="#ch-04" class="timeline-node" title="2021: Starting Over"><span class="node-year">2021</span></a>
+          <a href="#ch-05" class="timeline-node" title="2021+: Electronic First"><span class="node-year">2021+</span></a>
+          <a href="#ch-06" class="timeline-node" title="Looking Forward"><span class="node-year">NOW</span></a>
+        </div>
+      </aside>
 
-      <div class="journey-content reveal">
-        <article class="prose prose-neutral dark:prose-invert max-w-none">
-          <JourneyMarkdown />
-        </article>
+      <!-- Main Editorial Content Flow -->
+      <div class="journey-story">
+
+        <!-- ============================================
+             HERO HEADER
+             ============================================ -->
+        <header class="journey-hero-header reveal">
+          <div class="hero-meta">
+            <span class="meta-tag">MEMOIR & DOCUMENTARY</span>
+            <span class="meta-divider">/</span>
+            <span class="meta-coord">REF: CHRON-2001-2026</span>
+          </div>
+
+          <h1 class="journey-main-title">My Journey</h1>
+          
+          <p class="journey-lead">
+            Technology has fascinated me for as long as I can remember.
+          </p>
+
+          <div class="handwritten-note note-hero">
+            <span>↳ It all started with curiosity.</span>
+          </div>
+        </header>
+
+        <!-- ============================================
+             HERO TIMELINE GRAPHIC ARTIFACT
+             ============================================ -->
+        <div class="hero-artifact-container reveal">
+          <div class="artifact-frame">
+            <div class="artifact-header-bar">
+              <div class="artifact-dots">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+              </div>
+              <span class="artifact-title-text">TIMELINE_ARTWORK_2001_2026.RAW</span>
+              <span class="artifact-badge">HD ARCHIVE</span>
+            </div>
+            <img 
+              src="/images/journey-hero.png" 
+              alt="My Journey — From 2001 First Computer to Backend Developer"
+              class="artifact-hero-img"
+              loading="eager"
+              decoding="async"
+            />
+            <div class="artifact-caption">
+              <span class="caption-mono">FIG 1.0 — Visual Map of Milestones: Hardware, Custom ROMs, Software Engineering & Infrastructure</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================
+             CHAPTER 01: 2001 — THE SPARK
+             ============================================ -->
+        <section id="ch-01" class="journey-chapter reveal">
+          <div class="chapter-badge">
+            <span class="chapter-num">CH.01</span>
+            <span class="chapter-year">2001</span>
+          </div>
+
+          <div class="chapter-content">
+            <p class="story-p story-p-large">
+              One of my earliest memories is from around 2001, when our family got its first computer. Like many kids at the time, I spent countless hours playing games such as Need for Speed II, Virtua Cop 2, Road Rash, and Age of Empires. At the time, I only knew I loved computers and gaming—I had no idea that this curiosity would eventually shape my career.
+            </p>
+          </div>
+        </section>
+
+        <!-- EDITORIAL BREAK 1 -->
+        <div class="editorial-separator reveal" aria-hidden="true">
+          <div class="sep-line"></div>
+          <div class="sep-symbol">❖</div>
+          <div class="sep-line"></div>
+        </div>
+
+        <!-- ============================================
+             CHAPTER 02: DISCOVERING THE JOY OF TINKERING
+             ============================================ -->
+        <section id="ch-02" class="journey-chapter reveal">
+          <div class="chapter-badge">
+            <span class="chapter-num">CH.02</span>
+            <span class="chapter-year">2010 – 2013</span>
+          </div>
+
+          <h2 class="chapter-heading">Discovering the Joy of Tinkering</h2>
+
+          <div class="chapter-content">
+            <p class="story-p">
+              Fast forward to 2010–2011, when I bought my first Symbian phone after using several Java phones. One day I discovered USB tethering and Wi-Fi hotspot. I remember using my mobile data to share internet with other devices and genuinely feeling like I had invented something new. Looking back, it's funny—but that excitement for discovering how technology worked never really left me.
+            </p>
+
+            <div class="handwritten-note note-tinkering">
+              <span>"I genuinely felt like I had invented something new."</span>
+            </div>
+
+            <p class="story-p">
+              Around 2013, I switched to Android. Before long, I became bored with the default interface and started customizing everything I could. It began with launchers, icon packs, and themes, but eventually I discovered rooting and custom ROMs.
+            </p>
+
+            <!-- PULL QUOTE 1 -->
+            <blockquote class="editorial-quote">
+              <p>"That opened an entirely new world."</p>
+            </blockquote>
+
+            <p class="story-p">
+              I spent countless hours experimenting with different ROMs, kernels, and system modifications on my LG Nexus 4. I even installed Ubuntu Touch and configured MultiROM so I could boot multiple operating systems from a single device. Along the way, I also jailbroke iPhones and iPads simply because I wanted to understand how they worked beneath the surface.
+            </p>
+
+            <p class="story-p story-p-accent">
+              During this time, I also continued one of my other hobbies—photographing nature and landscapes—but my curiosity for technology was always the constant.
+            </p>
+          </div>
+        </section>
+
+        <!-- EDITORIAL BREAK 2 -->
+        <div class="editorial-separator reveal" aria-hidden="true">
+          <div class="sep-line"></div>
+          <div class="sep-symbol">///</div>
+          <div class="sep-line"></div>
+        </div>
+
+        <!-- ============================================
+             CHAPTER 03: FIRST STEPS INTO SOFTWARE DEVELOPMENT
+             ============================================ -->
+        <section id="ch-03" class="journey-chapter reveal">
+          <div class="chapter-badge">
+            <span class="chapter-num">CH.03</span>
+            <span class="chapter-year">2013 – 2018</span>
+          </div>
+
+          <h2 class="chapter-heading">First Steps into Software Development</h2>
+
+          <div class="chapter-content">
+            <p class="story-p">
+              Although I had always enjoyed technology and gadgets, web development didn't enter my life until much later.
+            </p>
+
+            <p class="story-p">
+              In 2013, I enrolled in a Diploma in Engineering program. During my industrial training in 2016, a friend introduced me to a software company in Chittagong called Rcreation.
+            </p>
+
+            <p class="story-p">
+              As part of our final project, we built a simple blood donation application using Java and NetBeans. After presenting the project, both my friend and I joined Rcreation as interns.
+            </p>
+
+            <div class="chapter-highlight-card">
+              <span class="card-kicker">MILESTONE</span>
+              <p class="card-text">That was my first real experience working in software development.</p>
+            </div>
+
+            <p class="story-p">
+              I started with HTML, CSS, JavaScript, PHP, and MySQL, and I remember building the frontend for an entire e-commerce website. Later, I worked on several Native PHP and CodeIgniter applications. I spent about two years there, learning through real projects and practical experience.
+            </p>
+          </div>
+        </section>
+
+        <!-- EDITORIAL BREAK 3 -->
+        <div class="editorial-separator reveal" aria-hidden="true">
+          <div class="sep-line"></div>
+          <div class="sep-symbol">❖</div>
+          <div class="sep-line"></div>
+        </div>
+
+        <!-- ============================================
+             CHAPTER 04: STARTING OVER
+             ============================================ -->
+        <section id="ch-04" class="journey-chapter reveal">
+          <div class="chapter-badge">
+            <span class="chapter-num">CH.04</span>
+            <span class="chapter-year">2021</span>
+          </div>
+
+          <h2 class="chapter-heading">Starting Over</h2>
+
+          <div class="chapter-content">
+            <p class="story-p">
+              Despite gaining experience, I eventually realized something important—my fundamentals weren't as strong as I wanted them to be.
+            </p>
+
+            <!-- PULL QUOTE 2 -->
+            <blockquote class="editorial-quote quote-bold">
+              <p>"Rather than continuing forward with weak foundations, I decided to start over."</p>
+            </blockquote>
+
+            <p class="story-p">
+              In 2021, I joined AMCoders as an intern. After three months, I was offered a permanent position. Although I spent only seven months there in total, those months were incredibly valuable. I learned rapidly, worked on multiple projects within a short period, and significantly strengthened my Laravel skills.
+            </p>
+
+            <div class="handwritten-note note-starting-over">
+              <span>"One of the best decisions I made for my career."</span>
+            </div>
+
+            <p class="story-p story-p-callout">
+              Looking back, starting over was one of the best decisions I made for my career.
+            </p>
+          </div>
+        </section>
+
+        <!-- EDITORIAL BREAK 4 -->
+        <div class="editorial-separator reveal" aria-hidden="true">
+          <div class="sep-line"></div>
+          <div class="sep-symbol">///</div>
+          <div class="sep-line"></div>
+        </div>
+
+        <!-- ============================================
+             CHAPTER 05: ELECTRONIC FIRST
+             ============================================ -->
+        <section id="ch-05" class="journey-chapter reveal">
+          <div class="chapter-badge">
+            <span class="chapter-num">CH.05</span>
+            <span class="chapter-year">OCT 2021 – PRESENT</span>
+          </div>
+
+          <h2 class="chapter-heading">Electronic First</h2>
+
+          <div class="chapter-content">
+            <p class="story-p">
+              In October 2021, I applied to more than 100 jobs before finally receiving an offer from Electronic First, where I currently work as a Backend Developer.
+            </p>
+
+            <div class="counter-milestone">
+              <span class="counter-number">5+</span>
+              <span class="counter-label">Years of growth, upgrades & high-volume production engineering</span>
+            </div>
+
+            <p class="story-p">
+              It has now been over five years.
+            </p>
+
+            <p class="story-p">
+              During this time, I've grown from solving relatively small backend problems to designing and implementing scalable production solutions. I've worked on Laravel upgrades—from Laravel 5 to Laravel 9, and now Laravel 13—while helping build systems that process thousands of daily transactions.
+            </p>
+
+            <p class="story-p">
+              I've faced complex engineering challenges, implemented numerous production features, and worked on solutions that have directly improved the company's products and business. More importantly, every challenge has helped build my confidence as an engineer.
+            </p>
+          </div>
+        </section>
+
+        <!-- EDITORIAL BREAK 5 -->
+        <div class="editorial-separator reveal" aria-hidden="true">
+          <div class="sep-line"></div>
+          <div class="sep-symbol">❖</div>
+          <div class="sep-line"></div>
+        </div>
+
+        <!-- ============================================
+             CHAPTER 06: LOOKING FORWARD
+             ============================================ -->
+        <section id="ch-06" class="journey-chapter chapter-ending reveal">
+          <div class="chapter-badge">
+            <span class="chapter-num">CH.06</span>
+            <span class="chapter-year">NOW & BEYOND</span>
+          </div>
+
+          <h2 class="chapter-heading">Looking Forward</h2>
+
+          <div class="chapter-content">
+            <p class="story-p">
+              The software industry continues to evolve, especially with the rise of AI.
+            </p>
+
+            <p class="story-p story-p-bold">
+              I'm still learning, still experimenting, and still building.
+            </p>
+
+            <p class="story-p">
+              I'm excited to see where this journey leads next.
+            </p>
+
+            <div class="ending-closing-block">
+              <p class="story-p story-p-final">
+                Until then, I'll keep solving problems, building reliable software, and moving forward.
+              </p>
+              
+              <div class="handwritten-note note-ending">
+                <span>Still tinkering. Adios.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- NAVIGATION & CTA FOOTER -->
+        <footer class="journey-footer-nav reveal">
+          <div class="footer-nav-grid">
+            <a href={tp("/about/")} class="btn-secondary">
+              ← Back to About
+            </a>
+            <a href={tp("/projects/")} class="btn-primary">
+              View Featured Projects →
+            </a>
+          </div>
+        </footer>
+
       </div>
-    </div>
-  </main>
+    </main>
+  </div>
 </MainLayout>
 
 <style>
-  .journey-page {
-    padding: clamp(2rem, 5vw, 4rem) 0;
-  }
-  .journey-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 clamp(1.25rem, 4vw, 2rem);
-  }
-  .journey-header {
-    margin-bottom: 2rem;
+  /* ============================================
+     EDITORIAL JOURNEY PAGE STYLING
+     ============================================ */
+
+  .journey-experience {
+    position: relative;
+    padding: clamp(3rem, 7vh, 6rem) 0 clamp(4rem, 8vh, 8rem);
+    background: var(--bg-base);
   }
 
-  .journey-hero {
+  /* Subtle background grid pattern */
+  .journey-grid-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: 
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 80%);
+  }
+
+  .journey-layout {
+    position: relative;
+    z-index: 1;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+
+  @media (max-width: 860px) {
+    .journey-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ============================================
+     TIMELINE RAIL (LEFT MARGIN)
+     ============================================ */
+  .journey-timeline-rail {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 1rem;
+  }
+
+  @media (max-width: 860px) {
+    .journey-timeline-rail {
+      display: none;
+    }
+  }
+
+  .timeline-line {
+    position: absolute;
+    left: 7px;
+    top: 1.5rem;
+    bottom: 1.5rem;
+    width: 1px;
+    background: var(--border);
+    z-index: 0;
+  }
+
+  .timeline-nodes {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+  }
+
+  .timeline-node {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+  }
+
+  .timeline-node::before {
+    content: "";
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--bg-base);
+    border: 2px solid var(--border);
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .timeline-node:hover {
+    color: var(--accent);
+  }
+
+  .timeline-node:hover::before {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .node-year {
+    font-family: var(--font-mono);
+    font-size: 0.725rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  /* ============================================
+     STORY COLUMN
+     ============================================ */
+  .journey-story {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  /* Header */
+  .journey-hero-header {
     margin-bottom: 2.5rem;
-    border-radius: 12px;
-    overflow: hidden;
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  .meta-divider {
+    color: var(--border);
+  }
+
+  .meta-coord {
+    color: var(--text-muted);
+  }
+
+  .journey-main-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 3.75rem);
+    font-weight: 400;
+    color: var(--text-primary);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin: 0 0 1.25rem 0;
+  }
+
+  .journey-lead {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+    font-style: italic;
+    color: var(--text-primary);
+    line-height: 1.5;
+    margin: 0 0 1rem 0;
+  }
+
+  /* Handwritten annotations */
+  .handwritten-note {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--accent);
+    margin: 0.75rem 0;
+    opacity: 0.9;
+  }
+
+  .note-hero {
+    transform: rotate(-1deg);
+    margin-top: 0.5rem;
+  }
+
+  .note-tinkering {
+    transform: rotate(0.8deg);
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid var(--accent);
+  }
+
+  .note-starting-over {
+    transform: rotate(-1.2deg);
+    margin: 1.25rem 0;
+    font-size: 1.15rem;
+  }
+
+  .note-ending {
+    transform: rotate(1deg);
+    font-size: 1.2rem;
+    margin-top: 1rem;
+  }
+
+  /* ============================================
+     HERO ARTIFACT GRAPHIC
+     ============================================ */
+  .hero-artifact-container {
+    margin-bottom: 3.5rem;
+  }
+
+  .artifact-frame {
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border);
-    background: var(--bg-card);
+    background: var(--bg-surface);
+    overflow: hidden;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
   }
-  .journey-hero-img {
+
+  .artifact-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.625rem 1rem;
+    background: color-mix(in srgb, var(--bg-base) 90%, var(--text-primary) 10%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .artifact-dots {
+    display: flex;
+    gap: 0.375rem;
+  }
+
+  .artifact-dots .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+  }
+
+  .dot-red { background: #ff5f56; }
+  .dot-yellow { background: #ffbd2e; }
+  .dot-green { background: #27c93f; }
+
+  .artifact-title-text {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+
+  .artifact-badge {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    background: var(--accent-dim);
+    color: var(--accent);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+
+  .artifact-hero-img {
     width: 100%;
     height: auto;
     display: block;
     object-fit: cover;
   }
 
-  .journey-content :global(.prose) {
-    font-size: 1rem;
-    color: var(--text-secondary);
-  }
-  .journey-content :global(.prose h2) {
-    font-family: var(--font-display);
-    font-size: 1.375rem;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-    letter-spacing: -0.01em;
-  }
-  .journey-content :global(.prose h3) {
-    font-family: var(--font-display);
-    font-size: 1.125rem;
-    font-style: italic;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-  }
-  .journey-content :global(.prose p) {
-    font-family: var(--font-sans);
-    font-size: 1rem;
-    line-height: 1.75;
-    color: var(--text-secondary);
-    margin: 0.75rem 0;
-  }
-  .journey-content :global(.prose ul) {
-    list-style-type: disc;
-    padding-left: 1.25rem;
-    margin: 0.75rem 0;
-  }
-  .journey-content :global(.prose li) {
-    font-family: var(--font-sans);
-    font-size: 1rem;
-    line-height: 1.75;
-    color: var(--text-secondary);
-    margin: 0.375rem 0;
-  }
-  .journey-content :global(.prose strong) {
-    color: var(--text-primary);
-    font-weight: 600;
-  }
-  .journey-content :global(.prose hr) {
-    border: none;
+  .artifact-caption {
+    padding: 0.625rem 1rem;
+    background: var(--bg-surface);
     border-top: 1px solid var(--border);
-    margin: 2rem 0;
   }
-  .journey-content :global(.prose blockquote) {
-    border-left: 2px solid var(--accent);
-    padding-left: 1rem;
-    font-style: italic;
+
+  .caption-mono {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
     color: var(--text-muted);
+  }
+
+  /* ============================================
+     CHAPTERS
+     ============================================ */
+  .journey-chapter {
+    position: relative;
+    padding: 2.25rem 0;
+    scroll-margin-top: 100px;
+  }
+
+  .chapter-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .chapter-num {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .chapter-year {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .chapter-heading {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin: 0.5rem 0 1.25rem 0;
+  }
+
+  /* Story Paragraphs */
+  .story-p {
+    font-family: var(--font-sans);
+    font-size: 1.03125rem;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    margin: 1.125rem 0;
+    max-width: 65ch;
+  }
+
+  .story-p-large {
+    font-size: 1.15rem;
+    line-height: 1.85;
+    color: var(--text-primary);
+  }
+
+  .story-p-bold {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+  }
+
+  .story-p-accent {
+    padding-left: 1rem;
+    border-left: 2px solid var(--border);
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .story-p-callout {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin: 1.75rem 0;
+  }
+
+  .story-p-final {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    font-weight: 400;
+  }
+
+  /* ============================================
+     EDITORIAL PULL QUOTES & CARDS
+     ============================================ */
+  .editorial-quote {
+    margin: 2rem 0;
+    padding: 1.25rem 1.75rem;
+    border-left: 3px solid var(--accent);
+    background: color-mix(in srgb, var(--bg-surface) 80%, var(--accent-dim) 20%);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .editorial-quote p {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.2rem, 2.5vw, 1.45rem);
+    color: var(--text-primary);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .quote-bold p {
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  .chapter-highlight-card {
+    margin: 1.75rem 0;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+  }
+
+  .card-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.35rem;
+  }
+
+  .card-text {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  /* Counter milestone */
+  .counter-milestone {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin: 1.75rem 0;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--bg-surface) 90%, var(--accent) 10%);
+    border: 1px solid var(--border);
+  }
+
+  .counter-number {
+    font-family: var(--font-display);
+    font-size: 2.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .counter-label {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  /* ============================================
+     SEPARATORS & ENDING
+     ============================================ */
+  .editorial-separator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 0;
+    opacity: 0.4;
+  }
+
+  .sep-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .sep-symbol {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .chapter-ending {
+    padding-bottom: 4rem;
+  }
+
+  .ending-closing-block {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Footer Navigation */
+  .journey-footer-nav {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-nav-grid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 </style>

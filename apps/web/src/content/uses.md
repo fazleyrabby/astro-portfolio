@@ -1,7 +1,5 @@
 This is my current developer setup — the tools, hardware, and workflow I use for building Laravel applications, REST APIs, and backend systems.
 
-Some of the links below may be affiliate links — I only recommend tools I actually use.
-
 ---
 
 ## Core Stack
@@ -28,7 +26,7 @@ I keep my editor setup minimal and fast for backend-heavy workflows.
 
 - Fonts:
   - Menlo (current)
-  - Jetbrains Mono
+  - JetBrains Mono
 
 ---
 
@@ -96,11 +94,19 @@ Used for testing environments and occasional gaming.
 
 ---
 
-### Homelab & VMs
+### Homelab & Infrastructure
 
-Used for experimenting with infrastructure, containers, and backend setups.
+I run a dedicated self-hosted homelab environment for staging production backend services, automated CI/CD runners, background queues, and telemetry:
 
-- **Lenovo ThinkPad T480** – 256GB SSD, 8GB RAM  
+- **Hardware Node**: Dedicated Linux Server (Ubuntu 24.04 LTS, 7.5GB RAM & 232GB NVMe SSD)  
+- **Container Orchestration**: 41+ active Docker containers managed with Docker Compose & Traefik Reverse Proxy  
+- **Networking & Ingress**: Tailscale Mesh VPN for internal node communication + Cloudflare Tunnels (`cloudflared`) for secure zero-trust external endpoints  
+- **Database Consolidation**: Single shared production MySQL instance (`mysql-shared` on port 3307) powering multiple SaaS apps (saving ~1.1GB RAM & 10GB disk)  
+- **CI/CD Ephemeral Runner Engine**: Custom Node.js webhook-based launcher receiving GitHub webhooks and spawning on-demand `--ephemeral` Actions runners (replacing 6 idle runners and saving ~715MB RAM)  
+- **App Runtimes & Caching**: FrankenPHP & Swoole application servers, Redis (queues & caching), and ClickHouse (OLAP event analytics)  
+- **Services & Tools**: Mailpit (SMTP debugging sandbox), Portainer CE, Nextcloud, Jellyfin media server  
+- **Monitoring & Observability**: Prometheus, Grafana, Loki & Node Exporter monitoring stack  
+- **Local AI Agents**: `llama-server` (Qwen LLM) & Hermes AI agent  
 
 ---
 
@@ -110,7 +116,7 @@ I use virtualization heavily for testing and running isolated environments.
 
 - **VMware Fusion Pro** (macOS)  
 - **VMware Workstation** (Secondary setup)  
-- **Proxmox** – Homelab and containerized workloads  
+- **Ubuntu Server** – Homelab and containerized workloads  
 
 ---
 
@@ -131,7 +137,7 @@ I avoid overcomplicated setups — if something slows me down, I replace it.
 
 - Dockerized Laravel workflows  
 - API performance optimization  
-- Homelab setups with Proxmox  
+- Homelab setups with Proxmox & K3s  
 
 ---
 

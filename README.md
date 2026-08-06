@@ -1,8 +1,10 @@
-# Astro Portfolio with AI Blog Automation
+# Astro Portfolio
 
 ## Setup
 
-<img width="1379" height="790" alt="CleanShot 2026-07-26 at 00 50 08" src="https://github.com/user-attachments/assets/7a2e0244-1b65-4551-99e3-82b1e2515506" />
+<img width="1228" height="797" alt="CleanShot 2026-08-07 at 02 10 27" src="https://github.com/user-attachments/assets/56eb0acf-b61f-4b18-bb7a-5f1cc9e77765" />
+
+<!-- <img width="1379" height="790" alt="CleanShot 2026-07-26 at 00 50 08" src="https://github.com/user-attachments/assets/7a2e0244-1b65-4551-99e3-82b1e2515506" /> -->
 
 
 

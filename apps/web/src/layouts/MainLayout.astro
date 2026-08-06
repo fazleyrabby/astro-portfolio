@@ -1,7 +1,7 @@
 ---
 import Head from "./Head.astro";
-import LeftRail from "./LeftRail.astro";
-import TopBar from "./TopBar.astro";
+import Navigation from "./Navigation.astro";
+import Footer from "./Footer.astro";
 import "../styles/global.css";
 import ScrollToTop from "@components/ScrollToTop.astro";
 import Analytics from "@vercel/analytics/astro";
@@ -47,81 +47,24 @@ const {
     {articleTags}
   />
   <body
-    class="font-sans min-h-screen relative bg-[var(--bg-base)] text-[var(--text-primary)] antialiased overflow-hidden"
+    class="font-sans min-h-screen relative bg-[var(--bg-base)] text-[var(--text-primary)] antialiased"
   >
     <Analytics />
 
-    <div class="flex min-h-screen w-screen overflow-hidden">
-      <!-- Left persistent sidebar dock -->
-      <LeftRail />
+    <!-- Navigation -->
+    <Navigation altUrl={altUrl} />
 
-      <!-- Main Content pane -->
-      <div
-        class="flex-1 flex flex-col min-h-screen h-screen overflow-hidden relative"
-      >
-        <TopBar altUrl={altUrl} />
-
-        <!-- Main Workspace scrollable content container -->
-        <div
-          class="flex-1 overflow-y-auto w-full relative z-10 flex flex-col scroll-container"
-        >
-          <div class="flex-1 workspace-shell">
-            <slot />
-          </div>
-        </div>
+    <!-- Main content -->
+    <div class="pt-16 min-h-screen flex flex-col">
+      <div class="flex-1">
+        <slot />
       </div>
+
+      <!-- Footer -->
+      <Footer />
     </div>
 
-    <!-- Floating Layout Expand Tabs (Desktop only) -->
-    <button id="v2-desktop-sidebar-expand-btn" class="v2-sidebar-expand-btn" title="Expand Sidebar">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
-      </svg>
-    </button>
-
     <ScrollToTop />
-
-    <script>
-      function initLayoutSidebars() {
-        const sidebarToggle = document.getElementById("v2-desktop-sidebar-toggle-aside");
-        const sidebarExpand = document.getElementById("v2-desktop-sidebar-expand-btn");
-
-        // Load initial states from localStorage
-        if (localStorage.getItem("left-rail-collapsed") === "true") {
-          document.documentElement.classList.add("left-rail-collapsed");
-          document.body.classList.add("left-rail-collapsed");
-        } else {
-          document.documentElement.classList.remove("left-rail-collapsed");
-          document.body.classList.remove("left-rail-collapsed");
-        }
-
-        // Bind LeftRail Toggle
-        if (sidebarToggle) {
-          const newBtn = sidebarToggle.cloneNode(true);
-          sidebarToggle.parentNode?.replaceChild(newBtn, sidebarToggle);
-          newBtn.addEventListener("click", () => {
-            document.documentElement.classList.add("left-rail-collapsed");
-            document.body.classList.add("left-rail-collapsed");
-            localStorage.setItem("left-rail-collapsed", "true");
-          });
-        }
-        if (sidebarExpand) {
-          const newBtn = sidebarExpand.cloneNode(true);
-          sidebarExpand.parentNode?.replaceChild(newBtn, sidebarExpand);
-          newBtn.addEventListener("click", () => {
-            document.documentElement.classList.remove("left-rail-collapsed");
-            document.body.classList.remove("left-rail-collapsed");
-            localStorage.setItem("left-rail-collapsed", "false");
-          });
-        }
-      }
-
-      document.addEventListener("DOMContentLoaded", initLayoutSidebars);
-      document.addEventListener("astro:page-load", initLayoutSidebars);
-      if (document.readyState !== "loading") {
-        initLayoutSidebars();
-      }
-    </script>
 
     <script>
       const initAnimations = async () => {
@@ -130,26 +73,35 @@ const {
         const { ScrollTrigger } = await import("gsap/ScrollTrigger");
         gsap.registerPlugin(ScrollTrigger);
 
-        // Initialize Lenis on scrollable container instead of window (essential for sidebar setup)
-        const scrollContainer = document.querySelector(".scroll-container");
-        if (scrollContainer) {
-          const lenis = new Lenis({
-            wrapper: scrollContainer as HTMLElement,
-            content: scrollContainer.firstElementChild as HTMLElement,
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        // Initialize Lenis smooth scroll on window
+        const lenis = new Lenis({
+          duration: 1.2,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        });
+
+        lenis.on("scroll", ScrollTrigger.update);
+
+        gsap.ticker.add((time) => {
+          lenis.raf(time * 1000);
+        });
+
+        gsap.ticker.lagSmoothing(0);
+
+        // Reveal animations
+        const revealEls = document.querySelectorAll(".reveal");
+        if (revealEls.length > 0 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          revealEls.forEach((el) => {
+            ScrollTrigger.create({
+              trigger: el,
+              start: "top 90%",
+              once: true,
+              onEnter: () => el.classList.add("is-visible"),
+            });
           });
-
-          lenis.on("scroll", ScrollTrigger.update);
-
-          gsap.ticker.add((time) => {
-            lenis.raf(time * 1000);
-          });
-
-          gsap.ticker.lagSmoothing(0);
+        } else {
+          // If reduced motion, make everything visible
+          revealEls.forEach((el) => el.classList.add("is-visible"));
         }
-
-        await import("../scripts/animations.js");
       };
 
       // Defer non-critical animations
@@ -158,7 +110,7 @@ const {
           initAnimations();
         });
       } else {
-        setTimeout(initAnimations, 1000);
+        setTimeout(initAnimations, 500);
       }
     </script>
 

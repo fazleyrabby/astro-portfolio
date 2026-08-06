@@ -23,27 +23,25 @@
 </button>
 
 <style>
-  /* Floating TOC — fixed on right side */
+  /* Floating TOC — fixed on right side on ultra-wide screens */
   .toc-sidebar {
     position: fixed;
-    right: max(1.5rem, calc((100vw - 72rem) / 2 - 16rem));
-    top: 50%;
-    transform: translateY(-50%) translateX(20px);
+    right: calc((100vw - 840px) / 2 - 260px);
+    top: 120px;
     width: 220px;
     z-index: 40;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    background: var(--bg-base);
+    background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     padding: 1.25rem 1rem;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
   }
   .toc-sidebar.toc-visible {
     opacity: 1;
     pointer-events: auto;
-    transform: translateY(-50%) translateX(0);
   }
 
   /* Collapse / Expand styles */
@@ -196,12 +194,12 @@
   }
 
   /* Hide floating TOC on smaller screens — mobile uses the popup button instead */
-  @media (max-width: 1279px) {
+  @media (max-width: 1379px) {
     .toc-sidebar {
-      display: none;
+      display: none !important;
     }
     .toc-sidebar.toc-visible {
-      display: none;
+      display: none !important;
     }
     .toc-expand-btn {
       display: none !important;

@@ -1,711 +1,995 @@
-You are a senior product designer, systems UX architect, and frontend design systems engineer.
+# ROLE
 
-Your task is to redesign and refactor ONLY the visual design system, layout structure, spacing system, navigation system, and component presentation of an existing developer portfolio.
+You are an award-winning Product Designer, UX Architect, Frontend Engineer, and Design Systems expert.
 
-IMPORTANT:
-This is STRICTLY a UI/UX and frontend presentation redesign.
+Your taste should be comparable to designers at:
 
-DO NOT:
+- Linear
+- Vercel
+- Anthropic
+- Perplexity
+- Stripe
+- Mercury
+- Raycast
+- Framer
 
-* modify business logic
-* modify application logic
-* modify backend architecture
-* modify routing logic
-* modify data fetching
-* modify APIs
-* modify Astro/Laravel application structure
-* modify database logic
-* modify content structure unless required for layout density
-* remove existing functionality
-* rewrite core application behavior
-* change existing project/article data models
-* alter SEO logic
-* alter localization logic
-* modify authentication/session systems
-* break current responsive behavior
-* rewrite working components unnecessarily
+Your job is NOT to redesign my branding.
 
-This redesign should:
+Your job is to redesign the UI/UX while preserving every piece of existing content.
 
-* preserve all current functionality
-* preserve all routes/pages
-* preserve existing content
-* preserve application logic
-* preserve interactions unless visually improving them
-* preserve accessibility
-* preserve responsiveness
+Think like someone building the personal website of a Senior Backend Engineer—not a creative agency.
 
-The goal is:
+---
 
-* purely a design-system evolution
-* layout modernization
-* information-density optimization
-* navigation restructuring
-* visual hierarchy redesign
-* operational workspace transformation
+# GOAL
 
-==================================================
-PROJECT CONTEXT
+Completely redesign my portfolio into a timeless editorial engineering portfolio.
 
-The current portfolio already exists and contains:
+The current portfolio feels like an admin dashboard.
 
-* Home page
-* Work/projects page
-* Blog archive
-* Blog article pages
-* Uses page
-* Resume/CV page
+I no longer want a dashboard aesthetic.
 
-The current problems:
+I want something that feels:
 
-* excessive whitespace
-* oversized typography
-* too much vertical scrolling
-* landing-page SaaS structure
-* isolated sections
-* weak persistent navigation
-* low information density
-* too much editorial spacing
-* project cards are too large
-* content feels disconnected
-* pages feel like marketing pages instead of operational systems
+• calm
+• premium
+• modern
+• editorial
+• engineering-focused
+• architectural
+• sophisticated
+• understated
 
-The redesign goal is NOT:
+The site should immediately communicate:
 
-* a generic startup SaaS site
-* a glassmorphism dashboard
-* a fake hacker movie UI
-* a cyberpunk overload
-* an admin template
+"This engineer builds production systems."
 
-The redesign SHOULD feel like:
+NOT
 
-* a developer operating environment
-* a compact engineering workspace
-* a modular systems interface
-* a technical knowledge workstation
-* a premium developer tool
-* an infrastructure-aware product ecosystem
+"This engineer builds dashboards."
 
-==================================================
-GLOBAL DESIGN PHILOSOPHY
+---
 
-Core design direction:
+# IMPORTANT
 
-* Swiss Systems UI
-* Industrial minimalism
-* Retro-terminal influence
-* Compact information density
-* Editorial grid discipline
-* Developer tooling aesthetics
-* Observability-inspired layouts
-* Modular operational workspace
+DO NOT change ANY content.
 
-Visual personality:
+DO NOT rewrite paragraphs.
 
-* technical
-* calm
-* dense
-* precise
-* systematic
-* operational
-* professional
-* tactile
-* mature
+DO NOT edit project descriptions.
 
-The interface should feel inspired by:
+DO NOT rename sections.
 
-* Linear
-* Raycast
-* Warp
-* Obsidian
-* Grafana
-* Retool
-* VSCode
-* Teenage Engineering
-* modern observability dashboards
-* premium developer tooling
+DO NOT modify resume information.
 
-==================================================
-CRITICAL RULES
+DO NOT remove pages.
 
-DO NOT:
+DO NOT remove functionality.
 
-* use giant hero sections
-* use huge typography
-* use oversized whitespace
-* create generic startup landing pages
-* create fake sci-fi dashboards
-* overuse telemetry
-* create noisy cyberpunk clutter
-* use excessive gradients
-* use giant card padding
-* create vertically stretched sections
-* create decorative-only UI
-* create fake metrics
-* create empty atmospheric layouts
+Only redesign the visual language, layout, spacing, typography, animations, hierarchy and UX.
 
-INSTEAD:
+---
 
-* prioritize information density
-* use modular panels
-* compress spacing intelligently
-* make navigation persistent
-* make content scannable
-* create workspace-like hierarchy
-* use operational UI structure
-* maintain readability
-* make every block useful
-* make the UI feel productive
+# DESIGN DIRECTION
 
-==================================================
-GLOBAL LAYOUT SYSTEM
+Overall style:
 
-Use a persistent desktop layout:
+80%
 
-┌──────────────────────────────────────────┐
-│ Top System Bar                           │
-├────────┬─────────────────────────────────┤
-│ Rail   │ Main Workspace                  │
-│ Nav    │                                 │
-│        │ Modular Grid                    │
-│        │                                 │
-│        │ Panels / Projects / Articles    │
-│        │                                 │
-└────────┴─────────────────────────────────┘
+Calm Editorial SaaS
 
-==================================================
-LEFT RAIL NAVIGATION
+Inspired by
 
-The left rail is NOT a traditional sidebar.
+• Linear
+• Vercel
+• Anthropic
+• Mercury
+• Perplexity
+• Raycast
 
-It should feel like:
+20%
 
-* a workspace dock
-* an operating system activity rail
-* a developer tool navigator
+Engineering Personality
 
-Width:
+Inspired by
 
-* 72px–88px
+• architecture blueprints
+• infrastructure diagrams
+• system topology
+• engineering documentation
+• technical books
+• industrial design
+• brutalist architecture
+• subtle terminal aesthetics
 
-Contents:
+NOT cyberpunk.
 
-* logo
-* compact navigation icons
-* active section indicator
-* theme switcher
-* status indicator
-* optional clock/system state
+NOT gaming.
 
-Navigation items:
+NOT dashboard.
 
-* Home
-* Work
-* Blog
-* Labs
-* Uses
-* Resume
-* Contact
+NOT dribbble overload.
 
-Behavior:
+NOT neon.
 
-* persistent on desktop
-* compact
-* minimal labels
-* icon-first
-* hover expansion optional
-* subtle active states
-* tactile interactions
+---
 
-Visual direction:
+# DESIGN PHILOSOPHY
 
-* thin borders
-* compact spacing
-* subtle depth
-* monochrome surfaces
-* industrial feel
+Less UI.
 
-==================================================
-TOP SYSTEM BAR
+More breathing room.
 
-This is NOT a marketing navbar.
+Large typography.
 
-It should feel like:
+Perfect spacing.
 
-* a workspace command bar
-* system navigation layer
-* application frame
+Visual confidence.
 
-Height:
+Editorial layouts.
 
-* 44px–56px
+Content first.
 
-Include:
+Images second.
 
-* breadcrumb navigation
-* current section
-* search
-* theme/mode
-* availability status
-* optional quick actions
-* optional command menu trigger
+Every section should feel intentional.
+
+Everything should breathe.
+
+---
+
+# DESIGN SKILL REFERENCE
+
+Study the craftsmanship and design principles demonstrated by premium product websites such as:
+
+• https://impeccable.style
+• Linear
+• Vercel
+• Anthropic
+• Perplexity
+
+Do NOT recreate these websites.
+
+Instead study:
+
+• typography hierarchy
+• editorial composition
+• visual rhythm
+• spacing systems
+• image placement
+• section transitions
+• motion design
+• restraint
+• pacing
+• balance between text and imagery
+
+Use them as references for design quality rather than visual imitation.
+
+The portfolio should feel professionally art-directed rather than template-driven.
+
+# VISUAL STORYTELLING
+
+Every major page should contain one memorable visual moment.
+
+Examples:
+
+• hero artwork
+• architectural photography
+• subtle monochrome portrait
+• blueprint illustration
+• technical diagram
+• editorial image
+• infrastructure photography
+
+Avoid decorative stock imagery.
+
+Every image should reinforce the engineering narrative.
+
+Images should feel curated rather than generated.
+
+# SECTION RHYTHM
+
+Avoid repeating identical sections.
+
+Create visual rhythm by alternating layouts.
 
 Example:
-Workspace > Projects > SignalStack
 
-Visual style:
+Text + Image
 
-* compact
-* technical
-* subtle separators
-* operational
-* low visual noise
+↓
 
-==================================================
-TYPOGRAPHY SYSTEM
+Image + Text
 
-Typography must become compact and operational.
+↓
 
-Use:
+Full-width Feature
 
-* Swiss hierarchy
-* technical rhythm
-* compact scaling
+↓
 
-Recommended scale:
+Editorial Grid
 
-* Hero: 40–48px max
-* Section titles: 20–28px
-* Card titles: 14–18px
-* Body: 13–15px
-* Labels/meta: 11–12px
+↓
 
-Avoid:
+Case Study
 
-* giant marketing typography
-* oversized headings
-* huge paragraph widths
+↓
 
-Typography direction:
+Large Quote
 
-* editorial precision
-* compact rhythm
-* developer tooling feel
-* strong hierarchy
-* readable density
+↓
 
-Recommended font pairing:
-Primary:
+Writing
 
-* Inter
-* Geist
-* Neue Haas Grotesk
-* General Sans
+↓
 
-Technical/mono:
+Contact
 
-* IBM Plex Mono
-* Geist Mono
-* JetBrains Mono
+Each section should feel distinct while remaining part of the same design system.
 
-==================================================
-SPACING SYSTEM
+# IMAGE TREATMENT
 
-Use a compact spacing scale.
+Use a consistent image language.
 
-Base grid:
-4px
+Images should be:
 
-Allowed spacing:
-4
-8
-12
-16
-20
-24
-32
-40
-48
-
-Avoid:
-64+
-80+
-120+
-160+
-
-Section spacing should feel:
-
-* compressed
-* intentional
-* modular
-* operational
-
-==================================================
-COLOR SYSTEM
-
-Primary direction:
-
-* dark industrial UI
-* low-noise surfaces
-* warm accent color
-* subtle glow only when meaningful
-
-Palette ideas:
-
-* near-black backgrounds
-* graphite surfaces
-* muted borders
-* warm amber/orange accent
-* optional phosphor green
-* soft grayscale typography
-
-Use color sparingly.
+• monochrome
+• muted
+• subtle
+• editorial
+• lightly dithered when appropriate
+• lightly grained
+• cinematic
 
 Avoid:
 
-* rainbow dashboards
-* loud gradients
-* saturated UI overload
+• saturated colors
+• random AI art
+• generic stock photography
+• overly sharp HDR imagery
 
-==================================================
-HOME PAGE REDESIGN
+Typography should always remain the primary focal point.
 
-The home page should become:
-“Developer System Dashboard”
+# COLOR PALETTE
 
-NOT:
+Primary
 
-* a giant hero page
-* a marketing funnel
+Black
+White
 
-Structure the homepage as modular operational panels.
+Accent
 
-Recommended structure:
+Warm orange
+(#ff6a00 style)
 
-[System Status]
-[Current Focus]
-[Availability]
-[Now Building]
+Neutral greys
 
-[Featured Projects Grid]
+No gradients everywhere.
 
-[Engineering Notes]
-[Latest Articles]
+No colorful backgrounds.
 
-[Infrastructure Stack]
+No purple.
 
-[Current Experiments]
+No lime.
 
-[Activity Feed]
+No cyan.
 
-[Terminal/Logs optional]
+No glassmorphism.
 
-Use:
+No glowing cards.
 
-* compact cards
-* split layouts
-* metadata-heavy panels
-* persistent structure
+---
 
-==================================================
-PROJECTS PAGE
+# BACKGROUND
 
-Current project cards are too large.
+I LOVE subtle dithered backgrounds.
 
-Redesign into:
+Use them tastefully.
 
-* compact modular grids
-* scannable systems
-* operational project panels
+Examples:
 
-Each project card should include:
+• monochrome mountain landscapes
+• architecture
+• satellite imagery
+• brutalist buildings
+• infrastructure
+• industrial photography
+• server halls
+• abstract landscapes
 
-* title
-* short summary
-* stack
-* architecture tags
-* deployment info
-* status
-* links
-* metrics
-* role
-* infra indicators
+Requirements:
 
-Cards should feel:
+• black and white
+• very low opacity
+• heavily faded
+• blurred slightly
+• never reduce readability
 
-* compact
-* information-dense
-* operational
-* comparable
-* structured
+The background should feel like premium editorial print.
 
-Avoid giant image-heavy cards.
+Never overpower the content.
 
-==================================================
-PROJECT DETAIL PAGE
+Think magazine.
 
-Use a split-layout workspace structure.
+Not wallpaper.
+
+---
+
+# LAYOUT
+
+Replace the current dashboard layout.
+
+Use a traditional website structure.
+
+Top navigation.
+
+Large hero.
+
+Sections stacked vertically.
+
+Editorial rhythm.
+
+Examples:
+
+Hero
+
+↓
+
+Featured Projects
+
+↓
+
+Experience
+
+↓
+
+Writing
+
+↓
+
+Open Source
+
+↓
+
+Technologies
+
+↓
+
+About
+
+↓
+
+Contact
+
+Avoid multiple nested sidebars.
+
+Avoid split-pane interfaces.
+
+Avoid application layouts.
+
+This is a portfolio.
+
+Not SaaS software.
+
+---
+
+# NAVIGATION
+
+Replace sidebar navigation.
+
+Desktop:
+
+Simple top navigation.
+
+Logo left.
+
+Menu center/right.
+
+Minimal.
+
+Sticky.
+
+Transparent initially.
+
+Background blur after scrolling.
+
+Mobile:
+
+Hamburger.
+
+Simple drawer.
+
+---
+
+# HERO SECTION
+
+Completely redesign.
 
 Layout:
 
-┌────────────────────────────────┐
-│ Project Header                 │
-├──────────────┬─────────────────┤
-│ Metadata     │ Main Content    │
-│ Stack        │                 │
-│ Architecture │ Screenshots     │
-│ Status       │ Case Study      │
-│ Infra        │                 │
-│ Metrics      │                 │
-└──────────────┴─────────────────┘
+Left
 
-Persistent metadata panel should include:
+Large editorial typography.
 
-* stack
-* architecture
-* deployment
-* infra
-* APIs
-* queues
-* scaling
-* role
-* timeline
-* status
+Right
 
-Main content:
+Large visual.
 
-* concise
-* modular
-* technical
-* visualized
-* structured
+Visual options:
 
-==================================================
-BLOG ARCHIVE REDESIGN
+• monochrome portrait
+• subtle dither portrait
+• architecture image
+• engineering illustration
+• abstract infrastructure image
 
-The current archive is close but needs:
+Keep the hero extremely clean.
 
-* tighter density
-* better scanning
-* reduced spacing
-* stronger grouping
+Large whitespace.
 
-Add:
+No unnecessary cards.
 
-* filtering system
-* compact metadata
-* category rail
-* technical tags
-* reading time
-* architecture labels
+No fake widgets.
 
-Cards should feel like:
+No metric cards.
 
-* engineering knowledge modules
-* technical research entries
-* system notes
+No dashboard blocks.
 
-==================================================
-ARTICLE PAGE REDESIGN
+---
 
-The article page should become:
-“technical reading workspace”
+# HERO IMAGE
 
-Add:
+Do NOT use ASCII art.
 
-* persistent right-side TOC
-* left utility rail
-* reading progress
-* share tools
-* notes/bookmark actions
-* section tracking
+Replace it.
 
-Reduce:
+Use one of these styles:
 
-* giant paragraph spacing
-* excessive max width
-* oversized typography
+Option A
 
-Ideal reading width:
-680px–760px
+Professional monochrome portrait.
 
-Line height:
-1.6–1.7
+Option B
+
+Portrait with subtle dither treatment.
+
+Option C
+
+Large cinematic monochrome engineering landscape.
+
+Option D
+
+Architectural image.
+
+The image should support the typography.
+
+Not compete with it.
+
+---
+
+# TYPOGRAPHY
+
+Typography is the highest priority.
+
+Current typography feels inconsistent.
+
+Fix everything.
+
+Rules:
+
+Only 2 font families.
+
+Editorial serif
+
+for:
+
+Hero title
+
+Large section titles
+
+Project titles
+
+Resume headings
+
+Modern sans-serif
+
+for:
+
+Everything else.
+
+Perfect scale.
+
+Example
+
+Hero
+
+64-80px
+
+Section titles
+
+40-52px
+
+Project titles
+
+28-36px
+
+Body
+
+18-20px
+
+Small labels
+
+12-14px
+
+Use a consistent type scale.
+
+Consistent line heights.
+
+Consistent spacing.
+
+Never randomly change font sizes.
+
+---
+
+# PHOTOGRAPHY DIRECTION
+
+Photography should feel curated rather than sourced.
+
+Reference:
+
+• architecture books
+• Monocle Magazine
+• Kinfolk
+• Apple campaigns
+• industrial photography
+• architectural journals
+
+Use monochrome or muted imagery.
+
+Avoid cliché developer visuals such as:
+
+• glowing code
+• floating laptops
+• AI robots
+• people pointing at monitors
+• generic stock office photography
+
+
+# GRID
+
+Use a professional editorial grid.
+
+12-column desktop.
+
+8 tablet.
+
+4 mobile.
+
+Perfect alignment.
+
+Consistent rhythm.
+
+Consistent gutters.
+
+Whitespace should become a design element.
+
+---
+
+# PROJECTS
+
+Redesign completely.
+
+Instead of dashboard cards.
+
+Think editorial case studies.
+
+Each project should have:
+
+Large screenshot
+
+Project title
+
+Tags
+
+Problem
+
+Approach
+
+Outcome
+
+Tech stack
+
+Role
+
+Links
+
+Large breathing room.
+
+Magazine layout.
+
+Not admin cards.
+
+---
+
+# WRITING
+
+Writing should feel like a publication.
+
+Not a CMS.
 
 Use:
 
-* compact technical rhythm
-* dense readability
-* structured article sections
+Large featured article.
 
-==================================================
-USES PAGE REDESIGN
+Clean article list.
 
-Current page is too prose-heavy.
+Good typography.
 
-Transform into:
-“Developer Environment Configuration”
+Excellent reading width.
 
-Use:
+Readable spacing.
 
-* grouped system panels
-* collapsible modules
-* compact hardware/software blocks
-* operational setup cards
+---
 
-Suggested sections:
+# ABOUT
 
-* Development
-* Infrastructure
-* Virtualization
-* Hardware
-* Automation
-* AI Tooling
-* Current Experiments
+More editorial.
 
-Each section:
+Better hierarchy.
 
-* compact
-* structured
-* metadata-rich
+Large typography.
 
-==================================================
-RESUME PAGE REDESIGN
+Generous whitespace.
 
-Transform resume into:
-“Technical Profile Workspace”
+No dashboard containers.
 
-Structure:
+---
 
-Left:
+# RESUME
 
-* identity
-* quick stats
-* links
-* availability
-* focus areas
+Feels like a premium CV.
 
-Right:
+Minimal.
 
-* experience timeline
-* architecture expertise
-* infrastructure skills
-* stack matrix
-* technical depth
+Print-inspired.
 
-The resume should feel:
+Excellent typography.
 
-* operational
-* technical
-* concise
-* systems-oriented
+Good spacing.
 
-==================================================
-THEME SYSTEM
+Timeline layout.
 
-The portfolio supports multiple themes.
+---
 
-Primary themes:
+# ANIMATIONS
 
-1. Retro Terminal
-2. Swiss Systems
-3. FUI Experimental
+Subtle only.
 
-IMPORTANT:
-Do NOT create completely separate layouts.
+Examples:
 
-Maintain:
+Fade
 
-* same spacing system
-* same component system
-* same layout engine
-* same interaction model
+Slide
 
-Only change:
+Scale
 
-* colors
-* typography
-* borders
-* shadows
-* accents
-* density tuning
-* visual atmosphere
+Parallax
 
-==================================================
-RETRO TERMINAL THEME
+Soft hover
 
-Characteristics:
+Image reveal
 
-* CRT terminal influence
-* monospace UI
-* phosphor green or amber
-* thin borders
-* bitmap labels
-* industrial computing feel
+Section reveal
 
-Mood:
+Navigation transition
 
-* hacker workstation
-* UNIX terminal
-* developer lab
+Background movement
 
-==================================================
-SWISS SYSTEMS THEME
+Duration
 
-Characteristics:
+200–500ms
 
-* editorial grids
-* structured hierarchy
-* clean typography
-* premium developer tooling
-* restrained minimalism
+Ease
 
-Mood:
+Natural.
 
-* modern systems company
-* infrastructure SaaS
-* engineering precision
+No bouncing.
 
-==================================================
-FUI EXPERIMENTAL THEME
+No exaggerated motion.
 
-Characteristics:
+No flashy animations.
 
-* subtle telemetry
-* modular diagnostics
-* tactical overlays
-* observability-inspired UI
-* cinematic systems aesthetics
+Respect prefers-reduced-motion.
 
-IMPORTANT:
-Keep readable and restrained.
+---
 
-Avoid:
+# COMPONENT STYLE
 
-* fake movie UI chaos
-* unusable cyberpunk clutter
+Rounded corners
 
-==================================================
-FINAL GOAL
+12–16px maximum.
 
-The final portfolio should feel like:
+Buttons
 
-“a modular developer operating environment”
+Simple.
 
-NOT:
+Elegant.
 
-* a startup landing page
-* a generic dark portfolio
-* a fake hacker dashboard
-* an art project
+No oversized shadows.
 
-The experience should communicate:
+Cards
 
-* systems thinking
-* engineering maturity
-* operational awareness
-* infrastructure knowledge
-* technical credibility
-* product craftsmanship
-* dense but elegant information architecture
+Very subtle.
+
+Hairline borders.
+
+Soft depth.
+
+Almost invisible.
+
+---
+
+# TEXT WIDTH
+
+Never allow extremely wide paragraphs.
+
+Ideal reading width.
+
+65–75 characters.
+
+Improve readability.
+
+---
+
+# ENGINEERING PERSONALITY
+
+Introduce subtle engineering details.
+
+Examples:
+
+Blueprint lines.
+
+Grid overlays.
+
+Coordinate markers.
+
+Tiny annotations.
+
+Version labels.
+
+System numbers.
+
+Technical captions.
+
+Diagram-inspired dividers.
+
+DO NOT overdo them.
+
+These should be hidden easter eggs.
+
+---
+
+# RESPONSIVENESS
+
+Perfect mobile experience.
+
+Desktop first.
+
+Tablet.
+
+Mobile.
+
+Every section should feel designed.
+
+Not simply stacked.
+
+---
+
+# ACCESSIBILITY
+
+WCAG compliant.
+
+Keyboard navigation.
+
+Visible focus.
+
+High contrast.
+
+Semantic HTML.
+
+Reduced motion support.
+
+ARIA labels.
+
+---
+
+# PERFORMANCE
+
+Image optimization.
+
+Lazy loading.
+
+Responsive images.
+
+Minimal JS.
+
+Excellent Lighthouse score.
+
+Fast animations.
+
+No layout shifts.
+
+---
+
+# KEEP
+
+All existing:
+
+Projects
+
+Blog posts
+
+Resume
+
+About
+
+Pages
+
+Routing
+
+SEO
+
+URLs
+
+Content
+
+Only improve:
+
+Layout
+
+Typography
+
+Hierarchy
+
+Spacing
+
+Navigation
+
+Components
+
+Interactions
+
+Visual language
+
+Overall UX.
+
+---
+
+# DO NOT CHASE TRENDS
+
+This portfolio should prioritize longevity over novelty.
+
+The objective is NOT to create the most visually impressive website.
+
+The objective is to create the most trustworthy, memorable, and well-crafted engineering portfolio.
+
+Every design decision should improve at least one of the following:
+
+• readability
+• storytelling
+• usability
+• hierarchy
+• accessibility
+• emotional impact
+• perceived craftsmanship
+
+If a visual element exists only because it looks impressive or follows a current trend, remove it.
+
+The engineering work should always remain the hero.
+
+The UI should quietly support the content rather than compete with it.
+
+---
+
+# CRAFTSMANSHIP OVER DECORATION
+
+Design should feel intentional.
+
+Not decorative.
+
+Avoid adding visual complexity unless it serves a purpose.
+
+Prioritize:
+
+• excellent typography
+• thoughtful spacing
+• balanced composition
+• restrained color usage
+• subtle interactions
+• premium imagery
+• editorial layouts
+• visual rhythm
+• consistency across every page
+
+Every page should feel like it belongs to the same design system.
+
+---
+
+# NEGATIVE INSPIRATION
+
+Avoid designs that resemble:
+
+• admin dashboards
+• IDEs
+• terminal simulators
+• VS Code clones
+• Apple Notes clones
+• Finder clones
+• Notion clones
+• generic portfolio templates
+• Bento grid overload
+• cyberpunk interfaces
+• excessive glassmorphism
+• heavy gradients
+• oversized shadows
+• thick borders
+• fake analytics
+• fake metrics
+• fake widgets
+• unnecessary charts
+• dense card layouts
+
+The portfolio should immediately feel like a premium editorial website—not an application.
+
+---
+
+# DESIGN MATURITY
+
+The portfolio should not feel like:
+
+• a Dribbble concept
+• an Awwwards experiment
+• a frontend animation showcase
+• a dashboard
+• a CMS
+• a startup landing page template
+
+Instead, it should feel like the personal website of a senior software engineer with exceptional taste in engineering, product design, and visual communication.
+
+The interface should disappear behind the content.
+
+Visitors should remember the projects, writing, and engineering decisions—not the UI itself.
+
+Build something timeless that will still feel modern five years from now.
+
+# FINAL GOAL
+
+When someone opens this website, they should immediately think:
+
+"This engineer builds serious production systems."
+
+The portfolio should feel closer to:
+
+A premium engineering publication
+
++
+
+A modern SaaS landing page
+
++
+
+An architecture magazine
+
+NOT
+
+An admin dashboard
+
+NOT
+
+A template
+
+NOT
+
+A Dribbble experiment
+
+Aim for timeless design that still feels modern five years from now.

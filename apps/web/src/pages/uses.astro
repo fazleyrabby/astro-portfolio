@@ -3,79 +3,90 @@ import MainLayout from "@layouts/MainLayout.astro";
 import { Content as UsesMarkdown } from "../content/uses.md";
 ---
 
-<MainLayout title="Workbench & Setup — Fazley Rabbi">
-  <main class="v2-uses-workspace max-w-[800px] mx-auto px-4 py-12">
-    <header class="page-header pb-6 mb-8">
-      <div class="page-header-inner">
-        <span class="page-kicker">/ WORKBENCH</span>
-        <h1 class="page-title leading-tight mb-2">Setup & Workbench</h1>
-        <p class="page-sub">Hardware specifications, software workspace components, and learning environments deployed daily.</p>
-      </div>
-    </header>
+<MainLayout title="Setup & Workbench — Fazley Rabbi">
+  <main class="uses-page">
+    <div class="uses-container">
+      <header class="uses-header reveal">
+        <span class="page-kicker">Uses</span>
+        <h1 class="page-title">Setup & Workbench</h1>
+        <p class="page-sub">Hardware, software, and learning environments deployed daily.</p>
+      </header>
 
-    <!-- Flat borderless container rendering the exact markdown data -->
-    <div class="v2-uses-content">
-      <article class="prose prose-neutral dark:prose-invert max-w-none">
-        <UsesMarkdown />
-      </article>
+      <div class="uses-content reveal">
+        <article class="prose prose-neutral dark:prose-invert max-w-none">
+          <UsesMarkdown />
+        </article>
+      </div>
     </div>
   </main>
 </MainLayout>
 
 <style>
-  .v2-uses-content :global(.prose) {
+  .uses-page {
+    padding: clamp(2rem, 5vw, 4rem) 0;
+  }
+  .uses-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+  }
+  .uses-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .uses-content :global(.prose) {
     font-size: 1rem;
     color: var(--text-secondary);
   }
-  .v2-uses-content :global(.prose h2) {
+  .uses-content :global(.prose h2) {
     font-family: var(--font-display);
     font-size: 1.375rem;
-    font-weight: 700;
+    font-weight: 500;
     color: var(--text-primary);
-    margin-top: 32px;
-    margin-bottom: 12px;
-    padding-bottom: 6px;
-    padding-bottom: 6px;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
   }
-  .v2-uses-content :global(.prose h3) {
+  .uses-content :global(.prose h3) {
     font-family: var(--font-display);
     font-size: 1.125rem;
     font-style: italic;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text-primary);
-    margin-top: 24px;
-    margin-bottom: 8px;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
   }
-  .v2-uses-content :global(.prose p) {
+  .uses-content :global(.prose p) {
     font-family: var(--font-sans);
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.75;
     color: var(--text-secondary);
-    margin: 12px 0;
+    margin: 0.75rem 0;
   }
-  .v2-uses-content :global(.prose ul) {
+  .uses-content :global(.prose ul) {
     list-style-type: disc;
-    padding-left: 20px;
-    margin: 12px 0;
+    padding-left: 1.25rem;
+    margin: 0.75rem 0;
   }
-  .v2-uses-content :global(.prose li) {
+  .uses-content :global(.prose li) {
     font-family: var(--font-sans);
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.75;
     color: var(--text-secondary);
-    margin: 6px 0;
+    margin: 0.375rem 0;
   }
-  .v2-uses-content :global(.prose strong) {
+  .uses-content :global(.prose strong) {
     color: var(--text-primary);
     font-weight: 600;
   }
-  .v2-uses-content :global(.prose hr) {
+  .uses-content :global(.prose hr) {
     border: none;
-    margin: 24px 0;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
   }
-  .v2-uses-content :global(.prose blockquote) {
+  .uses-content :global(.prose blockquote) {
     border-left: 2px solid var(--accent);
-    padding-left: 16px;
+    padding-left: 1rem;
     font-style: italic;
     color: var(--text-muted);
   }

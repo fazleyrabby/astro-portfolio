@@ -10,109 +10,303 @@ const all = await getCollection("projects");
 const localized = all
   .filter((p) => (p.data.lang || "en") === lang && !p.data.hidden)
   .sort((a, b) => (a.data.position || 0) - (b.data.position || 0))
-  .slice(0, 3); // Top 3 projects
-
-// SVG Architecture schemas mapping for featured section
-const archMap: Record<string, { arch: string; infra: string }> = {
-  "electronic-first": { arch: "Transactional / Fraud Detection", infra: "Read Replicas / ClickHouse" },
-  oblok: { arch: "Self-Hosted DevOps Platform", infra: "Laravel Reverb / WebSockets / PostgreSQL" },
-  signalstack: { arch: "Event-Driven Feed / AI Failover", infra: "Redis Queue / Multi-Tier AI" },
-  hujjah: { arch: "Semantic Vector Search / LLM", infra: "Supabase pgvector / Vercel Edge" },
-  dailylog: { arch: "Monolithic / Life OS Dashboard", infra: "Docker / PostgreSQL" },
-  mealhq: { arch: "Restaurant Platform / POS", infra: "Docker / MySQL" },
-  edubase: { arch: "Modular Monolith / Education Intelligence", infra: "Redis Horizon / Meilisearch / Docker" },
-  litepos: { arch: "Multi-Business POS System", infra: "Per-Store Config / Live Sync" },
-  larabrix: { arch: "CMS Framework Components", infra: "CI/CD / Package Registry" },
-  lenden: { arch: "Ledger / Double-Entry", infra: "Stripe / SSLCommerz" },
-  "e-bank": { arch: "Ledger / Double-Entry", infra: "Stripe / SSLCommerz" },
-};
-
-const getMeta = (slug: string) => {
-  const s = slug.replace(/-bn$/, "");
-  return archMap[s] || { arch: "Monolithic / MVC", infra: "VPS / Linux" };
-};
+  .slice(0, 3);
 ---
 
-<section id="projects" class="py-12 border-b border-[var(--grid-line)]">
-  <div class="max-w-[1100px] mx-auto px-4">
-    
-    <div class="flex items-center justify-between mb-8">
-      <h2 class="font-serif font-bold text-2xl md:text-3xl text-theme-primary">{t("projects.title") || "Featured Production Systems"}</h2>
-      <a href="/projects" class="font-mono text-xs text-[var(--accent)] uppercase tracking-wider hover:underline">{t("projects.viewAll") || "View All"} →</a>
+<section id="projects" class="projects-editorial">
+  <div class="projects-container">
+
+    <!-- Section header -->
+    <div class="projects-header reveal">
+      <div>
+        <span class="section-label">Selected Work</span>
+        <h2 class="projects-title">{t("projects.title") || "Featured Projects"}</h2>
+      </div>
+      <a href={tp("/projects/")} class="projects-view-all">
+        {t("projects.viewAll") || "View All Projects"}
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </a>
     </div>
 
-    <!-- Spacious Case Study Previews (Stack list instead of grid cards) -->
-    <div class="space-y-12">
-      {localized.map((project) => {
-        const { title, description, type, status, problem, solution, impact, thumbnail } = project.data;
+    <!-- Project list -->
+    <div class="projects-list">
+      {localized.map((project, index) => {
+        const { title, description, type, status, problem, impact, thumbnail } = project.data;
         const baseSlug = project.slug.replace(/-bn$/, "");
         const hasCase = !!(problem || (project.data.highlights && project.data.highlights.length));
         const href = hasCase ? tp(`/projects/${baseSlug}`) : (project.data.live || project.data.github || "#");
-        
+        const isEven = index % 2 === 1;
+
         return (
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-8 first:pt-0 border-t border-[var(--grid-line)] first:border-none">
-            
-            <!-- Left block: SVG / Screenshot info -->
-            <div class="lg:col-span-5 flex flex-col gap-4">
+          <article class:list={["project-item reveal", { "project-item--reversed": isEven }]}>
+            {/* Thumbnail */}
+            <div class="project-thumbnail">
               {thumbnail ? (
-                <div class="rounded-md overflow-hidden border border-[var(--border)] bg-[var(--bg-base)] aspect-video">
+                <a href={href} class="project-thumbnail-link">
                   <img
                     src={thumbnail}
-                    alt={`${title} thumbnail`}
-                    class="w-full h-full object-cover"
+                    alt={`${title}`}
                     loading="lazy"
+                    width="600"
+                    height="338"
                   />
-                </div>
+                </a>
               ) : (
-                <div class="rounded-md border border-[var(--border)] p-4 bg-[var(--bg-base)] flex items-center justify-center aspect-video text-theme-muted font-mono text-xs">
-                  NO SCHEMA DETECTED
+                <div class="project-thumbnail-placeholder">
+                  <span>{title}</span>
                 </div>
               )}
-              
-              <!-- One High-level telemetry metric -->
-              <div class="flex items-center justify-between px-3 py-2 rounded bg-[var(--bg-base)] border border-[var(--border)] font-mono text-[11px] text-theme-secondary">
-                <span>SYSTEM CLASS //</span>
-                <span class="text-[var(--accent)] font-semibold">{type?.toUpperCase() || 'BACKEND ENGINE'}</span>
-              </div>
             </div>
 
-            <!-- Right block: Case study preview details -->
-            <div class="lg:col-span-7 flex flex-col justify-start">
-              <div class="flex items-center gap-3 mb-2 font-mono text-xs text-theme-muted">
-                <span>{type?.toUpperCase() || 'BACKEND'}</span>
-                <span class="opacity-30">•</span>
-                <span class="text-[var(--accent)]">{status?.toUpperCase() || 'ACTIVE'}</span>
+            {/* Content */}
+            <div class="project-content">
+              <div class="project-meta">
+                <span class="project-type">{type?.toUpperCase() || 'BACKEND'}</span>
+                <span class="project-meta-dot">·</span>
+                <span class="project-status">{status?.toUpperCase() || 'ACTIVE'}</span>
               </div>
 
-              <h3 class="font-serif font-bold text-2xl text-theme-primary mb-3">{title}</h3>
-              <p class="text-theme-secondary text-sm leading-relaxed mb-4">{description}</p>
+              <h3 class="project-name">
+                <a href={href}>{title}</a>
+              </h3>
 
-              <!-- One Challenge & One Outcome previews -->
-              <div class="space-y-3 mb-6">
-                {problem && (
-                  <div class="flex flex-col gap-0.5">
-                    <span class="font-mono text-tiny text-theme-muted uppercase tracking-wider">Challenge</span>
-                    <p class="text-theme-secondary text-xs line-clamp-2">{problem}</p>
-                  </div>
-                )}
-                {impact && (
-                  <div class="flex flex-col gap-0.5">
-                    <span class="font-mono text-tiny text-[var(--accent)] uppercase tracking-wider">Outcome</span>
-                    <p class="text-theme-primary font-medium text-xs line-clamp-2">{impact}</p>
-                  </div>
-                )}
-              </div>
+              <p class="project-desc">{description}</p>
 
-              <!-- CTA link to case study -->
-              <a href={href} class="self-start px-3 py-1.5 rounded bg-[var(--grid-line)] border border-[var(--border)] font-mono text-xs text-theme-primary font-bold uppercase tracking-wider hover:border-[var(--accent)] transition-all">
-                Explore Case Study →
+              {problem && (
+                <div class="project-challenge">
+                  <span class="project-challenge-label">Challenge</span>
+                  <p>{problem}</p>
+                </div>
+              )}
+
+              {impact && (
+                <div class="project-outcome">
+                  <span class="project-outcome-label">Outcome</span>
+                  <p>{impact}</p>
+                </div>
+              )}
+
+              <a href={href} class="project-cta">
+                Explore Case Study
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
               </a>
             </div>
-
-          </div>
+          </article>
         );
       })}
     </div>
 
   </div>
 </section>
+
+<style>
+  .projects-editorial {
+    padding: var(--space-section) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .projects-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+  }
+
+  /* Header */
+  .projects-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+    gap: 1.5rem;
+  }
+
+  .projects-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.375rem, 2.5vw, 1.875rem);
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .projects-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+  }
+  .projects-view-all:hover {
+    opacity: 0.8;
+  }
+
+  /* Project list */
+  .projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3rem, 6vw, 5rem);
+  }
+
+  /* Project item */
+  .project-item {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  .project-item--reversed {
+    direction: rtl;
+  }
+  .project-item--reversed > * {
+    direction: ltr;
+  }
+
+  @media (max-width: 768px) {
+    .project-item,
+    .project-item--reversed {
+      grid-template-columns: 1fr;
+      direction: ltr;
+    }
+  }
+
+  /* Thumbnail */
+  .project-thumbnail-link {
+    display: block;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: border-color 0.3s ease;
+  }
+  .project-thumbnail-link:hover {
+    border-color: var(--border-hover);
+  }
+  .project-thumbnail-link img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    transition: transform 0.5s var(--ease-out-expo);
+  }
+  .project-thumbnail-link:hover img {
+    transform: scale(1.02);
+  }
+
+  .project-thumbnail-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16/9;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* Content */
+  .project-content {
+    display: flex;
+    flex-direction: column;
+    padding-top: 0.5rem;
+  }
+
+  .project-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .project-type,
+  .project-status {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .project-type { color: var(--text-muted); }
+  .project-status { color: var(--accent); }
+  .project-meta-dot {
+    color: var(--text-muted);
+    opacity: 0.4;
+  }
+
+  .project-name {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.375rem, 2.5vw, 1.75rem);
+    color: var(--text-primary);
+    margin: 0 0 0.75rem;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .project-name a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .project-name a:hover {
+    color: var(--accent);
+  }
+
+  .project-desc {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0 0 1.25rem;
+  }
+
+  /* Challenge/Outcome */
+  .project-challenge,
+  .project-outcome {
+    margin-bottom: 0.75rem;
+  }
+  .project-challenge-label,
+  .project-outcome-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+  .project-challenge-label { color: var(--text-muted); }
+  .project-outcome-label { color: var(--accent); }
+
+  .project-challenge p,
+  .project-outcome p {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .project-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    margin-top: 0.75rem;
+    transition: opacity 0.2s ease;
+  }
+  .project-cta:hover {
+    opacity: 0.8;
+  }
+</style>

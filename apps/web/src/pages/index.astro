@@ -3,38 +3,31 @@ import MainLayout from "@layouts/MainLayout.astro";
 import Hero from "@components/Hero.astro";
 import ProjectsGrid from "@components/home/ProjectsGrid.astro";
 import ExperienceCompact from "@components/home/ExperienceCompact.astro";
+import SkillsSection from "@components/home/SkillsSection.astro";
 import LatestNotes from "@components/home/LatestNotes.astro";
 import ContactCTA from "@components/ContactCTA.astro";
 ---
 
 <MainLayout title="Fazley Rabbi — Senior Backend Engineer & Systems Architect">
-  <main class="v3-editorial-home">
-    
-    <!-- Hero block -->
+  <main>
+
+    <!-- Hero -->
     <Hero />
 
-    <!-- Featured Projects block -->
+    <!-- Featured Projects -->
     <ProjectsGrid />
 
-    <!-- Experience Timeline block -->
+    <!-- Experience Timeline -->
     <ExperienceCompact />
 
-    <!-- Writing / Notes block -->
+    <!-- Technical Capabilities & Stack -->
+    <SkillsSection />
+
+    <!-- Writing / Notes -->
     <LatestNotes />
 
-    <!-- Contact Block -->
+    <!-- Contact -->
     <ContactCTA />
 
   </main>
 </MainLayout>
-
-<style>
-  .v3-editorial-home {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 960px;
-    margin: 0 auto;
-    padding-bottom: 64px;
-  }
-</style>

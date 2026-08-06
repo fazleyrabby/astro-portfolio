@@ -6,34 +6,43 @@ export default {
 	variants: {
 		typography: ['dark'],
 		extend: {
-			// ...
 			translate: ['dark'],
 		}
 	},
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-			display: ['Newsreader', 'Spectral', 'serif'],
-			serif: ['Newsreader', 'Spectral', 'serif'],
-			sans: ['Cal Sans UI', 'Plus Jakarta Sans', 'IBM Plex Sans', 'system-ui', 'sans-serif'],
-			mono: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
-			logo: ['Newsreader', 'Spectral', 'serif'],
+			display: ['Spectral', 'Georgia', 'serif'],
+			serif: ['Spectral', 'Georgia', 'serif'],
+			sans: ['Geist', 'system-ui', '-apple-system', 'sans-serif'],
+			mono: ['IBM Plex Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+		},
+		borderRadius: {
+			'none': '0px',
+			'sm': '4px',
+			DEFAULT: '6px',
+			'md': '6px',
+			'lg': '8px',
+			'xl': '10px',
+			'full': '9999px',
 		},
 		fontSize: {
-			tiny: '0.75rem',   // 12px
-			xs: '0.75rem',     // 12px
-			sm: '0.875rem',    // 14px
-			base: '0.9375rem',  // 15px
-			lg: '1.125rem',    // 18px
-			xl: '1.375rem',    // 22px
-			'2xl': '1.75rem',   // 28px
-			'3xl': '2.25rem',  // 36px
-			'4xl': '3rem',     // 48px
-			'5xl': '3.5rem',   // 56px
+			'tiny': '0.6875rem',  // 11px
+			'xs': '0.75rem',     // 12px
+			'sm': '0.875rem',    // 14px
+			'base': '1rem',      // 16px
+			'lg': '1.125rem',    // 18px
+			'xl': '1.25rem',     // 20px
+			'2xl': '1.5rem',     // 24px
+			'3xl': '1.875rem',   // 30px
+			'4xl': '2.25rem',    // 36px
+			'5xl': '3rem',       // 48px
+			'6xl': '3.75rem',    // 60px
+			'7xl': '4.5rem',     // 72px
 		},
 		container: {
 			padding: {
-				DEFAULT: '1rem',
+				DEFAULT: '1.25rem',
 				sm: '2rem',
 				lg: '4rem',
 				xl: '5rem',
@@ -59,7 +68,6 @@ export default {
 					muted: "var(--adm-muted)",
 					primary: "var(--adm-primary)"
 				},
-				// Legacy aliases (if needed by existing files, though I will update them)
 				bg: "var(--adm-bg)",
 				panel: "var(--adm-panel)",
 				"adm-border": "var(--adm-border)",
@@ -70,42 +78,21 @@ export default {
 				theme: 'var(--shadow-main)',
 			},
 			borderRadius: {
-				theme: '6px',
-				DEFAULT: '6px',
+				theme: '8px',
+				DEFAULT: '8px',
 				sm: '4px',
-				md: '6px',
-				lg: '8px',
+				md: '8px',
+				lg: '12px',
+				xl: '16px',
 				full: '9999px',
 			},
 			animation: {
-				wiggle: 'wiggle 3s ease-in-out infinite',
-				bounce: 'bounce 2s ease-in-out infinite',
-				fadein: 'fadein 200ms linear',
-				objtoright: 'objtoright 10s alternate infinite',
-				spin: 'spin 1s linear infinite',
-				bgGradient: 'titleAnimate 5s ease infinite forwards',
+				fadein: 'fadein 300ms ease-out',
 			},
 			keyframes: {
-				wiggle: {
-					'0%, 100%': { transform: 'rotate(-4deg)' },
-					'50%': { transform: 'rotate(4deg)' },
-				},
 				fadein: {
-					'0%': { transform: 'translateY(-100%)' },
-					'100%': { transform: 'translateY(0)' },
-				},
-				objtoright: {
-					'0%': { 'object-position': 'top left' },
-					'100%': { 'object-position': 'top right' },
-				},
-				spin: {
-					from: { transform: 'rotate(0deg)' },
-					to: { transform: 'rotate(360deg)' }
-				},
-				titleAnimate: {
-					'0%': { 'background-position': '0% 50%' },
-					'50%': { 'background-position': '100% 50%' },
-					'100%': { 'background-position': '0% 50%' },
+					'0%': { opacity: '0', transform: 'translateY(8px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' },
 				},
 			}
 		},
@@ -120,18 +107,10 @@ export default {
 			addComponents({
 				'.container': {
 					maxWidth: '100%',
-					'@screen sm': {
-						maxWidth: '640px',
-					},
-					'@screen md': {
-						maxWidth: '768px',
-					},
-					'@screen lg': {
-						maxWidth: '860px',
-					},
-					'@screen xl': {
-						maxWidth: '1100px',
-					},
+					'@screen sm': { maxWidth: '640px' },
+					'@screen md': { maxWidth: '768px' },
+					'@screen lg': { maxWidth: '960px' },
+					'@screen xl': { maxWidth: '1100px' },
 				}
 			}),
 

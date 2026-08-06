@@ -1,0 +1,162 @@
+---
+const skillsMatrix = [
+  {
+    category: "Backend & Systems",
+    items: ["Laravel", "PHP 8.x", "REST APIs", "Livewire", "Queue Workers", "Event-Driven Architecture"]
+  },
+  {
+    category: "Databases & Analytics",
+    items: ["MySQL", "ClickHouse", "Redis", "SQLite", "Read Replicas", "Query Optimization"]
+  },
+  {
+    category: "Infrastructure & DevOps",
+    items: ["Docker", "Docker Compose", "Linux (Ubuntu)", "Nginx", "VPS Hardening", "GitHub Actions"]
+  },
+  {
+    category: "Security & Integrations",
+    items: ["Fraud Engines", "PayPal API", "Checkout.com", "Stripe", "Webhooks", "Local LLMs / Groq"]
+  }
+];
+---
+
+<section id="skills" class="skills-editorial">
+  <div class="skills-container">
+
+    <div class="skills-layout">
+      <!-- Left: Title & Overview -->
+      <div class="skills-intro reveal">
+        <div class="section-badge">
+          <span class="badge-num">04</span>
+          <span class="badge-label">Capabilities</span>
+        </div>
+        <h2 class="section-title">Technical Capabilities</h2>
+        <p class="section-desc">
+          Core backend frameworks, high-throughput datastores, infrastructure tooling, and payment security systems.
+        </p>
+      </div>
+
+      <!-- Right: Clean Minimal Matrix -->
+      <div class="skills-matrix reveal">
+        {skillsMatrix.map((group) => (
+          <div class="matrix-group">
+            <h3 class="group-title">{group.category}</h3>
+            <div class="group-tags">
+              {group.items.map((item) => (
+                <span class="matrix-tag">{item}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .skills-editorial {
+    padding: clamp(4rem, 8vh, 7rem) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skills-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+  }
+
+  .skills-layout {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(3rem, 6vw, 5rem);
+    align-items: start;
+  }
+
+  @media (max-width: 860px) {
+    .skills-layout {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+
+  /* Intro */
+  .section-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+  }
+  .badge-num {
+    font-weight: 700;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin: 0 0 1rem;
+  }
+  .section-desc {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Matrix */
+  .skills-matrix {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .matrix-group {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .matrix-group:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .group-title {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-primary);
+    margin: 0 0 0.875rem;
+  }
+
+  .group-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .matrix-tag {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+  }
+
+  .matrix-tag:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+</style>

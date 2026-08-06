@@ -9,28 +9,31 @@ const tp = useTranslatedPath(lang);
 const posts = await getLatestPosts(lang, 6);
 ---
 
-<section class="py-12 border-b border-[var(--grid-line)]">
-  <div class="max-w-[1100px] mx-auto px-4">
-    <div class="flex items-center justify-between mb-8">
-      <h2 class="font-serif font-bold text-2xl md:text-3xl text-theme-primary">{t("nav.blog") || "Engineering Notes"}</h2>
-      <a href="/posts" class="font-mono text-xs text-[var(--accent)] uppercase tracking-wider hover:underline">View All Notes →</a>
+<section class="notes-editorial">
+  <div class="notes-container">
+    <!-- Header -->
+    <div class="notes-header reveal">
+      <div>
+        <span class="section-label">Writing</span>
+        <h2 class="notes-title">{t("nav.blog") || "Engineering Notes"}</h2>
+      </div>
+      <a href={tp("/posts/")} class="notes-view-all">
+        View All Notes
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </a>
     </div>
 
     {posts.length === 0 ? (
-      <div class="py-6 text-center font-mono text-xs text-theme-muted">{t("posts.empty")}</div>
+      <div class="notes-empty">{t("posts.empty") || "No posts yet. Check back soon!"}</div>
     ) : (
-      <div class="space-y-4">
+      <div class="notes-list">
         {posts.map((p, i) => (
-          <a href={tp(`/posts/${p.slug}`)} class="group flex items-baseline justify-between py-2 border-b border-[var(--grid-line)] border-dashed last:border-none">
-            <div class="flex items-baseline gap-4 min-w-0">
-              <span class="font-mono text-xs text-theme-muted group-hover:text-[var(--accent)] transition-colors shrink-0">
-                {String(i + 1).padStart(2, "0")}.
-              </span>
-              <span class="font-sans font-medium text-base text-theme-primary group-hover:text-[var(--accent)] transition-colors truncate">
-                {p.title}
-              </span>
+          <a href={tp(`/posts/${p.slug}`)} class="note-item reveal">
+            <div class="note-left">
+              <span class="note-number">{String(i + 1).padStart(2, "0")}</span>
+              <span class="note-title">{p.title}</span>
             </div>
-            <span class="font-mono text-xs text-theme-muted shrink-0 ml-4">
+            <span class="note-date">
               {p.published_at
                 ? new Date(p.published_at).toLocaleDateString(lang === "bn" ? "bn-BD" : "en-US", {
                     month: "short",
@@ -44,3 +47,119 @@ const posts = await getLatestPosts(lang, 6);
     )}
   </div>
 </section>
+
+<style>
+  .notes-editorial {
+    padding: var(--space-section) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .notes-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+  }
+
+  .notes-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+    gap: 1rem;
+  }
+
+  .notes-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.375rem, 2.5vw, 1.875rem);
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .notes-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+  }
+  .notes-view-all:hover {
+    opacity: 0.8;
+  }
+
+  .notes-empty {
+    text-align: center;
+    padding: 3rem 0;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+
+  /* Notes list */
+  .notes-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .note-item {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    transition: padding-left 0.3s var(--ease-out-expo);
+    gap: 1rem;
+  }
+  .note-item:first-child {
+    border-top: 1px solid var(--border);
+  }
+  .note-item:hover {
+    padding-left: 0.5rem;
+  }
+
+  .note-left {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .note-number {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: color 0.2s ease;
+  }
+  .note-item:hover .note-number {
+    color: var(--accent);
+  }
+
+  .note-title {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    transition: color 0.2s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .note-item:hover .note-title {
+    color: var(--accent);
+  }
+
+  .note-date {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+</style>

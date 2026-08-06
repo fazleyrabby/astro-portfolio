@@ -1,25 +1,187 @@
 ---
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 ---
 
-<footer class="h-8 border-t border-[var(--border)] bg-[var(--bg-base)] flex items-center justify-between px-4 z-20 relative select-none">
-  <div class="flex items-center gap-3 font-mono text-[0.6rem] text-[var(--text-muted)] uppercase tracking-wider">
-    <span>&copy; {new Date().getFullYear()}</span>
-    <span class="text-[var(--accent)] font-bold opacity-60">•</span>
-    <span>{t('footer.built') || "Fazley Rabbi"}</span>
-    <span class="text-[var(--accent)] font-bold opacity-60">•</span>
-    <span>Astro v5</span>
-  </div>
-  
-  <div class="flex items-center gap-4">
-    <a href="https://github.com/fazleyrabby" target="_blank" rel="noopener noreferrer" class="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors" aria-label="GitHub">
-      <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-    </a>
-    <a href="https://linkedin.com/in/fazley-rabby" target="_blank" rel="noopener noreferrer" class="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors" aria-label="LinkedIn">
-      <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-    </a>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <!-- Top section -->
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div class="footer-brand">
+        <a href={translatePath("/")} class="footer-logo">
+          <span class="footer-logo-text">Fazley Rabbi</span><span class="footer-logo-dot">.</span>
+        </a>
+        <p class="footer-tagline">{t('footer.tagline') || "Building scalable systems, not just interfaces."}</p>
+      </div>
+
+      <!-- Navigation -->
+      <div class="footer-col">
+        <span class="footer-col-title">Navigate</span>
+        <a href={translatePath("/")}>{t('nav.home') || "Home"}</a>
+        <a href={translatePath("/projects/")}>{t('nav.projects') || "Projects"}</a>
+        <a href={translatePath("/posts/")}>{t('nav.blog') || "Blog"}</a>
+        <a href={translatePath("/resume/")}>{t('nav.resume') || "Resume"}</a>
+      </div>
+
+      <!-- More -->
+      <div class="footer-col">
+        <span class="footer-col-title">More</span>
+        <a href={translatePath("/about/")}>{t('nav.about') || "About"}</a>
+        <a href={translatePath("/uses/")}>{t('nav.uses') || "Uses"}</a>
+        <a href={translatePath("/gallery/")}>{t('nav.gallery') || "Gallery"}</a>
+        <a href={translatePath("/resources/")}>{t('nav.resources') || "Resources"}</a>
+      </div>
+
+      <!-- Connect -->
+      <div class="footer-col">
+        <span class="footer-col-title">Connect</span>
+        <a href="https://github.com/fazleyrabby" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://linkedin.com/in/fazley-rabby" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="https://x.com/fazley111" target="_blank" rel="noopener noreferrer">Twitter / X</a>
+        <a href="mailto:fazley111@gmail.com">Email</a>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="footer-bottom">
+      <span class="footer-copy">© {new Date().getFullYear()} Fazley Rabbi</span>
+      <span class="footer-built">Built with Astro</span>
+    </div>
   </div>
 </footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    border-top: 1px solid var(--border);
+    background: var(--bg-base);
+    margin-top: var(--space-section);
+    overflow: hidden;
+  }
+
+  .site-footer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("/images/hero-bg-light.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.15;
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.35) 70%, rgba(0, 0, 0, 0) 100%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.35) 70%, rgba(0, 0, 0, 0) 100%);
+    transition: opacity 0.3s ease;
+  }
+
+  :global(.dark) .site-footer::before {
+    background-image: url("/images/hero-bg-dark.jpg");
+    opacity: 0.22;
+    filter: none;
+  }
+
+  .footer-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 4vw, 2rem) 2rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .footer-brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Brand */
+  .footer-logo {
+    display: inline-flex;
+    align-items: baseline;
+    text-decoration: none;
+  }
+  .footer-logo-text {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+  .footer-logo-dot {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+  .footer-tagline {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0.75rem 0 0;
+    max-width: 280px;
+    line-height: 1.5;
+  }
+
+  /* Columns */
+  .footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+  .footer-col-title {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+  }
+  .footer-col a {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .footer-col a:hover {
+    color: var(--text-primary);
+  }
+
+  /* Bottom */
+  .footer-bottom {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-copy,
+  .footer-built {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+</style>

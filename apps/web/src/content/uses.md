@@ -29,8 +29,8 @@ I keep my editor setup minimal and fast for backend-heavy workflows.
 - Theme: Monochrome (GitHub Edition)
 
 - Fonts:
-  - Annotation Mono (current)
-  - Fira Code
+  - Menlo (current)
+  - Jetbrains Mono
 
 ---
 

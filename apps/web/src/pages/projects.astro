@@ -10,549 +10,327 @@ const tp = useTranslatedPath(lang);
 
 const all = await getCollection("projects");
 const projects = all.filter(
-  (p) => (p.data.lang || "en") === lang && !p.data.hidden && p.data.type !== "frontend",
+  (p) => (p.data.lang || "en") === lang && !p.data.hidden,
 );
 projects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
-
-// Select the first project as active on the root index page
-const activeProject = projects[0];
-const activeSlug = activeProject?.slug.replace(/-bn$/, '');
-const activeData = activeProject?.data;
-
-const hasCaseStudy = activeProject ? !!(activeData.problem || (activeData.highlights && activeData.highlights.length)) : false;
-const caseUrl = hasCaseStudy && activeProject ? tp(`/projects/${activeSlug}`) : null;
-
-// Architectural diagnostic mapper helper
-const getProjectMeta = (slug: string) => {
-  const s = slug.replace(/-bn$/, '');
-  let arch = "Monolithic MVC";
-  let infra = "VPS Linux";
-  
-  if (s === "electronic-first") {
-    arch = "Transactional Engine";
-    infra = "Read Replicas";
-  } else if (s === "signalstack") {
-    arch = "Event-Driven Feed";
-    infra = "Redis Queue";
-  } else if (s === "hujjah") {
-    arch = "Semantic Vector Search";
-    infra = "Supabase pgvector";
-  } else if (s === "litepos") {
-    arch = "Multi-Business POS";
-    infra = "Isolated DBs";
-  } else if (s === "larabrix") {
-    arch = "CMS Framework Component";
-    infra = "CI/CD Pipeline";
-  } else if (s === "lenden" || s === "e-bank") {
-    arch = "Ledger Transaction";
-    infra = "Stripe / Gateways";
-  }
-  return { arch, infra };
-};
-
-const { arch, infra } = getProjectMeta(activeSlug || '');
 ---
 
-<MainLayout title="Engineering Workbench & Production Systems — Fazley Rabbi">
-  <!-- Mobile Navigation Toggle Bar -->
-  <div class="v3-mobile-toggle-bar border-b border-[var(--border)] px-4 py-2.5 flex items-center bg-[var(--bg-base)] hover:bg-[var(--accent-dim)] transition-colors cursor-pointer">
-    <button id="v3-mobile-explorer-trigger" class="w-full flex items-center justify-between font-sans text-xs font-bold text-theme-primary uppercase text-left">
-      <div class="flex items-center gap-2">
-        <svg class="w-4 h-4 text-[var(--accent)]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
-        </svg>
-        <span>Select Project</span>
-      </div>
-      <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[var(--accent-dim)] text-[var(--accent)] border border-[var(--accent)] uppercase animate-pulse">Open Sidebar</span>
-    </button>
-  </div>
+<MainLayout title="Projects — Fazley Rabbi">
+  <main class="projects-page">
+    <div class="projects-page-container">
 
-  <main class="v3-workbench-container">
-    <div id="v3-explorer-backdrop" class="v3-explorer-backdrop"></div>
-    
-    <!-- LEFT SIDEBAR: System Explorer -->
-    <aside class="v3-explorer-rail">
-      <div class="v3-explorer-header">
-        <h2 class="v3-explorer-title font-sans">Projects</h2>
-        
-        <!-- Search bar -->
-        <div class="v3-explorer-search">
-          <input type="text" id="proj-search" placeholder="Search..." />
-          <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
-        </div>
+      <!-- Header -->
+      <header class="projects-page-header reveal">
+        <span class="page-kicker">Projects</span>
+        <h1 class="page-title">Engineering Portfolio</h1>
+        <p class="page-sub">Production systems, SaaS platforms, and backend infrastructure built for scale.</p>
+      </header>
 
-        <!-- Filter tabs -->
-        <div class="v3-explorer-tabs">
-          <button class="filter-tab active" data-filter="all">All</button>
-          <button class="filter-tab" data-filter="backend">Backend</button>
-          <button class="filter-tab" data-filter="frontend">Frontend</button>
-        </div>
+      <!-- Filter tabs -->
+      <div class="projects-filters reveal">
+        <button class="filter-pill active" data-filter="all">All</button>
+        <button class="filter-pill" data-filter="backend">Backend</button>
+        <button class="filter-pill" data-filter="frontend">Frontend</button>
       </div>
 
-      <!-- Projects list explorer -->
-      <nav class="v3-explorer-list" id="explorer-list" data-lenis-prevent>
-        {projects.map((p) => {
-          const s = p.slug.replace(/-bn$/, '');
-          const isSelected = s === activeSlug;
+      <!-- Project Grid -->
+      <div class="projects-grid" id="projects-grid">
+        {projects.map((project) => {
+          const { title, description, type, status, tech, live, github, thumbnail, problem, highlights } = project.data;
+          const baseSlug = project.slug.replace(/-bn$/, "");
+          const hasCase = !!(problem || (highlights && highlights.length));
+          const href = hasCase ? tp(`/projects/${baseSlug}`) : (live || github || "#");
+
           return (
-            <a 
-              href={tp(`/projects/${s}`)}
-              class={`explorer-item ${isSelected ? 'active' : ''}`}
-              data-title={p.data.title}
-              data-desc={p.data.description}
-              data-type={p.data.type || 'backend'}
-              data-tags={JSON.stringify(p.data.tech || [])}
+            <article
+              class="project-card-editorial reveal"
+              data-type={type || "backend"}
+              data-title={title.toLowerCase()}
             >
-              <span class="explorer-item-title font-sans font-bold text-sm text-theme-primary transition-colors">{p.data.title}</span>
-              <p class="explorer-item-desc text-theme-muted text-xs line-clamp-1 mt-1">{p.data.description}</p>
-              <div class="explorer-item-footer mt-1.5 flex items-center gap-2 font-mono text-[10px]">
-                <span class="text-theme-muted uppercase">{p.data.type || 'backend'}</span>
-                <span class="text-theme-muted opacity-40">|</span>
-                <span class="text-theme-muted uppercase">{p.data.status || 'stable'}</span>
+              {/* Thumbnail */}
+              <a href={href} class="project-card-thumb">
+                {thumbnail ? (
+                  <img
+                    src={thumbnail}
+                    alt={title}
+                    loading="lazy"
+                    width="600"
+                    height="338"
+                  />
+                ) : (
+                  <div class="project-card-placeholder">
+                    <span>{title}</span>
+                  </div>
+                )}
+              </a>
+
+              {/* Content */}
+              <div class="project-card-body">
+                <div class="project-card-meta">
+                  <span class="project-card-type">{type?.toUpperCase() || 'BACKEND'}</span>
+                  <span class="project-card-dot">·</span>
+                  <span class="project-card-status">{status?.toUpperCase() || 'ACTIVE'}</span>
+                </div>
+
+                <h2 class="project-card-title">
+                  <a href={href}>{title}</a>
+                </h2>
+
+                <p class="project-card-desc">{description}</p>
+
+                {/* Tech stack */}
+                {tech && tech.length > 0 && (
+                  <div class="project-card-tags">
+                    {tech.slice(0, 5).map((t) => (
+                      <span class="tag">{t}</span>
+                    ))}
+                    {tech.length > 5 && <span class="tag">+{tech.length - 5}</span>}
+                  </div>
+                )}
+
+                {/* Links */}
+                <div class="project-card-links">
+                  {hasCase && (
+                    <a href={href} class="project-card-link project-card-link--primary">
+                      Case Study
+                      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                    </a>
+                  )}
+                  {live && (
+                    <a href={live} target="_blank" rel="noreferrer" class="project-card-link">Live ↗</a>
+                  )}
+                  {github && (
+                    <a href={github} target="_blank" rel="noreferrer" class="project-card-link">GitHub ↗</a>
+                  )}
+                </div>
               </div>
-            </a>
+            </article>
           );
         })}
-      </nav>
-    </aside>
+      </div>
 
-    <!-- RIGHT PANEL: System Specs Workbench -->
-    <section class="v3-workbench-panel">
-      {activeProject ? (
-        <div class="v3-workbench-scroll" data-lenis-prevent>
-          <div class="v3-content-wrapper max-w-[720px]">
-            <!-- Workbench Header (Project Hero) -->
-            <div class="v3-panel-header pb-6 border-b border-[var(--grid-line)]">
-              <div class="flex items-start justify-between gap-4 flex-wrap w-full">
-                <div class="flex flex-col gap-1">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    <span class="v3-panel-status font-mono text-tiny text-theme-muted uppercase tracking-wider">
-                      {activeData.type || 'BACKEND'} // {activeData.status || 'PRODUCTION'}
-                    </span>
-                  </div>
-                  <h1 class="v3-panel-title font-serif font-bold text-3xl text-theme-primary">{activeData.title}</h1>
-                </div>
-
-                <!-- Action buttons -->
-                <div class="v3-panel-actions flex gap-2 font-mono text-xs">
-                  {activeData.live && (
-                    <a href={activeData.live} target="_blank" rel="noreferrer" class="px-3 py-1.5 rounded bg-[var(--accent)] text-[#080808] font-bold uppercase tracking-wider hover:opacity-90 transition-opacity flex items-center gap-1">
-                      Live Endpoint ↗
-                    </a>
-                  )}
-                  {activeData.github && (
-                    <a href={activeData.github} target="_blank" rel="noreferrer" class="px-3 py-1.5 rounded bg-[var(--grid-line)] text-theme-primary font-bold uppercase tracking-wider border border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all flex items-center gap-1">
-                      Repository ↗
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              <p class="v3-panel-subtitle text-theme-secondary text-base leading-relaxed mt-4">{activeData.description}</p>
-            </div>
-
-            <!-- Typography-based lightweight specs bar (Instead of bordered boxes) -->
-            <div class="v3-meta-specs-bar grid grid-cols-2 sm:grid-cols-4 gap-6 py-6 border-b border-[var(--grid-line)]">
-              <div class="flex flex-col">
-                <span class="font-mono text-tiny text-theme-muted uppercase tracking-wider mb-1">Role</span>
-                <span class="font-sans text-sm font-semibold text-theme-primary">{activeData.role || "Backend Architect"}</span>
-              </div>
-              <div class="flex flex-col">
-                <span class="font-mono text-tiny text-theme-muted uppercase tracking-wider mb-1">Architecture</span>
-                <span class="font-sans text-sm font-semibold text-theme-primary">{arch}</span>
-              </div>
-              <div class="flex flex-col">
-                <span class="font-mono text-tiny text-theme-muted uppercase tracking-wider mb-1">Infrastructure</span>
-                <span class="font-sans text-sm font-semibold text-theme-primary">{infra}</span>
-              </div>
-              <div class="flex flex-col">
-                <span class="font-mono text-tiny text-theme-muted uppercase tracking-wider mb-1">Commits</span>
-                <span class="font-sans text-sm font-semibold text-theme-primary">{activeData.commits ? `${activeData.commits.toLocaleString()}+` : "100+"}</span>
-              </div>
-            </div>
-
-            {activeData.thumbnail && (
-              <div class="v3-panel-thumbnail mt-6 rounded overflow-hidden border border-[var(--border)] max-h-[360px] flex items-center justify-center bg-black/10">
-                <img
-                  src={activeData.thumbnail}
-                  alt={`${activeData.title} screenshot`}
-                  class="w-full h-auto object-cover"
-                  loading="eager"
-                />
-              </div>
-            )}
-
-            <!-- Main Case Study Content (Storytelling order) -->
-            <div class="v3-case-body mt-6 space-y-6">
-              {activeData.problem && (
-                <div class="case-section">
-                  <h3 class="font-mono text-tiny text-theme-muted uppercase tracking-wider mb-2">THE CHALLENGE</h3>
-                  <p class="text-theme-secondary text-base leading-relaxed">{activeData.problem}</p>
-                </div>
-              )}
-
-              {activeData.solution && (
-                <div class="case-section">
-                  <h3 class="font-mono text-tiny text-[var(--accent)] uppercase tracking-wider mb-2">THE APPROACH & SOLUTION</h3>
-                  <p class="text-theme-secondary text-base leading-relaxed">{activeData.solution}</p>
-                </div>
-              )}
-
-              <!-- Scope Checklist -->
-              {activeData.scope && activeData.scope.length > 0 && (
-                <div class="case-section pt-6 border-t border-[var(--grid-line)]">
-                  <h3 class="font-mono text-tiny text-theme-muted uppercase tracking-wider mb-3">MY CONTRIBUTIONS</h3>
-                  <ul class="font-mono text-xs space-y-2 text-theme-secondary">
-                    {activeData.scope.map((item) => (
-                      <li class="flex items-center gap-2">
-                        <span class="text-[var(--accent)] font-bold shrink-0">→</span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              <!-- Technologies Used -->
-              {activeData.tech && activeData.tech.length > 0 && (
-                <div class="case-section pt-6 border-t border-[var(--grid-line)]">
-                  <h3 class="font-mono text-tiny text-theme-muted uppercase tracking-wider mb-3">TECH STACK</h3>
-                  <div class="flex flex-wrap gap-1.5">
-                    {activeData.tech.map((s) => (
-                      <span class="font-mono text-tiny px-2 py-0.5 rounded bg-[var(--grid-line)] text-theme-primary border border-[var(--border)]">{s}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {activeData.impact && (
-                <div class="case-section pt-6 border-t border-[var(--grid-line)]">
-                  <h3 class="font-mono text-tiny text-[var(--accent)] uppercase tracking-wider mb-2">OUTCOMES & RESULTS</h3>
-                  <div class="bg-[var(--accent-dim)] border border-[var(--accent)]/10 rounded-md p-4">
-                    <p class="text-theme-primary font-medium text-sm leading-relaxed">{activeData.impact}</p>
-                  </div>
-                </div>
-              )}
-
-              <!-- Highlights -->
-              {activeData.highlights && activeData.highlights.length > 0 && (
-                <div class="case-section pt-6 border-t border-[var(--grid-line)]">
-                  <h3 class="font-mono text-tiny text-theme-muted uppercase tracking-wider mb-3">ENGINEERING DECISIONS & HIGHLIGHTS</h3>
-                  <ul class="space-y-2 font-sans text-sm text-theme-secondary pl-4 list-disc marker:text-[var(--accent)]">
-                    {activeData.highlights.map((h) => <li>{h}</li>)}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div class="v3-workbench-empty flex flex-col items-center justify-center h-full text-center p-8">
-          <span class="font-mono text-xs text-theme-muted uppercase tracking-widest mb-2">Explorer Idle</span>
-          <p class="text-theme-secondary text-sm">Select an engineering system from the left explorer rail to view case study telemetry.</p>
-        </div>
-      )}
-    </section>
-
+    </div>
   </main>
 </MainLayout>
 
 <script is:inline>
   (function() {
-    const searchInput = document.getElementById("proj-search");
-    const tabButtons = document.querySelectorAll(".filter-tab");
-    const projectItems = document.querySelectorAll(".explorer-item");
+    const tabs = document.querySelectorAll(".filter-pill");
+    const cards = document.querySelectorAll(".project-card-editorial");
 
-    let currentSearch = "";
-    let currentTab = localStorage.getItem("projects-filter") || "all";
+    let currentFilter = localStorage.getItem("projects-filter") || "all";
 
-    // Set correct active tab class on load
-    tabButtons.forEach((btn) => {
-      if (btn.getAttribute("data-filter") === currentTab) {
-        btn.classList.add("active");
+    // Set initial active tab
+    tabs.forEach((tab) => {
+      if (tab.getAttribute("data-filter") === currentFilter) {
+        tab.classList.add("active");
       } else {
-        btn.classList.remove("active");
+        tab.classList.remove("active");
       }
     });
 
-    function filterProjects() {
-      projectItems.forEach((item) => {
-        const title = item.getAttribute("data-title")?.toLowerCase() || "";
-        const description = item.getAttribute("data-desc")?.toLowerCase() || "";
-        const type = item.getAttribute("data-type")?.toLowerCase() || "";
-        const tags = item.getAttribute("data-tags")?.toLowerCase() || "";
-
-        const matchesSearch = title.includes(currentSearch) || description.includes(currentSearch) || tags.includes(currentSearch);
-        
-        let matchesTab = true;
-        if (currentTab === "backend") {
-          matchesTab = type !== "frontend";
-        } else if (currentTab === "frontend") {
-          matchesTab = type === "frontend";
-        }
-
-        if (matchesSearch && matchesTab) {
-          item.style.display = "flex";
-        } else {
-          item.style.display = "none";
-        }
+    function applyFilter() {
+      cards.forEach((card) => {
+        const type = card.getAttribute("data-type") || "backend";
+        let show = true;
+        if (currentFilter === "backend") show = type !== "frontend";
+        else if (currentFilter === "frontend") show = type === "frontend";
+        card.style.display = show ? "" : "none";
       });
     }
 
-    // Run initial filter on load
-    filterProjects();
+    applyFilter();
 
-    searchInput?.addEventListener("input", (e) => {
-      currentSearch = e.target.value.toLowerCase();
-      filterProjects();
-    });
-
-    tabButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        tabButtons.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        currentTab = btn.getAttribute("data-filter") || "all";
-        localStorage.setItem("projects-filter", currentTab);
-        filterProjects();
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((t) => t.classList.remove("active"));
+        tab.classList.add("active");
+        currentFilter = tab.getAttribute("data-filter") || "all";
+        localStorage.setItem("projects-filter", currentFilter);
+        applyFilter();
       });
     });
-
-    // Mobile Drawer Toggle logic
-    const mobileTrigger = document.getElementById("v3-mobile-explorer-trigger");
-    const explorerRail = document.querySelector(".v3-explorer-rail");
-    const backdrop = document.getElementById("v3-explorer-backdrop");
-    const explorerItems = document.querySelectorAll(".explorer-item");
-
-    if (mobileTrigger && explorerRail && backdrop) {
-      mobileTrigger.addEventListener("click", () => {
-        explorerRail.classList.toggle("v3-mobile-open");
-        backdrop.classList.toggle("active");
-      });
-
-      backdrop.addEventListener("click", () => {
-        explorerRail.classList.remove("v3-mobile-open");
-        backdrop.classList.remove("active");
-      });
-
-      explorerItems.forEach(item => {
-        item.addEventListener("click", () => {
-          explorerRail.classList.remove("v3-mobile-open");
-          backdrop.classList.remove("active");
-        });
-      });
-    }
   })();
 </script>
 
 <style>
-  /* Override shell padding for workbench pages — must fill flush */
-  :global(.workspace-shell) {
-    padding: 0 !important;
-    max-width: none !important;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+  .projects-page {
+    padding: clamp(2rem, 5vw, 4rem) 0;
   }
-  :global(.scroll-container) {
-    overflow: hidden !important;
+  .projects-page-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
   }
 
-  .v3-workbench-container {
+  .projects-page-header {
+    margin-bottom: 2rem;
+  }
+
+  /* Filters */
+  .projects-filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+    flex-wrap: wrap;
+  }
+  .filter-pill {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .filter-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .filter-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* Grid */
+  .projects-grid {
     display: grid;
-    grid-template-columns: 24vw 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  @media (max-width: 768px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Card */
+  .project-card-editorial {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: border-color 0.3s ease, transform 0.3s var(--ease-out-expo);
+  }
+  .project-card-editorial:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+  }
+
+  .project-card-thumb {
+    display: block;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .project-card-thumb img {
     width: 100%;
-    height: 100%;
-    flex: 1;
-    background: var(--bg-base);
-    overflow: hidden;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    transition: transform 0.5s var(--ease-out-expo);
+  }
+  .project-card-editorial:hover .project-card-thumb img {
+    transform: scale(1.03);
   }
 
-  /* LEFT Explorer Sidebar styles */
-  .v3-explorer-rail {
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid var(--grid-line-strong);
-    background: color-mix(in srgb, var(--text-primary) 1.5%, var(--bg-base));
-    height: 100%;
-    overflow: hidden;
-  }
-
-  .v3-explorer-header {
-    padding: 12px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    border-bottom: 1px solid var(--grid-line-strong);
-  }
-
-  .v3-explorer-title {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin: 0;
-  }
-
-  .v3-explorer-search {
-    position: relative;
+  .project-card-placeholder {
     display: flex;
     align-items: center;
-    width: 100%;
-  }
-
-  .v3-explorer-search input {
-    background: var(--bg-base);
-    border: 1px solid var(--border);
-    color: var(--text-primary);
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    padding: 4px 8px 4px 22px;
-    width: 100%;
-    outline: none;
-    border-radius: 6px;
-  }
-
-  .v3-explorer-search input:focus {
-    border-color: var(--accent);
-  }
-
-  .v3-explorer-search svg {
-    position: absolute;
-    left: 6px;
+    justify-content: center;
+    aspect-ratio: 16/9;
+    background: var(--bg-surface);
+    font-family: var(--font-display);
+    font-size: 1.125rem;
     color: var(--text-muted);
-    pointer-events: none;
+    font-style: italic;
   }
 
-  .v3-explorer-tabs {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 4px;
+  .project-card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
   }
 
-  .filter-tab {
-    font-family: var(--font-sans);
-    font-size: 11px;
+  .project-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .project-card-type,
+  .project-card-status {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .project-card-type { color: var(--text-muted); }
+  .project-card-status { color: var(--accent); }
+  .project-card-dot { color: var(--text-muted); opacity: 0.4; }
+
+  .project-card-title {
+    font-family: var(--font-display);
     font-weight: 500;
-    padding: 3px 0;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text-secondary);
-    background: transparent;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    text-align: center;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
   }
-
-  .filter-tab.active,
-  .filter-tab:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-    background: var(--accent-dim);
-  }
-
-  .v3-explorer-list {
-    flex: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    padding: 4px 0;
-  }
-
-  .explorer-item {
-    display: flex;
-    flex-direction: column;
-    padding: 10px 16px;
-    border-left: 2px solid transparent;
-    border-bottom: 1px solid var(--grid-line);
+  .project-card-title a {
+    color: inherit;
     text-decoration: none;
-    cursor: pointer;
-    transition: all 0.15s ease;
+    transition: color 0.2s ease;
   }
-
-  .explorer-item:hover {
-    background: color-mix(in srgb, var(--text-primary) 2%, transparent);
-  }
-
-  .explorer-item.active {
-    background: color-mix(in srgb, var(--accent) 5%, var(--bg-base));
-    border-left-color: var(--accent);
-  }
-
-  .explorer-item.active .explorer-item-title {
+  .project-card-editorial:hover .project-card-title a {
     color: var(--accent);
-    font-weight: 700;
   }
 
-  /* RIGHT Content Panel styles */
-  .v3-workbench-panel {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-    background: var(--bg-base);
-  }
-
-  .v3-workbench-scroll {
+  .project-card-desc {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0 0 1rem;
     flex: 1;
-    overflow-y: auto;
-    padding: 24px 32px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
-  /* Mobile Drawer Toggle styles */
-  .v3-mobile-toggle-bar {
-    z-index: 45;
-    position: sticky;
-    top: 0;
-    display: none;
-  }
-  
-  .v3-explorer-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 50;
-    display: none;
-  }
-  .v3-explorer-backdrop.active {
-    display: block;
+  .project-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-bottom: 1rem;
   }
 
-  @media (max-width: 900px) {
-    .v3-mobile-toggle-bar {
-      display: flex !important;
-    }
-    .v3-workbench-container {
-      grid-template-columns: 1fr;
-      height: 100% !important;
-      overflow: hidden !important;
-      position: relative;
-    }
-    .v3-explorer-rail {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 280px;
-      height: 100% !important;
-      z-index: 55;
-      transform: translateX(-100%);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 8px 0 24px rgba(0, 0, 0, 0.15);
-      border-right: 1px solid var(--grid-line-strong);
-      border-bottom: none;
-    }
-    .v3-explorer-rail.v3-mobile-open {
-      transform: translateX(0);
-    }
-    .v3-workbench-panel {
-      height: 100% !important;
-      overflow: hidden !important;
-    }
-    .v3-workbench-scroll {
-      height: calc(100% - 40px) !important;
-      overflow-y: auto !important;
-      padding: 16px;
-    }
+  .project-card-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: auto;
   }
+  .project-card-link {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .project-card-link:hover { color: var(--text-primary); }
+  .project-card-link--primary { color: var(--accent); }
+  .project-card-link--primary:hover { opacity: 0.8; }
 </style>

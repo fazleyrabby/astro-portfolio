@@ -92,7 +92,7 @@ const bnHref = currentLang === 'en' && alternateUrl ? alternateUrl : `${siteUrl}
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     {
         isProduction && (
             <script
@@ -122,7 +122,7 @@ const bnHref = currentLang === 'en' && alternateUrl ? alternateUrl : `${siteUrl}
         )
     }
     <script is:inline>
-      // 1. Color mode loader
+      // Color mode loader
       ;(function() {
         var mode = localStorage.getItem("color-mode");
         if (!mode) {
@@ -134,41 +134,25 @@ const bnHref = currentLang === 'en' && alternateUrl ? alternateUrl : `${siteUrl}
           document.documentElement.classList.remove("dark");
         }
       })();
-
-      // 2. LeftRail collapse state blocker
-      ;(function() {
-        if (localStorage.getItem("left-rail-collapsed") === "true") {
-          document.documentElement.classList.add("left-rail-collapsed");
-        } else {
-          document.documentElement.classList.remove("left-rail-collapsed");
-        }
-      })();
     </script>
 
     <style is:inline>
       :root {
         --bg-base: #fafaf9;
         --text-primary: #1c1917;
-        --accent: #E8823A;
-        --font-display: "Newsreader", serif;
-        --font-sans: "Cal Sans UI", system-ui, sans-serif;
+        --accent: #ea580c;
+        --font-display: "Spectral", serif;
+        --font-sans: "Geist", system-ui, -apple-system, sans-serif;
         --font-mono: "IBM Plex Mono", monospace;
       }
       .dark {
-        --bg-base: #080808;
-        --text-primary: #F0EDE8;
+        --bg-base: #0a0a0a;
+        --text-primary: #f4f4f5;
       }
       body {
         background-color: var(--bg-base);
         color: var(--text-primary);
         margin: 0;
-      }
-      /* Pre-style Hero to avoid layout shift */
-      .hero-section {
-        min-height: 65svh;
-        display: flex;
-        align-items: center;
-        background-color: var(--bg-base);
       }
     </style>
 </head>

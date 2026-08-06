@@ -15,130 +15,138 @@ const t = useTranslations(lang);
 ---
 
 <MainLayout title={t('about.title')}>
-  <main class="page-workspace">
-    <header class="page-header">
-      <div class="page-header-inner">
-        <span class="page-kicker">/ ABOUT</span>
-        <h1 class="page-title" data-decipher="Fazley Rabbi">Fazley Rabbi</h1>
+  <main class="about-page">
+    <div class="about-container">
+      <!-- Header -->
+      <header class="about-header reveal">
+        <span class="page-kicker">About</span>
+        <h1 class="page-title">{t('about.label') || "Fazley Rabbi"}</h1>
         <p class="page-sub">{t('about.tagline')}</p>
-      </div>
-    </header>
+      </header>
 
-    <div class="about-card">
-      <article class="prose prose-neutral dark:prose-invert max-w-none">
-        {lang === 'bn' ? <AboutBn /> : <AboutEn />}
-      </article>
-    </div>
-
-    <section id="contact" class="contact-section">
-      <div class="contact-head">
-        <span class="page-kicker">/ {t('about.contact.label')}</span>
-        <h2 class="contact-title">{t('about.contact.title')}</h2>
-        <p class="contact-sub">{t('about.contact.subtitle')}</p>
+      <!-- Content -->
+      <div class="about-content reveal">
+        <article class="prose prose-neutral dark:prose-invert max-w-none">
+          {lang === 'bn' ? <AboutBn /> : <AboutEn />}
+        </article>
       </div>
-      <div class="contact-card">
-        <ContactForm />
-      </div>
-    </section>
 
-    <div class="social-row">
-      <span class="social-label">{t('about.social')}</span>
-      <div class="social-icons">
-        <a href="https://github.com/fazleyrabby" target="_blank" aria-label="GitHub"><Github /></a>
-        <a href="https://linkedin.com/in/fazley-rabby" target="_blank" aria-label="LinkedIn"><Linkedin /></a>
-        <a href="https://youtube.com/@fazleyrabby" target="_blank" aria-label="YouTube"><Youtube /></a>
-        <a href="mailto:fazley111@gmail.com" aria-label="Email"><Email /></a>
-        <a href="https://codepen.io/fazleyrabby" target="_blank" aria-label="Codepen"><Codepen /></a>
+      <!-- Contact section -->
+      <section id="contact" class="about-contact reveal">
+        <div class="about-contact-head">
+          <span class="page-kicker">{t('about.contact.label')}</span>
+          <h2 class="about-contact-title">{t('about.contact.title')}</h2>
+          <p class="about-contact-sub">{t('about.contact.subtitle')}</p>
+        </div>
+        <div class="about-contact-form">
+          <ContactForm />
+        </div>
+      </section>
+
+      <!-- Social links -->
+      <div class="about-socials reveal">
+        <span class="about-socials-label">{t('about.social')}</span>
+        <div class="about-socials-icons">
+          <a href="https://github.com/fazleyrabby" target="_blank" aria-label="GitHub"><Github /></a>
+          <a href="https://linkedin.com/in/fazley-rabby" target="_blank" aria-label="LinkedIn"><Linkedin /></a>
+          <a href="https://youtube.com/@fazleyrabby" target="_blank" aria-label="YouTube"><Youtube /></a>
+          <a href="mailto:fazley111@gmail.com" aria-label="Email"><Email /></a>
+          <a href="https://codepen.io/fazleyrabby" target="_blank" aria-label="Codepen"><Codepen /></a>
+        </div>
       </div>
     </div>
   </main>
 </MainLayout>
 
 <style>
-  .page-workspace { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; }
-  /* Suppress global dashed grid dividers on this page */
-  .page-workspace > *::before,
-  .page-workspace > *::after { display: none !important; }
-
-  .about-card {
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin-top: 24px;
+  .about-page {
+    padding: clamp(2rem, 5vw, 4rem) 0;
   }
-  .about-card :global(.prose) {
-    font-size: 0.9375rem;
+  .about-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+  }
+
+  .about-header {
+    margin-bottom: 2.5rem;
+  }
+
+  /* Prose styling */
+  .about-content :global(.prose) {
+    font-size: 1rem;
     color: var(--text-secondary);
   }
-  .about-card :global(.prose p) { margin: 12px 0; line-height: 1.6; }
-  .about-card :global(.prose h2) {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 24px 0 12px;
-    padding-bottom: 6px;
+  .about-content :global(.prose p) {
+    margin: 1rem 0;
+    line-height: 1.75;
   }
-  .about-card :global(.prose h2:first-child) { margin-top: 0; }
-  .about-card :global(.prose h3) {
+  .about-content :global(.prose h2) {
     font-family: var(--font-display);
-    font-size: 0.95rem;
-    font-weight: 700;
+    font-size: 1.375rem;
+    font-weight: 500;
     color: var(--text-primary);
-    margin: 16px 0 8px;
+    margin: 2.5rem 0 1rem;
+    letter-spacing: -0.01em;
   }
-  .about-card :global(.prose ul) { margin: 12px 0; padding-left: 18px; }
-  .about-card :global(.prose li) { margin: 4px 0; line-height: 1.6; }
-  .about-card :global(.prose strong) { color: var(--text-primary); font-weight: 600; }
+  .about-content :global(.prose h2:first-child) { margin-top: 0; }
+  .about-content :global(.prose h3) {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin: 1.5rem 0 0.75rem;
+  }
+  .about-content :global(.prose ul) { margin: 1rem 0; padding-left: 1.25rem; }
+  .about-content :global(.prose li) { margin: 0.375rem 0; line-height: 1.7; }
+  .about-content :global(.prose strong) { color: var(--text-primary); font-weight: 600; }
 
-  .contact-section {
-    margin-top: 32px;
-    padding-top: 32px;
+  /* Contact */
+  .about-contact {
+    margin-top: 3rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border);
   }
-  .contact-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px; }
-  .contact-title {
+  .about-contact-head {
+    margin-bottom: 1.5rem;
+  }
+  .about-contact-title {
     font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.3rem;
+    font-weight: 500;
+    font-size: 1.5rem;
     color: var(--text-primary);
-    margin: 0;
+    margin: 0.25rem 0 0;
+    letter-spacing: -0.01em;
   }
-  .contact-sub {
-    font-size: 0.85rem;
+  .about-contact-sub {
+    font-size: 0.9375rem;
     color: var(--text-muted);
-    margin: 2px 0 0;
-  }
-  .contact-card {
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin-top: 16px;
+    margin: 0.25rem 0 0;
   }
 
-  .social-row {
-    margin-top: 16px;
-    padding: 16px 0;
+  /* Socials */
+  .about-socials {
+    margin-top: 2rem;
+    padding: 2rem 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0.75rem;
     align-items: center;
   }
-  .social-label {
+  .about-socials-label {
     font-family: var(--font-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.16em;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-muted);
   }
-  .social-icons {
+  .about-socials-icons {
     display: flex;
-    gap: 18px;
+    gap: 1.25rem;
   }
-  .social-icons a {
+  .about-socials-icons a {
     color: var(--text-secondary);
     transition: color 0.2s ease, transform 0.2s ease;
   }
-  .social-icons a:hover { color: var(--accent); transform: translateY(-2px); }
+  .about-socials-icons a:hover { color: var(--accent); transform: translateY(-2px); }
 </style>

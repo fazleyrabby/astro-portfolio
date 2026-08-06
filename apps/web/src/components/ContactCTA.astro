@@ -1,32 +1,80 @@
 ---
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
 ---
 
-<section id="contact-cta" class="py-12 border-b border-[var(--grid-line)] last:border-b-0">
-  <div class="max-w-[1100px] mx-auto px-4 text-center">
-    <span class="font-mono text-xs text-theme-muted uppercase tracking-wider block mb-3">
-      {t('contact.sectionTitle') || "Get in Touch"}
-    </span>
+<section id="contact-cta" class="contact-editorial">
+  <div class="contact-container">
+    <div class="contact-inner reveal">
+      <span class="section-label">Get in Touch</span>
 
-    <h2 class="font-serif font-bold text-3xl md:text-4xl text-theme-primary leading-tight mb-4">
-      {t('contact.title1')} <span class="italic text-[var(--accent)]">{t('contact.title2')}</span>
-    </h2>
+      <h2 class="contact-title">
+        {t('contact.title1') || "Have a challenge for me?"} <em>{t('contact.title2') || "Let's build it."}</em>
+      </h2>
 
-    <p class="font-sans text-base text-theme-secondary leading-relaxed max-w-[600px] mx-auto mb-8">
-      {t('contact.subtitle') || "Let's collaborate on building high-performance systems and backend APIs. Drop me a line, and let's get started."}
-    </p>
+      <p class="contact-subtitle">
+        {t('contact.subtitle') || "Available for architectural consulting, backend leadership, and end-to-end product development. Currently accepting new collaborations for late 2026."}
+      </p>
 
-    <div class="flex flex-wrap items-center justify-center gap-4">
-      <a href="mailto:fazley111@gmail.com" class="px-4 py-2 rounded bg-[var(--accent)] text-[#080808] font-mono text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity flex items-center gap-2 group">
-        {t('contact.startBtn') || "Initiate Contact"}
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-      </a>
-      <a href="/resume" class="px-4 py-2 rounded bg-[var(--grid-line)] border border-[var(--border)] text-theme-primary font-mono text-xs font-bold uppercase tracking-wider hover:border-[var(--accent)] transition-all">
-        {t('contact.resumeBtn') || "View Resume"}
-      </a>
+      <div class="contact-actions">
+        <a href="mailto:fazley111@gmail.com" class="btn-primary">
+          {t('contact.startBtn') || "Start a Conversation"}
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        </a>
+        <a href={tp("/resume/")} class="btn-ghost">
+          {t('contact.resumeBtn') || "Download Resume"}
+        </a>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  .contact-editorial {
+    padding: var(--space-section) 0;
+  }
+
+  .contact-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+  }
+
+  .contact-inner {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .contact-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    color: var(--text-primary);
+    line-height: 1.15;
+    margin: 0 0 1.25rem;
+    letter-spacing: -0.02em;
+  }
+  .contact-title em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .contact-subtitle {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin: 0 0 2rem;
+  }
+
+  .contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+</style>

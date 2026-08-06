@@ -5,14 +5,16 @@
 <div class="fixed bottom-6 right-6 z-50 flex gap-3">
     <button
         id="toc-toggle-btn"
-        class="hidden lg:hidden p-2.5 rounded-lg cursor-pointer bg-surface border border-border text-text hover:border-accent hover:text-accent transition-all items-center justify-center"
+        class="hidden lg:hidden p-2.5 rounded-lg cursor-pointer bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all items-center justify-center shadow-md"
         aria-label="Toggle Table of Contents"
     >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
     </button>
-    <div
+    <button
+        id="scroll-top-btn"
         onclick="scrollToTop()"
-        class="p-2.5 rounded-lg cursor-pointer group scrollTop bg-surface border border-border text-[var(--text-secondary)] hover:border-accent hover:text-accent transition-all"
+        class="p-2.5 rounded-lg cursor-pointer group scrollTop bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all shadow-md"
+        aria-label="Scroll to top"
         style="display: none;"
     >
         <svg xmlns="http://www.w3.org/2000/svg" 
@@ -20,70 +22,28 @@
         viewBox="0 0 16 16">
             <path fill="currentColor" fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
         </svg>
-    </div>
+    </button>
 </div>
 
 <script is:inline>
-    const getScrollContainer = () => document.querySelector('.scroll-container');
-
     const scrollToTop = () => {
-        const sc = getScrollContainer();
-        if (sc) {
-            sc.scrollTo({ top: 0, behavior: "smooth" });
-        } else {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const toggleVisibility = () => {
-        const sc = getScrollContainer();
-        const scrollTop = sc ? sc.scrollTop : window.scrollY;
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
         const showButtons = scrollTop > 300;
         const tocBtn = document.getElementById('toc-toggle-btn');
-        const scrollBtn = document.querySelector('.scrollTop');
+        const scrollBtn = document.getElementById('scroll-top-btn');
         const hasToc = !!document.getElementById('toc-sidebar');
         if (tocBtn) tocBtn.style.display = showButtons && hasToc && window.innerWidth < 1024 ? 'flex' : 'none';
         if (scrollBtn) scrollBtn.style.display = showButtons ? 'block' : 'none';
     };
 
-    const initTocToggle = () => {
-        const tocBtn = document.getElementById('toc-toggle-btn');
-        const sidebar = document.getElementById('toc-sidebar');
-        if (!tocBtn || !sidebar || tocBtn.getAttribute('data-init') === 'true') return;
-        tocBtn.setAttribute('data-init', 'true');
-
-        tocBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const isOpen = sidebar.classList.contains('toc-mobile-open');
-            if (isOpen) {
-                sidebar.style.display = '';
-                sidebar.classList.remove('toc-mobile-open');
-            } else {
-                sidebar.style.setProperty('display', 'block', 'important');
-                sidebar.classList.add('toc-mobile-open');
-            }
-        });
-
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth < 1024 && sidebar.classList.contains('toc-mobile-open')) {
-                if (!sidebar.contains(e.target) && !tocBtn.contains(e.target)) {
-                    sidebar.style.display = '';
-                    sidebar.classList.remove('toc-mobile-open');
-                }
-            }
-        });
-    };
-
     const bindScrollListeners = () => {
-        const sc = getScrollContainer();
-        if (sc) {
-            sc.addEventListener('scroll', toggleVisibility, { passive: true });
-        } else {
-            window.addEventListener('scroll', toggleVisibility, { passive: true });
-        }
+        window.addEventListener('scroll', toggleVisibility, { passive: true });
         window.addEventListener('resize', toggleVisibility);
         toggleVisibility();
-        initTocToggle();
     };
 
     document.addEventListener('astro:page-load', bindScrollListeners);

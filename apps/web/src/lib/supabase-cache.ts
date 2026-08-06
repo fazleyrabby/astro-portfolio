@@ -22,7 +22,7 @@ const CACHE_DIR = path.join(process.cwd(), ".cache");
 const CACHE_FILE = path.join(CACHE_DIR, "supabase-posts.json");
 
 // TTL (Time To Live) in milliseconds:
-const isProd = (typeof import.meta !== "undefined" && import.meta?.env?.PROD) || process.env.NODE_ENV === "production";
+const isProd = import.meta.env.PROD || process.env.NODE_ENV === "production";
 const TTL = isProd ? 5 * 60 * 1000 : 15 * 1000;
 
 export async function getPublishedPosts(): Promise<Post[]> {

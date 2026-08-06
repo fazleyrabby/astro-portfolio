@@ -67,12 +67,13 @@ const {
     <ScrollToTop />
 
     <script>
-      const initAnimations = async () => {
-        const { default: Lenis } = await import("lenis");
-        const { gsap } = await import("gsap");
-        const { ScrollTrigger } = await import("gsap/ScrollTrigger");
-        gsap.registerPlugin(ScrollTrigger);
+      import Lenis from "lenis";
+      import { gsap } from "gsap";
+      import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+      gsap.registerPlugin(ScrollTrigger);
+
+      const initAnimations = () => {
         // Initialize Lenis smooth scroll on window
         const lenis = new Lenis({
           duration: 1.2,
@@ -135,9 +136,12 @@ const {
             }),
             keepalive: true,
           })
-            .then((res) => res.json())
+            .then((res) => {
+              if (!res.ok) return null;
+              return res.json();
+            })
             .then((data) => {
-              if (data.ip) {
+              if (data && data.ip) {
                 sessionStorage.setItem("visitor_ip", data.ip);
               }
             })

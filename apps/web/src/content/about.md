@@ -17,6 +17,8 @@ I believe great software should be simple to understand, easy to maintain, and b
 
 Outside of my day job, I spend much of my time building side projects, experimenting with new technologies, maintaining a homelab, and writing about backend engineering. I learn best by building real systems, exploring new ideas, and solving practical problems.
 
+Want to know how I got started in tech? Read about my personal and career evolution on my [Journey](/journey) page.
+
 ## Let's Connect
 
 I'm always interested in collaborating on products that value thoughtful engineering, long-term maintainability, and meaningful business impact. Whether it's backend architecture, developer tooling, payment infrastructure, or AI-assisted workflows, I enjoy building software that lasts.

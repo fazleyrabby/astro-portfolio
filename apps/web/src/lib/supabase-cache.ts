@@ -17,17 +17,21 @@ export interface Post {
   featured?: boolean;
 }
 
+const LOCAL_DATA_FILE = path.join(process.cwd(), "src", "data", "posts.json");
 const CACHE_DIR = path.join(process.cwd(), ".cache");
 const CACHE_FILE = path.join(CACHE_DIR, "supabase-posts.json");
 
 // TTL (Time To Live) in milliseconds:
-// In build / production mode, we cache longer (5 minutes) or indefinitely for the build process.
-// In dev mode, we cache for 15 seconds to stay responsive.
-const isProd = import.meta.env.PROD || process.env.NODE_ENV === "production";
+const isProd = (typeof import.meta !== "undefined" && import.meta?.env?.PROD) || process.env.NODE_ENV === "production";
 const TTL = isProd ? 5 * 60 * 1000 : 15 * 1000;
 
 export async function getPublishedPosts(): Promise<Post[]> {
   try {
+    if (fs.existsSync(LOCAL_DATA_FILE)) {
+      const localData = fs.readFileSync(LOCAL_DATA_FILE, "utf-8");
+      return JSON.parse(localData);
+    }
+
     if (!fs.existsSync(CACHE_DIR)) {
       fs.mkdirSync(CACHE_DIR, { recursive: true });
     }
@@ -46,7 +50,7 @@ export async function getPublishedPosts(): Promise<Post[]> {
       return JSON.parse(cacheData);
     }
   } catch (err) {
-    console.warn("Supabase cache read failed, falling back to live fetch:", err);
+    console.warn("Posts cache read failed, falling back to live fetch:", err);
   }
 
   // Fetch live from Supabase

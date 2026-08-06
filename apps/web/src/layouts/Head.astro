@@ -1,7 +1,7 @@
 ---
 import { getLangFromUrl } from "../i18n/utils";
 const { title, description, ogTitle, ogDescription, ogImage, ogUrl, ogType, twitterCard, twitterImage, twitterTitle, twitterDescription, articlePublishedTime, articleModifiedTime, articleAuthor, articleTags, alternateUrl } = Astro.props;
-const defaultTitle = "Fazley Rabbi — Laravel & Backend Engineer";
+const defaultTitle = "Fazley Rabbi — Backend Engineer (Laravel)";
 const defaultDesc = "Laravel and backend engineer specializing in SaaS platforms, REST APIs, and payment integrations. Based in Bangladesh, available globally.";
 const defaultOgImage = "https://fazleyrabbi.xyz/og.png";
 const isProduction = import.meta.env.NODE_ENV === "production";
@@ -63,7 +63,7 @@ const bnHref = currentLang === 'en' && alternateUrl ? alternateUrl : `${siteUrl}
                     "alternateName": "Fazley Rabbi",
                     "url": siteUrl,
                     "image": defaultOgImage,
-                    "jobTitle": "Laravel & Backend Engineer",
+                    "jobTitle": "Backend Engineer (Laravel)",
                     "description": defaultDesc,
                     "email": "mailto:fazley111@gmail.com",
                     "worksFor": { "@type": "Organization", "name": "Electronic First" },

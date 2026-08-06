@@ -5,7 +5,7 @@ featured: true
 problem: "Small shop owners juggling separate POS, stock, and storefront tools — with no per-store isolation, no production deploy story, and no shared customer/cart layer between channels."
 solution: "A unified Laravel POS + 3-theme e-commerce storefront on a single codebase: sales/purchases/returns, strict tenant isolation, RBAC, Dockerized deploy with rollback, and a shared cart/checkout layer across stores."
 live: "https://pos.fazleyrabbi.xyz/"
-thumbnail: "/projects/5.webp"
+thumbnail: "/projects/litepos.png"
 description: "Unified POS + multi-theme e-commerce on Laravel — sales, stock, returns, storefronts, and Dockerized deploy."
 tech: ["Laravel", "DaisyUI", "Tailwind", "Alpine.js", "MySQL 8", "Redis", "Docker", "Cloudflare Tunnel", "SSLCommerz", "bKash", "Stripe"]
 status: "Active"

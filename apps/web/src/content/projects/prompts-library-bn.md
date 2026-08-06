@@ -5,7 +5,7 @@ problem: "AI prompt ডক ও চ্যাটে ছড়িয়ে — প�
 solution: "Astro স্ট্যাটিক সাইট + npm CLI — ইন্টারেক্টিভ ভ্যারিয়েবল ইঞ্জিন, ফাজি টার্মিনাল সার্চ ও ChatGPT/Claude-এ ১-ক্লিক হ্যান্ড-অফ সহ AI prompt ব্রাউজ, ফিল ও ডিপ-লিংক।"
 live: "https://prompts.fazleyrabbi.xyz/"
 github: "https://github.com/fazleyrabby/prompts-library"
-thumbnail: "/projects/8.webp"
+thumbnail: "/projects/prompts-library.png"
 description: "Astro স্ট্যাটিক সাইট + btop-স্টাইল npm CLI — ভ্যারিয়েবল ইন্টারপোলেশন ও ডিপ লিংক সহ পুনঃব্যবহারযোগ্য AI prompt।"
 tech: ["Astro", "Node.js", "TypeScript", "npm"]
 status: "চলমান"

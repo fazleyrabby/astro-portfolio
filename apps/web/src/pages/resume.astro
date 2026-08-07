@@ -482,15 +482,17 @@ import MainLayout from '@layouts/MainLayout.astro';
   @media print {
     @page {
       size: A4 portrait;
-      margin: 6mm 10mm;
+      margin: 4mm 8mm;
     }
-    :global(body), :global(html) {
+    :global(html), :global(body) {
       background: #ffffff !important;
       color: #000000 !important;
-      font-size: 8.2pt !important;
-      line-height: 1.25 !important;
+      font-size: 7.8pt !important;
+      line-height: 1.18 !important;
       width: 100% !important;
-      height: auto !important;
+      height: 100% !important;
+      max-height: 100vh !important;
+      overflow: hidden !important;
       margin: 0 !important;
       padding: 0 !important;
     }
@@ -508,100 +510,109 @@ import MainLayout from '@layouts/MainLayout.astro';
       border: none !important;
       box-shadow: none !important;
       background: transparent !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
     }
     .cv-card *, .cv-card a, .cv-card span, .cv-card p, .cv-card h2, .cv-card h3, .cv-card h4, .cv-card li {
       color: #000000 !important;
     }
     .cv-header {
-      padding-bottom: 4pt !important;
-      margin-bottom: 6pt !important;
+      padding-bottom: 3pt !important;
+      margin-bottom: 4pt !important;
       border-bottom: 1pt solid #000000 !important;
     }
     .cv-name {
-      font-size: 15pt !important;
+      font-size: 14pt !important;
       color: #000000 !important;
-      margin-bottom: 2pt !important;
+      margin-bottom: 1pt !important;
+      line-height: 1.1 !important;
     }
     .cv-contacts {
-      font-size: 7.8pt !important;
+      font-size: 7.2pt !important;
       color: #000000 !important;
-      gap: 2pt 6pt !important;
+      gap: 1pt 5pt !important;
     }
     .cv-contacts a {
       color: #000000 !important;
       text-decoration: none !important;
     }
     .cv-body {
-      gap: 6pt !important;
+      gap: 4pt !important;
     }
     .cv-section {
-      padding-bottom: 5pt !important;
+      padding-bottom: 3pt !important;
       border-bottom: 0.5pt solid #cccccc !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
     }
     .cv-section-title {
-      font-size: 8pt !important;
+      font-size: 7.5pt !important;
       color: #000000 !important;
-      margin-bottom: 3pt !important;
+      margin-bottom: 2pt !important;
       letter-spacing: 0.08em !important;
       font-weight: 700 !important;
     }
     .cv-entries {
-      gap: 5pt !important;
+      gap: 3.5pt !important;
+    }
+    .cv-entry {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
     }
     .cv-entry-head {
-      margin-bottom: 1pt !important;
+      margin-bottom: 0.5pt !important;
     }
     .cv-entry-company {
-      font-size: 9.5pt !important;
+      font-size: 8.8pt !important;
       color: #000000 !important;
     }
     .cv-entry-role {
-      font-size: 8pt !important;
-      color: #000000 !important;
-    }
-    .cv-entry-meta {
       font-size: 7.5pt !important;
       color: #000000 !important;
     }
+    .cv-entry-meta {
+      font-size: 7pt !important;
+      color: #000000 !important;
+    }
     .cv-list {
-      margin: 1pt 0 !important;
-      padding-left: 10pt !important;
+      margin: 0.5pt 0 !important;
+      padding-left: 9pt !important;
     }
     .cv-list li {
-      font-size: 8.1pt !important;
-      line-height: 1.25 !important;
-      margin-bottom: 1pt !important;
+      font-size: 7.5pt !important;
+      line-height: 1.18 !important;
+      margin-bottom: 0.5pt !important;
       color: #000000 !important;
     }
     .cv-list li::marker {
       color: #000000 !important;
     }
     .cv-tech, .cv-other-projects, .cv-skills-grid, .cv-languages {
-      font-size: 7.8pt !important;
+      font-size: 7.4pt !important;
       color: #000000 !important;
     }
     .cv-skills-grid {
-      grid-template-columns: 110px 1fr !important;
-      gap: 2pt 6pt !important;
-      font-size: 8pt !important;
+      grid-template-columns: 100px 1fr !important;
+      gap: 1.5pt 5pt !important;
+      font-size: 7.4pt !important;
     }
     .cv-edu-list {
-      gap: 3pt !important;
+      gap: 2pt !important;
     }
     .cv-edu-school {
-      font-size: 8.5pt !important;
+      font-size: 8pt !important;
       color: #000000 !important;
     }
     .cv-edu-degree {
-      font-size: 7.8pt !important;
+      font-size: 7.4pt !important;
       color: #000000 !important;
     }
     .cv-edu-year {
-      font-size: 7.5pt !important;
+      font-size: 7pt !important;
       color: #000000 !important;
     }
     .cv-languages {
-      font-size: 8pt !important;
+      font-size: 7.4pt !important;
       color: #000000 !important;
     }
   }

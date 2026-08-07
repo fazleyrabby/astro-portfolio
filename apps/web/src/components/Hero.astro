@@ -11,6 +11,10 @@ const tp = useTranslatedPath(lang);
 ---
 
 <section id="hero" class="hero-editorial">
+  <!-- Animated WebGL Dither Canvas Background -->
+  <canvas id="hero-dither-canvas" class="hero-dither-bg"></canvas>
+  <div class="hero-dither-overlay"></div>
+
   <div class="hero-container">
     <div class="hero-grid">
       <!-- Left: Editorial typography -->
@@ -112,11 +116,223 @@ const tp = useTranslatedPath(lang);
   </div>
 </section>
 
+<script>
+  function initDitherShader() {
+    const canvas = document.getElementById('hero-dither-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const gl = canvas.getContext('webgl');
+    if (!gl) return;
+
+    const vsSource = `
+      attribute vec2 position;
+      void main() {
+        gl_Position = vec4(position, 0.0, 1.0);
+      }
+    `;
+
+    const fsSource = `
+      precision highp float;
+      uniform float u_time;
+      uniform vec2 u_resolution;
+      uniform vec2 u_mouse;
+
+      // 4x4 Bayer Matrix for high-quality subtle dither dithering
+      float dither4x4(vec2 position, float brightness) {
+        int x = int(mod(position.x, 4.0));
+        int y = int(mod(position.y, 4.0));
+        
+        float matrix[16];
+        matrix[0] = 0.0/16.0;  matrix[1] = 8.0/16.0;  matrix[2] = 2.0/16.0;  matrix[3] = 10.0/16.0;
+        matrix[4] = 12.0/16.0; matrix[5] = 4.0/16.0;  matrix[6] = 14.0/16.0; matrix[7] = 6.0/16.0;
+        matrix[8] = 3.0/16.0;  matrix[9] = 11.0/16.0; matrix[10] = 1.0/16.0; matrix[11] = 9.0/16.0;
+        matrix[12] = 15.0/16.0;matrix[13] = 7.0/16.0; matrix[14] = 13.0/16.0;matrix[15] = 5.0/16.0;
+
+        int index = y * 4 + x;
+        float threshold = 0.0;
+        for (int i = 0; i < 16; i++) {
+          if (i == index) threshold = matrix[i];
+        }
+
+        return step(threshold, brightness);
+      }
+
+      // Simplex 2D noise
+      vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+      float snoise(vec2 v){
+        const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+        vec2 i  = floor(v + dot(v, C.yy) );
+        vec2 x0 = v -   i + dot(i, C.xx);
+        vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+        vec4 x12 = x0.xyxy + C.xxzz;
+        x12.xy -= i1;
+        i = mod(i, 289.0);
+        vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+        vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+        m = m*m; m = m*m;
+        vec3 x = 2.0 * fract(p * C.www) - 1.0;
+        vec3 h = abs(x) - 0.5;
+        vec3 ox = floor(x + 0.5);
+        vec3 a0 = x - ox;
+        m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+        vec3 g;
+        g.x  = a0.x  * x0.x  + h.x  * x0.y;
+        g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+        return 130.0 * dot(m, g);
+      }
+
+      void main() {
+        vec2 st = gl_FragCoord.xy / u_resolution.xy;
+        float aspect = u_resolution.x / u_resolution.y;
+        vec2 uv = st;
+        uv.x *= aspect;
+
+        float t = u_time * 0.12;
+        vec2 mouse = u_mouse / u_resolution.xy;
+
+        // Smooth wave field for continuous dither animation
+        float n1 = snoise(uv * 1.5 + vec2(t * 0.3, t * 0.15));
+        float n2 = snoise(uv * 2.5 - vec2(t * 0.2, -t * 0.4));
+        float wave = (n1 * 0.6 + n2 * 0.4) * 0.5 + 0.5;
+
+        // Subtle cursor attraction glow
+        float distToMouse = distance(st, vec2(mouse.x, 1.0 - mouse.y));
+        float mouseGlow = smoothstep(0.4, 0.0, distToMouse) * 0.2;
+
+        float brightness = clamp(wave * 0.5 + mouseGlow, 0.0, 1.0);
+
+        // Apply Bayer matrix dither filter
+        float dither = dither4x4(gl_FragCoord.xy, brightness);
+
+        // Dynamically blend colors based on theme ambient brightness
+        vec3 cBaseDark   = vec3(0.03, 0.04, 0.05);
+        vec3 cCyanDot    = vec3(0.14, 0.52, 0.62); // Cyan dither dots
+
+        vec3 color = mix(cBaseDark, cCyanDot, dither * 0.38);
+
+        gl_FragColor = vec4(color, 0.45);
+      }
+    `;
+
+    function createShader(type: number, source: string) {
+      const shader = gl.createShader(type);
+      if (!shader) return null;
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error(gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    const vertShader = createShader(gl.VERTEX_SHADER, vsSource);
+    const fragShader = createShader(gl.FRAGMENT_SHADER, fsSource);
+    if (!vertShader || !fragShader) return;
+
+    const program = gl.createProgram();
+    if (!program) return;
+    gl.attachShader(program, vertShader);
+    gl.attachShader(program, fragShader);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+
+    gl.useProgram(program);
+
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      -1, -1,
+       1, -1,
+      -1,  1,
+      -1,  1,
+       1, -1,
+       1,  1,
+    ]), gl.STATIC_DRAW);
+
+    const posAttrib = gl.getAttribLocation(program, 'position');
+    gl.enableVertexAttribArray(posAttrib);
+    gl.vertexAttribPointer(posAttrib, 2, gl.FLOAT, false, 0, 0);
+
+    const timeUni = gl.getUniformLocation(program, 'u_time');
+    const resUni = gl.getUniformLocation(program, 'u_resolution');
+    const mouseUni = gl.getUniformLocation(program, 'u_mouse');
+
+    let mouseX = 0;
+    let mouseY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    });
+
+    function resize() {
+      if (!canvas || !gl) return;
+      const width = canvas.parentElement?.clientWidth || window.innerWidth;
+      const height = canvas.parentElement?.clientHeight || window.innerHeight;
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+        gl.viewport(0, 0, width, height);
+      }
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    const startTime = performance.now();
+
+    function render() {
+      if (!gl || !canvas) return;
+      const currentTime = (performance.now() - startTime) * 0.001;
+
+      gl.uniform1f(timeUni, currentTime);
+      gl.uniform2f(resUni, canvas.width, canvas.height);
+      gl.uniform2f(mouseUni, mouseX, mouseY);
+
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      requestAnimationFrame(render);
+    }
+
+    render();
+  }
+
+  initDitherShader();
+  document.addEventListener('astro:page-load', initDitherShader);
+</script>
+
 <style>
   .hero-editorial {
     position: relative;
-    padding: clamp(4.5rem, 11vh, 8.5rem) 0 clamp(3.5rem, 7vh, 6.5rem);
+    padding: clamp(7.5rem, 16vh, 12.5rem) 0 clamp(3.5rem, 7vh, 6.5rem);
+    margin-top: -64px; /* Extend dither canvas background up behind navigation bar */
     overflow: hidden;
+  }
+
+  .hero-dither-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.18; /* Extremely soft & elegant for light mode */
+    filter: saturate(100%);
+  }
+
+  :global(.dark) .hero-dither-bg {
+    opacity: 0.28; /* Subtle & soft for dark mode */
+    filter: saturate(110%);
+  }
+
+  .hero-dither-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 50%, transparent 20%, var(--bg-primary) 85%);
   }
 
   .hero-container {
@@ -195,20 +411,37 @@ const tp = useTranslatedPath(lang);
   .hero-tagline {
     font-family: var(--font-sans);
     font-size: 1.125rem;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     line-height: 1.6;
     margin: 0 0 1rem;
     max-width: 520px;
+    opacity: 0.95;
   }
 
   /* Body */
   .hero-body {
     font-family: var(--font-sans);
     font-size: 0.9375rem;
-    color: var(--text-muted);
+    color: var(--text-primary);
     line-height: 1.7;
     margin: 0 0 2rem;
     max-width: 520px;
+    opacity: 0.9;
+  }
+
+  :global(.dark) .hero-body {
+    color: #ffffff !important;
+    opacity: 0.92;
+  }
+
+  :global(.dark) .hero-tagline {
+    color: #ffffff !important;
+    opacity: 0.98;
+  }
+
+  :global(.dark) .hero-focus-text {
+    color: #ffffff !important;
+    opacity: 0.95;
   }
 
   /* Current focus */
@@ -223,13 +456,13 @@ const tp = useTranslatedPath(lang);
     font-size: 0.6875rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     margin-bottom: 0.375rem;
   }
   .hero-focus-text {
     font-family: var(--font-sans);
     font-size: 0.875rem;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     line-height: 1.5;
   }
 

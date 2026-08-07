@@ -1,5 +1,9 @@
 ---
-import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
+import {
+  getLangFromUrl,
+  useTranslations,
+  useTranslatedPath,
+} from "../i18n/utils";
 import LangToggle from "@components/LangToggle.astro";
 
 const lang = getLangFromUrl(Astro.url);
@@ -8,50 +12,127 @@ const translatePath = useTranslatedPath(lang);
 const { altUrl } = Astro.props;
 
 const currentPathname = Astro.url.pathname;
-const cleanPath = currentPathname.replace(/^\/bn/, '').replace(/\/$/, '');
+const cleanPath = currentPathname.replace(/^\/bn/, "").replace(/\/$/, "");
 
 const navItems = [
-  { href: translatePath("/"), label: t('nav.home') || "Home", match: cleanPath === "" || cleanPath === "/" },
-  { href: translatePath("/projects/"), label: t('nav.projects') || "Projects", match: cleanPath.startsWith("/projects") },
-  { href: translatePath("/posts/"), label: t('nav.blog') || "Blog", match: cleanPath.startsWith("/posts") },
-  { href: translatePath("/about/"), label: t('nav.about') || "About", match: cleanPath.startsWith("/about") },
-  { href: translatePath("/resume/"), label: t('nav.resume') || "Resume", match: cleanPath.startsWith("/resume") },
+  {
+    href: translatePath("/"),
+    label: t("nav.home") || "Home",
+    match: cleanPath === "" || cleanPath === "/",
+  },
+  {
+    href: translatePath("/projects/"),
+    label: t("nav.projects") || "Projects",
+    match: cleanPath.startsWith("/projects"),
+  },
+  {
+    href: translatePath("/posts/"),
+    label: t("nav.blog") || "Blog",
+    match: cleanPath.startsWith("/posts"),
+  },
+  {
+    href: translatePath("/about/"),
+    label: t("nav.about") || "About",
+    match: cleanPath.startsWith("/about"),
+  },
+  {
+    href: translatePath("/resume/"),
+    label: t("nav.resume") || "Resume",
+    match: cleanPath.startsWith("/resume"),
+  },
 ];
 ---
 
 <header class="site-nav" id="site-nav">
   <div class="site-nav-inner">
     <!-- Logo -->
-    <a href={translatePath("/")} class="site-nav-logo" aria-label="Fazley Rabbi — Home">
+    <a
+      href={translatePath("/")}
+      class="site-nav-logo"
+      aria-label="Fazley Rabbi — Home"
+    >
       <span class="logo-text">Fazley Rabbi</span>
       <span class="logo-dot">.</span>
     </a>
 
     <!-- Desktop nav links -->
     <nav class="site-nav-links" aria-label="Main Navigation">
-      {navItems.map((item) => (
-        <a
-          href={item.href}
-          class:list={["nav-link", { "nav-link--active": item.match }]}
-        >
-          {item.label}
-        </a>
-      ))}
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            class:list={["nav-link", { "nav-link--active": item.match }]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
     </nav>
 
     <!-- Right actions -->
     <div class="site-nav-actions">
-      <button id="theme-toggle" class="nav-icon-btn" title="Toggle theme" aria-label="Toggle light/dark theme">
-        <svg class="theme-icon-light" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-        <svg class="theme-icon-dark" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>
+      <button
+        id="theme-toggle"
+        class="nav-icon-btn"
+        title="Toggle theme"
+        aria-label="Toggle light/dark theme"
+      >
+        <svg
+          class="theme-icon-light"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          viewBox="0 0 24 24"
+          ><circle cx="12" cy="12" r="5"></circle><line
+            x1="12"
+            y1="1"
+            x2="12"
+            y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line
+            x1="4.22"
+            y1="4.22"
+            x2="5.64"
+            y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"
+          ></line><line x1="1" y1="12" x2="3" y2="12"></line><line
+            x1="21"
+            y1="12"
+            x2="23"
+            y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"
+          ></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg
+        >
+        <svg
+          class="theme-icon-dark"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          viewBox="0 0 24 24"
+          ><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg
+        >
       </button>
 
       <LangToggle altUrl={altUrl} />
 
       <!-- Mobile hamburger -->
-      <button id="mobile-menu-btn" class="nav-icon-btn mobile-only" aria-label="Toggle Menu">
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+      <button
+        id="mobile-menu-btn"
+        class="nav-icon-btn mobile-only"
+        aria-label="Toggle Menu"
+      >
+        <svg
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
     </div>
@@ -64,42 +145,101 @@ const navItems = [
   <div class="mobile-drawer-panel">
     <div class="mobile-drawer-header">
       <span class="logo-text">Fazley Rabbi<span class="logo-dot">.</span></span>
-      <button id="mobile-drawer-close" class="nav-icon-btn" aria-label="Close Menu">
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+      <button
+        id="mobile-drawer-close"
+        class="nav-icon-btn"
+        aria-label="Close Menu"
+      >
+        <svg
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"></path>
         </svg>
       </button>
     </div>
 
     <nav class="mobile-drawer-nav">
-      {navItems.map((item) => (
-        <a
-          href={item.href}
-          class:list={["mobile-nav-link", { "mobile-nav-link--active": item.match }]}
-        >
-          {item.label}
-        </a>
-      ))}
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              "mobile-nav-link",
+              { "mobile-nav-link--active": item.match },
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
       <div class="mobile-drawer-divider"></div>
-      <a href={translatePath("/journey/")} class="mobile-nav-link">{t('nav.journey') || "Journey"}</a>
-      <a href={translatePath("/uses/")} class="mobile-nav-link">{t('nav.uses') || "Uses"}</a>
-      <a href={translatePath("/gallery/")} class="mobile-nav-link">{t('nav.gallery') || "Gallery"}</a>
-      <a href={translatePath("/resources/")} class="mobile-nav-link">{t('nav.resources') || "Resources"}</a>
+      <a href={translatePath("/journey/")} class="mobile-nav-link"
+        >{t("nav.journey") || "Journey"}</a
+      >
+      <a href={translatePath("/uses/")} class="mobile-nav-link"
+        >{t("nav.uses") || "Uses"}</a
+      >
+      <a href={translatePath("/gallery/")} class="mobile-nav-link"
+        >{t("nav.gallery") || "Gallery"}</a
+      >
+      <a href={translatePath("/resources/")} class="mobile-nav-link"
+        >{t("nav.resources") || "Resources"}</a
+      >
     </nav>
 
     <div class="mobile-drawer-footer">
       <div class="mobile-drawer-socials">
-        <a href="https://github.com/fazleyrabby" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        <a
+          href="https://github.com/fazleyrabby"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="GitHub"
+        >
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"
+            ><path
+              d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+            ></path></svg
+          >
         </a>
-        <a href="https://linkedin.com/in/fazley-rabby" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        <a
+          href="https://linkedin.com/in/fazley-rabby"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="LinkedIn"
+        >
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"
+            ><path
+              d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+            ></path></svg
+          >
         </a>
         <a href="mailto:fazley111@gmail.com" aria-label="Email">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            viewBox="0 0 24 24"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+            ></path></svg
+          >
         </a>
       </div>
-      <span class="mobile-drawer-copy">© {new Date().getFullYear()} Fazley Rabbi</span>
+      <span class="mobile-drawer-copy"
+        >© {new Date().getFullYear()} Fazley Rabbi</span
+      >
     </div>
   </div>
 </div>
@@ -165,10 +305,12 @@ const navItems = [
     }
 
     // Close drawer on link click or backdrop click
-    drawer?.querySelectorAll(".mobile-nav-link").forEach(link => {
+    drawer?.querySelectorAll(".mobile-nav-link").forEach((link) => {
       link.addEventListener("click", closeDrawer);
     });
-    drawer?.querySelector(".mobile-drawer-backdrop")?.addEventListener("click", closeDrawer);
+    drawer
+      ?.querySelector(".mobile-drawer-backdrop")
+      ?.addEventListener("click", closeDrawer);
   }
 
   document.addEventListener("DOMContentLoaded", initNav);
@@ -186,7 +328,10 @@ const navItems = [
     left: 0;
     right: 0;
     z-index: 50;
-    transition: background-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      backdrop-filter 0.3s ease;
     border-bottom: 1px solid transparent;
   }
 
@@ -288,16 +433,28 @@ const navItems = [
   }
 
   /* Theme icons */
-  .theme-icon-dark { display: none; }
-  :global(.dark) .theme-icon-light { display: none; }
-  :global(.dark) .theme-icon-dark { display: block; }
+  .theme-icon-dark {
+    display: none;
+  }
+  :global(.dark) .theme-icon-light {
+    display: none;
+  }
+  :global(.dark) .theme-icon-dark {
+    display: block;
+  }
 
   /* Mobile-only elements */
-  .mobile-only { display: none; }
+  .mobile-only {
+    display: none;
+  }
 
   @media (max-width: 768px) {
-    .site-nav-links { display: none; }
-    .mobile-only { display: flex; }
+    .site-nav-links {
+      display: none;
+    }
+    .mobile-only {
+      display: flex;
+    }
   }
 
   /* ========================

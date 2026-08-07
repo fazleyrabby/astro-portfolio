@@ -58,14 +58,60 @@ const navItems = [
     <!-- Desktop nav links -->
     <nav class="site-nav-links" aria-label="Main Navigation">
       {
-        navItems.map((item) => (
-          <a
-            href={item.href}
-            class:list={["nav-link", { "nav-link--active": item.match }]}
-          >
-            {item.label}
-          </a>
-        ))
+        navItems.map((item) => {
+          if (item.href.includes("/about")) {
+            return (
+              <div class="nav-item-dropdown">
+                <a
+                  href={item.href}
+                  class:list={["nav-link", { "nav-link--active": item.match }]}
+                >
+                  {item.label}
+                  <svg class="dropdown-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1L5 5L9 1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <div class="nav-submenu">
+                  <div class="nav-submenu-inner">
+                    <a href={translatePath("/journey/")} class="submenu-item">
+                      <div class="submenu-icon">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                      </div>
+                      <div class="submenu-text">
+                        <span class="submenu-title">{t("nav.journey") || "Journey"}</span>
+                        <span class="submenu-desc">Career timeline & milestones</span>
+                      </div>
+                    </a>
+                    <a href={translatePath("/uses/")} class="submenu-item">
+                      <div class="submenu-icon">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                      </div>
+                      <div class="submenu-text">
+                        <span class="submenu-title">{t("nav.uses") || "Uses"}</span>
+                        <span class="submenu-desc">Hardware, stack & dev setup</span>
+                      </div>
+                    </a>
+                    <a href={translatePath("/gallery/")} class="submenu-item">
+                      <div class="submenu-icon">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                      </div>
+                      <div class="submenu-text">
+                        <span class="submenu-title">{t("nav.gallery") || "Gallery"}</span>
+                        <span class="submenu-desc">Photos & life snippets</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+          return (
+            <a
+              href={item.href}
+              class:list={["nav-link", { "nav-link--active": item.match }]}
+            >
+              {item.label}
+            </a>
+          );
+        })
       }
     </nav>
 
@@ -388,6 +434,9 @@ const navItems = [
     transition: color 0.2s ease;
     position: relative;
     letter-spacing: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
   }
   .nav-link:hover {
     color: var(--text-primary);
@@ -405,6 +454,107 @@ const navItems = [
     height: 1.5px;
     background: var(--accent);
     border-radius: 1px;
+  }
+
+  /* Submenu Dropdown */
+  .nav-item-dropdown {
+    position: relative;
+    padding: 0.5rem 0;
+  }
+
+  .dropdown-chevron {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 0.7;
+  }
+
+  .nav-item-dropdown:hover .dropdown-chevron {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+
+  .nav-submenu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s ease;
+    padding-top: 8px; /* Hitbox gap fill */
+    z-index: 60;
+  }
+
+  .nav-item-dropdown:hover .nav-submenu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .nav-submenu-inner {
+    width: 240px;
+    background: color-mix(in srgb, var(--bg-card, #121216) 92%, transparent);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
+  }
+
+  .submenu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+  }
+
+  .submenu-item:hover {
+    background: color-mix(in srgb, var(--text-primary) 8%, transparent);
+    transform: translateX(2px);
+  }
+
+  .submenu-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--accent);
+    flex-shrink: 0;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .submenu-item:hover .submenu-icon {
+    background: var(--accent);
+    color: #ffffff;
+  }
+
+  .submenu-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .submenu-title {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .submenu-desc {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    line-height: 1.2;
   }
 
   /* Actions */

@@ -9,7 +9,7 @@ thumbnail: "/projects/litepos.png"
 description: "Laravel-এ ইউনিফাইড POS + মাল্টি-থিম ই-কমার্স — সেলস, স্টক, রিটার্ন, স্টোরফ্রন্ট ও Dockerized ডিপ্লয়।"
 tech: ["Laravel", "DaisyUI", "Tailwind", "Alpine.js", "MySQL 8", "Redis", "Docker", "Cloudflare Tunnel"]
 status: "চলমান"
-position: 6
+position: 3
 period: "মার্চ ২০২৬ – মে ২০২৬"
 role: "ফুল-স্ট্যাক ইঞ্জিনিয়ার"
 highlights:

@@ -11,6 +11,6 @@ thumbnail: "/projects/hujjah.png"
 description: "Privacy-first Islamic research engine with Quran, hadith, and AI chat."
 tech: ["Next.js", "SQLite", "FTS5", "Groq AI", "Transformers.js", "BGE-M3"]
 status: "Ongoing"
-position: 3
+position: 6
 lang: bn
 ---

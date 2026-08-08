@@ -22,7 +22,7 @@ export const en = {
   'hero.hi': "Hi, I'm",
   'hero.name': 'Md. Fazley Rabbi',
   'hero.tagline': 'Designing scalable backend systems, payment infrastructure, and APIs for products that serve real users.',
-  'hero.body': 'Backend Engineer with 5+ years of experience building high-volume production systems using Laravel, PHP, and modern backend technologies. I specialize in payment infrastructure, fraud detection, REST APIs, analytics, and software that\'s designed to remain reliable, maintainable, and scalable.',
+  'hero.body': '5+ years of experience building high-volume production systems using Laravel, PHP, and modern backend technologies.',
   'valueprop.title': 'Capabilities & Core Value',
   'valueprop.whatIBuild.title': 'WHAT I BUILD',
   'valueprop.whatIBuild.desc': 'Commercial-grade applications engineered for speed, security, and scalability.',
@@ -128,5 +128,5 @@ export const en = {
   'posts.archive.title': 'Latest Archive',
   'posts.archive.readMore': 'Read More Archive',
   'posts.emptyMsg': 'Synchronizing brain dump... no articles found yet.',
-  'focus.desc': 'System design, distributed systems, cloud infrastructure, AI-powered developer workflows, and building software that solves real business problems.',
+  'focus.desc': 'Distributed Systems, Payment Infra, Cloud Infrastructure, AI Workflows',
 };

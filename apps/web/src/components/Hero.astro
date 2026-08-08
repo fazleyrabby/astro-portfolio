@@ -38,12 +38,14 @@ const tp = useTranslatedPath(lang);
         <!-- Current Focus -->
         <div class="hero-focus">
           <span class="hero-focus-label">Current Focus</span>
-          <span class="hero-focus-text"
-            >{
+          <div class="hero-focus-tags">
+            {(
               t("focus.desc") ||
-                "System design, distributed systems, cloud infrastructure, AI-powered developer workflows."
-            }</span
-          >
+              "Distributed Systems, Payment Infra, Cloud Infrastructure, AI Workflows"
+            )
+              .split(",")
+              .map((tag) => <span class="hero-focus-tag">{tag.trim()}</span>)}
+          </div>
         </div>
 
         <!-- CTAs -->
@@ -447,7 +449,7 @@ const tp = useTranslatedPath(lang);
   /* Current focus */
   .hero-focus {
     border-top: 1px solid var(--border);
-    padding-top: 1.25rem;
+    padding-top: 1.125rem;
     margin-bottom: 2rem;
   }
   .hero-focus-label {
@@ -457,13 +459,26 @@ const tp = useTranslatedPath(lang);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-secondary);
-    margin-bottom: 0.375rem;
+    margin-bottom: 0.625rem;
   }
-  .hero-focus-text {
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
+  .hero-focus-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .hero-focus-tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
     color: var(--text-primary);
-    line-height: 1.5;
+    background: color-mix(in srgb, var(--text-primary) 3%, var(--bg-base));
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.625rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+  .hero-focus-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   /* Actions */

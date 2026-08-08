@@ -10,7 +10,7 @@ const all = await getCollection("projects");
 const localized = all
   .filter((p) => (p.data.lang || "en") === lang && !p.data.hidden)
   .sort((a, b) => (a.data.position || 0) - (b.data.position || 0))
-  .slice(0, 3);
+  .slice(0, 4);
 ---
 
 <section id="projects" class="projects-editorial">
@@ -28,8 +28,8 @@ const localized = all
       </a>
     </div>
 
-    <!-- Project list -->
-    <div class="projects-list">
+    <!-- Project Sticky Card Stack -->
+    <div class="projects-stack">
       {localized.map((project, index) => {
         const { title, description, type, status, problem, impact, thumbnail } = project.data;
         const baseSlug = project.slug.replace(/-bn$/, "");
@@ -38,60 +38,67 @@ const localized = all
         const isEven = index % 2 === 1;
 
         return (
-          <article class:list={["project-item reveal", { "project-item--reversed": isEven }]}>
-            {/* Thumbnail */}
-            <div class="project-thumbnail">
-              {thumbnail ? (
-                <a href={href} class="project-thumbnail-link">
-                  <img
-                    src={thumbnail}
-                    alt={`${title}`}
-                    loading="lazy"
-                    width="600"
-                    height="338"
-                  />
-                </a>
-              ) : (
-                <div class="project-thumbnail-placeholder">
-                  <span>{title}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Content */}
-            <div class="project-content">
-              <div class="project-meta">
-                <span class="project-type">{type?.toUpperCase() || 'BACKEND'}</span>
-                <span class="project-meta-dot">·</span>
-                <span class="project-status">{status?.toUpperCase() || 'ACTIVE'}</span>
+          <div
+            class="project-card-wrapper"
+            style={`--card-index: ${index};`}
+          >
+            <article class:list={["project-card", { "project-card--reversed": isEven }]}>
+              {/* Thumbnail */}
+              <div class="project-thumbnail">
+                {thumbnail ? (
+                  <a href={href} class="project-thumbnail-link">
+                    <img
+                      src={thumbnail}
+                      alt={`${title}`}
+                      loading="lazy"
+                      width="600"
+                      height="338"
+                    />
+                  </a>
+                ) : (
+                  <div class="project-thumbnail-placeholder">
+                    <span>{title}</span>
+                  </div>
+                )}
               </div>
 
-              <h3 class="project-name">
-                <a href={href}>{title}</a>
-              </h3>
-
-              <p class="project-desc">{description}</p>
-
-              {problem && (
-                <div class="project-challenge">
-                  <span class="project-challenge-label">Challenge</span>
-                  <p>{problem}</p>
+              {/* Content */}
+              <div class="project-content">
+                <div class="project-meta">
+                  <span class="project-card-index">0{index + 1}</span>
+                  <span class="project-meta-dot">·</span>
+                  <span class="project-type">{type?.toUpperCase() || 'BACKEND'}</span>
+                  <span class="project-meta-dot">·</span>
+                  <span class="project-status">{status?.toUpperCase() || 'ACTIVE'}</span>
                 </div>
-              )}
 
-              {impact && (
-                <div class="project-outcome">
-                  <span class="project-outcome-label">Outcome</span>
-                  <p>{impact}</p>
-                </div>
-              )}
+                <h3 class="project-name">
+                  <a href={href}>{title}</a>
+                </h3>
 
-              <a href={href} class="project-cta">
-                Explore Case Study
-                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-              </a>
-            </div>
-          </article>
+                <p class="project-desc">{description}</p>
+
+                {problem && (
+                  <div class="project-challenge">
+                    <span class="project-challenge-label">Challenge</span>
+                    <p>{problem}</p>
+                  </div>
+                )}
+
+                {impact && (
+                  <div class="project-outcome">
+                    <span class="project-outcome-label">Outcome</span>
+                    <p>{impact}</p>
+                  </div>
+                )}
+
+                <a href={href} class="project-cta">
+                  Explore Case Study
+                  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                </a>
+              </div>
+            </article>
+          </div>
         );
       })}
     </div>
@@ -103,6 +110,7 @@ const localized = all
   .projects-editorial {
     padding: var(--space-section) 0;
     border-bottom: 1px solid var(--border);
+    position: relative;
   }
 
   .projects-container {
@@ -145,33 +153,82 @@ const localized = all
     opacity: 0.8;
   }
 
-  /* Project list */
-  .projects-list {
+  /* Project Stack Container */
+  .projects-stack {
     display: flex;
     flex-direction: column;
-    gap: clamp(3rem, 6vw, 5rem);
+    position: relative;
+    padding-bottom: 2rem;
   }
 
-  /* Project item */
-  .project-item {
+  /* Sticky Card Wrapper */
+  .project-card-wrapper {
+    position: sticky;
+    top: calc(88px + var(--card-index) * 24px);
+    z-index: calc(10 + var(--card-index));
+    margin-bottom: 3.5rem;
+    transform-origin: center top;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  }
+
+  .project-card-wrapper:last-child {
+    margin-bottom: 1rem;
+  }
+
+  /* Project Card Container */
+  .project-card {
+    background: color-mix(in srgb, var(--bg-base) 96%, var(--text-primary) 4%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl, 16px);
+    padding: clamp(1.5rem, 3.5vw, 2.75rem);
     display: grid;
     grid-template-columns: 1.15fr 1fr;
-    gap: clamp(2rem, 4vw, 3.5rem);
-    align-items: start;
+    gap: clamp(1.75rem, 4vw, 3.5rem);
+    align-items: center;
+    box-shadow:
+      0 -8px 24px -6px rgba(0, 0, 0, 0.08),
+      0 16px 36px -12px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(16px);
+    overflow: hidden;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
   }
 
-  .project-item--reversed {
+  :global(.dark) .project-card {
+    background: color-mix(in srgb, var(--bg-surface) 90%, var(--text-primary) 10%);
+    box-shadow:
+      0 -10px 30px -8px rgba(0, 0, 0, 0.4),
+      0 20px 48px -12px rgba(0, 0, 0, 0.65);
+  }
+
+  .project-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  }
+
+  .project-card--reversed {
     direction: rtl;
   }
-  .project-item--reversed > * {
+  .project-card--reversed > * {
     direction: ltr;
   }
 
-  @media (max-width: 768px) {
-    .project-item,
-    .project-item--reversed {
+  @media (max-width: 860px) {
+    .projects-stack {
+      gap: 2rem;
+    }
+
+    .project-card-wrapper {
+      position: relative;
+      top: auto !important;
+      margin-bottom: 0;
+      z-index: 1 !important;
+    }
+
+    .project-card,
+    .project-card--reversed {
       grid-template-columns: 1fr;
       direction: ltr;
+      padding: 1.25rem;
+      gap: 1.25rem;
     }
   }
 
@@ -215,7 +272,7 @@ const localized = all
   .project-content {
     display: flex;
     flex-direction: column;
-    padding-top: 0.5rem;
+    padding-top: 0.25rem;
   }
 
   .project-meta {
@@ -224,6 +281,15 @@ const localized = all
     gap: 0.5rem;
     margin-bottom: 0.75rem;
   }
+
+  .project-card-index {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
   .project-type,
   .project-status {
     font-family: var(--font-mono);

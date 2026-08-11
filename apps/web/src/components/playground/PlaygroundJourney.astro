@@ -1,0 +1,236 @@
+---
+import { getCollection, render } from "astro:content";
+import { getLangFromUrl, useTranslations } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const all = await getCollection("experiences");
+const items = all
+  .filter((e) => (e.data.lang || "en") === lang)
+  .sort((a, b) => {
+    const da = a.data.timeline ? new Date(a.data.timeline) : new Date(0);
+    const db = b.data.timeline ? new Date(b.data.timeline) : new Date(0);
+    return db.getTime() - da.getTime();
+  });
+
+const rendered = await Promise.all(
+  items.map(async (e) => {
+    const { Content } = await render(e);
+    return { ...e, Content };
+  })
+);
+---
+
+<section id="journey" class="pg-journey">
+  <!-- Flow Connection Line -->
+  <div class="pg-flow-line">
+    <svg viewBox="0 0 1200 48" preserveAspectRatio="none">
+      <path d="M0,24 Q300,0 600,48 T1200,24" />
+    </svg>
+  </div>
+
+  <div class="pg-journey-container">
+
+    <div class="pg-journey-header">
+      <span class="pg-section-kicker">✦ INTERACTIVE CAREER PATHWAY</span>
+      <h2 class="pg-journey-title">{t("experience.title") || "Career Journey"}</h2>
+      <span class="pg-journey-years">2021 — PRESENT</span>
+    </div>
+
+    <!-- Physical Interactive Pathway -->
+    <div class="pg-pathway-track">
+      <div class="pg-pathway-line"></div>
+
+      <div class="pg-milestone-nodes">
+        {rendered.map((item, idx) => (
+          <div class="pg-milestone-card" data-cursor="MILESTONE">
+            <div class="pg-milestone-node-pin">
+              <span>0{idx + 1}</span>
+            </div>
+
+            <div class="pg-milestone-content">
+              <div class="pg-milestone-head">
+                <div class="pg-milestone-title-group">
+                  <a href={item.data.link ?? "#"} target="_blank" rel="noreferrer" class="pg-company-name">
+                    {item.data.title}
+                  </a>
+                  <span class="pg-role-name">{item.data.role}</span>
+                </div>
+                <span class="pg-milestone-date">{item.data.from} — {item.data.to}</span>
+              </div>
+
+              <div class="pg-milestone-body">
+                <item.Content />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .pg-journey {
+    padding: 3rem 1.5rem 6rem;
+    background: var(--pg-bg);
+    border-bottom: 2px dashed var(--pg-border);
+  }
+
+  .pg-journey-container {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .pg-journey-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 3.5rem;
+    gap: 1rem;
+  }
+
+  .pg-section-kicker {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--pg-terracotta);
+    text-transform: uppercase;
+  }
+
+  .pg-journey-title {
+    font-family: var(--font-display, serif);
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    font-weight: 700;
+    color: var(--pg-ink);
+    margin: 0.25rem 0 0;
+    letter-spacing: -0.02em;
+  }
+
+  .pg-journey-years {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--pg-terracotta);
+    padding: 0.3rem 0.75rem;
+    border: 1.5px solid var(--pg-ink);
+    border-radius: 999px;
+    background: var(--pg-surface);
+    box-shadow: 2px 2px 0px var(--pg-ink);
+  }
+
+  /* Pathway Track */
+  .pg-pathway-track {
+    position: relative;
+    padding-left: 2.5rem;
+  }
+
+  .pg-pathway-line {
+    position: absolute;
+    left: 17px;
+    top: 15px;
+    bottom: 20px;
+    width: 3px;
+    background: var(--pg-ink);
+    border-radius: 2px;
+  }
+
+  .pg-milestone-nodes {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .pg-milestone-card {
+    position: relative;
+    background: var(--pg-surface);
+    border: 2px solid var(--pg-ink);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 6px 6px 0px var(--pg-ink);
+    transition: transform 0.25s var(--pg-ease-out), box-shadow 0.25s ease;
+  }
+
+  .pg-milestone-card:hover {
+    transform: translateX(4px);
+    box-shadow: 8px 8px 0px var(--pg-terracotta);
+  }
+
+  .pg-milestone-node-pin {
+    position: absolute;
+    left: -48px;
+    top: 20px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--pg-mustard);
+    border: 2px solid var(--pg-ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--pg-ink);
+    box-shadow: 2px 2px 0px var(--pg-ink);
+  }
+
+  .pg-milestone-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1.5px dashed var(--pg-border);
+  }
+
+  .pg-company-name {
+    font-family: var(--font-display, serif);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--pg-ink);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .pg-company-name:hover {
+    color: var(--pg-terracotta);
+  }
+
+  .pg-role-name {
+    display: block;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--pg-terracotta);
+    margin-top: 0.15rem;
+  }
+
+  .pg-milestone-date {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--pg-ink-muted);
+  }
+
+  .pg-milestone-body {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.9375rem;
+    color: var(--pg-ink-muted);
+    line-height: 1.6;
+  }
+
+  .pg-milestone-body :global(ul) {
+    padding-left: 1.25rem;
+    margin-top: 0.5rem;
+  }
+
+  .pg-milestone-body :global(li) {
+    margin-bottom: 0.35rem;
+  }
+</style>

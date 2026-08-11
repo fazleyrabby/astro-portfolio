@@ -1,0 +1,197 @@
+---
+const skillsGroups = [
+  {
+    category: "Backend & Systems",
+    color: "var(--pg-terracotta)",
+    items: ["Laravel", "PHP 8.x", "REST APIs", "Livewire", "Queue Workers", "Event-Driven Architecture"]
+  },
+  {
+    category: "Databases & Analytics",
+    color: "var(--pg-mustard)",
+    items: ["MySQL", "ClickHouse", "Redis", "SQLite", "Read Replicas", "Query Optimization"]
+  },
+  {
+    category: "Infrastructure & DevOps",
+    color: "var(--pg-forest)",
+    items: ["Docker", "Linux (Ubuntu)", "Nginx", "VPS Hardening", "GitHub Actions"]
+  },
+  {
+    category: "Security & Integrations",
+    color: "var(--pg-navy)",
+    items: ["Fraud Engines", "PayPal API", "Checkout.com", "Stripe", "Webhooks", "Local LLMs / Groq"]
+  }
+];
+---
+
+<section id="skills" class="pg-skills">
+  <!-- Flow Connection Line -->
+  <div class="pg-flow-line">
+    <svg viewBox="0 0 1200 48" preserveAspectRatio="none">
+      <path d="M0,24 Q600,0 1200,24" />
+    </svg>
+  </div>
+
+  <div class="pg-skills-container">
+
+    <div class="pg-skills-header">
+      <span class="pg-section-kicker">✦ MAGNETIC TECHNOLOGY UNIVERSE</span>
+      <h2 class="pg-skills-title">Capabilities & Ecosystem</h2>
+      <p class="pg-skills-subtitle">Hover and explore the magnetic stack nodes. Every technology is interactive.</p>
+    </div>
+
+    <!-- Interactive Magnetic Constellation -->
+    <div class="pg-constellation-universe">
+      {skillsGroups.map((group, groupIdx) => (
+        <div class="pg-constellation-cluster">
+          <div class="pg-cluster-header">
+            <span class="pg-cluster-dot" style={`background: ${group.color};`}></span>
+            <h3 class="pg-cluster-name">{group.category}</h3>
+          </div>
+
+          <div class="pg-cluster-nodes">
+            {group.items.map((tech) => (
+              <div
+                class="pg-sticker pg-magnetic pg-tech-node"
+                data-cursor="PULL"
+                style={`--node-color: ${group.color};`}
+              >
+                <span class="pg-node-icon">◆</span>
+                <span class="pg-node-label">{tech}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .pg-skills {
+    padding: 3rem 1.5rem 6rem;
+    background: var(--pg-bg);
+    border-bottom: 2px dashed var(--pg-border);
+  }
+
+  .pg-skills-container {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .pg-skills-header {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto 3.5rem;
+  }
+
+  .pg-section-kicker {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--pg-terracotta);
+    text-transform: uppercase;
+  }
+
+  .pg-skills-title {
+    font-family: var(--font-display, serif);
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    font-weight: 700;
+    color: var(--pg-ink);
+    margin: 0.25rem 0 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .pg-skills-subtitle {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.9375rem;
+    color: var(--pg-ink-muted);
+    margin: 0;
+  }
+
+  /* Constellation Layout */
+  .pg-constellation-universe {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .pg-constellation-universe {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .pg-constellation-cluster {
+    background: var(--pg-surface);
+    border: 2px solid var(--pg-ink);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 6px 6px 0px var(--pg-ink);
+    transition: transform 0.25s var(--pg-ease-out);
+  }
+
+  .pg-constellation-cluster:hover {
+    transform: translateY(-2px);
+  }
+
+  .pg-cluster-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1.5px dashed var(--pg-border);
+  }
+
+  .pg-cluster-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .pg-cluster-name {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--pg-ink);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .pg-cluster-nodes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .pg-tech-node {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.85rem;
+    background: var(--pg-bg);
+    border: 1.5px solid var(--pg-ink);
+    border-radius: 999px;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--pg-ink);
+    cursor: pointer;
+    box-shadow: 2px 2px 0px var(--pg-ink);
+    transition: box-shadow 0.2s ease, background-color 0.2s ease;
+  }
+
+  .pg-tech-node:hover {
+    background: var(--node-color, var(--pg-mustard));
+    color: #FFFFFF;
+    box-shadow: 4px 4px 0px var(--pg-ink);
+  }
+
+  .pg-node-icon {
+    font-size: 0.65rem;
+    opacity: 0.7;
+  }
+</style>

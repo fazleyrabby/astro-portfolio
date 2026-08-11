@@ -1,0 +1,183 @@
+/* ==========================================================================
+   FAZLEY RABBI — INTERACTIVE DIGITAL PLAYGROUND STYLESHEET
+   Impeccable craft, anti-slop, tactile physical web experience.
+   ========================================================================== */
+
+:root {
+  /* Curated Color System */
+  --pg-bg: #F6F4EF;
+  --pg-bg-dark: #121211;
+  --pg-surface: #FFFFFF;
+  --pg-surface-dark: #1A1A18;
+  --pg-ink: #191816;
+  --pg-ink-muted: #6E6C66;
+  --pg-ink-inverse: #F6F4EF;
+
+  /* Expressive Tactile Accents */
+  --pg-terracotta: #E05638;
+  --pg-mustard: #E5A93C;
+  --pg-forest: #3E7253;
+  --pg-navy: #2A4365;
+  --pg-plum: #7C3AED;
+  --pg-border: rgba(25, 24, 22, 0.12);
+  --pg-border-dark: rgba(246, 244, 239, 0.14);
+
+  /* Physics & Transitions */
+  --pg-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --pg-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --pg-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Background Grain Overlay */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+:global(.dark) .grain-overlay {
+  opacity: 0.055;
+}
+
+/* Custom Interactive Cursor (Desktop) */
+@media (pointer: fine) {
+  body.has-custom-cursor,
+  body.has-custom-cursor a,
+  body.has-custom-cursor button,
+  body.has-custom-cursor input {
+    cursor: none !important;
+  }
+}
+
+#pg-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--pg-terracotta);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 0.18s var(--pg-ease-out), background-color 0.2s ease, width 0.25s var(--pg-ease-out), height 0.25s var(--pg-ease-out), border-radius 0.25s ease;
+  mix-blend-mode: difference;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(224, 86, 56, 0.3);
+}
+
+#pg-cursor.is-hovering {
+  transform: translate(-50%, -50%) scale(2.4);
+  background: var(--pg-mustard);
+}
+
+#pg-cursor.is-dragging {
+  transform: translate(-50%, -50%) scale(1.8) rotate(45deg);
+  background: var(--pg-forest);
+  border-radius: 4px;
+}
+
+#pg-cursor.is-easter {
+  transform: translate(-50%, -50%) scale(3.2);
+  background: var(--pg-plum);
+}
+
+.pg-cursor-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 6px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+#pg-cursor.is-hovering .pg-cursor-label,
+#pg-cursor.is-dragging .pg-cursor-label,
+#pg-cursor.is-easter .pg-cursor-label {
+  opacity: 1;
+}
+
+/* Continuous Section Connection Lines */
+.pg-flow-line {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.pg-flow-line svg {
+  width: 100%;
+  height: 100%;
+  stroke: var(--pg-border);
+  fill: none;
+  stroke-dasharray: 6 6;
+  animation: flowDash 20s linear infinite;
+}
+
+@keyframes flowDash {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+/* Tactile Badge / Sticker Base */
+.pg-sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: var(--pg-surface);
+  border: 1.5px solid var(--pg-ink);
+  box-shadow: 3px 3px 0px var(--pg-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--pg-ink);
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.2s var(--pg-ease-bounce), box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.pg-sticker:hover {
+  transform: translateY(-2px) rotate(-1.5deg) scale(1.04);
+  box-shadow: 5px 5px 0px var(--pg-ink);
+  background: var(--pg-mustard);
+}
+
+.pg-sticker:active {
+  cursor: grabbing;
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 1px 1px 0px var(--pg-ink);
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  #pg-cursor {
+    display: none !important;
+  }
+  body.has-custom-cursor {
+    cursor: auto !important;
+  }
+}

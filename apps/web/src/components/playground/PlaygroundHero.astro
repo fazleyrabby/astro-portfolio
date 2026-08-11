@@ -1,0 +1,390 @@
+---
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
+---
+
+<section id="hero" class="pg-hero">
+  <div class="pg-hero-container">
+
+    <!-- Interactive Draggable / Tiltable Ambient Stickers -->
+    <div class="pg-hero-stickers-layer">
+      <div class="pg-sticker pg-draggable" style="top: 12%; left: 8%; transform: rotate(-6deg);" data-cursor="DRAG ME">
+        <span>⚡</span> Laravel & PHP Specialist
+      </div>
+
+      <div class="pg-sticker pg-draggable" style="top: 22%; right: 10%; transform: rotate(5deg);" data-cursor="DRAG ME">
+        <span>🛠️</span> System Architecture
+      </div>
+
+      <div class="pg-sticker pg-draggable" style="bottom: 18%; left: 5%; transform: rotate(3deg);" data-cursor="DRAG ME">
+        <span>🎯</span> 5+ Years Backend Exp
+      </div>
+
+      <!-- Easter Egg Clicker Sticker -->
+      <div id="pg-easter-clicker" class="pg-sticker pg-easter-click" style="bottom: 15%; right: 8%; transform: rotate(-4deg);" data-cursor="SECRET">
+        <span>✦</span> <span class="pg-click-label">Click me 5 times</span>
+        <span class="pg-secret-reveal hidden">🎉 YOU UNLOCKED THE SECRET!</span>
+      </div>
+    </div>
+
+    <div class="pg-hero-grid">
+      <!-- Content Specimen -->
+      <div class="pg-hero-content">
+        <div class="pg-status-pill">
+          <span class="pg-status-dot"></span>
+          <span>{t("hero.available") || "Available for freelance & collaboration"}</span>
+        </div>
+
+        <h1 class="pg-hero-name">
+          {t("hero.name") || "Md. Fazley Rabbi"}
+        </h1>
+
+        <div class="pg-hero-role-bar">
+          <span class="pg-role-tag">Backend Engineer</span>
+          <span class="pg-role-divider">/</span>
+          <span class="pg-role-loc">Bangladesh</span>
+        </div>
+
+        <p class="pg-hero-intro">
+          {t("hero.tagline") || "Building resilient backend systems, payment gateways, and event-driven architectures."}
+        </p>
+
+        <p class="pg-hero-body">
+          {t("hero.body") || "Specialized in PHP 8.x, Laravel, MySQL/ClickHouse datastores, Redis caching, and high-performance server APIs."}
+        </p>
+
+        <!-- Current Focus Badges -->
+        <div class="pg-focus-cluster">
+          <span class="pg-focus-head">Current Focus:</span>
+          <div class="pg-focus-tags">
+            {("Distributed Systems, Payment Infra, Cloud Infrastructure, AI Workflows")
+              .split(",")
+              .map((tag) => <span class="pg-magnetic pg-focus-chip">{tag.trim()}</span>)}
+          </div>
+        </div>
+
+        <!-- Action CTAs -->
+        <div class="pg-hero-actions">
+          <a href={tp("/resume/")} class="pg-btn pg-btn-primary" data-cursor="RESUME">
+            {t("nav.resume") || "Resume"}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+
+          <a href="#projects" class="pg-btn pg-btn-secondary" data-cursor="PROJECTS">
+            {t("hero.viewProjects") || "View Projects"}
+          </a>
+        </div>
+
+        <!-- Social Channels -->
+        <div class="pg-hero-socials">
+          <a href="https://github.com/fazleyrabby" target="_blank" rel="noopener noreferrer" data-cursor="GITHUB">GitHub</a>
+          <span>·</span>
+          <a href="https://www.linkedin.com/in/fazley-rabby/" target="_blank" rel="noopener noreferrer" data-cursor="LINKEDIN">LinkedIn</a>
+          <span>·</span>
+          <a href="https://x.com/fazley111" target="_blank" rel="noopener noreferrer" data-cursor="TWITTER">Twitter</a>
+        </div>
+      </div>
+
+      <!-- Interactive Portrait Frame -->
+      <div class="pg-hero-portrait-wrap">
+        <div class="pg-portrait-card">
+          <div class="pg-portrait-frame">
+            <img src="/me.webp" alt="Fazley Rabbi" class="pg-portrait-img" width="480" height="480" loading="eager" />
+            <img src="/me-hero-reveal.jpg" alt="Fazley Rabbi Revealer" class="pg-portrait-reveal" width="480" height="480" loading="eager" />
+          </div>
+          <div class="pg-portrait-caption">
+            <span class="pg-caption-dot"></span>
+            <span>Fazley Rabbi — Interactive Specimen</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .pg-hero {
+    position: relative;
+    padding: clamp(6.5rem, 14vh, 10rem) 1.5rem clamp(4rem, 8vh, 6rem);
+    background: var(--pg-bg);
+    overflow: hidden;
+    border-bottom: 2px dashed var(--pg-border);
+  }
+
+  .pg-hero-container {
+    max-width: 1120px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .pg-hero-stickers-layer {
+    position: absolute;
+    inset: -20px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .pg-hero-stickers-layer > * {
+    position: absolute;
+    pointer-events: auto;
+  }
+
+  @media (max-width: 900px) {
+    .pg-hero-stickers-layer { display: none; }
+  }
+
+  .pg-hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: clamp(2.5rem, 6vw, 4.5rem);
+    align-items: center;
+  }
+
+  @media (max-width: 860px) {
+    .pg-hero-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Status Pill */
+  .pg-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--pg-forest) 12%, transparent);
+    border: 1px solid var(--pg-forest);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--pg-forest);
+    margin-bottom: 1.25rem;
+  }
+
+  .pg-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--pg-forest);
+    box-shadow: 0 0 8px var(--pg-forest);
+    animation: statusPulse 2s infinite;
+  }
+
+  @keyframes statusPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.6; }
+  }
+
+  .pg-hero-name {
+    font-family: var(--font-display, serif);
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    font-weight: 700;
+    color: var(--pg-ink);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.75rem;
+  }
+
+  .pg-hero-role-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--pg-terracotta);
+    margin-bottom: 1.25rem;
+  }
+
+  .pg-hero-intro {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--pg-ink);
+    line-height: 1.5;
+    margin: 0 0 0.85rem;
+    max-width: 540px;
+  }
+
+  .pg-hero-body {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.9375rem;
+    color: var(--pg-ink-muted);
+    line-height: 1.6;
+    margin: 0 0 1.75rem;
+    max-width: 520px;
+  }
+
+  /* Focus Cluster */
+  .pg-focus-cluster {
+    margin-bottom: 1.75rem;
+  }
+
+  .pg-focus-head {
+    display: block;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--pg-ink-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .pg-focus-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .pg-focus-chip {
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    background: var(--pg-surface);
+    border: 1px solid var(--pg-border);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    color: var(--pg-ink);
+    cursor: default;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .pg-focus-chip:hover {
+    border-color: var(--pg-terracotta);
+    color: var(--pg-terracotta);
+  }
+
+  /* Actions */
+  .pg-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .pg-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.4rem;
+    border-radius: 999px;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s var(--pg-ease-bounce), box-shadow 0.2s ease;
+  }
+
+  .pg-btn-primary {
+    background: var(--pg-ink);
+    color: var(--pg-ink-inverse);
+    border: 2px solid var(--pg-ink);
+    box-shadow: 3px 3px 0px var(--pg-terracotta);
+  }
+
+  .pg-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 5px 5px 0px var(--pg-terracotta);
+  }
+
+  .pg-btn-secondary {
+    background: var(--pg-surface);
+    color: var(--pg-ink);
+    border: 2px solid var(--pg-ink);
+    box-shadow: 3px 3px 0px var(--pg-ink);
+  }
+
+  .pg-btn-secondary:hover {
+    transform: translateY(-2px);
+    background: var(--pg-mustard);
+  }
+
+  /* Socials */
+  .pg-hero-socials {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.8125rem;
+    color: var(--pg-ink-muted);
+  }
+
+  .pg-hero-socials a {
+    color: var(--pg-ink-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .pg-hero-socials a:hover {
+    color: var(--pg-terracotta);
+  }
+
+  /* Portrait Card Specimen */
+  .pg-portrait-card {
+    padding: 0.75rem;
+    background: var(--pg-surface);
+    border: 2px solid var(--pg-ink);
+    border-radius: 20px;
+    box-shadow: 8px 8px 0px var(--pg-ink);
+    transition: transform 0.3s var(--pg-ease-out);
+  }
+
+  .pg-portrait-card:hover {
+    transform: rotate(1deg) scale(1.02);
+  }
+
+  .pg-portrait-frame {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid var(--pg-ink);
+  }
+
+  .pg-portrait-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.8) contrast(1.1);
+    transition: filter 0.4s ease;
+  }
+
+  .pg-portrait-card:hover .pg-portrait-img {
+    filter: grayscale(0) contrast(1);
+  }
+
+  .pg-portrait-reveal {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .pg-portrait-card:hover .pg-portrait-reveal {
+    opacity: 0.4;
+  }
+
+  .pg-portrait-caption {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 0.65rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    color: var(--pg-ink-muted);
+  }
+
+  .pg-caption-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--pg-terracotta);
+  }
+</style>

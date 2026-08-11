@@ -1,0 +1,347 @@
+---
+import { getCollection } from "astro:content";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
+
+const all = await getCollection("projects");
+const projects = all
+  .filter((p) => (p.data.lang || "en") === lang && !p.data.hidden)
+  .sort((a, b) => (a.data.position || 0) - (b.data.position || 0))
+  .slice(0, 4);
+
+const layoutSpecimens = ["specimen-floating", "specimen-horizontal", "specimen-layered", "specimen-badge"];
+---
+
+<section id="projects" class="pg-projects">
+  <!-- Visual Section Connector Flow Line -->
+  <div class="pg-flow-line">
+    <svg viewBox="0 0 1200 48" preserveAspectRatio="none">
+      <path d="M0,24 Q300,48 600,24 T1200,24" />
+    </svg>
+  </div>
+
+  <div class="pg-projects-container">
+
+    <!-- Section Header -->
+    <div class="pg-projects-header">
+      <div>
+        <span class="pg-section-kicker">✦ SELECTED WORK SPECIMENS</span>
+        <h2 class="pg-projects-title">{t("projects.title") || "Featured Projects"}</h2>
+      </div>
+      <a href={tp("/projects/")} class="pg-view-all-btn" data-cursor="ALL WORK">
+        {t("projects.viewAll") || "View All Projects"}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <!-- Asymmetrical Specimen Layout -->
+    <div class="pg-specimens-collection">
+      {projects.map((project, index) => {
+        const { title, description, type, status, problem, impact, thumbnail } = project.data;
+        const baseSlug = project.slug.replace(/-bn$/, "");
+        const hasCase = !!(problem || (project.data.highlights && project.data.highlights.length));
+        const href = hasCase ? tp(`/projects/${baseSlug}`) : (project.data.live || project.data.github || "#");
+        const specimenType = layoutSpecimens[index % layoutSpecimens.length];
+
+        return (
+          <div class:list={["pg-project-specimen", specimenType]}>
+            <div class="pg-specimen-badge-label">
+              SPECIMEN 0{index + 1} // {type?.toUpperCase() || "BACKEND"}
+            </div>
+
+            <div class="pg-specimen-grid">
+              {/* Visual Media Frame */}
+              <div class="pg-specimen-media">
+                {thumbnail ? (
+                  <a href={href} class="pg-media-frame" data-cursor="VIEW">
+                    <img src={thumbnail} alt={title} loading="lazy" width="600" height="338" />
+                  </a>
+                ) : (
+                  <div class="pg-media-placeholder">
+                    <span>{title}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Specimen Detail Sheet */}
+              <div class="pg-specimen-info">
+                <div class="pg-specimen-head">
+                  <h3 class="pg-specimen-title">
+                    <a href={href} data-cursor="EXPLORE">{title}</a>
+                  </h3>
+                  <span class="pg-status-tag">{status || "Active"}</span>
+                </div>
+
+                <p class="pg-specimen-desc">{description}</p>
+
+                {problem && (
+                  <div class="pg-specimen-callout">
+                    <span class="pg-callout-tag">CHALLENGE:</span>
+                    <p>{problem}</p>
+                  </div>
+                )}
+
+                {impact && (
+                  <div class="pg-specimen-callout pg-outcome">
+                    <span class="pg-callout-tag">OUTCOME:</span>
+                    <p>{impact}</p>
+                  </div>
+                )}
+
+                <div class="pg-specimen-footer">
+                  <a href={href} class="pg-specimen-link" data-cursor="CASE STUDY">
+                    Explore Project Specimen
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .pg-projects {
+    padding: 3rem 1.5rem 6rem;
+    background: var(--pg-bg);
+    border-bottom: 2px dashed var(--pg-border);
+  }
+
+  .pg-projects-container {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .pg-projects-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 3.5rem;
+    gap: 1.5rem;
+  }
+
+  .pg-section-kicker {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--pg-terracotta);
+    text-transform: uppercase;
+  }
+
+  .pg-projects-title {
+    font-family: var(--font-display, serif);
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    font-weight: 700;
+    color: var(--pg-ink);
+    margin: 0.25rem 0 0;
+    letter-spacing: -0.02em;
+  }
+
+  .pg-view-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--pg-ink);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1.5px solid var(--pg-ink);
+    border-radius: 999px;
+    background: var(--pg-surface);
+    box-shadow: 3px 3px 0px var(--pg-ink);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .pg-view-all-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0px var(--pg-terracotta);
+  }
+
+  /* Asymmetrical Collection */
+  .pg-specimens-collection {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .pg-project-specimen {
+    background: var(--pg-surface);
+    border: 2px solid var(--pg-ink);
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: 6px 6px 0px var(--pg-ink);
+    position: relative;
+    transition: transform 0.3s var(--pg-ease-out), box-shadow 0.3s ease;
+  }
+
+  .pg-project-specimen:hover {
+    transform: translateY(-3px);
+    box-shadow: 10px 10px 0px var(--pg-ink);
+  }
+
+  .pg-specimen-badge-label {
+    position: absolute;
+    top: -14px;
+    left: 1.5rem;
+    background: var(--pg-mustard);
+    border: 1.5px solid var(--pg-ink);
+    padding: 0.2rem 0.65rem;
+    border-radius: 6px;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--pg-ink);
+  }
+
+  .pg-specimen-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 2.25rem;
+    align-items: center;
+    padding-top: 0.5rem;
+  }
+
+  @media (max-width: 860px) {
+    .pg-specimen-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Specimen Visual Variations */
+  .specimen-floating { transform: rotate(-0.5deg); }
+  .specimen-horizontal { transform: rotate(0.5deg); }
+  .specimen-layered { transform: rotate(-0.2deg); }
+  .specimen-badge { transform: rotate(0.4deg); }
+
+  .pg-media-frame {
+    display: block;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid var(--pg-ink);
+  }
+
+  .pg-media-frame img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .pg-media-frame:hover img {
+    transform: scale(1.03);
+  }
+
+  .pg-media-placeholder {
+    aspect-ratio: 16/9;
+    border-radius: 12px;
+    border: 1.5px dashed var(--pg-ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--pg-bg);
+    font-family: var(--font-mono, monospace);
+    font-weight: 700;
+    color: var(--pg-ink-muted);
+  }
+
+  .pg-specimen-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .pg-specimen-title {
+    font-family: var(--font-display, serif);
+    font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .pg-specimen-title a {
+    color: var(--pg-ink);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .pg-specimen-title a:hover {
+    color: var(--pg-terracotta);
+  }
+
+  .pg-status-tag {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--pg-forest);
+    padding: 0.2rem 0.5rem;
+    background: color-mix(in srgb, var(--pg-forest) 12%, transparent);
+    border-radius: 4px;
+  }
+
+  .pg-specimen-desc {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.9375rem;
+    color: var(--pg-ink-muted);
+    line-height: 1.55;
+    margin: 0 0 1rem;
+  }
+
+  .pg-specimen-callout {
+    margin-bottom: 0.65rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--pg-bg);
+    border-left: 3px solid var(--pg-terracotta);
+    border-radius: 0 6px 6px 0;
+  }
+
+  .pg-specimen-callout.pg-outcome {
+    border-left-color: var(--pg-forest);
+  }
+
+  .pg-callout-tag {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.625rem;
+    font-weight: 700;
+    color: var(--pg-ink);
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+
+  .pg-specimen-callout p {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.8125rem;
+    color: var(--pg-ink);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .pg-specimen-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--pg-terracotta);
+    text-decoration: none;
+    margin-top: 0.75rem;
+    transition: transform 0.2s ease;
+  }
+
+  .pg-specimen-link:hover {
+    transform: translateX(4px);
+  }
+</style>

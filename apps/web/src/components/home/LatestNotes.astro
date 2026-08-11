@@ -50,8 +50,7 @@ const posts = await getLatestPosts(lang, 6);
 
 <style>
   .notes-editorial {
-    padding: var(--space-section) 0;
-    border-bottom: 1px solid var(--border);
+    padding: var(--space-section) 0 clamp(2.5rem, 5vh, 4rem);
   }
 
   .notes-container {
@@ -119,6 +118,9 @@ const posts = await getLatestPosts(lang, 6);
   }
   .note-item:first-child {
     border-top: 1px solid var(--border);
+  }
+  .note-item:last-child {
+    border-bottom: none;
   }
   .note-item:hover {
     padding-left: 0.5rem;

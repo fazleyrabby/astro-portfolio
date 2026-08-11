@@ -1,0 +1,191 @@
+---
+import { getCollection } from "astro:content";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
+
+let posts: any[] = [];
+try {
+  const allPosts = await getCollection("blog");
+  posts = allPosts
+    .filter((p) => !p.data.draft)
+    .sort((a, b) => new Date(b.data.pubDate || 0).getTime() - new Date(a.data.pubDate || 0).getTime())
+    .slice(0, 3);
+} catch (e) {
+  posts = [];
+}
+---
+
+<section id="writing" class="pg-writing">
+  <!-- Flow Line -->
+  <div class="pg-flow-line">
+    <svg viewBox="0 0 1200 48" preserveAspectRatio="none">
+      <path d="M0,24 Q600,48 1200,0" />
+    </svg>
+  </div>
+
+  <div class="pg-writing-container">
+
+    <div class="pg-writing-header">
+      <div>
+        <span class="pg-section-kicker">✦ PINNED NOTES & ARTICLES</span>
+        <h2 class="pg-writing-title">{t("nav.blog") || "Writing & Field Notes"}</h2>
+      </div>
+
+      <a href={tp("/posts/")} class="pg-view-all-btn" data-cursor="ALL POSTS">
+        View All Writing
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <!-- Tactile Pinned Notes Wall -->
+    <div class="pg-notes-wall">
+      {posts.length > 0 ? (
+        posts.map((post, idx) => (
+          <article class="pg-paper-note" style={`transform: rotate(${(idx % 2 === 0 ? -1.5 : 1.5)}deg);`}>
+            <div class="pg-pin-icon">📌</div>
+            <div class="pg-note-date">
+              {post.data.pubDate ? new Date(post.data.pubDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Recent Note"}
+            </div>
+            <h3 class="pg-note-title">
+              <a href={tp(`/posts/${post.slug}`)} data-cursor="READ">{post.data.title}</a>
+            </h3>
+            <p class="pg-note-excerpt">{post.data.description}</p>
+            <a href={tp(`/posts/${post.slug}`)} class="pg-note-read-link" data-cursor="READ">Read Field Note →</a>
+          </article>
+        ))
+      ) : (
+        <div class="pg-paper-note" style="transform: rotate(-1deg); grid-column: span 3;">
+          <div class="pg-pin-icon">📌</div>
+          <h3 class="pg-note-title">Engineering Field Notes</h3>
+          <p class="pg-note-excerpt">Technical deep dives on Laravel architecture, high throughput database optimization, and cloud infrastructure.</p>
+          <a href={tp("/posts/")} class="pg-note-read-link">Browse Article Index →</a>
+        </div>
+      )}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .pg-writing {
+    padding: 3rem 1.5rem 6rem;
+    background: var(--pg-bg);
+    border-bottom: 2px dashed var(--pg-border);
+  }
+
+  .pg-writing-container {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .pg-writing-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 3.5rem;
+    gap: 1.5rem;
+  }
+
+  .pg-section-kicker {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--pg-terracotta);
+    text-transform: uppercase;
+  }
+
+  .pg-writing-title {
+    font-family: var(--font-display, serif);
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    font-weight: 700;
+    color: var(--pg-ink);
+    margin: 0.25rem 0 0;
+    letter-spacing: -0.02em;
+  }
+
+  /* Pinned Notes Wall */
+  .pg-notes-wall {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  @media (max-width: 860px) {
+    .pg-notes-wall {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .pg-paper-note {
+    background: var(--pg-surface);
+    border: 2px solid var(--pg-ink);
+    border-radius: 12px;
+    padding: 1.75rem;
+    box-shadow: 5px 5px 0px var(--pg-ink);
+    position: relative;
+    transition: transform 0.25s var(--pg-ease-out), box-shadow 0.25s ease;
+  }
+
+  .pg-paper-note:hover {
+    transform: translateY(-4px) rotate(0deg) scale(1.02) !important;
+    box-shadow: 8px 8px 0px var(--pg-mustard);
+  }
+
+  .pg-pin-icon {
+    position: absolute;
+    top: -12px;
+    right: 1.25rem;
+    font-size: 1.25rem;
+  }
+
+  .pg-note-date {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--pg-terracotta);
+    margin-bottom: 0.5rem;
+  }
+
+  .pg-note-title {
+    font-family: var(--font-display, serif);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    line-height: 1.25;
+  }
+
+  .pg-note-title a {
+    color: var(--pg-ink);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .pg-note-title a:hover {
+    color: var(--pg-terracotta);
+  }
+
+  .pg-note-excerpt {
+    font-family: var(--font-sans, sans-serif);
+    font-size: 0.875rem;
+    color: var(--pg-ink-muted);
+    line-height: 1.5;
+    margin: 0 0 1.25rem;
+  }
+
+  .pg-note-read-link {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--pg-ink);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .pg-note-read-link:hover {
+    color: var(--pg-terracotta);
+  }
+</style>

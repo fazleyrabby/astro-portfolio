@@ -2,19 +2,47 @@
 const skillsMatrix = [
   {
     category: "Backend & Systems",
-    items: ["Laravel", "PHP 8.x", "REST APIs", "Livewire", "Queue Workers", "Event-Driven Architecture"]
+    items: [
+      { name: "Laravel", isPrimary: true },
+      { name: "PHP 8.x", isPrimary: true },
+      { name: "REST APIs", isPrimary: false },
+      { name: "Livewire", isPrimary: false },
+      { name: "Queue Workers", isPrimary: false },
+      { name: "Event-Driven Architecture", isPrimary: true }
+    ]
   },
   {
     category: "Databases & Analytics",
-    items: ["MySQL", "ClickHouse", "Redis", "SQLite", "Read Replicas", "Query Optimization"]
+    items: [
+      { name: "MySQL", isPrimary: true },
+      { name: "ClickHouse", isPrimary: true },
+      { name: "Redis", isPrimary: true },
+      { name: "SQLite", isPrimary: false },
+      { name: "Read Replicas", isPrimary: false },
+      { name: "Query Optimization", isPrimary: true }
+    ]
   },
   {
     category: "Infrastructure & DevOps",
-    items: ["Docker", "Docker Compose", "Linux (Ubuntu)", "Nginx", "VPS Hardening", "GitHub Actions"]
+    items: [
+      { name: "Docker", isPrimary: true },
+      { name: "Docker Compose", isPrimary: false },
+      { name: "Linux (Ubuntu)", isPrimary: true },
+      { name: "Nginx", isPrimary: false },
+      { name: "VPS Hardening", isPrimary: false },
+      { name: "GitHub Actions", isPrimary: false }
+    ]
   },
   {
     category: "Security & Integrations",
-    items: ["Fraud Engines", "PayPal API", "Checkout.com", "Stripe", "Webhooks", "Local LLMs / Groq"]
+    items: [
+      { name: "Fraud Engines", isPrimary: true },
+      { name: "PayPal API", isPrimary: false },
+      { name: "Checkout.com", isPrimary: false },
+      { name: "Stripe", isPrimary: true },
+      { name: "Webhooks", isPrimary: true },
+      { name: "Local LLMs / Groq", isPrimary: false }
+    ]
   }
 ];
 ---
@@ -35,14 +63,22 @@ const skillsMatrix = [
         </p>
       </div>
 
-      <!-- Right: Clean Minimal Matrix -->
+      <!-- Right: Enhanced Matrix without dots -->
       <div class="skills-matrix reveal">
         {skillsMatrix.map((group) => (
           <div class="matrix-group">
-            <h3 class="group-title">{group.category}</h3>
+            <h3 class="group-title">
+              <span>{group.category}</span>
+              <span class="group-count">0{group.items.length}</span>
+            </h3>
             <div class="group-tags">
               {group.items.map((item) => (
-                <span class="matrix-tag">{item}</span>
+                <span
+                  class:list={["matrix-tag", { "matrix-tag--primary": item.isPrimary }]}
+                  data-primary={item.isPrimary ? "true" : "false"}
+                >
+                  {item.name}
+                </span>
               ))}
             </div>
           </div>
@@ -52,6 +88,29 @@ const skillsMatrix = [
 
   </div>
 </section>
+
+<script>
+  function initSkillsInteraction() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const tags = document.querySelectorAll<HTMLElement>("#skills .matrix-tag");
+    tags.forEach((tag) => {
+      tag.addEventListener("mousemove", (e: MouseEvent) => {
+        const rect = tag.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        tag.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px) scale(1.05)`;
+      });
+
+      tag.addEventListener("mouseleave", () => {
+        tag.style.transform = "translate(0px, 0px) scale(1)";
+      });
+    });
+  }
+
+  initSkillsInteraction();
+  document.addEventListener("astro:page-load", initSkillsInteraction);
+</script>
 
 <style>
   .skills-editorial {
@@ -121,6 +180,7 @@ const skillsMatrix = [
   .matrix-group {
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border);
+    transition: opacity 0.3s ease;
   }
 
   .matrix-group:last-child {
@@ -128,7 +188,17 @@ const skillsMatrix = [
     border-bottom: none;
   }
 
+  .skills-matrix:hover .matrix-group {
+    opacity: 0.55;
+  }
+  .skills-matrix:hover .matrix-group:hover {
+    opacity: 1;
+  }
+
   .group-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     font-family: var(--font-mono);
     font-size: 0.8125rem;
     font-weight: 600;
@@ -138,6 +208,13 @@ const skillsMatrix = [
     margin: 0 0 0.875rem;
   }
 
+  .group-count {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    opacity: 0.7;
+  }
+
   .group-tags {
     display: flex;
     flex-wrap: wrap;
@@ -145,18 +222,33 @@ const skillsMatrix = [
   }
 
   .matrix-tag {
+    display: inline-flex;
+    align-items: center;
     font-family: var(--font-mono);
     font-size: 0.8125rem;
-    padding: 0.35rem 0.75rem;
+    padding: 0.38rem 0.8rem;
     border-radius: var(--radius);
     background: var(--bg-card);
     color: var(--text-secondary);
     border: 1px solid var(--border);
-    transition: all 0.2s ease;
+    cursor: default;
+    user-select: none;
+    transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .matrix-tag--primary {
+    color: var(--text-primary);
+    font-weight: 500;
+    border-color: color-mix(in srgb, var(--text-primary) 22%, var(--border));
+    background: color-mix(in srgb, var(--text-primary) 3%, var(--bg-card));
   }
 
   .matrix-tag:hover {
-    color: var(--accent);
-    border-color: var(--accent);
+    color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    background: color-mix(in srgb, var(--accent) 8%, var(--bg-card));
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--accent) 15%, transparent);
   }
 </style>
+
+

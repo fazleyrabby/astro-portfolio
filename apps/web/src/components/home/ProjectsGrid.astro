@@ -31,10 +31,10 @@ const localized = all
     <!-- Project Sticky Card Stack -->
     <div class="projects-stack">
       {localized.map((project, index) => {
-        const { title, description, type, status, problem, impact, thumbnail } = project.data;
+        const { title, description, type, status, problem, impact, thumbnail, tech, live, github } = project.data;
         const baseSlug = project.slug.replace(/-bn$/, "");
         const hasCase = !!(problem || (project.data.highlights && project.data.highlights.length));
-        const href = hasCase ? tp(`/projects/${baseSlug}`) : (project.data.live || project.data.github || "#");
+        const href = hasCase ? tp(`/projects/${baseSlug}`) : (live || github || "#");
         const isEven = index % 2 === 1;
 
         return (
@@ -43,7 +43,7 @@ const localized = all
             style={`--card-index: ${index};`}
           >
             <article class:list={["project-card", { "project-card--reversed": isEven }]}>
-              {/* Thumbnail */}
+              {/* Thumbnail with Live Overlay */}
               <div class="project-thumbnail">
                 {thumbnail ? (
                   <a href={href} class="project-thumbnail-link">
@@ -54,6 +54,9 @@ const localized = all
                       width="600"
                       height="338"
                     />
+                    <span class="project-thumbnail-overlay">
+                      <span>View Case Study ↗</span>
+                    </span>
                   </a>
                 ) : (
                   <div class="project-thumbnail-placeholder">
@@ -78,6 +81,16 @@ const localized = all
 
                 <p class="project-desc">{description}</p>
 
+                {/* Tech Stack Tags */}
+                {tech && tech.length > 0 && (
+                  <div class="project-tech-tags">
+                    {tech.slice(0, 5).map((tItem) => (
+                      <span class="project-tech-pill">{tItem}</span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Challenge Block with Amber Accent */}
                 {problem && (
                   <div class="project-challenge">
                     <span class="project-challenge-label">Challenge</span>
@@ -85,6 +98,7 @@ const localized = all
                   </div>
                 )}
 
+                {/* Outcome Block with Green/Accent Border */}
                 {impact && (
                   <div class="project-outcome">
                     <span class="project-outcome-label">Outcome</span>
@@ -92,10 +106,25 @@ const localized = all
                   </div>
                 )}
 
-                <a href={href} class="project-cta">
-                  Explore Case Study
-                  <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                </a>
+                {/* Dual CTAs */}
+                <div class="project-actions">
+                  <a href={href} class="project-cta">
+                    Explore Case Study
+                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                  </a>
+
+                  {live && (
+                    <a href={live} target="_blank" rel="noopener noreferrer" class="project-secondary-link">
+                      Live System ↗
+                    </a>
+                  )}
+
+                  {!live && github && (
+                    <a href={github} target="_blank" rel="noopener noreferrer" class="project-secondary-link">
+                      GitHub Repo ↗
+                    </a>
+                  )}
+                </div>
               </div>
             </article>
           </div>
@@ -190,7 +219,7 @@ const localized = all
       0 16px 36px -12px rgba(0, 0, 0, 0.15);
     backdrop-filter: blur(16px);
     overflow: hidden;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
+    transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
   }
 
   :global(.dark) .project-card {
@@ -201,7 +230,7 @@ const localized = all
   }
 
   .project-card:hover {
-    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
   }
 
   .project-card--reversed {
@@ -232,8 +261,9 @@ const localized = all
     }
   }
 
-  /* Thumbnail */
+  /* Thumbnail & Live Overlay */
   .project-thumbnail-link {
+    position: relative;
     display: block;
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -241,7 +271,7 @@ const localized = all
     transition: border-color 0.3s ease;
   }
   .project-thumbnail-link:hover {
-    border-color: var(--border-hover);
+    border-color: var(--accent);
   }
   .project-thumbnail-link img {
     width: 100%;
@@ -251,7 +281,37 @@ const localized = all
     transition: transform 0.5s var(--ease-out-expo);
   }
   .project-thumbnail-link:hover img {
-    transform: scale(1.02);
+    transform: scale(1.03);
+  }
+
+  .project-thumbnail-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+  .project-thumbnail-overlay span {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #FFFFFF;
+    background: var(--accent);
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(4px);
+    transition: transform 0.25s ease;
+  }
+  .project-thumbnail-link:hover .project-thumbnail-overlay {
+    opacity: 1;
+  }
+  .project-thumbnail-link:hover .project-thumbnail-overlay span {
+    transform: translateY(0);
   }
 
   .project-thumbnail-placeholder {
@@ -279,7 +339,7 @@ const localized = all
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.65rem;
   }
 
   .project-card-index {
@@ -309,7 +369,7 @@ const localized = all
     font-weight: 500;
     font-size: clamp(1.375rem, 2.5vw, 1.75rem);
     color: var(--text-primary);
-    margin: 0 0 0.75rem;
+    margin: 0 0 0.5rem;
     letter-spacing: -0.02em;
     line-height: 1.2;
   }
@@ -327,22 +387,53 @@ const localized = all
     font-size: 0.9375rem;
     color: var(--text-secondary);
     line-height: 1.6;
-    margin: 0 0 1.25rem;
+    margin: 0 0 1rem;
   }
 
-  /* Challenge/Outcome */
+  /* Tech Stack Pills */
+  .project-tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+  }
+
+  .project-tech-pill {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--text-primary) 4%, var(--bg-card));
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+
+  /* Challenge/Outcome Accent Boxes */
   .project-challenge,
   .project-outcome {
     margin-bottom: 0.75rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 0 6px 6px 0;
+    background: color-mix(in srgb, var(--text-primary) 2%, transparent);
   }
+
+  .project-challenge {
+    border-left: 3px solid color-mix(in srgb, var(--accent) 70%, #E5A93C);
+  }
+
+  .project-outcome {
+    border-left: 3px solid var(--accent);
+  }
+
   .project-challenge-label,
   .project-outcome-label {
     display: block;
     font-family: var(--font-mono);
     font-size: 0.625rem;
+    font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.2rem;
   }
   .project-challenge-label { color: var(--text-muted); }
   .project-outcome-label { color: var(--accent); }
@@ -360,6 +451,14 @@ const localized = all
     overflow: hidden;
   }
 
+  /* Dual CTAs */
+  .project-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 0.75rem;
+  }
+
   .project-cta {
     display: inline-flex;
     align-items: center;
@@ -369,10 +468,21 @@ const localized = all
     font-weight: 500;
     color: var(--accent);
     text-decoration: none;
-    margin-top: 0.75rem;
     transition: opacity 0.2s ease;
   }
   .project-cta:hover {
     opacity: 0.8;
   }
+
+  .project-secondary-link {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .project-secondary-link:hover {
+    color: var(--text-primary);
+  }
 </style>
+

@@ -206,6 +206,7 @@ const localized = all
 
   /* Project Card Container */
   .project-card {
+    position: relative;
     background: color-mix(in srgb, var(--bg-base) 96%, var(--text-primary) 4%);
     border: 1px solid var(--border);
     border-radius: var(--radius-xl, 16px);
@@ -219,7 +220,28 @@ const localized = all
       0 16px 36px -12px rgba(0, 0, 0, 0.15);
     backdrop-filter: blur(16px);
     overflow: hidden;
-    transition: border-color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+    transition: border-color 0.35s ease, background-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+  }
+
+  /* Liquid Metallic Rim Reflection on Hover */
+  .project-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(234, 88, 12, 0.4) 0%,
+      rgba(255, 255, 255, 0.35) 50%,
+      transparent 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
   }
 
   :global(.dark) .project-card {
@@ -230,7 +252,15 @@ const localized = all
   }
 
   .project-card:hover {
-    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    border-color: transparent;
+    box-shadow:
+      0 -10px 30px -8px rgba(0, 0, 0, 0.12),
+      0 24px 54px -14px rgba(0, 0, 0, 0.22),
+      0 0 20px -6px rgba(234, 88, 12, 0.2);
+  }
+
+  .project-card:hover::before {
+    opacity: 1;
   }
 
   .project-card--reversed {

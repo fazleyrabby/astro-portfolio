@@ -46,6 +46,52 @@
     border-color: var(--accent);
   }
 
+  /* Watery / Liquid Droplet Cursor (Avatar Hover) */
+  #cursor-ring.is-watery {
+    width: 72px;
+    height: 72px;
+    border: 2px solid var(--accent);
+    background: radial-gradient(
+      circle,
+      rgba(234, 88, 12, 0.16) 0%,
+      rgba(234, 88, 12, 0.04) 55%,
+      transparent 75%
+    );
+    backdrop-filter: blur(3px) contrast(1.1);
+    -webkit-backdrop-filter: blur(3px) contrast(1.1);
+    box-shadow: 0 0 24px rgba(234, 88, 12, 0.35), inset 0 0 12px rgba(234, 88, 12, 0.2);
+    border-radius: 54% 46% 42% 58% / 58% 52% 48% 42%;
+    animation: liquidDropletMorph 3.5s ease-in-out infinite alternate;
+    opacity: 1;
+  }
+
+  #cursor-dot.is-watery {
+    width: 8px;
+    height: 8px;
+    background: #ffffff;
+    box-shadow: 0 0 10px var(--accent);
+    opacity: 1;
+  }
+
+  @keyframes liquidDropletMorph {
+    0% {
+      border-radius: 54% 46% 42% 58% / 58% 52% 48% 42%;
+      transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+    33% {
+      border-radius: 65% 35% 55% 45% / 40% 60% 40% 60%;
+      transform: translate(-50%, -50%) rotate(120deg) scale(1.05);
+    }
+    66% {
+      border-radius: 40% 60% 35% 65% / 60% 40% 60% 40%;
+      transform: translate(-50%, -50%) rotate(240deg) scale(0.96);
+    }
+    100% {
+      border-radius: 58% 42% 62% 38% / 45% 55% 45% 55%;
+      transform: translate(-50%, -50%) rotate(360deg) scale(1.02);
+    }
+  }
+
   /* Magnetic button hover – ring blends into button */
   #cursor-dot.is-magnetic {
     width: 8px;
@@ -103,18 +149,32 @@
       ringY(mouseY);
     });
 
-    // ── Hover state on interactive elements ──────────────────────────────
+    // ── Hover states ──────────────────────────────────────────────────────
     const interactiveSelectors = "a, button, [role='button'], input, textarea, select, label";
+    const waterSelectors = ".hero-portrait-frame, [data-cursor='water']";
 
     document.addEventListener("mouseover", (e) => {
-      if ((e.target as HTMLElement).closest(interactiveSelectors)) {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+
+      if (target.closest(waterSelectors)) {
+        dot.classList.add("is-watery");
+        ring.classList.add("is-watery");
+      } else if (target.closest(interactiveSelectors)) {
         dot.classList.add("is-hovering");
         ring.classList.add("is-hovering");
       }
     });
 
     document.addEventListener("mouseout", (e) => {
-      if ((e.target as HTMLElement).closest(interactiveSelectors)) {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+
+      if (target.closest(waterSelectors)) {
+        dot.classList.remove("is-watery");
+        ring.classList.remove("is-watery");
+      }
+      if (target.closest(interactiveSelectors)) {
         dot.classList.remove("is-hovering");
         ring.classList.remove("is-hovering");
       }

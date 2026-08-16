@@ -138,81 +138,124 @@ const tp = useTranslatedPath(lang);
       uniform float u_time;
       uniform vec2 u_resolution;
       uniform vec2 u_mouse;
+      uniform float u_dark;
 
-      // 4x4 Bayer Matrix for high-quality subtle dither dithering
-      float dither4x4(vec2 position, float brightness) {
-        int x = int(mod(position.x, 4.0));
-        int y = int(mod(position.y, 4.0));
-        
-        float matrix[16];
-        matrix[0] = 0.0/16.0;  matrix[1] = 8.0/16.0;  matrix[2] = 2.0/16.0;  matrix[3] = 10.0/16.0;
-        matrix[4] = 12.0/16.0; matrix[5] = 4.0/16.0;  matrix[6] = 14.0/16.0; matrix[7] = 6.0/16.0;
-        matrix[8] = 3.0/16.0;  matrix[9] = 11.0/16.0; matrix[10] = 1.0/16.0; matrix[11] = 9.0/16.0;
-        matrix[12] = 15.0/16.0;matrix[13] = 7.0/16.0; matrix[14] = 13.0/16.0;matrix[15] = 5.0/16.0;
-
-        int index = y * 4 + x;
-        float threshold = 0.0;
-        for (int i = 0; i < 16; i++) {
-          if (i == index) threshold = matrix[i];
-        }
-
-        return step(threshold, brightness);
+      // 2D Rotation
+      mat2 rot(float a) {
+        float s = sin(a), c = cos(a);
+        return mat2(c, -s, s, c);
       }
 
-      // Simplex 2D noise
-      vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
-      float snoise(vec2 v){
-        const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
-        vec2 i  = floor(v + dot(v, C.yy) );
-        vec2 x0 = v -   i + dot(i, C.xx);
-        vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-        vec4 x12 = x0.xyxy + C.xxzz;
-        x12.xy -= i1;
-        i = mod(i, 289.0);
-        vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
-        vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-        m = m*m; m = m*m;
-        vec3 x = 2.0 * fract(p * C.www) - 1.0;
-        vec3 h = abs(x) - 0.5;
-        vec3 ox = floor(x + 0.5);
-        vec3 a0 = x - ox;
-        m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
-        vec3 g;
-        g.x  = a0.x  * x0.x  + h.x  * x0.y;
-        g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-        return 130.0 * dot(m, g);
+      // Hash function
+      vec2 hash2(vec2 p) {
+        p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+        return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
+      }
+
+      // Simplex-like smooth noise
+      float noise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        vec2 u = f * f * (3.0 - 2.0 * f);
+        return mix(
+          mix(dot(hash2(i + vec2(0.0, 0.0)), f - vec2(0.0, 0.0)),
+              dot(hash2(i + vec2(1.0, 0.0)), f - vec2(1.0, 0.0)), u.x),
+          mix(dot(hash2(i + vec2(0.0, 1.0)), f - vec2(0.0, 1.0)),
+              dot(hash2(i + vec2(1.0, 1.0)), f - vec2(1.0, 1.0)), u.x), u.y
+        );
+      }
+
+      // Domain-warped Fractal Brownian Motion for viscous liquid fluid
+      float liquidField(vec2 p, float t, vec2 mouse) {
+        vec2 q = vec2(0.0);
+        q.x = noise(p + vec2(t * 0.08, t * 0.05));
+        q.y = noise(p + vec2(t * 0.06, -t * 0.09));
+
+        // Subtle interactive mouse disturbance
+        vec2 mOffset = p - mouse;
+        float mDist = length(mOffset);
+        float mImpulse = exp(-mDist * 2.8) * 0.25;
+        q += vec2(sin(mDist * 6.0 - t * 1.5), cos(mDist * 6.0 - t * 1.5)) * mImpulse;
+
+        vec2 r = vec2(0.0);
+        r.x = noise(p + 1.6 * q + vec2(1.7, 9.2) + 0.08 * t);
+        r.y = noise(p + 1.6 * q + vec2(8.3, 2.8) + 0.06 * t);
+
+        float f = noise(p + 1.8 * r + vec2(t * 0.04, t * 0.03));
+        return f * 0.5 + 0.5;
       }
 
       void main() {
         vec2 st = gl_FragCoord.xy / u_resolution.xy;
         float aspect = u_resolution.x / u_resolution.y;
-        vec2 uv = st;
-        uv.x *= aspect;
+        vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
 
-        float t = u_time * 0.12;
-        vec2 mouse = u_mouse / u_resolution.xy;
+        float t = u_time * 0.2;
 
-        // Smooth wave field for continuous dither animation
-        float n1 = snoise(uv * 1.5 + vec2(t * 0.3, t * 0.15));
-        float n2 = snoise(uv * 2.5 - vec2(t * 0.2, -t * 0.4));
-        float wave = (n1 * 0.6 + n2 * 0.4) * 0.5 + 0.5;
+        // Normalized mouse in aspect space
+        vec2 mouseUV = (u_mouse - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+        mouseUV.y = -mouseUV.y;
 
-        // Subtle cursor attraction glow
-        float distToMouse = distance(st, vec2(mouse.x, 1.0 - mouse.y));
-        float mouseGlow = smoothstep(0.4, 0.0, distToMouse) * 0.2;
+        // Sample liquid heights at center and slight offsets to calculate surface normal
+        float eps = 0.008;
+        vec2 p = uv * 0.95;
 
-        float brightness = clamp(wave * 0.5 + mouseGlow, 0.0, 1.0);
+        float hCenter = liquidField(p, t, mouseUV);
+        float hRight  = liquidField(p + vec2(eps, 0.0), t, mouseUV);
+        float hUp     = liquidField(p + vec2(0.0, eps), t, mouseUV);
 
-        // Apply Bayer matrix dither filter
-        float dither = dither4x4(gl_FragCoord.xy, brightness);
+        // Fluid normal calculation with very gentle, smooth slope
+        vec3 normal = normalize(vec3((hCenter - hRight) / eps, (hCenter - hUp) / eps, 1.3));
 
-        // Dynamically blend colors based on theme ambient brightness
-        vec3 cBaseDark   = vec3(0.03, 0.04, 0.05);
-        vec3 cCyanDot    = vec3(0.14, 0.52, 0.62); // Cyan dither dots
+        // Soft Studio Key Light
+        vec3 viewDir = vec3(0.0, 0.0, 1.0);
+        vec3 lightKey = normalize(vec3(0.4, 0.7, 1.5));
+        vec3 lightSoft = normalize(vec3(-0.5, -0.3, 1.0));
 
-        vec3 color = mix(cBaseDark, cCyanDot, dither * 0.38);
+        // Diffuse & Specular components
+        float diffKey = max(dot(normal, lightKey), 0.0);
+        vec3 refKey = reflect(-lightKey, normal);
+        float specKey = pow(max(dot(refKey, viewDir), 0.0), 16.0);
 
-        gl_FragColor = vec4(color, 0.45);
+        float diffSoft = max(dot(normal, lightSoft), 0.0);
+        vec3 refSoft = reflect(-lightSoft, normal);
+        float specSoft = pow(max(dot(refSoft, viewDir), 0.0), 10.0);
+
+        // Very soft Fresnel edge sheen
+        float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.8);
+
+        // --- PALETTES ---
+        // 1. Dark Mode: Stealth Dark Obsidian / Smoked Titanium
+        vec3 darkBase     = vec3(0.039, 0.039, 0.039);
+        vec3 darkMidTone  = vec3(0.075, 0.080, 0.090);
+        vec3 darkSheen    = vec3(0.18, 0.19, 0.22);
+        vec3 darkSpecular = vec3(0.45, 0.47, 0.52);
+
+        vec3 colDark = darkBase;
+        colDark += darkMidTone * (hCenter * 0.35 + diffKey * 0.2);
+        colDark += darkSheen * (diffSoft * 0.2 + fresnel * 0.25);
+        colDark += darkSpecular * (specKey * 0.3 + specSoft * 0.15);
+
+        // 2. Light Mode: Frosted Liquid Platinum / Silk Silver (Crisp, clean, no dark smoke)
+        vec3 lightBase     = vec3(0.98, 0.98, 0.976); // matches #fafaf9
+        vec3 lightValleys  = vec3(0.92, 0.93, 0.94);  // soft silvery gradient
+        vec3 lightSheen    = vec3(0.96, 0.97, 0.98);
+        vec3 lightSpecular = vec3(1.0, 1.0, 1.0);     // pure white glints
+
+        vec3 colLight = lightBase;
+        colLight = mix(colLight, lightValleys, (1.0 - hCenter) * 0.45 + (1.0 - diffKey) * 0.25);
+        colLight = mix(colLight, lightSheen, diffSoft * 0.3 + fresnel * 0.2);
+        colLight += lightSpecular * (specKey * 0.35 + specSoft * 0.2);
+
+        // Interpolate seamlessly between Dark and Light mode
+        vec3 finalColor = mix(colLight, colDark, u_dark);
+
+        // Smooth bottom fade into body
+        vec3 targetBg = mix(lightBase, darkBase, u_dark);
+        float bottomFade = smoothstep(0.0, 0.35, st.y);
+        finalColor = mix(targetBg, finalColor, bottomFade);
+
+        gl_FragColor = vec4(finalColor, 1.0);
       }
     `;
 
@@ -260,24 +303,32 @@ const tp = useTranslatedPath(lang);
     const timeUni = gl.getUniformLocation(program, 'u_time');
     const resUni = gl.getUniformLocation(program, 'u_resolution');
     const mouseUni = gl.getUniformLocation(program, 'u_mouse');
+    const darkUni = gl.getUniformLocation(program, 'u_dark');
 
-    let mouseX = 0;
-    let mouseY = 0;
+    let targetMouseX = window.innerWidth * 0.5;
+    let targetMouseY = window.innerHeight * 0.5;
+    let currentMouseX = targetMouseX;
+    let currentMouseY = targetMouseY;
 
     window.addEventListener('mousemove', (e) => {
       const rect = canvas.getBoundingClientRect();
-      mouseX = e.clientX - rect.left;
-      mouseY = e.clientY - rect.top;
+      targetMouseX = e.clientX - rect.left;
+      targetMouseY = e.clientY - rect.top;
     });
 
     function resize() {
       if (!canvas || !gl) return;
       const width = canvas.parentElement?.clientWidth || window.innerWidth;
       const height = canvas.parentElement?.clientHeight || window.innerHeight;
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
-        gl.viewport(0, 0, width, height);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      
+      const displayWidth = Math.floor(width * dpr);
+      const displayHeight = Math.floor(height * dpr);
+
+      if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+        canvas.width = displayWidth;
+        canvas.height = displayHeight;
+        gl.viewport(0, 0, displayWidth, displayHeight);
       }
     }
 
@@ -285,14 +336,26 @@ const tp = useTranslatedPath(lang);
     resize();
 
     const startTime = performance.now();
+    let currentDarkVal = document.documentElement.classList.contains('dark') ? 1.0 : 0.0;
 
     function render() {
       if (!gl || !canvas) return;
       const currentTime = (performance.now() - startTime) * 0.001;
 
+      // Smooth lerping for fluid inertia
+      currentMouseX += (targetMouseX - currentMouseX) * 0.06;
+      currentMouseY += (targetMouseY - currentMouseY) * 0.06;
+
+      // Smooth theme transitions
+      const targetDarkVal = document.documentElement.classList.contains('dark') ? 1.0 : 0.0;
+      currentDarkVal += (targetDarkVal - currentDarkVal) * 0.1;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
       gl.uniform1f(timeUni, currentTime);
       gl.uniform2f(resUni, canvas.width, canvas.height);
-      gl.uniform2f(mouseUni, mouseX, mouseY);
+      gl.uniform2f(mouseUni, currentMouseX * dpr, currentMouseY * dpr);
+      gl.uniform1f(darkUni, currentDarkVal);
 
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       requestAnimationFrame(render);
@@ -320,13 +383,13 @@ const tp = useTranslatedPath(lang);
     height: 100%;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.18; /* Extremely soft & elegant for light mode */
-    filter: saturate(100%);
+    opacity: 0.55;
+    mix-blend-mode: normal;
   }
 
   :global(.dark) .hero-dither-bg {
-    opacity: 0.28; /* Subtle & soft for dark mode */
-    filter: saturate(110%);
+    opacity: 0.35;
+    mix-blend-mode: screen;
   }
 
   .hero-dither-overlay {
@@ -334,7 +397,12 @@ const tp = useTranslatedPath(lang);
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background: radial-gradient(circle at 50% 50%, transparent 20%, var(--bg-primary) 85%);
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0) 65%,
+      var(--bg-base) 100%
+    );
   }
 
   .hero-container {
@@ -526,7 +594,7 @@ const tp = useTranslatedPath(lang);
     aspect-ratio: 1;
     width: 100%;
     max-width: 520px;
-    cursor: crosshair;
+    cursor: none;
   }
   .hero-portrait-base {
     width: 100%;

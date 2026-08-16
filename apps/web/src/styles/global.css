@@ -265,20 +265,20 @@
   }
 
   /* ============================================
-     HARDWARE-INSPIRED TACTILE BUTTONS
-     Inspired by Braun, Teenage Engineering & Nothing
+     MECHANICAL KEYBOARD SWITCH / KEYCAP BUTTONS
+     Custom tactile keycaps with actuation depth & PBT profile
      ============================================ */
 
   .btn-primary,
   .btn-ghost,
   .btn-secondary {
     position: relative;
-    font-family: var(--font-sans);
+    font-family: var(--font-mono);
     font-weight: 600;
-    font-size: 0.875rem;
-    letter-spacing: -0.01em;
-    padding: 0.6875rem 1.375rem;
-    border-radius: var(--radius);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    padding: 0.625rem 1.25rem 0.75rem;
+    border-radius: 6px;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -287,22 +287,24 @@
     cursor: pointer;
     user-select: none;
     -webkit-font-smoothing: antialiased;
-    transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1),
-      box-shadow 0.12s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transition: transform 0.08s cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 0.08s cubic-bezier(0.2, 0.8, 0.2, 1),
       background-color 0.15s ease,
       border-color 0.15s ease,
       color 0.15s ease;
   }
 
-  /* Primary Accent Key (Matte Hardware Power Switch) */
+  /* Primary Artisan Accent Keycap (Orange Mechanical Switch) */
   .btn-primary {
     background-color: var(--accent);
     color: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.3),
+      inset 0 1.5px 0 0 rgba(255, 255, 255, 0.4),
       inset 0 -1px 0 0 rgba(0, 0, 0, 0.2),
-      0 1px 2px 0 rgba(0, 0, 0, 0.12);
+      0 3.5px 0 0 #9a3412,
+      0 4.5px 0 0 rgba(0, 0, 0, 0.25),
+      0 6px 14px 0 rgba(234, 88, 12, 0.3);
   }
 
   .btn-primary:hover {
@@ -310,39 +312,48 @@
     color: #ffffff;
     transform: translateY(-1px);
     box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
-      inset 0 -1px 0 0 rgba(0, 0, 0, 0.25),
-      0 2px 6px 0 rgba(234, 88, 12, 0.25);
+      inset 0 1.5px 0 0 rgba(255, 255, 255, 0.5),
+      inset 0 -1px 0 0 rgba(0, 0, 0, 0.2),
+      0 4.5px 0 0 #9a3412,
+      0 5.5px 0 0 rgba(0, 0, 0, 0.28),
+      0 8px 18px 0 rgba(234, 88, 12, 0.4);
   }
 
+  /* Mechanical Bottom Out (Press Key All The Way Down) */
   .btn-primary:active {
-    transform: translateY(1px) scale(0.985);
+    transform: translateY(3.5px) !important;
     box-shadow:
-      inset 0 1.5px 3px 0 rgba(0, 0, 0, 0.3),
-      inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+      inset 0 1.5px 3px 0 rgba(0, 0, 0, 0.35),
+      inset 0 0 0 1px rgba(0, 0, 0, 0.2),
+      0 0 0 0 #9a3412,
+      0 1px 2px 0 rgba(0, 0, 0, 0.2) !important;
   }
 
-  /* Ghost / Secondary Key (Machined Matte Aluminum Key) */
+  /* Ghost / Secondary Keycap (Machined Matte PBT Keycap) */
   .btn-ghost,
   .btn-secondary {
     background-color: var(--bg-surface);
     color: var(--text-primary);
     border: 1px solid var(--border);
     box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.6),
+      inset 0 1.5px 0 0 rgba(255, 255, 255, 0.8),
       inset 0 -1px 0 0 rgba(0, 0, 0, 0.04),
-      0 1px 2px 0 rgba(0, 0, 0, 0.04);
+      0 3.5px 0 0 #d4d4d8,
+      0 4.5px 0 0 rgba(0, 0, 0, 0.08),
+      0 6px 12px 0 rgba(0, 0, 0, 0.06);
   }
 
   .dark .btn-ghost,
   .dark .btn-secondary {
-    background-color: var(--bg-surface);
+    background-color: #18181b;
     color: var(--text-primary);
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.12),
-      inset 0 -1px 0 0 rgba(0, 0, 0, 0.4),
-      0 1px 2px 0 rgba(0, 0, 0, 0.2);
+      inset 0 1.5px 0 0 rgba(255, 255, 255, 0.15),
+      inset 0 -1px 0 0 rgba(0, 0, 0, 0.5),
+      0 3.5px 0 0 #09090b,
+      0 4.5px 0 0 rgba(0, 0, 0, 0.6),
+      0 6px 14px 0 rgba(0, 0, 0, 0.5);
   }
 
   .btn-ghost:hover,
@@ -352,18 +363,43 @@
     color: var(--text-primary);
     transform: translateY(-1px);
     box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.8),
-      0 2px 5px 0 rgba(0, 0, 0, 0.06);
+      inset 0 1.5px 0 0 rgba(255, 255, 255, 0.9),
+      0 4.5px 0 0 #d4d4d8,
+      0 5.5px 0 0 rgba(0, 0, 0, 0.1),
+      0 8px 16px 0 rgba(0, 0, 0, 0.08);
   }
 
   .dark .btn-ghost:hover,
   .dark .btn-secondary:hover {
-    background-color: #1a1a1a;
-    border-color: var(--border-hover);
+    background-color: #27272a;
+    border-color: rgba(255, 255, 255, 0.2);
     color: var(--text-primary);
+    transform: translateY(-1px);
     box-shadow:
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.18),
-      0 2px 5px 0 rgba(0, 0, 0, 0.3);
+      inset 0 1.5px 0 0 rgba(255, 255, 255, 0.22),
+      0 4.5px 0 0 #09090b,
+      0 5.5px 0 0 rgba(0, 0, 0, 0.7),
+      0 8px 18px 0 rgba(0, 0, 0, 0.6);
+  }
+
+  /* Ghost Keycap Bottom Out */
+  .btn-ghost:active,
+  .btn-secondary:active {
+    transform: translateY(3.5px) !important;
+    box-shadow:
+      inset 0 1.5px 3px 0 rgba(0, 0, 0, 0.25),
+      inset 0 0 0 1px rgba(0, 0, 0, 0.1),
+      0 0 0 0 #d4d4d8,
+      0 1px 2px 0 rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .dark .btn-ghost:active,
+  .dark .btn-secondary:active {
+    box-shadow:
+      inset 0 1.5px 3px 0 rgba(0, 0, 0, 0.6),
+      inset 0 0 0 1px rgba(0, 0, 0, 0.4),
+      0 0 0 0 #000,
+      0 1px 2px 0 rgba(0, 0, 0, 0.4) !important;
   }
 
   .btn-ghost:active,
@@ -379,6 +415,27 @@
     box-shadow:
       inset 0 1.5px 3px 0 rgba(0, 0, 0, 0.5),
       inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+  }
+
+  /* ============================================
+     LIQUID CHROME SPECULAR CARD EFFECTS
+     ============================================ */
+  .card-liquid,
+  .project-card,
+  .skills-card {
+    transition: border-color 0.3s ease, box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .project-card:hover {
+    border-color: rgba(234, 88, 12, 0.35);
+    box-shadow: 0 12px 36px -10px rgba(0, 0, 0, 0.15),
+                0 0 1px 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .dark .project-card:hover {
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.6),
+                0 0 20px -4px rgba(234, 88, 12, 0.15);
   }
 
   /* — Link underline — */

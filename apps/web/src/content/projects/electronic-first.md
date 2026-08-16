@@ -20,7 +20,7 @@ highlights:
   - "Enabled data-driven decisions with ClickHouse-backed analytics: customer behavior, product unit sales, payment gateway performance, HRM costs — with date-range comparison and drill-down breakdowns."
   - "Opened a new revenue channel by engineering an end-to-end Personalized Gift Card platform — recipient management, card designer, scheduled delivery, sender/receiver dashboards — with full test suite at launch."
   - "Accelerated third-party integrations with a versioned REST API, encrypted IDs, Swagger docs, and AI chatbot endpoints (orders, refunds, tickets, products)."
-  - "Increased AOV by building full bundle commerce across PayPal, Coinbase, eWallet, and card — with reviews, wishlist, and post-purchase email."
+  - "Increased AOV and generated at least 30% more sales by building full bundle commerce across PayPal, Coinbase, eWallet, and card — with reviews, wishlist, and post-purchase email."
   - "Fixed conversion tracking loss with server-side GA4 add_to_cart events and event_id deduplication — eliminating skewed marketing attribution."
 scope:
   - "Bootstrapped regions, brands, tags, and customer CRUD with DB transaction safety and validation."

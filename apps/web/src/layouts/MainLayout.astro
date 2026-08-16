@@ -90,7 +90,10 @@ const {
 
         // Reveal animations
         const revealEls = document.querySelectorAll(".reveal");
-        if (revealEls.length > 0 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        if (
+          revealEls.length > 0 &&
+          !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ) {
           revealEls.forEach((el) => {
             ScrollTrigger.create({
               trigger: el,

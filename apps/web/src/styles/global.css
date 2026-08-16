@@ -651,6 +651,7 @@
     background: color-mix(in srgb, var(--bg-surface) 60%, transparent);
     border-radius: 0 var(--radius) var(--radius) 0;
   }
+
   #article-content blockquote p {
     margin: 0 !important;
     font-family: var(--font-display) !important;

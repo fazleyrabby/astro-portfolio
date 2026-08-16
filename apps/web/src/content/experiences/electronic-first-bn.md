@@ -9,7 +9,7 @@ timeline: "2021-10-15"
 lang: bn
 ---
 
-- Implemented new features for in-house products
+- Implemented new features for in-house products, including bundle products that increased sales by at least 30%
 - Refactored backend code for better performance
 - Integrated payment APIs: Checkout.com, PayPal, Google Pay, Apple Pay
 - Built web automation tools using Puppeteer

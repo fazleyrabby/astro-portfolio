@@ -30,6 +30,7 @@ Building and maintaining backend systems for a high-volume digital marketplace s
 
 ### Additional Contributions
 
+- Built and launched bundle products architecture (bundle deals, category management, and currency-aware cart checkout across multiple payment gateways), driving at least 30% more sales and lifting Average Order Value (AOV).
 - Built a personalized gift card platform supporting recipient management, scheduled delivery, and custom gifting workflows.
 - Implemented server-side analytics event tracking with reliable event deduplication.
 - Developed automation tools using Puppeteer for operational workflows.

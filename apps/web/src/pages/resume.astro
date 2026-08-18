@@ -25,6 +25,7 @@ import MainLayout from '@layouts/MainLayout.astro';
         <!-- Contact Header -->
         <div class="cv-header">
           <h2 class="cv-name">Md Fazley Rabbi</h2>
+          <p class="cv-tagline">Backend Engineer | PHP / Laravel | APIs & E-commerce</p>
           <div class="cv-contacts">
             <a href="mailto:fazley111@gmail.com">fazley111@gmail.com</a>
             <span class="cv-sep">|</span>
@@ -38,6 +39,32 @@ import MainLayout from '@layouts/MainLayout.astro';
 
         <div class="cv-body">
 
+          <!-- Professional Summary -->
+          <section class="cv-section">
+            <h3 class="cv-section-title">Professional Summary</h3>
+            <p class="cv-summary">
+              Backend Engineer with 5+ years of professional experience building production e-commerce and digital marketplace systems using PHP, Laravel, MySQL, REST APIs, Redis, and third-party integrations. Experienced in payments, fraud detection, asynchronous processing, database optimization, and scalable backend architecture.
+            </p>
+          </section>
+
+          <!-- Technical Skills & Core Competencies -->
+          <section class="cv-section">
+            <h3 class="cv-section-title">Technical Skills & Core Competencies</h3>
+            <div class="cv-skills-grid">
+              <span class="cv-skill-cat">Backend & Languages</span>
+              <span class="cv-skill-val">PHP, Laravel, REST APIs, Livewire, CodeIgniter, SQL</span>
+
+              <span class="cv-skill-cat">Databases & Caching</span>
+              <span class="cv-skill-val">MySQL, ClickHouse, Redis, SQLite, Read Replicas, Query Optimization</span>
+
+              <span class="cv-skill-cat">Architecture & Payments</span>
+              <span class="cv-skill-val">Payment Gateways (Checkout.com, PayPal, Stripe), Webhooks, Fraud Detection, Queues &amp; Async Processing</span>
+
+              <span class="cv-skill-cat">DevOps & Infrastructure</span>
+              <span class="cv-skill-val">Docker, Docker Compose, Linux, Nginx, Git, GitHub Actions, VPS Hardening</span>
+            </div>
+          </section>
+
           <!-- Work Experience -->
           <section class="cv-section">
             <h3 class="cv-section-title">Work Experience</h3>
@@ -48,7 +75,7 @@ import MainLayout from '@layouts/MainLayout.astro';
                 <div class="cv-entry-head">
                   <div class="cv-entry-title-group">
                     <h4 class="cv-entry-company">Electronic First FZ LLE</h4>
-                    <span class="cv-entry-role">Software Engineer (Laravel)</span>
+                    <span class="cv-entry-role">Software Engineer (Backend / Laravel)</span>
                   </div>
                   <div class="cv-entry-meta">
                     <span class="cv-entry-location">Remote, UAE</span>
@@ -56,17 +83,17 @@ import MainLayout from '@layouts/MainLayout.astro';
                   </div>
                 </div>
                 <ul class="cv-list">
-                  <li>Develop and maintain backend systems for a high-volume digital marketplace processing thousands of daily orders.</li>
-                  <li>Contributed to the architecture and implementation of bundle product features (category systems, currency-aware pricing, and multi-gateway checkout), driving at least 30% more sales and lifting Average Order Value (AOV).</li>
-                  <li>Designed and implemented a configurable checkout fraud detection engine using IP, card, and email velocity checks, BIN/ASN validation, bot detection, and risk scoring to automate payment risk assessment.</li>
-                  <li>Built real-time dispute and chargeback synchronization for PayPal and Checkout.com using webhooks, eliminating manual reconciliation workflows.</li>
-                  <li>Designed versioned REST APIs powering web applications, mobile applications, and AI-assisted customer support services.</li>
-                  <li>Built ClickHouse-powered analytics dashboards for customer behaviour, sales performance, payment gateway metrics, and operational reporting.</li>
-                  <li>Improved backend scalability by introducing database read replicas for high-frequency search and reporting workloads.</li>
-                  <li>Integrated multiple payment providers including Checkout.com, PayPal, Apple Pay, and Google Pay.</li>
+                  <li>Architect and maintain backend systems for a high-volume digital marketplace processing thousands of daily transactions and orders.</li>
+                  <li>Engineered bundle product architectures and multi-gateway checkout with dynamic currency conversion, driving a 30%+ increase in sales and lifting Average Order Value (AOV).</li>
+                  <li>Designed and deployed an automated checkout fraud detection engine using IP/card/email velocity checks, BIN/ASN validation, and risk scoring to mitigate payment chargebacks.</li>
+                  <li>Built real-time dispute and chargeback webhook synchronization pipelines for PayPal and Checkout.com, eliminating manual financial reconciliation workflows.</li>
+                  <li>Integrated global payment providers including Checkout.com, PayPal, Apple Pay, and Google Pay with idempotent webhook handlers and transaction logging.</li>
+                  <li>Built ClickHouse-powered analytics pipelines delivering sub-second reporting for high-volume customer behavior, transaction fees, and revenue metrics.</li>
+                  <li>Optimized backend scalability and database latency by introducing MySQL read replicas and Redis caching for heavy search and reporting workloads.</li>
+                  <li>Designed versioned REST APIs powering web applications, mobile apps, and automated customer support services.</li>
                 </ul>
                 <p class="cv-tech">
-                  <strong>Technologies:</strong> Laravel, PHP, MySQL, ClickHouse, Redis, Docker, Linux, REST APIs, PayPal, Checkout.com
+                  <strong>Technologies:</strong> PHP, Laravel, MySQL, ClickHouse, Redis, REST APIs, Queue Workers, Docker, Linux, PayPal, Checkout.com
                 </p>
               </div>
 
@@ -83,14 +110,13 @@ import MainLayout from '@layouts/MainLayout.astro';
                   </div>
                 </div>
                 <ul class="cv-list">
-                  <li>Developed client applications using Laravel and modern web technologies.</li>
-                  <li>Built a Bus Ticket Booking platform with Laravel and Inertia.js.</li>
-                  <li>Developed a Portfolio Builder and Project Management System.</li>
-                  <li>Integrated multiple payment gateways including Stripe, PayPal, Razorpay, Flutterwave, Mollie, Paystack, Instamojo, ToyyibPay, and PayU.</li>
-                  <li>Contributed to an online banking platform and business management systems.</li>
+                  <li>Developed client web applications and RESTful APIs using Laravel, MySQL, and modern frontend integrations.</li>
+                  <li>Built a Bus Ticket Booking platform with interactive reservation and automated ticket issuance using Laravel and Inertia.js.</li>
+                  <li>Integrated multiple international and regional payment gateways including Stripe, PayPal, Razorpay, Flutterwave, Mollie, and Paystack.</li>
+                  <li>Contributed to portfolio builder platforms, project management tools, and online banking modules.</li>
                 </ul>
                 <p class="cv-tech">
-                  <strong>Technologies:</strong> Laravel, PHP, MySQL, Inertia.js, JavaScript, Git
+                  <strong>Technologies:</strong> Laravel, PHP, MySQL, Inertia.js, JavaScript, REST APIs, Git
                 </p>
               </div>
 
@@ -99,7 +125,7 @@ import MainLayout from '@layouts/MainLayout.astro';
                 <div class="cv-entry-head">
                   <div class="cv-entry-title-group">
                     <h4 class="cv-entry-company">Freelance</h4>
-                    <span class="cv-entry-role">Web Developer</span>
+                    <span class="cv-entry-role">Backend / Web Developer</span>
                   </div>
                   <div class="cv-entry-meta">
                     <span class="cv-entry-location">Self-Employed</span>
@@ -107,98 +133,55 @@ import MainLayout from '@layouts/MainLayout.astro';
                   </div>
                 </div>
                 <ul class="cv-list">
-                  <li>Delivered custom PHP and Laravel solutions for startups and local businesses.</li>
-                  <li>Developed POS, Education Management, Library Management, CMS, and business management systems.</li>
-                  <li>Built REST APIs, authentication systems, and administrative dashboards.</li>
-                  <li>Performed application maintenance, feature development, and performance optimization.</li>
+                  <li>Delivered custom PHP and Laravel solutions including POS, ERP, Library Management, and CMS systems for business clients.</li>
+                  <li>Designed relational database schemas, secure authentication workflows, role-based access control (RBAC), and REST APIs.</li>
+                  <li>Conducted performance optimization, legacy code refactoring, and automated deployment maintenance.</li>
                 </ul>
                 <p class="cv-tech">
-                  <strong>Technologies:</strong> PHP, Laravel, CodeIgniter, MySQL, REST APIs, JavaScript, jQuery
+                  <strong>Technologies:</strong> PHP, Laravel, CodeIgniter, MySQL, REST APIs, JavaScript, Git
                 </p>
               </div>
 
             </div>
           </section>
 
-          <!-- Projects -->
+          <!-- Key Projects -->
           <section class="cv-section">
-            <h3 class="cv-section-title">Projects</h3>
+            <h3 class="cv-section-title">Key Projects</h3>
             <div class="cv-entries">
               <div class="cv-entry">
                 <h4 class="cv-project-title">
-                  <span class="cv-project-name">Electronic First Core Platform</span>
-                  <span class="cv-project-sub">— High-volume digital retail marketplace processing thousands of daily orders</span>
+                  <span class="cv-project-name">E-Bank</span>
+                  <span class="cv-project-sub">— Online banking system with DPS, loan management & multi-gateway payments</span>
                 </h4>
                 <ul class="cv-list">
-                  <li>Built order checkout flows supporting card, PayPal, Coinbase, and internal e-wallet transactions.</li>
-                  <li>Engineered bundle deals and bundle product systems with dynamic currency-aware pricing and multi-gateway checkout, achieving at least a 30% increase in sales.</li>
-                  <li>Implemented Automated Gift Card and License Delivery flows using queue workers and stock syncing.</li>
-                  <li>Developed business dashboard tools for tracking gate transaction fees, salary distributions, and store metrics.</li>
+                  <li>Engineered core banking backend with Deposit Pension Schemes (DPS), automated loan schedules, and account transaction ledgers.</li>
+                  <li>Integrated multi-gateway payment processing with automated webhook callbacks and double-entry balance verification.</li>
                 </ul>
                 <p class="cv-tech">
-                  <strong>Technologies:</strong> Laravel, MySQL, ClickHouse, Queue Workers, Redis, Docker
+                  <strong>Technologies:</strong> PHP, Laravel, MySQL, JavaScript, REST APIs, Payment Gateways
                 </p>
               </div>
 
               <div class="cv-entry">
                 <h4 class="cv-project-title">
-                  <span class="cv-project-name">SignalStack</span>
-                  <span class="cv-project-sub">— Real-time feed ingestion and distillation pipeline</span>
+                  <span class="cv-project-name">Routine Management System</span>
+                  <span class="cv-project-sub">— University scheduling & automated conflict-detection engine</span>
                 </h4>
                 <ul class="cv-list">
-                  <li>Designed an asynchronous data pipeline using queue architecture to handle high-volume feed processing.</li>
-                  <li>Built a multi-provider failover chain (local → Groq → OpenRouter) to distill feeds at near-zero inference cost.</li>
-                  <li>Implemented Redis caching and automated scoring workflows to filter and tag incoming signals.</li>
+                  <li>Designed automated scheduling system modeling 15 interconnected entities (teachers, batches, rooms, courses, and time slots).</li>
+                  <li>Eliminated scheduling double-booking with real-time conflict validation and dynamic PDF timetable generation.</li>
                 </ul>
                 <p class="cv-tech">
-                  <strong>Technologies:</strong> Node.js, NestJS, Redis, Queue Systems, Groq, OpenRouter
+                  <strong>Technologies:</strong> PHP, Laravel, MySQL, jQuery, REST APIs
                 </p>
               </div>
-
-              <p class="cv-other-projects">
-                <strong>Other Projects:</strong> Hujjah (privacy-first Islamic research engine), LitePOS (POS + e-commerce), DailyLOG (personal Life OS), Larabrix (Laravel module system)
-              </p>
             </div>
           </section>
 
-          <!-- Technical Skills -->
-          <section class="cv-section">
-            <h3 class="cv-section-title">Technical Skills</h3>
-            <div class="cv-skills-grid">
-              <span class="cv-skill-cat">Backend</span>
-              <span class="cv-skill-val">Laravel, PHP, REST APIs, Livewire, CodeIgniter</span>
-
-              <span class="cv-skill-cat">Frontend</span>
-              <span class="cv-skill-val">Alpine.js, Tailwind CSS, JavaScript, jQuery, Bootstrap</span>
-
-              <span class="cv-skill-cat">Databases</span>
-              <span class="cv-skill-val">MySQL, ClickHouse, SQLite, Redis</span>
-
-              <span class="cv-skill-cat">Infrastructure</span>
-              <span class="cv-skill-val">Docker, Docker Compose, Nginx, Linux, Cloudflare Tunnel, Git, GitHub Actions</span>
-
-              <span class="cv-skill-cat">DevOps / Security</span>
-              <span class="cv-skill-val">VPS Hardening, UFW, SSH Key Management, Zero-Trust Networking</span>
-
-              <span class="cv-skill-cat">Integrations</span>
-              <span class="cv-skill-val">Payment Gateways, Webhooks, Queue Workers, LLM APIs (Groq, OpenRouter)</span>
-            </div>
-          </section>
-
-          <!-- Current Focus -->
-          <section class="cv-section">
-            <h3 class="cv-section-title">Current Focus</h3>
-            <ul class="cv-list">
-              <li>System design and scalable backend architecture</li>
-              <li>Async processing, queues, and event-driven systems</li>
-              <li>Real-time pipelines and data processing workflows</li>
-              <li>Infrastructure and containerized development environments</li>
-            </ul>
-          </section>
-
-          <!-- Education -->
-          <section class="cv-section">
-            <h3 class="cv-section-title">Education</h3>
+          <!-- Education & Languages -->
+          <section class="cv-section cv-section--last">
+            <h3 class="cv-section-title">Education &amp; Languages</h3>
             <div class="cv-edu-list">
               <div class="cv-edu-item">
                 <div>
@@ -215,13 +198,8 @@ import MainLayout from '@layouts/MainLayout.astro';
                 <span class="cv-edu-year">2016</span>
               </div>
             </div>
-          </section>
-
-          <!-- Languages -->
-          <section class="cv-section cv-section--last">
-            <h3 class="cv-section-title">Languages</h3>
             <p class="cv-languages">
-              <strong>Bengali</strong> (Native), <strong>English</strong> (Fluent)
+              <strong>Languages:</strong> Bengali (Native), English (Professional Working Proficiency)
             </p>
           </section>
 
@@ -285,7 +263,14 @@ import MainLayout from '@layouts/MainLayout.astro';
     font-weight: 500;
     font-size: clamp(1.5rem, 3vw, 2rem);
     color: var(--text-primary);
-    margin: 0 0 0.5rem;
+    margin: 0 0 0.25rem;
+  }
+  .cv-tagline {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin: 0 0 0.75rem;
   }
   .cv-contacts {
     display: flex;
@@ -312,11 +297,11 @@ import MainLayout from '@layouts/MainLayout.astro';
   .cv-body {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.75rem;
   }
 
   .cv-section {
-    padding-bottom: 2rem;
+    padding-bottom: 1.75rem;
     border-bottom: 1px solid var(--border);
   }
   .cv-section--last {
@@ -331,7 +316,15 @@ import MainLayout from '@layouts/MainLayout.astro';
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--accent);
-    margin: 0 0 1rem;
+    margin: 0 0 0.875rem;
+  }
+
+  .cv-summary {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
   }
 
   .cv-entries {
@@ -417,17 +410,11 @@ import MainLayout from '@layouts/MainLayout.astro';
     font-style: italic;
     font-weight: 400;
   }
-  .cv-other-projects {
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    margin: 0.5rem 0 0;
-  }
 
   /* Skills Grid */
   .cv-skills-grid {
     display: grid;
-    grid-template-columns: 140px 1fr;
+    grid-template-columns: 160px 1fr;
     gap: 0.625rem 1rem;
     font-family: var(--font-sans);
     font-size: 0.875rem;
@@ -473,24 +460,18 @@ import MainLayout from '@layouts/MainLayout.astro';
     color: var(--text-muted);
   }
 
-  .cv-languages {
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    margin: 0;
-  }
-
   /* Single-Page Well-Balanced A4 Print Stylesheet */
   @media print {
     @page {
       size: A4 portrait;
-      margin: 6mm 10mm;
+      margin: 8mm 12mm;
     }
     :global(html), :global(body) {
       background: #ffffff !important;
       color: #000000 !important;
-      font-size: 8.0pt !important;
-      line-height: 1.22 !important;
+      font-family: Georgia, serif !important;
+      font-size: 8.8pt !important;
+      line-height: 1.34 !important;
       width: 100% !important;
       height: 100% !important;
       max-height: 100vh !important;
@@ -515,23 +496,56 @@ import MainLayout from '@layouts/MainLayout.astro';
       page-break-inside: avoid !important;
       break-inside: avoid !important;
     }
-    .cv-card *, .cv-card a, .cv-card span, .cv-card p, .cv-card h2, .cv-card h3, .cv-card h4, .cv-card li {
+    .cv-card,
+    .cv-card *,
+    .cv-card a,
+    .cv-card span,
+    .cv-card p,
+    .cv-card h2,
+    .cv-card h3,
+    .cv-card h4,
+    .cv-card li,
+    .cv-name,
+    .cv-tagline,
+    .cv-summary,
+    .cv-section-title,
+    .cv-entry-company,
+    .cv-entry-role,
+    .cv-entry-meta,
+    .cv-entry-location,
+    .cv-entry-date,
+    .cv-project-name,
+    .cv-project-sub,
+    .cv-edu-school,
+    .cv-edu-degree,
+    .cv-edu-year,
+    .cv-skill-cat,
+    .cv-skill-val,
+    .cv-languages {
+      font-family: Georgia, serif !important;
       color: #000000 !important;
     }
     .cv-header {
-      padding-bottom: 4pt !important;
-      margin-bottom: 5pt !important;
+      padding-bottom: 5pt !important;
+      margin-bottom: 6pt !important;
       border-bottom: 1.2pt solid #000000 !important;
       text-align: center !important;
     }
     .cv-name {
-      font-size: 15pt !important;
+      font-size: 17pt !important;
+      font-weight: 700 !important;
       color: #000000 !important;
       margin-bottom: 2pt !important;
       line-height: 1.1 !important;
     }
+    .cv-tagline {
+      font-size: 9.2pt !important;
+      font-weight: 600 !important;
+      color: #000000 !important;
+      margin: 0 0 3pt !important;
+    }
     .cv-contacts {
-      font-size: 7.8pt !important;
+      font-size: 8.5pt !important;
       color: #000000 !important;
       gap: 2pt 8pt !important;
       justify-content: center !important;
@@ -541,20 +555,30 @@ import MainLayout from '@layouts/MainLayout.astro';
       text-decoration: none !important;
     }
     .cv-body {
-      gap: 5pt !important;
+      gap: 6pt !important;
     }
     .cv-section {
-      padding-bottom: 4pt !important;
+      padding-bottom: 5.5pt !important;
       border-bottom: 0.5pt solid #cccccc !important;
       page-break-inside: avoid !important;
       break-inside: avoid !important;
     }
+    .cv-section--last {
+      border-bottom: none !important;
+      padding-bottom: 0 !important;
+    }
     .cv-section-title {
-      font-size: 8.2pt !important;
+      font-size: 9.3pt !important;
       color: #000000 !important;
-      margin-bottom: 3pt !important;
+      margin-bottom: 3.5pt !important;
       letter-spacing: 0.08em !important;
       font-weight: 700 !important;
+    }
+    .cv-summary {
+      font-size: 8.7pt !important;
+      line-height: 1.34 !important;
+      color: #000000 !important;
+      margin: 0 !important;
     }
     .cv-entries {
       gap: 4.5pt !important;
@@ -567,57 +591,87 @@ import MainLayout from '@layouts/MainLayout.astro';
       margin-bottom: 1pt !important;
     }
     .cv-entry-company {
-      font-size: 9.2pt !important;
+      font-size: 9.6pt !important;
+      font-weight: 700 !important;
       color: #000000 !important;
     }
     .cv-entry-role {
-      font-size: 8pt !important;
+      font-size: 8.7pt !important;
       color: #000000 !important;
     }
     .cv-entry-meta {
-      font-size: 7.5pt !important;
+      font-size: 8.3pt !important;
       color: #000000 !important;
     }
     .cv-list {
-      margin: 1pt 0 !important;
-      padding-left: 10pt !important;
+      margin: 1.5pt 0 !important;
+      padding-left: 11pt !important;
     }
     .cv-list li {
-      font-size: 7.8pt !important;
-      line-height: 1.22 !important;
-      margin-bottom: 1pt !important;
+      font-size: 8.6pt !important;
+      line-height: 1.32 !important;
+      margin-bottom: 1.5pt !important;
       color: #000000 !important;
     }
     .cv-list li::marker {
       color: #000000 !important;
     }
-    .cv-tech, .cv-other-projects, .cv-skills-grid, .cv-languages {
-      font-size: 7.8pt !important;
+    .cv-tech {
+      font-size: 8.3pt !important;
+      margin: 1.5pt 0 0 !important;
+      color: #000000 !important;
+      line-height: 1.3 !important;
+    }
+    .cv-project-title {
+      margin-bottom: 1pt !important;
+      font-size: 9.2pt !important;
+    }
+    .cv-project-name {
+      font-weight: 700 !important;
       color: #000000 !important;
     }
+    .cv-project-sub {
+      font-size: 8.6pt !important;
+    }
     .cv-skills-grid {
-      grid-template-columns: 110px 1fr !important;
-      gap: 2pt 6pt !important;
-      font-size: 7.8pt !important;
+      grid-template-columns: 145px 1fr !important;
+      gap: 2pt 8pt !important;
+      font-size: 8.6pt !important;
+      line-height: 1.32 !important;
+    }
+    .cv-skill-cat {
+      font-weight: 700 !important;
+      color: #000000 !important;
+    }
+    .cv-skill-val {
+      color: #000000 !important;
     }
     .cv-edu-list {
-      gap: 3pt !important;
+      gap: 2.5pt !important;
+    }
+    .cv-edu-item {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: baseline !important;
     }
     .cv-edu-school {
-      font-size: 8.4pt !important;
+      font-size: 9.0pt !important;
+      font-weight: 700 !important;
       color: #000000 !important;
     }
     .cv-edu-degree {
-      font-size: 7.8pt !important;
+      font-size: 8.5pt !important;
       color: #000000 !important;
     }
     .cv-edu-year {
-      font-size: 7.4pt !important;
+      font-size: 8.2pt !important;
       color: #000000 !important;
     }
     .cv-languages {
-      font-size: 7.8pt !important;
+      font-size: 8.5pt !important;
+      margin: 3pt 0 0 !important;
       color: #000000 !important;
+      line-height: 1.3 !important;
     }
   }
 </style>

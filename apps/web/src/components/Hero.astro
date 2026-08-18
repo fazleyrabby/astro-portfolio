@@ -103,6 +103,7 @@ const tp = useTranslatedPath(lang);
             height="480"
             loading="eager"
             fetchpriority="high"
+            decoding="async"
           />
           <img
             src="/me-hero-reveal.jpg"
@@ -110,7 +111,8 @@ const tp = useTranslatedPath(lang);
             class="hero-portrait-reveal"
             width="480"
             height="480"
-            loading="eager"
+            loading="lazy"
+            decoding="async"
           />
         </div>
       </div>
@@ -120,10 +122,16 @@ const tp = useTranslatedPath(lang);
 
 <script>
   function initDitherShader() {
+    const heroSection = document.getElementById('hero');
     const canvas = document.getElementById('hero-dither-canvas') as HTMLCanvasElement | null;
-    if (!canvas) return;
+    if (!canvas || !heroSection) return;
 
-    const gl = canvas.getContext('webgl');
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      canvas.style.display = 'none';
+      return;
+    }
+
+    const gl = canvas.getContext('webgl', { powerPreference: 'low-power', alpha: false, antialias: false });
     if (!gl) return;
 
     const vsSource = `
@@ -134,25 +142,17 @@ const tp = useTranslatedPath(lang);
     `;
 
     const fsSource = `
-      precision highp float;
+      precision mediump float;
       uniform float u_time;
       uniform vec2 u_resolution;
       uniform vec2 u_mouse;
       uniform float u_dark;
 
-      // 2D Rotation
-      mat2 rot(float a) {
-        float s = sin(a), c = cos(a);
-        return mat2(c, -s, s, c);
-      }
-
-      // Hash function
       vec2 hash2(vec2 p) {
         p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
         return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
       }
 
-      // Simplex-like smooth noise
       float noise(vec2 p) {
         vec2 i = floor(p);
         vec2 f = fract(p);
@@ -165,67 +165,54 @@ const tp = useTranslatedPath(lang);
         );
       }
 
-      // Domain-warped Fractal Brownian Motion for viscous liquid fluid
       float liquidField(vec2 p, float t, vec2 mouse) {
-        vec2 q = vec2(0.0);
-        q.x = noise(p + vec2(t * 0.08, t * 0.05));
-        q.y = noise(p + vec2(t * 0.06, -t * 0.09));
+        vec2 q = vec2(
+          noise(p + vec2(t * 0.08, t * 0.05)),
+          noise(p + vec2(t * 0.06, -t * 0.09))
+        );
 
-        // Subtle interactive mouse disturbance
         vec2 mOffset = p - mouse;
         float mDist = length(mOffset);
         float mImpulse = exp(-mDist * 2.8) * 0.25;
         q += vec2(sin(mDist * 6.0 - t * 1.5), cos(mDist * 6.0 - t * 1.5)) * mImpulse;
 
-        vec2 r = vec2(0.0);
-        r.x = noise(p + 1.6 * q + vec2(1.7, 9.2) + 0.08 * t);
-        r.y = noise(p + 1.6 * q + vec2(8.3, 2.8) + 0.06 * t);
+        vec2 r = vec2(
+          noise(p + 1.5 * q + vec2(1.7, 9.2) + 0.08 * t),
+          noise(p + 1.5 * q + vec2(8.3, 2.8) + 0.06 * t)
+        );
 
-        float f = noise(p + 1.8 * r + vec2(t * 0.04, t * 0.03));
-        return f * 0.5 + 0.5;
+        return noise(p + 1.6 * r + vec2(t * 0.04, t * 0.03)) * 0.5 + 0.5;
       }
 
       void main() {
         vec2 st = gl_FragCoord.xy / u_resolution.xy;
-        float aspect = u_resolution.x / u_resolution.y;
         vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
 
         float t = u_time * 0.2;
-
-        // Normalized mouse in aspect space
         vec2 mouseUV = (u_mouse - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
         mouseUV.y = -mouseUV.y;
 
-        // Sample liquid heights at center and slight offsets to calculate surface normal
-        float eps = 0.008;
+        float eps = 0.012;
         vec2 p = uv * 0.95;
 
         float hCenter = liquidField(p, t, mouseUV);
         float hRight  = liquidField(p + vec2(eps, 0.0), t, mouseUV);
         float hUp     = liquidField(p + vec2(0.0, eps), t, mouseUV);
 
-        // Fluid normal calculation with very gentle, smooth slope
         vec3 normal = normalize(vec3((hCenter - hRight) / eps, (hCenter - hUp) / eps, 1.3));
 
-        // Soft Studio Key Light
         vec3 viewDir = vec3(0.0, 0.0, 1.0);
         vec3 lightKey = normalize(vec3(0.4, 0.7, 1.5));
         vec3 lightSoft = normalize(vec3(-0.5, -0.3, 1.0));
 
-        // Diffuse & Specular components
         float diffKey = max(dot(normal, lightKey), 0.0);
         vec3 refKey = reflect(-lightKey, normal);
         float specKey = pow(max(dot(refKey, viewDir), 0.0), 16.0);
 
         float diffSoft = max(dot(normal, lightSoft), 0.0);
-        vec3 refSoft = reflect(-lightSoft, normal);
-        float specSoft = pow(max(dot(refSoft, viewDir), 0.0), 10.0);
-
-        // Very soft Fresnel edge sheen
         float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.8);
 
-        // --- PALETTES ---
-        // 1. Dark Mode: Stealth Dark Obsidian / Smoked Titanium
+        // Dark Palette
         vec3 darkBase     = vec3(0.039, 0.039, 0.039);
         vec3 darkMidTone  = vec3(0.075, 0.080, 0.090);
         vec3 darkSheen    = vec3(0.18, 0.19, 0.22);
@@ -234,23 +221,20 @@ const tp = useTranslatedPath(lang);
         vec3 colDark = darkBase;
         colDark += darkMidTone * (hCenter * 0.35 + diffKey * 0.2);
         colDark += darkSheen * (diffSoft * 0.2 + fresnel * 0.25);
-        colDark += darkSpecular * (specKey * 0.3 + specSoft * 0.15);
+        colDark += darkSpecular * (specKey * 0.3);
 
-        // 2. Light Mode: Frosted Liquid Platinum / Silk Silver (Crisp, clean, no dark smoke)
-        vec3 lightBase     = vec3(0.98, 0.98, 0.976); // matches #fafaf9
-        vec3 lightValleys  = vec3(0.92, 0.93, 0.94);  // soft silvery gradient
+        // Light Palette
+        vec3 lightBase     = vec3(0.98, 0.98, 0.976);
+        vec3 lightValleys  = vec3(0.92, 0.93, 0.94);
         vec3 lightSheen    = vec3(0.96, 0.97, 0.98);
-        vec3 lightSpecular = vec3(1.0, 1.0, 1.0);     // pure white glints
+        vec3 lightSpecular = vec3(1.0, 1.0, 1.0);
 
         vec3 colLight = lightBase;
         colLight = mix(colLight, lightValleys, (1.0 - hCenter) * 0.45 + (1.0 - diffKey) * 0.25);
         colLight = mix(colLight, lightSheen, diffSoft * 0.3 + fresnel * 0.2);
-        colLight += lightSpecular * (specKey * 0.35 + specSoft * 0.2);
+        colLight += lightSpecular * (specKey * 0.35);
 
-        // Interpolate seamlessly between Dark and Light mode
         vec3 finalColor = mix(colLight, colDark, u_dark);
-
-        // Smooth bottom fade into body
         vec3 targetBg = mix(lightBase, darkBase, u_dark);
         float bottomFade = smoothstep(0.0, 0.35, st.y);
         finalColor = mix(targetBg, finalColor, bottomFade);
@@ -265,7 +249,6 @@ const tp = useTranslatedPath(lang);
       gl.shaderSource(shader, source);
       gl.compileShader(shader);
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.error(gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
         return null;
       }
@@ -314,13 +297,14 @@ const tp = useTranslatedPath(lang);
       const rect = canvas.getBoundingClientRect();
       targetMouseX = e.clientX - rect.left;
       targetMouseY = e.clientY - rect.top;
-    });
+    }, { passive: true });
 
     function resize() {
       if (!canvas || !gl) return;
       const width = canvas.parentElement?.clientWidth || window.innerWidth;
       const height = canvas.parentElement?.clientHeight || window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const isMobile = window.innerWidth < 768;
+      const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
       
       const displayWidth = Math.floor(width * dpr);
       const displayHeight = Math.floor(height * dpr);
@@ -332,40 +316,73 @@ const tp = useTranslatedPath(lang);
       }
     }
 
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize, { passive: true });
     resize();
 
     const startTime = performance.now();
     let currentDarkVal = document.documentElement.classList.contains('dark') ? 1.0 : 0.0;
+    let isVisible = true;
+    let animId: number | null = null;
+    let lastRenderTime = 0;
+    const isMobile = window.innerWidth < 768;
+    const minFrameInterval = isMobile ? 1000 / 30 : 1000 / 60;
 
-    function render() {
-      if (!gl || !canvas) return;
-      const currentTime = (performance.now() - startTime) * 0.001;
+    const observer = new IntersectionObserver((entries) => {
+      isVisible = entries[0]?.isIntersecting ?? true;
+      if (isVisible && !animId) {
+        animId = requestAnimationFrame(render);
+      }
+    }, { threshold: 0 });
+    observer.observe(heroSection);
 
-      // Smooth lerping for fluid inertia
-      currentMouseX += (targetMouseX - currentMouseX) * 0.06;
-      currentMouseY += (targetMouseY - currentMouseY) * 0.06;
+    function render(timestamp: number) {
+      if (!isVisible) {
+        animId = null;
+        return;
+      }
 
-      // Smooth theme transitions
-      const targetDarkVal = document.documentElement.classList.contains('dark') ? 1.0 : 0.0;
-      currentDarkVal += (targetDarkVal - currentDarkVal) * 0.1;
+      if (timestamp - lastRenderTime >= minFrameInterval) {
+        lastRenderTime = timestamp;
+        if (gl && canvas) {
+          const currentTime = (performance.now() - startTime) * 0.001;
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          currentMouseX += (targetMouseX - currentMouseX) * 0.06;
+          currentMouseY += (targetMouseY - currentMouseY) * 0.06;
 
-      gl.uniform1f(timeUni, currentTime);
-      gl.uniform2f(resUni, canvas.width, canvas.height);
-      gl.uniform2f(mouseUni, currentMouseX * dpr, currentMouseY * dpr);
-      gl.uniform1f(darkUni, currentDarkVal);
+          const targetDarkVal = document.documentElement.classList.contains('dark') ? 1.0 : 0.0;
+          currentDarkVal += (targetDarkVal - currentDarkVal) * 0.1;
 
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
-      requestAnimationFrame(render);
+          const isMobile = window.innerWidth < 768;
+          const dpr = isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
+
+          gl.uniform1f(timeUni, currentTime);
+          gl.uniform2f(resUni, canvas.width, canvas.height);
+          gl.uniform2f(mouseUni, currentMouseX * dpr, currentMouseY * dpr);
+          gl.uniform1f(darkUni, currentDarkVal);
+
+          gl.drawArrays(gl.TRIANGLES, 0, 6);
+        }
+      }
+
+      animId = requestAnimationFrame(render);
     }
 
-    render();
+    animId = requestAnimationFrame(render);
   }
 
-  initDitherShader();
-  document.addEventListener('astro:page-load', initDitherShader);
+  // Defer shader init until after initial render
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => initDitherShader());
+  } else {
+    setTimeout(initDitherShader, 150);
+  }
+  document.addEventListener('astro:page-load', () => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => initDitherShader());
+    } else {
+      setTimeout(initDitherShader, 150);
+    }
+  });
 </script>
 
 <style>

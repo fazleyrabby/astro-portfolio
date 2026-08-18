@@ -3,21 +3,19 @@
 // Auto-populates from h2–h4 in #article-content
 ---
 
-<button id="mobile-toc-btn" class="hidden" aria-label="Toggle Table of Contents"></button>
-
 <aside id="toc-sidebar" class="toc-sidebar">
   <nav id="toc" class="toc-nav" aria-label="Table of Contents">
     <div class="flex items-center justify-between mb-4 pb-2 border-b border-[var(--border)]">
       <span class="toc-label mb-0 pb-0 border-b-0">On this page</span>
-      <button id="toc-collapse-btn" class="toc-action-btn hover:text-[var(--accent)]" title="Collapse Outline">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+      <button id="toc-collapse-btn" class="toc-action-btn hover:text-[var(--accent)]" title="Close / Collapse Outline">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
     <div id="toc-links" class="toc-links"></div>
   </nav>
 </aside>
 
-<!-- Floating expand outline trigger tab -->
+<!-- Floating expand outline trigger tab (desktop) -->
 <button id="toc-expand-btn" class="toc-expand-btn hidden" title="Expand Outline">
   <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
 </button>
@@ -81,36 +79,37 @@
   }
 
   /* Mobile TOC Modal overlay mode */
-  :global(.toc-mobile-open) {
+  .toc-sidebar.toc-mobile-open,
+  :global(.toc-sidebar.toc-mobile-open) {
     display: block !important;
     position: fixed !important;
-    bottom: 5rem;
+    bottom: 5.5rem;
     right: 1.5rem;
     top: auto !important;
     transform: none !important;
-    width: 250px;
-    max-height: 400px;
+    width: min(300px, calc(100vw - 3rem));
+    max-height: min(450px, 70vh);
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    padding-bottom: 0.5rem;
-    z-index: 49;
+    border-radius: var(--radius-lg, 12px);
+    padding: 1.25rem 1rem;
+    z-index: 60;
     opacity: 1 !important;
     pointer-events: auto !important;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  :global(.toc-mobile-open) .toc-nav {
+  .toc-sidebar.toc-mobile-open .toc-nav,
+  :global(.toc-sidebar.toc-mobile-open) .toc-nav {
     position: relative !important;
     top: 0 !important;
-    max-height: calc(400px - 3rem) !important;
+    max-height: calc(min(450px, 70vh) - 3.5rem) !important;
   }
 
   .toc-nav {
@@ -195,10 +194,10 @@
 
   /* Hide floating TOC on smaller screens — mobile uses the popup button instead */
   @media (max-width: 1379px) {
-    .toc-sidebar {
+    .toc-sidebar:not(.toc-mobile-open) {
       display: none !important;
     }
-    .toc-sidebar.toc-visible {
+    .toc-sidebar.toc-visible:not(.toc-mobile-open) {
       display: none !important;
     }
     .toc-expand-btn {
@@ -211,7 +210,7 @@
   function initTOC() {
     const article = document.getElementById('article-content');
     const tocLinks = document.getElementById('toc-links');
-    const mobileBtn = document.getElementById('mobile-toc-btn');
+    const toggleBtn = document.getElementById('toc-toggle-btn') || document.getElementById('mobile-toc-btn');
     const sidebar = document.getElementById('toc-sidebar');
     const collapseBtn = document.getElementById('toc-collapse-btn');
     const expandBtn = document.getElementById('toc-expand-btn');
@@ -225,18 +224,37 @@
     const headings = [...article.querySelectorAll('h2, h3, h4')] as HTMLElement[];
     if (headings.length === 0) {
       sidebar.style.display = 'none';
-      if(mobileBtn) mobileBtn.style.display = 'none';
+      if (toggleBtn) toggleBtn.style.display = 'none';
       return;
     }
 
+    // Ensure every heading has an ID
+    headings.forEach((h, index) => {
+      if (!h.id) {
+        h.id = (h.textContent || '')
+          .toLowerCase()
+          .trim()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/[\s_-]+/g, '-')
+          .replace(/^-+|-+$/g, '') || `section-${index + 1}`;
+      }
+    });
+
     // Collapse / Expand handlers
-    if (collapseBtn && expandBtn) {
-      collapseBtn.addEventListener('click', () => {
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (sidebar.classList.contains('toc-mobile-open')) {
+          sidebar.classList.remove('toc-mobile-open');
+          return;
+        }
         sidebar.classList.remove('toc-visible');
         sidebar.classList.add('toc-collapsed-state');
-        expandBtn.classList.remove('hidden');
+        if (expandBtn) expandBtn.classList.remove('hidden');
       });
+    }
 
+    if (expandBtn) {
       expandBtn.addEventListener('click', () => {
         sidebar.classList.add('toc-visible');
         sidebar.classList.remove('toc-collapsed-state');
@@ -244,24 +262,22 @@
       });
     }
 
-    // Mobile Toggle Logic
-    if (mobileBtn) {
-      mobileBtn.addEventListener('click', (e) => {
+    // Mobile / Floating Toggle Button Logic
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const isCurrentlyOpen = sidebar.classList.contains('toc-mobile-open');
         if (isCurrentlyOpen) {
-          sidebar.style.display = '';
           sidebar.classList.remove('toc-mobile-open');
         } else {
-          sidebar.style.setProperty('display', 'block', 'important');
           sidebar.classList.add('toc-mobile-open');
         }
       });
-      
+
       document.addEventListener('click', (e) => {
-        if (window.innerWidth < 1024 && sidebar.classList.contains('toc-mobile-open')) {
-          if (!sidebar.contains(e.target as Node) && !mobileBtn.contains(e.target as Node)) {
-            sidebar.style.display = '';
+        if (sidebar.classList.contains('toc-mobile-open')) {
+          const target = e.target as Node;
+          if (!sidebar.contains(target) && !toggleBtn.contains(target)) {
             sidebar.classList.remove('toc-mobile-open');
           }
         }
@@ -293,8 +309,7 @@
           target.classList.add('toc-active');
 
           // Auto-close on mobile after link click
-          if (window.innerWidth < 1024) {
-            sidebar.style.display = '';
+          if (sidebar.classList.contains('toc-mobile-open')) {
             sidebar.classList.remove('toc-mobile-open');
           }
 
@@ -354,8 +369,7 @@
     // Show/hide TOC based on article scroll position (desktop only)
     const tocObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (sidebar.classList.contains('toc-collapsed-state')) {
-          sidebar.classList.remove('toc-visible');
+        if (sidebar.classList.contains('toc-collapsed-state') || sidebar.classList.contains('toc-mobile-open')) {
           return;
         }
         if (entry.isIntersecting) {

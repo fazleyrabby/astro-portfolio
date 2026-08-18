@@ -616,7 +616,8 @@
       transform var(--t-mid) var(--ease-out-expo);
   }
 
-  .reveal.is-visible {
+  .reveal.is-visible,
+  #hero .reveal {
     opacity: 1;
     transform: translateY(0);
   }

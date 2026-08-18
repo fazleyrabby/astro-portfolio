@@ -67,55 +67,71 @@ const {
     <ScrollToTop />
 
     <script>
-      import Lenis from "lenis";
-      import { gsap } from "gsap";
-      import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-      gsap.registerPlugin(ScrollTrigger);
-
-      const initAnimations = () => {
-        // Initialize Lenis smooth scroll on window
-        const lenis = new Lenis({
-          duration: 1.2,
-          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        });
-
-        lenis.on("scroll", ScrollTrigger.update);
-
-        gsap.ticker.add((time) => {
-          lenis.raf(time * 1000);
-        });
-
-        gsap.ticker.lagSmoothing(0);
-
-        // Reveal animations
+      const initAnimations = async () => {
+        // Native, lightweight IntersectionObserver for scroll reveals
         const revealEls = document.querySelectorAll(".reveal");
+        if (revealEls.length > 0) {
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            revealEls.forEach((el) => el.classList.add("is-visible"));
+          } else {
+            const observer = new IntersectionObserver(
+              (entries, obs) => {
+                entries.forEach((entry) => {
+                  if (entry.isIntersecting) {
+                    entry.target.classList.add("is-visible");
+                    obs.unobserve(entry.target);
+                  }
+                });
+              },
+              { threshold: 0.05, rootMargin: "0px 0px 50px 0px" }
+            );
+
+            revealEls.forEach((el) => {
+              const rect = el.getBoundingClientRect();
+              if (rect.top < window.innerHeight) {
+                el.classList.add("is-visible");
+              } else {
+                observer.observe(el);
+              }
+            });
+          }
+        }
+
+        // Initialize Lenis smooth scroll on desktop only (don't hijack mobile touch momentum)
         if (
-          revealEls.length > 0 &&
+          window.innerWidth >= 1024 &&
           !window.matchMedia("(prefers-reduced-motion: reduce)").matches
         ) {
-          revealEls.forEach((el) => {
-            ScrollTrigger.create({
-              trigger: el,
-              start: "top 90%",
-              once: true,
-              onEnter: () => el.classList.add("is-visible"),
+          try {
+            const { default: Lenis } = await import("lenis");
+            const lenis = new Lenis({
+              duration: 1.2,
+              easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             });
-          });
-        } else {
-          // If reduced motion, make everything visible
-          revealEls.forEach((el) => el.classList.add("is-visible"));
+
+            function raf(time: number) {
+              lenis.raf(time);
+              requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+          } catch {
+            // Fallback gracefully
+          }
         }
       };
 
-      // Defer non-critical animations
       if (window.requestIdleCallback) {
-        requestIdleCallback(() => {
-          initAnimations();
-        });
+        requestIdleCallback(() => initAnimations());
       } else {
-        setTimeout(initAnimations, 500);
+        setTimeout(initAnimations, 100);
       }
+      document.addEventListener("astro:page-load", () => {
+        if (window.requestIdleCallback) {
+          requestIdleCallback(() => initAnimations());
+        } else {
+          setTimeout(initAnimations, 100);
+        }
+      });
     </script>
 
     <script

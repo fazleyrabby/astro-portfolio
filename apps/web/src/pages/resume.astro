@@ -466,22 +466,19 @@ import MainLayout from '@layouts/MainLayout.astro';
     color: var(--text-muted);
   }
 
-  /* Single-Page Well-Balanced A4 Print Stylesheet */
+  /* Well-Balanced A4/Letter Print Stylesheet */
   @media print {
     @page {
       size: A4 portrait;
-      margin: 8mm 12mm;
+      margin: 7mm 11mm;
     }
     :global(html), :global(body) {
       background: #ffffff !important;
       color: #000000 !important;
       font-family: Georgia, serif !important;
-      font-size: 8.8pt !important;
-      line-height: 1.34 !important;
+      font-size: 8.55pt !important;
+      line-height: 1.32 !important;
       width: 100% !important;
-      height: 100% !important;
-      max-height: 100vh !important;
-      overflow: hidden !important;
       margin: 0 !important;
       padding: 0 !important;
     }
@@ -491,6 +488,10 @@ import MainLayout from '@layouts/MainLayout.astro';
     :global(.pt-16) {
       padding-top: 0 !important;
     }
+    :global(.reveal) {
+      opacity: 1 !important;
+      transform: none !important;
+    }
     .resume-page, .resume-container, .cv-card {
       padding: 0 !important;
       margin: 0 !important;
@@ -499,8 +500,6 @@ import MainLayout from '@layouts/MainLayout.astro';
       border: none !important;
       box-shadow: none !important;
       background: transparent !important;
-      page-break-inside: avoid !important;
-      break-inside: avoid !important;
     }
     .cv-card,
     .cv-card *,
@@ -533,27 +532,29 @@ import MainLayout from '@layouts/MainLayout.astro';
     }
     .cv-header {
       padding-bottom: 5pt !important;
-      margin-bottom: 6pt !important;
+      margin-bottom: 5pt !important;
       border-bottom: 1.2pt solid #000000 !important;
       text-align: center !important;
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
     }
     .cv-name {
-      font-size: 17pt !important;
+      font-size: 16.5pt !important;
       font-weight: 700 !important;
       color: #000000 !important;
       margin-bottom: 2pt !important;
       line-height: 1.1 !important;
     }
     .cv-tagline {
-      font-size: 9.2pt !important;
+      font-size: 9.1pt !important;
       font-weight: 600 !important;
       color: #000000 !important;
-      margin: 0 0 3pt !important;
+      margin: 0 0 2.5pt !important;
     }
     .cv-contacts {
-      font-size: 8.5pt !important;
+      font-size: 8.3pt !important;
       color: #000000 !important;
-      gap: 2pt 8pt !important;
+      gap: 2pt 7pt !important;
       justify-content: center !important;
     }
     .cv-contacts a {
@@ -561,89 +562,89 @@ import MainLayout from '@layouts/MainLayout.astro';
       text-decoration: none !important;
     }
     .cv-body {
-      gap: 6pt !important;
+      gap: 5pt !important;
     }
     .cv-section {
-      padding-bottom: 5.5pt !important;
+      padding-bottom: 4.5pt !important;
       border-bottom: 0.5pt solid #cccccc !important;
-      page-break-inside: avoid !important;
-      break-inside: avoid !important;
     }
     .cv-section--last {
       border-bottom: none !important;
       padding-bottom: 0 !important;
     }
     .cv-section-title {
-      font-size: 9.3pt !important;
+      font-size: 9.1pt !important;
       color: #000000 !important;
-      margin-bottom: 3.5pt !important;
+      margin-bottom: 2.5pt !important;
       letter-spacing: 0.08em !important;
       font-weight: 700 !important;
     }
     .cv-summary {
-      font-size: 8.7pt !important;
-      line-height: 1.34 !important;
+      font-size: 8.5pt !important;
+      line-height: 1.32 !important;
       color: #000000 !important;
       margin: 0 !important;
     }
     .cv-entries {
-      gap: 4.5pt !important;
+      gap: 4pt !important;
     }
     .cv-entry {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
     }
     .cv-entry-head {
-      margin-bottom: 1pt !important;
+      margin-bottom: 0.8pt !important;
     }
     .cv-entry-company {
-      font-size: 9.6pt !important;
+      font-size: 9.3pt !important;
       font-weight: 700 !important;
       color: #000000 !important;
     }
     .cv-entry-role {
-      font-size: 8.7pt !important;
+      font-size: 8.5pt !important;
       color: #000000 !important;
     }
     .cv-entry-meta {
-      font-size: 8.3pt !important;
+      font-size: 8.1pt !important;
       color: #000000 !important;
     }
     .cv-list {
-      margin: 1.5pt 0 !important;
+      margin: 1.2pt 0 !important;
       padding-left: 11pt !important;
     }
     .cv-list li {
-      font-size: 8.6pt !important;
-      line-height: 1.32 !important;
-      margin-bottom: 1.5pt !important;
+      font-size: 8.4pt !important;
+      line-height: 1.30 !important;
+      margin-bottom: 1.2pt !important;
       color: #000000 !important;
     }
     .cv-list li::marker {
       color: #000000 !important;
     }
     .cv-tech {
-      font-size: 8.3pt !important;
-      margin: 1.5pt 0 0 !important;
+      font-size: 8.1pt !important;
+      margin: 1.2pt 0 0 !important;
       color: #000000 !important;
-      line-height: 1.3 !important;
+      line-height: 1.26 !important;
     }
     .cv-project-title {
-      margin-bottom: 1pt !important;
-      font-size: 9.2pt !important;
+      margin-bottom: 0.8pt !important;
+      font-size: 9.1pt !important;
     }
     .cv-project-name {
       font-weight: 700 !important;
       color: #000000 !important;
     }
     .cv-project-sub {
-      font-size: 8.6pt !important;
+      font-size: 8.5pt !important;
     }
     .cv-skills-grid {
-      grid-template-columns: 145px 1fr !important;
-      gap: 2pt 8pt !important;
-      font-size: 8.6pt !important;
-      line-height: 1.32 !important;
+      grid-template-columns: 135px 1fr !important;
+      gap: 1.8pt 7pt !important;
+      font-size: 8.4pt !important;
+      line-height: 1.30 !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
     }
     .cv-skill-cat {
       font-weight: 700 !important;
@@ -653,31 +654,33 @@ import MainLayout from '@layouts/MainLayout.astro';
       color: #000000 !important;
     }
     .cv-edu-list {
-      gap: 2.5pt !important;
+      gap: 2pt !important;
     }
     .cv-edu-item {
       display: flex !important;
       justify-content: space-between !important;
       align-items: baseline !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
     }
     .cv-edu-school {
-      font-size: 9.0pt !important;
+      font-size: 8.9pt !important;
       font-weight: 700 !important;
       color: #000000 !important;
     }
     .cv-edu-degree {
-      font-size: 8.5pt !important;
+      font-size: 8.4pt !important;
       color: #000000 !important;
     }
     .cv-edu-year {
-      font-size: 8.2pt !important;
+      font-size: 8pt !important;
       color: #000000 !important;
     }
     .cv-languages {
-      font-size: 8.5pt !important;
-      margin: 3pt 0 0 !important;
+      font-size: 8.4pt !important;
+      margin: 2.5pt 0 0 !important;
       color: #000000 !important;
-      line-height: 1.3 !important;
+      line-height: 1.28 !important;
     }
   }
 </style>

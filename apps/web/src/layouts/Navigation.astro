@@ -316,13 +316,17 @@ const navItems = [
       const newBtn = themeToggle.cloneNode(true);
       themeToggle.parentNode?.replaceChild(newBtn, themeToggle);
       newBtn.addEventListener("click", () => {
-        const isDark = document.documentElement.classList.contains("dark");
-        if (isDark) {
-          document.documentElement.classList.remove("dark");
-          localStorage.setItem("color-mode", "light");
+        if (typeof (window as any).__toggleThemeWithWave === "function") {
+          (window as any).__toggleThemeWithWave();
         } else {
-          document.documentElement.classList.add("dark");
-          localStorage.setItem("color-mode", "dark");
+          const isDark = document.documentElement.classList.contains("dark");
+          if (isDark) {
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("color-mode", "light");
+          } else {
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("color-mode", "dark");
+          }
         }
       });
     }

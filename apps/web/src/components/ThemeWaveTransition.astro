@@ -1,0 +1,444 @@
+---
+// Fullscreen Cascading Rain Theme Transition with Wet Glass & Water Refraction Distortion Effect
+---
+
+<canvas id="theme-wave-canvas" class="theme-wave-canvas" aria-hidden="true"></canvas>
+
+<!-- SVG Displacement Filter for realistic wet glass / rippling website distortion -->
+<svg class="rain-distortion-svg" aria-hidden="true" style="position: fixed; width: 0; height: 0; pointer-events: none; overflow: hidden;">
+  <defs>
+    <filter id="rain-wet-distortion" x="-10%" y="-10%" width="120%" height="120%" filterUnits="objectBoundingBox">
+      <feTurbulence id="rain-turb" type="fractalNoise" baseFrequency="0.025 0.06" numOctaves="2" seed="1" result="noise" />
+      <feDisplacementMap id="rain-disp" in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </defs>
+</svg>
+
+<style>
+  .theme-wave-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999999;
+    pointer-events: none;
+    display: none;
+  }
+
+  :global(.rain-wet-content.is-raining-wet) {
+    filter: url(#rain-wet-distortion);
+    will-change: filter;
+  }
+</style>
+
+<script>
+  interface RainDrop {
+    x: number;
+    y: number;
+    speed: number;
+    length: number;
+    thickness: number;
+    alpha: number;
+    layer: number; // 0 = subtle back, 1 = mid, 2 = fast bright foreground
+  }
+
+  interface SplashParticle {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    radius: number;
+    alpha: number;
+    color: string;
+  }
+
+  interface SplashRipple {
+    x: number;
+    y: number;
+    radius: number;
+    maxRadius: number;
+    alpha: number;
+    lineWidth: number;
+    color: string;
+  }
+
+  class ThemeRainTransition {
+    private canvas: HTMLCanvasElement | null = null;
+    private ctx: CanvasRenderingContext2D | null = null;
+    private isAnimating = false;
+    private animationFrameId: number | null = null;
+    private rainAudio: HTMLAudioElement | null = null;
+
+    private rainDrops: RainDrop[] = [];
+    private splashes: SplashRipple[] = [];
+    private droplets: SplashParticle[] = [];
+
+    // Filter elements
+    private dispElem: SVGElement | null = null;
+    private turbElem: SVGElement | null = null;
+
+    constructor() {
+      this.init();
+    }
+
+    public init() {
+      this.canvas = document.getElementById('theme-wave-canvas') as HTMLCanvasElement | null;
+      if (!this.canvas) return;
+      this.ctx = this.canvas.getContext('2d', { alpha: true });
+
+      this.dispElem = document.getElementById('rain-disp') as unknown as SVGElement;
+      this.turbElem = document.getElementById('rain-turb') as unknown as SVGElement;
+
+      // Preload real rain audio for instant zero-latency playback
+      try {
+        this.rainAudio = new Audio('/audio/rain.wav');
+        this.rainAudio.preload = 'auto';
+        this.rainAudio.load();
+      } catch (e) {}
+
+      // Expose globally so all toggles can call it
+      (window as any).__toggleThemeWithWave = () => this.toggleTheme();
+
+      this.bindToggles();
+    }
+
+    public bindToggles() {
+      const selectors = [
+        '#theme-toggle',
+        '#v2-theme-toggle',
+        '#v2-theme-toggle-mobile',
+        '.themeToggle',
+        '[data-theme-toggle]'
+      ];
+
+      selectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+          const btn = el as HTMLElement;
+          if (btn.dataset.waveBound === 'true') return;
+          btn.dataset.waveBound = 'true';
+
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.toggleTheme();
+          });
+        });
+      });
+    }
+
+    public toggleTheme() {
+      if (this.isAnimating) return;
+
+      // Accessibility: reduced motion support
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const isCurrentlyDark = document.documentElement.classList.contains('dark');
+        const nextDark = !isCurrentlyDark;
+        if (nextDark) {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('color-mode', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('color-mode', 'light');
+        }
+        window.dispatchEvent(new CustomEvent('theme-changed', { detail: { isDark: nextDark } }));
+        return;
+      }
+
+      this.playSubtleRainSound();
+      this.startRainAnimation();
+    }
+
+    private playSubtleRainSound() {
+      try {
+        if (!this.rainAudio) {
+          this.rainAudio = new Audio('/audio/rain.wav');
+          this.rainAudio.preload = 'auto';
+        }
+        this.rainAudio.currentTime = 0;
+        this.rainAudio.volume = 0.5; // gentle, natural volume
+        this.rainAudio.play().catch(() => {});
+      } catch (e) {}
+    }
+
+    private startRainAnimation() {
+      if (!this.canvas || !this.ctx) return;
+
+      const isCurrentlyDark = document.documentElement.classList.contains('dark');
+      const targetDark = !isCurrentlyDark;
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      this.canvas.width = Math.floor(width * dpr);
+      this.canvas.height = Math.floor(height * dpr);
+      this.canvas.style.display = 'block';
+
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+      this.ctx.scale(dpr, dpr);
+      this.isAnimating = true;
+
+      // Activate wet glass distortion on the page content
+      const contentWrapper = document.getElementById('rain-wet-content');
+      contentWrapper?.classList.add('is-raining-wet');
+
+      // Color Palette for Rain Streaks & Splashes
+      const palette = targetDark ? {
+        frontDropHead: '#ffffff',
+        frontDropBody: 'rgba(234, 88, 12, 0.9)',   // warm amber core
+        midDropBody: 'rgba(249, 115, 22, 0.65)',
+        backDropBody: 'rgba(180, 200, 230, 0.35)',
+        splashColor: 'rgba(234, 88, 12, 0.75)',
+        mistOverlay: 'rgba(10, 10, 12, '
+      } : {
+        frontDropHead: '#ffffff',
+        frontDropBody: 'rgba(255, 255, 255, 0.95)',
+        midDropBody: 'rgba(234, 88, 12, 0.6)',     // amber glint on water
+        backDropBody: 'rgba(200, 225, 255, 0.4)',
+        splashColor: 'rgba(234, 88, 12, 0.65)',
+        mistOverlay: 'rgba(250, 250, 252, '
+      };
+
+      // Generate Raindrops: Dense shower pouring from top
+      this.rainDrops = [];
+      const dropCount = Math.floor((width / 1200) * 220) + 160;
+
+      for (let i = 0; i < dropCount; i++) {
+        const layer = Math.random() < 0.3 ? 0 : Math.random() < 0.7 ? 1 : 2;
+        const speedMult = layer === 0 ? 0.75 : layer === 1 ? 1.0 : 1.4;
+
+        this.rainDrops.push({
+          x: Math.random() * (width + 80) - 40,
+          y: Math.random() * -height * 0.9 - 30, // Start staggered above the viewport
+          speed: (Math.random() * 18 + 26) * speedMult,
+          length: (Math.random() * 32 + 25) * speedMult,
+          thickness: layer === 0 ? 1.0 : layer === 1 ? 1.6 : 2.4,
+          alpha: layer === 0 ? 0.4 : layer === 1 ? 0.7 : 0.95,
+          layer
+        });
+      }
+
+      this.splashes = [];
+      this.droplets = [];
+
+      const startTime = performance.now();
+      const duration = 1050; // ms (smooth rain sweep)
+      let hasSwappedTheme = false;
+
+      const windAngle = -0.05; // natural slight angle
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1.0);
+
+        const ctx = this.ctx;
+        if (!ctx) return;
+
+        ctx.clearRect(0, 0, width, height);
+
+        // ==========================================
+        // DYNAMIC WET GLASS DISTORTION ON CONTENT
+        // ==========================================
+        // Sine wave envelope: starts at 0, peaks at 16px displacement, smoothly returns to 0
+        const wetIntensity = Math.sin(progress * Math.PI);
+        const displacementScale = wetIntensity * 16.0;
+
+        if (this.dispElem) {
+          this.dispElem.setAttribute('scale', displacementScale.toFixed(2));
+        }
+        if (this.turbElem) {
+          // Animate turbulence seed to create shimmering liquid flow across the content
+          const currentSeed = Math.floor(elapsed * 0.05) % 20 + 1;
+          this.turbElem.setAttribute('seed', String(currentSeed));
+        }
+
+        // Submerged theme switch: at the midpoint of the rain storm (48% progress)
+        if (progress >= 0.48 && !hasSwappedTheme) {
+          hasSwappedTheme = true;
+          if (targetDark) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('color-mode', 'dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('color-mode', 'light');
+          }
+          window.dispatchEvent(new CustomEvent('theme-changed', { detail: { isDark: targetDark } }));
+        }
+
+        // Atmospheric Rain Mist (soft ambient fade in and out during the peak)
+        const mistIntensity = wetIntensity * 0.15;
+        if (mistIntensity > 0.01) {
+          ctx.fillStyle = `${palette.mistOverlay}${mistIntensity.toFixed(3)})`;
+          ctx.fillRect(0, 0, width, height);
+        }
+
+        // ==========================================
+        // 1. RENDER RAIN STREAKS
+        // ==========================================
+        ctx.save();
+        this.rainDrops.forEach((drop) => {
+          drop.y += drop.speed;
+          drop.x += drop.speed * windAngle;
+
+          // Trigger splash ripples as raindrops hit across the screen
+          if (Math.random() < 0.09 && drop.y > 0 && drop.y < height) {
+            this.splashes.push({
+              x: drop.x,
+              y: drop.y,
+              radius: 1,
+              maxRadius: Math.random() * 14 + 8,
+              alpha: 0.85,
+              lineWidth: Math.random() * 1.5 + 0.8,
+              color: drop.layer === 2 ? palette.splashColor : 'rgba(255, 255, 255, 0.7)'
+            });
+
+            // Occasional splash droplets bouncing up
+            if (Math.random() < 0.4) {
+              for (let d = 0; d < 3; d++) {
+                this.droplets.push({
+                  x: drop.x,
+                  y: drop.y,
+                  vx: (Math.random() - 0.5) * 3.5,
+                  vy: -(Math.random() * 3.5 + 1.5),
+                  radius: Math.random() * 1.5 + 0.8,
+                  alpha: 0.9,
+                  color: palette.frontDropHead
+                });
+              }
+            }
+          }
+
+          // Loop drops during first 70% of transition
+          if (drop.y > height + 60 && progress < 0.7) {
+            drop.y = Math.random() * -120 - 20;
+            drop.x = Math.random() * (width + 80) - 40;
+          }
+
+          // Draw the raindrop streak
+          if (drop.y > -60 && drop.y < height + 60) {
+            const tailX = drop.x - drop.length * windAngle;
+            const tailY = drop.y - drop.length;
+
+            const grad = ctx.createLinearGradient(tailX, tailY, drop.x, drop.y);
+            grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+
+            if (drop.layer === 2) {
+              grad.addColorStop(0.65, palette.frontDropBody);
+              grad.addColorStop(1.0, palette.frontDropHead);
+            } else if (drop.layer === 1) {
+              grad.addColorStop(0.6, palette.midDropBody);
+              grad.addColorStop(1.0, palette.frontDropHead);
+            } else {
+              grad.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
+              grad.addColorStop(1.0, palette.backDropBody);
+            }
+
+            ctx.beginPath();
+            ctx.moveTo(tailX, tailY);
+            ctx.lineTo(drop.x, drop.y);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = drop.thickness;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+          }
+        });
+        ctx.restore();
+
+        // ==========================================
+        // 2. RENDER SPLASH RIPPLES
+        // ==========================================
+        ctx.save();
+        for (let i = this.splashes.length - 1; i >= 0; i--) {
+          const s = this.splashes[i];
+          s.radius += 1.6;
+          s.alpha *= 0.88;
+
+          if (s.alpha <= 0.03 || s.radius >= s.maxRadius) {
+            this.splashes.splice(i, 1);
+            continue;
+          }
+
+          ctx.beginPath();
+          ctx.ellipse(s.x, s.y, s.radius * 1.8, s.radius * 0.65, 0, 0, Math.PI * 2);
+          ctx.strokeStyle = s.color;
+          ctx.globalAlpha = s.alpha;
+          ctx.lineWidth = s.lineWidth;
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        // ==========================================
+        // 3. RENDER BOUNCING SPLASH PARTICLES
+        // ==========================================
+        ctx.save();
+        for (let i = this.droplets.length - 1; i >= 0; i--) {
+          const d = this.droplets[i];
+          d.x += d.vx;
+          d.y += d.vy;
+          d.vy += 0.25; // gravity
+          d.alpha *= 0.92;
+
+          if (d.alpha <= 0.05) {
+            this.droplets.splice(i, 1);
+            continue;
+          }
+
+          ctx.beginPath();
+          ctx.arc(d.x, d.y, d.radius, 0, Math.PI * 2);
+          ctx.fillStyle = d.color;
+          ctx.globalAlpha = d.alpha;
+          ctx.fill();
+        }
+        ctx.restore();
+
+        // Continue animation loop or finish
+        if (progress < 1.0) {
+          this.animationFrameId = requestAnimationFrame(animate);
+        } else {
+          this.endRainAnimation();
+        }
+      };
+
+      this.animationFrameId = requestAnimationFrame(animate);
+    }
+
+    private endRainAnimation() {
+      if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+      }
+      if (this.canvas) {
+        this.canvas.style.display = 'none';
+      }
+
+      // Remove wet glass distortion from page content
+      const contentWrapper = document.getElementById('rain-wet-content');
+      contentWrapper?.classList.remove('is-raining-wet');
+      if (this.dispElem) {
+        this.dispElem.setAttribute('scale', '0');
+      }
+
+      this.isAnimating = false;
+    }
+  }
+
+  // Initialize on page load and Astro view transitions
+  let rainController: ThemeRainTransition | null = null;
+
+  function initRainTransition() {
+    if (!rainController) {
+      rainController = new ThemeRainTransition();
+    } else {
+      rainController.bindToggles();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRainTransition);
+  } else {
+    initRainTransition();
+  }
+
+  document.addEventListener('astro:page-load', initRainTransition);
+</script>

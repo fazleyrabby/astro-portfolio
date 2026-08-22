@@ -108,13 +108,17 @@ if (segments.length > 0) {
   // Mobile theme toggle
   const themeToggleMobile = document.getElementById("v2-theme-toggle-mobile");
   themeToggleMobile?.addEventListener("click", () => {
-    const isDark = document.documentElement.classList.contains("dark");
-    if (isDark) {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("color-mode", "light");
+    if (typeof (window as any).__toggleThemeWithWave === "function") {
+      (window as any).__toggleThemeWithWave();
     } else {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("color-mode", "dark");
+      const isDark = document.documentElement.classList.contains("dark");
+      if (isDark) {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("color-mode", "light");
+      } else {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("color-mode", "dark");
+      }
     }
   });
 

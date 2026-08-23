@@ -120,7 +120,6 @@ const tp = useTranslatedPath(lang);
           <!-- Avatar Mode Switch Pill -->
           <div class="hero-avatar-dock">
             <button type="button" id="hero-avatar-toggle-btn" class="hero-avatar-toggle-btn" title="Toggle Avatar Mode: Photo / Retro Dither">
-              <span class="avatar-toggle-dot"></span>
               <span class="avatar-toggle-opt opt-photo active">PHOTO</span>
               <span class="avatar-toggle-sep">/</span>
               <span class="avatar-toggle-opt opt-binary">DITHER</span>
@@ -731,15 +730,6 @@ const tp = useTranslatedPath(lang);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
   }
 
-  .avatar-toggle-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
-    transition: all 0.2s ease;
-  }
-
   .avatar-toggle-opt {
     font-weight: 500;
     transition: color 0.2s, opacity 0.2s;
@@ -941,12 +931,6 @@ const tp = useTranslatedPath(lang);
         ctx.lineWidth = 1.5;
         ctx.setLineDash([4, 4]);
         ctx.stroke();
-
-        // Small center crosshair
-        ctx.beginPath();
-        ctx.arc(mouseX, mouseY, 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = "#ea580c";
-        ctx.fill();
         ctx.restore();
       }
     }

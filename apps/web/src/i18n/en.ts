@@ -18,6 +18,7 @@ export const en = {
   'footer.description': 'Laravel & Backend Engineer specializing in SaaS platforms, REST APIs, and high-performance applications.',
   'footer.powered': 'Powered by',
   'footer.built': 'Built with ❤ by',
+  'footer.visitors': 'Visits',
   'hero.available': 'Available for freelance & collaboration',
   'hero.hi': "Hi, I'm",
   'hero.name': 'Md. Fazley Rabbi',

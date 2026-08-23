@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
+import VisitorCounter from "../components/VisitorCounter.astro";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -50,7 +51,11 @@ const translatePath = useTranslatedPath(lang);
     <!-- Bottom bar -->
     <div class="footer-bottom">
       <span class="footer-copy">© {new Date().getFullYear()} Fazley Rabbi</span>
-      <span class="footer-built">Built with Astro</span>
+      <div class="footer-meta">
+        <VisitorCounter lang={lang} />
+        <span class="footer-dot-sep" aria-hidden="true">•</span>
+        <span class="footer-built">Built with Astro</span>
+      </div>
     </div>
   </div>
 </footer>
@@ -177,6 +182,8 @@ const translatePath = useTranslatedPath(lang);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
   .footer-copy,
   .footer-built {
@@ -184,5 +191,23 @@ const translatePath = useTranslatedPath(lang);
     font-size: 0.6875rem;
     color: var(--text-muted);
     letter-spacing: 0.04em;
+  }
+  .footer-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .footer-dot-sep {
+    color: var(--border);
+    font-size: 0.75rem;
+    user-select: none;
+  }
+  @media (max-width: 640px) {
+    .footer-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
   }
 </style>

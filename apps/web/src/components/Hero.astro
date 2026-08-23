@@ -795,20 +795,12 @@ const tp = useTranslatedPath(lang);
 
     applyModeUI();
 
-    // Bayer 8x8 Ordered Dither Matrix
-    const BAYER_8X8 = [
-      [ 0/64, 32/64,  8/64, 40/64,  2/64, 34/64, 10/64, 42/64 ],
-      [48/64, 16/64, 56/64, 24/64, 50/64, 18/64, 58/64, 26/64 ],
-      [12/64, 44/64,  4/64, 36/64, 14/64, 46/64,  6/64, 38/64 ],
-      [60/64, 28/64, 52/64, 20/64, 62/64, 30/64, 54/64, 22/64 ],
-      [ 3/64, 35/64, 11/64, 43/64,  1/64, 33/64,  9/64, 41/64 ],
-      [51/64, 19/64, 59/64, 27/64, 49/64, 17/64, 57/64, 25/64 ],
-      [15/64, 47/64,  7/64, 39/64, 13/64, 45/64,  5/64, 37/64 ],
-      [63/64, 31/64, 55/64, 23/64, 61/64, 29/64, 53/64, 21/64 ]
-    ];
+    // Typographic Halftone Character Ramp (densest to lightest)
+    const CHAR_RAMP = ["8", "S", "0", "9", "5", "8", "0", "·", " "];
 
-    const DITHER_GRID_SIZE = 130;
-    let gridData: { r: number; c: number; x: number; y: number; isFilled: boolean; lum: number }[] = [];
+    const DITHER_COLS = 54;
+    const DITHER_ROWS = 54;
+    let gridData: { r: number; c: number; x: number; y: number; char: string; lum: number; color: string }[] = [];
     let mouseX = -9999, mouseY = -9999;
     let animId = 0;
 
@@ -819,8 +811,8 @@ const tp = useTranslatedPath(lang);
       }
 
       const offscreen = document.createElement("canvas");
-      const COLS = DITHER_GRID_SIZE;
-      const ROWS = DITHER_GRID_SIZE;
+      const COLS = DITHER_COLS;
+      const ROWS = DITHER_ROWS;
       offscreen.width = COLS;
       offscreen.height = ROWS;
       const offCtx = offscreen.getContext("2d");
@@ -842,19 +834,22 @@ const tp = useTranslatedPath(lang);
           const red = imgData[idx];
           const green = imgData[idx + 1];
           const blue = imgData[idx + 2];
-          // Perceptual luminance with slight contrast boost
-          let lum = (0.299 * red + 0.587 * green + 0.114 * blue) / 255;
-          lum = Math.pow(lum, 1.1) * 1.05;
-          const threshold = BAYER_8X8[r % 8][c % 8];
-          const isFilled = lum >= threshold;
+          // Perceptual luminance formula
+          const lum = (0.299 * red + 0.587 * green + 0.114 * blue) / 255;
+
+          // Select character based on luminance ramp
+          let charIndex = Math.floor((1 - lum) * (CHAR_RAMP.length - 1));
+          charIndex = Math.max(0, Math.min(CHAR_RAMP.length - 1, charIndex));
+          const char = CHAR_RAMP[charIndex];
 
           gridData.push({
             r,
             c,
-            x: c * cellW,
-            y: r * cellH,
-            isFilled,
-            lum
+            x: c * cellW + cellW / 2,
+            y: r * cellH + cellH / 2,
+            char,
+            lum,
+            color: `rgb(${red}, ${green}, ${blue})`
           });
         }
       }
@@ -877,25 +872,44 @@ const tp = useTranslatedPath(lang);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       const isDark = document.documentElement.classList.contains("dark");
-      const dotW = Math.ceil(w / DITHER_GRID_SIZE);
-      const dotH = Math.ceil(h / DITHER_GRID_SIZE);
+      const cellW = w / DITHER_COLS;
+      const cellH = h / DITHER_ROWS;
+      const fontSize = Math.floor(cellH * 0.95);
 
-      // Base background
+      // 1. Draw subtle background mood texture / portrait gradient
       ctx.fillStyle = isDark ? "#0a0a0a" : "#fafaf9";
       ctx.fillRect(0, 0, w, h);
 
-      // 1. Draw base dither pixels
-      ctx.fillStyle = isDark ? "#f4f4f5" : "#1c1917";
-      for (let i = 0; i < gridData.length; i++) {
-        const pt = gridData[i];
-        if (pt.isFilled) {
-          ctx.fillRect(pt.x, pt.y, dotW, dotH);
-        }
+      if (img && img.complete) {
+        ctx.save();
+        ctx.globalAlpha = isDark ? 0.28 : 0.18;
+        ctx.drawImage(img, 0, 0, w, h);
+        ctx.restore();
       }
 
-      // 2. Draw Inverted Lens Layer if Hovering
+      // 2. Render Typographic Halftone ASCII Glyphs
+      ctx.font = `600 ${fontSize}px "IBM Plex Mono", "JetBrains Mono", monospace`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      for (let i = 0; i < gridData.length; i++) {
+        const pt = gridData[i];
+        if (!pt.char || pt.char === " ") continue;
+
+        if (isDark) {
+          const alpha = Math.min(1, pt.lum * 1.2 + 0.15);
+          ctx.fillStyle = `rgba(244, 244, 245, ${alpha.toFixed(2)})`;
+        } else {
+          const alpha = Math.min(1, (1 - pt.lum) * 1.1 + 0.2);
+          ctx.fillStyle = `rgba(28, 25, 23, ${alpha.toFixed(2)})`;
+        }
+
+        ctx.fillText(pt.char, pt.x, pt.y);
+      }
+
+      // 3. Draw Inverted Lens Layer if Hovering
       const isHovering = frame.classList.contains("is-hovering") && mouseX >= 0 && mouseY >= 0;
-      const lensRadius = 86;
+      const lensRadius = 88;
       const lensRadiusSq = lensRadius * lensRadius;
 
       if (isHovering) {
@@ -908,22 +922,29 @@ const tp = useTranslatedPath(lang);
         ctx.fillStyle = isDark ? "#f4f4f5" : "#0a0a0a";
         ctx.fillRect(mouseX - lensRadius - 2, mouseY - lensRadius - 2, (lensRadius + 2) * 2, (lensRadius + 2) * 2);
 
-        // Render Inverted Dither Pixels (!isFilled)
-        ctx.fillStyle = isDark ? "#0a0a0a" : "#fafaf9";
+        // Render Inverted Glyphs
         for (let i = 0; i < gridData.length; i++) {
           const pt = gridData[i];
-          const dx = pt.x + dotW / 2 - mouseX;
-          const dy = pt.y + dotH / 2 - mouseY;
-          if (dx * dx + dy * dy <= lensRadiusSq + 400) {
-            // INVERT DITHER: Empty becomes filled, filled becomes empty
-            if (!pt.isFilled) {
-              ctx.fillRect(pt.x, pt.y, dotW, dotH);
+          const dx = pt.x - mouseX;
+          const dy = pt.y - mouseY;
+          if (dx * dx + dy * dy <= lensRadiusSq + 300) {
+            // Inverted glyph from opposite end of ramp
+            let invertedIndex = (CHAR_RAMP.length - 1) - Math.floor((1 - pt.lum) * (CHAR_RAMP.length - 1));
+            invertedIndex = Math.max(0, Math.min(CHAR_RAMP.length - 1, invertedIndex));
+            const invChar = CHAR_RAMP[invertedIndex] || "8";
+
+            if (isDark) {
+              ctx.fillStyle = `rgba(10, 10, 10, ${Math.min(1, (1 - pt.lum) + 0.35).toFixed(2)})`;
+            } else {
+              ctx.fillStyle = `rgba(250, 250, 249, ${Math.min(1, pt.lum + 0.4).toFixed(2)})`;
             }
+
+            ctx.fillText(invChar, pt.x, pt.y);
           }
         }
         ctx.restore();
 
-        // 3. Cyber Reticle Ring around Invert Lens
+        // Cyber Reticle Ring around Invert Lens
         ctx.save();
         ctx.beginPath();
         ctx.arc(mouseX, mouseY, lensRadius, 0, Math.PI * 2);

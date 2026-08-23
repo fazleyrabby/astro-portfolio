@@ -798,11 +798,12 @@ const tp = useTranslatedPath(lang);
     // Typographic Halftone Character Ramp (densest to lightest)
     const CHAR_RAMP = ["8", "S", "0", "9", "5", "8", "0", "·", " "];
 
-    const DITHER_COLS = 54;
-    const DITHER_ROWS = 54;
-    let gridData: { r: number; c: number; x: number; y: number; char: string; lum: number; color: string }[] = [];
+    let gridData: { r: number; c: number; x: number; y: number; char: string; lum: number }[] = [];
+    let cropCoords = { sx: 0, sy: 0, sDim: 480 };
     let mouseX = -9999, mouseY = -9999;
     let animId = 0;
+    let numCols = 64;
+    let numRows = 48;
 
     function processImageToBinary() {
       if (!img?.complete || img.naturalWidth === 0) {
@@ -810,31 +811,57 @@ const tp = useTranslatedPath(lang);
         return;
       }
 
-      const offscreen = document.createElement("canvas");
-      const COLS = DITHER_COLS;
-      const ROWS = DITHER_ROWS;
-      offscreen.width = COLS;
-      offscreen.height = ROWS;
-      const offCtx = offscreen.getContext("2d");
-      if (!offCtx) return;
-
-      offCtx.drawImage(img, 0, 0, COLS, ROWS);
-      const imgData = offCtx.getImageData(0, 0, COLS, ROWS).data;
-
-      gridData = [];
       const rect = frame?.getBoundingClientRect();
       const w = rect?.width || 480;
       const h = rect?.height || 480;
-      const cellW = w / COLS;
-      const cellH = h / ROWS;
 
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          const idx = (r * COLS + c) * 4;
+      // Exact object-fit: cover 1:1 center crop calculation
+      const nw = img.naturalWidth || 480;
+      const nh = img.naturalHeight || 480;
+      const minDim = Math.min(nw, nh);
+      cropCoords = {
+        sx: (nw - minDim) / 2,
+        sy: (nh - minDim) / 2,
+        sDim: minDim
+      };
+
+      // Monospace characters have ~0.6 width-to-height ratio.
+      // Proportional cell sizing ensures 1:1 square face geometry without squishing.
+      const cellH = 10;
+      const cellW = 6.2;
+      numCols = Math.floor(w / cellW);
+      numRows = Math.floor(h / cellH);
+
+      const offscreen = document.createElement("canvas");
+      offscreen.width = numCols;
+      offscreen.height = numRows;
+      const offCtx = offscreen.getContext("2d");
+      if (!offCtx) return;
+
+      offCtx.drawImage(
+        img,
+        cropCoords.sx,
+        cropCoords.sy,
+        cropCoords.sDim,
+        cropCoords.sDim,
+        0,
+        0,
+        numCols,
+        numRows
+      );
+      const imgData = offCtx.getImageData(0, 0, numCols, numRows).data;
+
+      gridData = [];
+      const actualCellW = w / numCols;
+      const actualCellH = h / numRows;
+
+      for (let r = 0; r < numRows; r++) {
+        for (let c = 0; c < numCols; c++) {
+          const idx = (r * numCols + c) * 4;
           const red = imgData[idx];
           const green = imgData[idx + 1];
           const blue = imgData[idx + 2];
-          // Perceptual luminance formula
+          // Perceptual luminance
           const lum = (0.299 * red + 0.587 * green + 0.114 * blue) / 255;
 
           // Select character based on luminance ramp
@@ -845,11 +872,10 @@ const tp = useTranslatedPath(lang);
           gridData.push({
             r,
             c,
-            x: c * cellW + cellW / 2,
-            y: r * cellH + cellH / 2,
+            x: c * actualCellW + actualCellW / 2,
+            y: r * actualCellH + actualCellH / 2,
             char,
-            lum,
-            color: `rgb(${red}, ${green}, ${blue})`
+            lum
           });
         }
       }
@@ -872,18 +898,27 @@ const tp = useTranslatedPath(lang);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       const isDark = document.documentElement.classList.contains("dark");
-      const cellW = w / DITHER_COLS;
-      const cellH = h / DITHER_ROWS;
-      const fontSize = Math.floor(cellH * 0.95);
+      const actualCellH = h / numRows;
+      const fontSize = Math.floor(actualCellH * 0.92);
 
-      // 1. Draw subtle background mood texture / portrait gradient
+      // 1. Draw 1:1 center-cropped background image texture
       ctx.fillStyle = isDark ? "#0a0a0a" : "#fafaf9";
       ctx.fillRect(0, 0, w, h);
 
       if (img && img.complete) {
         ctx.save();
         ctx.globalAlpha = isDark ? 0.28 : 0.18;
-        ctx.drawImage(img, 0, 0, w, h);
+        ctx.drawImage(
+          img,
+          cropCoords.sx,
+          cropCoords.sy,
+          cropCoords.sDim,
+          cropCoords.sDim,
+          0,
+          0,
+          w,
+          h
+        );
         ctx.restore();
       }
 
@@ -897,10 +932,10 @@ const tp = useTranslatedPath(lang);
         if (!pt.char || pt.char === " ") continue;
 
         if (isDark) {
-          const alpha = Math.min(1, pt.lum * 1.2 + 0.15);
+          const alpha = Math.min(1, pt.lum * 1.25 + 0.15);
           ctx.fillStyle = `rgba(244, 244, 245, ${alpha.toFixed(2)})`;
         } else {
-          const alpha = Math.min(1, (1 - pt.lum) * 1.1 + 0.2);
+          const alpha = Math.min(1, (1 - pt.lum) * 1.15 + 0.2);
           ctx.fillStyle = `rgba(28, 25, 23, ${alpha.toFixed(2)})`;
         }
 
@@ -922,7 +957,7 @@ const tp = useTranslatedPath(lang);
         ctx.fillStyle = isDark ? "#f4f4f5" : "#0a0a0a";
         ctx.fillRect(mouseX - lensRadius - 2, mouseY - lensRadius - 2, (lensRadius + 2) * 2, (lensRadius + 2) * 2);
 
-        // Render Inverted Glyphs
+        // Render Inverted Glyphs inside Lens
         for (let i = 0; i < gridData.length; i++) {
           const pt = gridData[i];
           const dx = pt.x - mouseX;

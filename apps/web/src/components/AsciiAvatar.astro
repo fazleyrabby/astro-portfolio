@@ -5,6 +5,13 @@
 <div class="ascii-avatar" aria-hidden="true">
   <canvas id="ascii-smoke-canvas"></canvas>
   <div class="ascii-glow"></div>
+  <div class="avatar-mode-dock">
+    <button type="button" class="avatar-mode-toggle" id="avatar-mode-toggle" title="Toggle Avatar Mode: ASCII / Binary 01">
+      <span class="mode-opt mode-opt-ascii active">ASCII</span>
+      <span class="mode-divider">/</span>
+      <span class="mode-opt mode-opt-binary">01</span>
+    </button>
+  </div>
 </div>
 
 <style>
@@ -40,6 +47,62 @@
 
   .ascii-avatar:hover .ascii-glow {
     opacity: 1;
+  }
+
+  /* Mode Toggle Button */
+  .avatar-mode-dock {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+    pointer-events: auto;
+  }
+
+  .avatar-mode-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 7px;
+    background: rgba(var(--bg-base-rgb, 250, 250, 249), 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.625rem;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(.dark) .avatar-mode-toggle {
+    background: rgba(10, 10, 10, 0.75);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .avatar-mode-toggle:hover {
+    border-color: var(--text-muted);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .mode-opt {
+    font-weight: 500;
+    transition: color 0.15s ease;
+    opacity: 0.5;
+  }
+
+  .mode-opt.active {
+    opacity: 1;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .mode-divider {
+    opacity: 0.3;
+    font-size: 0.55rem;
   }
 
   @media (max-width: 1024px) {
@@ -185,6 +248,32 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
       return document.documentElement.classList.contains('dark');
     }
 
+    const ASCII_WEIGHTS = {
+      "$": 0.95,
+      "&": 0.85,
+      "X": 0.72,
+      "x": 0.55,
+      "+": 0.40,
+      ";": 0.28,
+      ":": 0.18,
+      ".": 0.08,
+    };
+
+    const BAYER_4X4 = [
+      [0 / 16, 8 / 16, 2 / 16, 10 / 16],
+      [12 / 16, 4 / 16, 14 / 16, 6 / 16],
+      [3 / 16, 11 / 16, 1 / 16, 9 / 16],
+      [15 / 16, 7 / 16, 13 / 16, 5 / 16],
+    ];
+
+    let avatarMode = (function () {
+      try {
+        return localStorage.getItem("avatar_mode") || "ascii";
+      } catch (_) {
+        return "ascii";
+      }
+    })();
+
     function buildParticles(art) {
       const lines = art.split("\n");
       const rows = lines.length;
@@ -197,8 +286,15 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
         for (let c = 0; c < lines[r].length; c++) {
           const ch = lines[r][c];
           if (ch === " ") continue;
+
+          const lum = ASCII_WEIGHTS[ch] || 0.5;
+          const ditherThreshold = BAYER_4X4[r % 4][c % 4];
+          const binaryCh = lum >= ditherThreshold ? "1" : (lum > ditherThreshold * 0.4 ? "0" : "0");
+
           particles.push({
             ch,
+            binaryCh,
+            lum,
             homeX: c * CELL_W,
             homeY: r * CELL_H,
             x: c * CELL_W,
@@ -288,7 +384,6 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
       entries.forEach((entry) => {
         isVisible = entry.isIntersecting;
         if (isVisible) {
-          // Short delay to prioritize initial page load / LCP
           setTimeout(startAnim, 100);
         }
       });
@@ -400,9 +495,19 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
           needsNextFrame = true;
         }
 
+        // Determine character to render (ASCII vs Binary 0/1 Dither)
+        let renderCh = avatarMode === "binary" ? p.binaryCh : p.ch;
+        if (avatarMode === "binary" && isHovering) {
+          const ddx = p.x - localMX;
+          const ddy = p.y - localMY;
+          if (ddx * ddx + ddy * ddy < 3600 && Math.sin(frameTime * 18 + p.homeX * 0.3) > 0.4) {
+            renderCh = renderCh === "1" ? "0" : "1";
+          }
+        }
+
         ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
         ctx.fillStyle = color;
-        ctx.fillText(p.ch, p.x, p.y);
+        ctx.fillText(renderCh, p.x, p.y);
       }
 
       ctx.restore();
@@ -420,6 +525,39 @@ x;;+;;;+XX+;:::::;++x$$$&$$$$$XXXXXXXXXXXXXX$$XXX$X$$$$$$$$$XXX$$$X$$$XX$$X$&$$$
         animating = true;
         requestAnimationFrame(draw);
       }
+    }
+
+    // Toggle button setup
+    const toggleBtn = document.getElementById("avatar-mode-toggle");
+    function updateToggleUI() {
+      if (!toggleBtn) return;
+      const asciiOpt = toggleBtn.querySelector(".mode-opt-ascii");
+      const binaryOpt = toggleBtn.querySelector(".mode-opt-binary");
+      if (avatarMode === "binary") {
+        asciiOpt?.classList.remove("active");
+        binaryOpt?.classList.add("active");
+      } else {
+        binaryOpt?.classList.remove("active");
+        asciiOpt?.classList.add("active");
+      }
+    }
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        avatarMode = avatarMode === "ascii" ? "binary" : "ascii";
+        try {
+          localStorage.setItem("avatar_mode", avatarMode);
+        } catch (_) {}
+        updateToggleUI();
+        // Particle burst on mode transition
+        for (const p of data.visible) {
+          p.vx += (Math.random() - 0.5) * 6;
+          p.vy += (Math.random() - 0.5) * 6;
+        }
+        startAnim();
+      });
+      updateToggleUI();
     }
 
     resize();

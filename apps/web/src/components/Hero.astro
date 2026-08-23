@@ -92,13 +92,14 @@ const tp = useTranslatedPath(lang);
         </div>
       </div>
 
-      <!-- Right: Monochrome Portrait -->
+      <!-- Right: Monochrome Portrait / Binary 01 Dither Canvas -->
       <div class="hero-portrait reveal">
-        <div class="hero-portrait-frame">
+        <div class="hero-portrait-frame" id="hero-portrait-frame">
           <img
             src="/me.webp"
             alt="Fazley Rabbi — Backend Engineer"
             class="hero-portrait-base"
+            id="hero-portrait-img"
             width="480"
             height="480"
             loading="eager"
@@ -114,6 +115,17 @@ const tp = useTranslatedPath(lang);
             loading="lazy"
             decoding="async"
           />
+          <canvas id="hero-binary-canvas" class="hero-binary-canvas"></canvas>
+
+          <!-- Avatar Mode Switch Pill -->
+          <div class="hero-avatar-dock">
+            <button type="button" id="hero-avatar-toggle-btn" class="hero-avatar-toggle-btn" title="Toggle Avatar Mode: Photo / 01 Binary Dither">
+              <span class="avatar-toggle-dot"></span>
+              <span class="avatar-toggle-opt opt-photo active">PHOTO</span>
+              <span class="avatar-toggle-sep">/</span>
+              <span class="avatar-toggle-opt opt-binary">01 BINARY</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -653,32 +665,320 @@ const tp = useTranslatedPath(lang);
   .hero-portrait-frame.is-hovering .hero-portrait-reveal {
     opacity: 1;
   }
+
+  /* Binary 01 Dither Canvas */
+  .hero-binary-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    background: var(--bg-base);
+  }
+
+  .hero-portrait-frame.mode-binary .hero-binary-canvas {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .hero-portrait-frame.mode-binary .hero-portrait-base,
+  .hero-portrait-frame.mode-binary .hero-portrait-reveal {
+    opacity: 0 !important;
+  }
+
+  /* Avatar Toggle Dock & Button */
+  .hero-avatar-dock {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 10;
+    pointer-events: auto;
+  }
+
+  .hero-avatar-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    background: rgba(250, 250, 249, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(.dark) .hero-avatar-toggle-btn {
+    background: rgba(15, 15, 15, 0.85);
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .hero-avatar-toggle-btn:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .avatar-toggle-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    transition: all 0.2s ease;
+  }
+
+  .avatar-toggle-opt {
+    font-weight: 500;
+    transition: color 0.2s, opacity 0.2s;
+    opacity: 0.45;
+  }
+
+  .avatar-toggle-opt.active {
+    opacity: 1;
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  .avatar-toggle-sep {
+    opacity: 0.25;
+    font-size: 0.6rem;
+  }
 </style>
 
 <script>
-  function setupPortraitReveal() {
-    const frame = document.querySelector(
-      ".hero-portrait-frame",
-    ) as HTMLElement | null;
-    if (!frame) return;
+  function setupHeroAvatar() {
+    const frame = document.getElementById("hero-portrait-frame");
+    const img = document.getElementById("hero-portrait-img") as HTMLImageElement | null;
+    const canvas = document.getElementById("hero-binary-canvas") as HTMLCanvasElement | null;
+    const toggleBtn = document.getElementById("hero-avatar-toggle-btn");
+    if (!frame || !img || !canvas || !toggleBtn) return;
 
+    let avatarMode = (function() {
+      try {
+        return localStorage.getItem("hero_avatar_mode") || "photo";
+      } catch (_) {
+        return "photo";
+      }
+    })();
+
+    const optPhoto = toggleBtn.querySelector(".opt-photo");
+    const optBinary = toggleBtn.querySelector(".opt-binary");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    function applyModeUI() {
+      if (avatarMode === "binary") {
+        frame?.classList.add("mode-binary");
+        optPhoto?.classList.remove("active");
+        optBinary?.classList.add("active");
+      } else {
+        frame?.classList.remove("mode-binary");
+        optBinary?.classList.remove("active");
+        optPhoto?.classList.add("active");
+      }
+    }
+
+    toggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      avatarMode = avatarMode === "photo" ? "binary" : "photo";
+      try {
+        localStorage.setItem("hero_avatar_mode", avatarMode);
+      } catch (_) {}
+      applyModeUI();
+      if (avatarMode === "binary") {
+        renderBinaryDither();
+      }
+    });
+
+    applyModeUI();
+
+    // Bayer 4x4 Ordered Dither Matrix
+    const BAYER_4X4 = [
+      [ 0/16,  8/16,  2/16, 10/16],
+      [12/16,  4/16, 14/16,  6/16],
+      [ 3/16, 11/16,  1/16,  9/16],
+      [15/16,  7/16, 13/16,  5/16]
+    ];
+
+    let gridData: { r: number; c: number; x: number; y: number; bit: string; lum: number }[] = [];
+    let mouseX = -9999, mouseY = -9999;
+    let animId = 0;
+
+    function processImageToBinary() {
+      if (!img?.complete || img.naturalWidth === 0) {
+        img?.addEventListener("load", processImageToBinary, { once: true });
+        return;
+      }
+
+      const offscreen = document.createElement("canvas");
+      const COLS = 68;
+      const ROWS = 68;
+      offscreen.width = COLS;
+      offscreen.height = ROWS;
+      const offCtx = offscreen.getContext("2d");
+      if (!offCtx) return;
+
+      offCtx.drawImage(img, 0, 0, COLS, ROWS);
+      const imgData = offCtx.getImageData(0, 0, COLS, ROWS).data;
+
+      gridData = [];
+      const rect = frame?.getBoundingClientRect();
+      const w = rect?.width || 480;
+      const h = rect?.height || 480;
+      const cellW = w / COLS;
+      const cellH = h / ROWS;
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const idx = (r * COLS + c) * 4;
+          const red = imgData[idx];
+          const green = imgData[idx + 1];
+          const blue = imgData[idx + 2];
+          // Perceptual luminance formula
+          const lum = (0.299 * red + 0.587 * green + 0.114 * blue) / 255;
+          const threshold = BAYER_4X4[r % 4][c % 4];
+          const bit = lum >= threshold ? "1" : "0";
+
+          gridData.push({
+            r,
+            c,
+            x: c * cellW + cellW / 2,
+            y: r * cellH + cellH / 2,
+            bit,
+            lum
+          });
+        }
+      }
+
+      renderBinaryDither();
+    }
+
+    function renderBinaryDither() {
+      if (!ctx || !canvas || gridData.length === 0) return;
+
+      const rect = frame?.getBoundingClientRect();
+      const w = rect?.width || 480;
+      const h = rect?.height || 480;
+      const dpr = window.devicePixelRatio || 1;
+
+      if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const isDark = document.documentElement.classList.contains("dark");
+      ctx.fillStyle = isDark ? "#0a0a0a" : "#fafaf9";
+      ctx.fillRect(0, 0, w, h);
+
+      const cellW = w / 68;
+      const cellH = h / 68;
+      ctx.font = `${Math.floor(cellH * 1.1)}px "IBM Plex Mono", "JetBrains Mono", monospace`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      const time = performance.now() * 0.003;
+
+      for (let i = 0; i < gridData.length; i++) {
+        const pt = gridData[i];
+        let char = pt.bit;
+
+        // Interactive mouse disturbance / matrix bit-flipping
+        const dx = pt.x - mouseX;
+        const dy = pt.y - mouseY;
+        const distSq = dx * dx + dy * dy;
+
+        if (distSq < 4900 && Math.sin(time * 6 + pt.x * 0.1) > 0.3) {
+          char = char === "1" ? "0" : "1";
+        }
+
+        if (isDark) {
+          if (distSq < 3600) {
+            ctx.fillStyle = "#ea580c"; // Accent orange on mouse ripple
+          } else if (pt.lum > 0.65) {
+            ctx.fillStyle = "#f4f4f5"; // Crisp highlight
+          } else if (pt.lum > 0.35) {
+            ctx.fillStyle = "#a1a1aa"; // Midtone
+          } else {
+            ctx.fillStyle = "#3f3f46"; // Shadow
+          }
+        } else {
+          if (distSq < 3600) {
+            ctx.fillStyle = "#ea580c";
+          } else if (pt.lum > 0.6) {
+            ctx.fillStyle = "#1c1917";
+          } else if (pt.lum > 0.3) {
+            ctx.fillStyle = "#57534e";
+          } else {
+            ctx.fillStyle = "#a8a29e";
+          }
+        }
+
+        ctx.fillText(char, pt.x, pt.y);
+      }
+    }
+
+    // Interactive mouse listeners
     frame.addEventListener("mouseenter", () => {
       frame.classList.add("is-hovering");
+      if (avatarMode === "binary") {
+        cancelAnimationFrame(animId);
+        const loop = () => {
+          renderBinaryDither();
+          if (frame.classList.contains("is-hovering") && avatarMode === "binary") {
+            animId = requestAnimationFrame(loop);
+          }
+        };
+        loop();
+      }
     });
 
     frame.addEventListener("mousemove", (e: MouseEvent) => {
       const rect = frame.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
+      mouseX = x;
+      mouseY = y;
       frame.style.setProperty("--mouse-x", `${x}px`);
       frame.style.setProperty("--mouse-y", `${y}px`);
+      if (avatarMode === "binary") {
+        renderBinaryDither();
+      }
     });
 
     frame.addEventListener("mouseleave", () => {
       frame.classList.remove("is-hovering");
+      mouseX = -9999;
+      mouseY = -9999;
+      if (avatarMode === "binary") {
+        renderBinaryDither();
+      }
     });
+
+    // Theme toggle observer to update colors
+    const themeObs = new MutationObserver(() => {
+      if (avatarMode === "binary") {
+        renderBinaryDither();
+      }
+    });
+    themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+
+    processImageToBinary();
   }
 
-  setupPortraitReveal();
-  document.addEventListener("astro:page-load", setupPortraitReveal);
+  setupHeroAvatar();
+  document.addEventListener("astro:page-load", setupHeroAvatar);
 </script>

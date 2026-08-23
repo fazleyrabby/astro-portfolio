@@ -1,5 +1,6 @@
 ---
 import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { supabase } from "../lib/supabase";
 
 interface Props {
   lang?: "en" | "bn";
@@ -9,24 +10,47 @@ const { lang: propLang } = Astro.props;
 const lang = propLang || getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const label = t('footer.visitors') || (lang === 'bn' ? 'ভিজিট' : 'Visits');
+
+const supabaseUrl = import.meta.env.SUPABASE_URL || "https://pwqzjazzlysvilumztww.supabase.co";
+const supabaseKey = import.meta.env.SUPABASE_KEY || "sb_publishable_rKuXk6jFMkN_Or0dn6jl9Q_Fc7K1Jdk";
+
+// Fetch initial build-time count so the number renders instantly without skeleton delays
+let initialCount = 1324;
+try {
+  const { data } = await supabase.from("visitors").select("total_visits");
+  if (data && data.length > 0) {
+    initialCount = data.reduce((acc, row) => acc + (row.total_visits || 1), 0);
+  }
+} catch (_) {}
 ---
 
-<div class="visitor-counter-wrapper" id="visitor-counter-wrapper" title="Total Site Visits • Live Telemetry">
+<div
+  class="visitor-counter-wrapper"
+  id="visitor-counter-wrapper"
+  data-supabase-url={supabaseUrl}
+  data-supabase-key={supabaseKey}
+  data-initial-count={initialCount}
+  title="Total Site Visits • Live Telemetry"
+>
   <span class="visitor-pulse" aria-hidden="true">
     <span class="visitor-pulse-ping"></span>
     <span class="visitor-pulse-core"></span>
   </span>
   <span class="visitor-label">{label}</span>
   <span class="visitor-count" id="visitor-count-number" aria-live="polite">
-    <span class="visitor-skeleton"></span>
+    {initialCount.toLocaleString()}
   </span>
 </div>
 
 <script>
-  import { supabase } from "../lib/supabase";
+  import { createClient } from "@supabase/supabase-js";
 
-  // Known owner IP / identifiers to exclude
-  const OWNER_IPS = ["103.153.171.96"];
+  function getClient() {
+    const wrapper = document.getElementById("visitor-counter-wrapper");
+    const url = wrapper?.getAttribute("data-supabase-url") || "https://pwqzjazzlysvilumztww.supabase.co";
+    const key = wrapper?.getAttribute("data-supabase-key") || "sb_publishable_rKuXk6jFMkN_Or0dn6jl9Q_Fc7K1Jdk";
+    return createClient(url, key);
+  }
 
   function isDevEnvironment(): boolean {
     const host = window.location.hostname;
@@ -78,6 +102,10 @@ const label = t('footer.visitors') || (lang === 'bn' ? 'ভিজিট' : 'Visi
   }
 
   function animateCount(el: HTMLElement, start: number, end: number, duration = 800) {
+    if (start === end) {
+      el.textContent = end.toLocaleString();
+      return;
+    }
     const startTime = performance.now();
     
     function update(currentTime: number) {
@@ -101,7 +129,11 @@ const label = t('footer.visitors') || (lang === 'bn' ? 'ভিজিট' : 'Visi
 
   async function initVisitorCounter() {
     const countEl = document.getElementById("visitor-count-number");
-    if (!countEl) return;
+    const wrapper = document.getElementById("visitor-counter-wrapper");
+    if (!countEl || !wrapper) return;
+
+    const initialCount = parseInt(wrapper.getAttribute("data-initial-count") || "1324", 10);
+    const client = getClient();
 
     const isDev = isDevEnvironment();
     const isOwner = isOwnerOrIgnored();
@@ -114,21 +146,19 @@ const label = t('footer.visitors') || (lang === 'bn' ? 'ভিজিট' : 'Visi
         sessionStorage.setItem(sessionKey, "true");
         const clientHash = generateClientHash();
 
-        // Get basic client metadata
         const userAgent = navigator.userAgent || "Unknown";
         const language = navigator.language || "Unknown";
         const platform = (navigator as any).userAgentData?.platform || navigator.platform || "Unknown";
         const path = window.location.pathname;
 
-        // Check if hash already exists in Supabase
-        const { data: existing } = await supabase
+        const { data: existing } = await client
           .from("visitors")
           .select("id, total_visits")
           .eq("ip_hash", clientHash)
           .limit(1);
 
         if (existing && existing.length > 0) {
-          await supabase
+          await client
             .from("visitors")
             .update({
               total_visits: (existing[0].total_visits || 1) + 1,
@@ -137,7 +167,7 @@ const label = t('footer.visitors') || (lang === 'bn' ? 'ভিজিট' : 'Visi
             })
             .eq("id", existing[0].id);
         } else {
-          await supabase
+          await client
             .from("visitors")
             .insert([
               {
@@ -153,38 +183,35 @@ const label = t('footer.visitors') || (lang === 'bn' ? 'ভিজিট' : 'Visi
             ]);
         }
       } catch (err) {
-        console.debug("Telemetry track notice:", err);
+        console.debug("Visitor track notice:", err);
       }
     }
 
-    // Fetch and display total visits count
+    // Fetch live updated total visits count from Supabase
     try {
-      const { data, error } = await supabase
+      const { data, error } = await client
         .from("visitors")
         .select("total_visits");
 
-      if (!error && data) {
+      if (!error && data && data.length > 0) {
         const totalVisits = data.reduce((acc, row) => acc + (row.total_visits || 1), 0);
         
         try {
           localStorage.setItem("cached_visitor_count", totalVisits.toString());
         } catch (_) {}
 
-        animateCount(countEl, 0, totalVisits);
-      } else {
-        throw error || new Error("Failed to load visitor data");
+        if (totalVisits !== initialCount) {
+          animateCount(countEl, initialCount, totalVisits);
+        } else {
+          countEl.textContent = totalVisits.toLocaleString();
+        }
       }
     } catch (err) {
-      // Graceful fallback from cache or realistic baseline
-      let fallbackCount = 1324;
-      try {
-        const cached = localStorage.getItem("cached_visitor_count");
-        if (cached) {
-          fallbackCount = parseInt(cached, 10);
-        }
-      } catch (_) {}
-      
-      animateCount(countEl, 0, fallbackCount);
+      // Keep initial rendered count or cached count
+      const cached = localStorage.getItem("cached_visitor_count");
+      if (cached) {
+        countEl.textContent = parseInt(cached, 10).toLocaleString();
+      }
     }
   }
 
@@ -273,35 +300,10 @@ const label = t('footer.visitors') || (lang === 'bn' ? 'ভিজিট' : 'Visi
     min-width: 2ch;
   }
 
-  /* Skeleton Loading State */
-  .visitor-skeleton {
-    display: inline-block;
-    width: 2.5rem;
-    height: 0.65rem;
-    border-radius: 4px;
-    background: linear-gradient(
-      90deg,
-      rgba(150, 150, 150, 0.1) 25%,
-      rgba(150, 150, 150, 0.25) 50%,
-      rgba(150, 150, 150, 0.1) 75%
-    );
-    background-size: 200% 100%;
-    animation: visitorShimmer 1.5s infinite;
-  }
-
   @keyframes visitorPing {
     75%, 100% {
       transform: scale(2.5);
       opacity: 0;
-    }
-  }
-
-  @keyframes visitorShimmer {
-    0% {
-      background-position: 200% 0;
-    }
-    100% {
-      background-position: -200% 0;
     }
   }
 </style>

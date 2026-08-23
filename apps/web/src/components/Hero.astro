@@ -798,7 +798,20 @@ const tp = useTranslatedPath(lang);
     // Typographic Halftone Character Ramp (densest to lightest)
     const CHAR_RAMP = ["8", "S", "0", "9", "5", "8", "0", "·", " "];
 
-    let gridData: { r: number; c: number; x: number; y: number; char: string; lum: number }[] = [];
+    interface HalftoneParticle {
+      r: number;
+      c: number;
+      homeX: number;
+      homeY: number;
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      char: string;
+      lum: number;
+    }
+
+    let gridData: HalftoneParticle[] = [];
     let cropCoords = { sx: 0, sy: 0, sDim: 480 };
     let mouseX = -9999, mouseY = -9999;
     let animId = 0;
@@ -825,8 +838,7 @@ const tp = useTranslatedPath(lang);
         sDim: minDim
       };
 
-      // Monospace characters have ~0.6 width-to-height ratio.
-      // Proportional cell sizing ensures 1:1 square face geometry without squishing.
+      // Proportional cell sizing ensuring 1:1 face geometry without squishing
       const cellH = 10;
       const cellW = 6.2;
       numCols = Math.floor(w / cellW);
@@ -869,11 +881,18 @@ const tp = useTranslatedPath(lang);
           charIndex = Math.max(0, Math.min(CHAR_RAMP.length - 1, charIndex));
           const char = CHAR_RAMP[charIndex];
 
+          const posX = c * actualCellW + actualCellW / 2;
+          const posY = r * actualCellH + actualCellH / 2;
+
           gridData.push({
             r,
             c,
-            x: c * actualCellW + actualCellW / 2,
-            y: r * actualCellH + actualCellH / 2,
+            homeX: posX,
+            homeY: posY,
+            x: posX,
+            y: posY,
+            vx: 0,
+            vy: 0,
             char,
             lum
           });
@@ -883,8 +902,8 @@ const tp = useTranslatedPath(lang);
       renderBinaryDither();
     }
 
-    function renderBinaryDither() {
-      if (!ctx || !canvas || gridData.length === 0) return;
+    function renderBinaryDither(): boolean {
+      if (!ctx || !canvas || gridData.length === 0) return false;
 
       const rect = frame?.getBoundingClientRect();
       const w = rect?.width || 480;
@@ -901,7 +920,7 @@ const tp = useTranslatedPath(lang);
       const actualCellH = h / numRows;
       const fontSize = Math.floor(actualCellH * 0.92);
 
-      // 1. Draw 1:1 center-cropped background image texture
+      // 1. Draw 1:1 center-cropped atmospheric background image
       ctx.fillStyle = isDark ? "#0a0a0a" : "#fafaf9";
       ctx.fillRect(0, 0, w, h);
 
@@ -922,87 +941,94 @@ const tp = useTranslatedPath(lang);
         ctx.restore();
       }
 
-      // 2. Render Typographic Halftone ASCII Glyphs
+      // 2. Physics & Particle Simulation for Jumping Texts
       ctx.font = `600 ${fontSize}px "IBM Plex Mono", "JetBrains Mono", monospace`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
+
+      const isHovering = frame.classList.contains("is-hovering") && mouseX >= 0 && mouseY >= 0;
+      const pushRadius = 80;
+      let needsNextFrame = isHovering;
 
       for (let i = 0; i < gridData.length; i++) {
         const pt = gridData[i];
         if (!pt.char || pt.char === " ") continue;
 
+        // Interactive mouse jump / scatter
+        if (isHovering) {
+          const dx = pt.x - mouseX;
+          const dy = pt.y - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < pushRadius && dist > 0) {
+            const force = (1 - dist / pushRadius) * 14;
+            const angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.7;
+            pt.vx += Math.cos(angle) * force * 0.4 + (Math.random() - 0.5) * 1.6;
+            pt.vy += Math.sin(angle) * force * 0.4 + (Math.random() - 0.5) * 1.6;
+          }
+        }
+
+        // Spring physics back to home position
+        const springK = 0.09;
+        pt.vx += (pt.homeX - pt.x) * springK;
+        pt.vy += (pt.homeY - pt.y) * springK;
+        pt.vx *= 0.82;
+        pt.vy *= 0.82;
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+
+        if (
+          Math.abs(pt.vx) > 0.02 ||
+          Math.abs(pt.vy) > 0.02 ||
+          Math.abs(pt.x - pt.homeX) > 0.1 ||
+          Math.abs(pt.y - pt.homeY) > 0.1
+        ) {
+          needsNextFrame = true;
+        }
+
+        // Color and Opacity Shading (No Negative Colors)
+        const displacement = Math.sqrt((pt.x - pt.homeX) ** 2 + (pt.y - pt.homeY) ** 2);
+        const isDisplaced = displacement > 3;
+
         if (isDark) {
-          const alpha = Math.min(1, pt.lum * 1.25 + 0.15);
-          ctx.fillStyle = `rgba(244, 244, 245, ${alpha.toFixed(2)})`;
+          if (isDisplaced) {
+            ctx.fillStyle = "#ea580c"; // Lively accent orange on jumping particles
+          } else {
+            const alpha = Math.min(1, pt.lum * 1.25 + 0.15);
+            ctx.fillStyle = `rgba(244, 244, 245, ${alpha.toFixed(2)})`;
+          }
         } else {
-          const alpha = Math.min(1, (1 - pt.lum) * 1.15 + 0.2);
-          ctx.fillStyle = `rgba(28, 25, 23, ${alpha.toFixed(2)})`;
+          if (isDisplaced) {
+            ctx.fillStyle = "#ea580c";
+          } else {
+            const alpha = Math.min(1, (1 - pt.lum) * 1.15 + 0.2);
+            ctx.fillStyle = `rgba(28, 25, 23, ${alpha.toFixed(2)})`;
+          }
         }
 
         ctx.fillText(pt.char, pt.x, pt.y);
       }
 
-      // 3. Draw Inverted Lens Layer if Hovering
-      const isHovering = frame.classList.contains("is-hovering") && mouseX >= 0 && mouseY >= 0;
-      const lensRadius = 88;
-      const lensRadiusSq = lensRadius * lensRadius;
+      return needsNextFrame;
+    }
 
-      if (isHovering) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(mouseX, mouseY, lensRadius, 0, Math.PI * 2);
-        ctx.clip();
-
-        // Inverted Lens Background
-        ctx.fillStyle = isDark ? "#f4f4f5" : "#0a0a0a";
-        ctx.fillRect(mouseX - lensRadius - 2, mouseY - lensRadius - 2, (lensRadius + 2) * 2, (lensRadius + 2) * 2);
-
-        // Render Inverted Glyphs inside Lens
-        for (let i = 0; i < gridData.length; i++) {
-          const pt = gridData[i];
-          const dx = pt.x - mouseX;
-          const dy = pt.y - mouseY;
-          if (dx * dx + dy * dy <= lensRadiusSq + 300) {
-            // Inverted glyph from opposite end of ramp
-            let invertedIndex = (CHAR_RAMP.length - 1) - Math.floor((1 - pt.lum) * (CHAR_RAMP.length - 1));
-            invertedIndex = Math.max(0, Math.min(CHAR_RAMP.length - 1, invertedIndex));
-            const invChar = CHAR_RAMP[invertedIndex] || "8";
-
-            if (isDark) {
-              ctx.fillStyle = `rgba(10, 10, 10, ${Math.min(1, (1 - pt.lum) + 0.35).toFixed(2)})`;
-            } else {
-              ctx.fillStyle = `rgba(250, 250, 249, ${Math.min(1, pt.lum + 0.4).toFixed(2)})`;
-            }
-
-            ctx.fillText(invChar, pt.x, pt.y);
-          }
+    function startAnimationLoop() {
+      cancelAnimationFrame(animId);
+      const loop = () => {
+        if (avatarMode !== "binary") return;
+        const needsMore = renderBinaryDither();
+        if (needsMore) {
+          animId = requestAnimationFrame(loop);
         }
-        ctx.restore();
-
-        // Cyber Reticle Ring around Invert Lens
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(mouseX, mouseY, lensRadius, 0, Math.PI * 2);
-        ctx.strokeStyle = isDark ? "rgba(234, 88, 12, 0.9)" : "rgba(234, 88, 12, 0.95)";
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([4, 4]);
-        ctx.stroke();
-        ctx.restore();
-      }
+      };
+      loop();
     }
 
     // Interactive mouse listeners
     frame.addEventListener("mouseenter", () => {
       frame.classList.add("is-hovering");
       if (avatarMode === "binary") {
-        cancelAnimationFrame(animId);
-        const loop = () => {
-          renderBinaryDither();
-          if (frame.classList.contains("is-hovering") && avatarMode === "binary") {
-            animId = requestAnimationFrame(loop);
-          }
-        };
-        loop();
+        startAnimationLoop();
       }
     });
 
@@ -1015,7 +1041,7 @@ const tp = useTranslatedPath(lang);
       frame.style.setProperty("--mouse-x", `${x}px`);
       frame.style.setProperty("--mouse-y", `${y}px`);
       if (avatarMode === "binary") {
-        renderBinaryDither();
+        startAnimationLoop();
       }
     });
 
@@ -1024,7 +1050,7 @@ const tp = useTranslatedPath(lang);
       mouseX = -9999;
       mouseY = -9999;
       if (avatarMode === "binary") {
-        renderBinaryDither();
+        startAnimationLoop();
       }
     });
 

@@ -890,35 +890,23 @@ const tp = useTranslatedPath(lang);
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
-      const time = performance.now() * 0.003;
+      const isHovering = frame.classList.contains("is-hovering") && mouseX >= 0 && mouseY >= 0;
+      const lensRadius = 86;
+      const lensRadiusSq = lensRadius * lensRadius;
 
+      // 1. Draw base binary layer
       for (let i = 0; i < gridData.length; i++) {
         const pt = gridData[i];
-        let char = pt.bit;
-
-        // Interactive mouse disturbance / matrix bit-flipping
-        const dx = pt.x - mouseX;
-        const dy = pt.y - mouseY;
-        const distSq = dx * dx + dy * dy;
-
-        if (distSq < 4900 && Math.sin(time * 6 + pt.x * 0.1) > 0.3) {
-          char = char === "1" ? "0" : "1";
-        }
-
         if (isDark) {
-          if (distSq < 3600) {
-            ctx.fillStyle = "#ea580c"; // Accent orange on mouse ripple
-          } else if (pt.lum > 0.65) {
-            ctx.fillStyle = "#f4f4f5"; // Crisp highlight
+          if (pt.lum > 0.65) {
+            ctx.fillStyle = "#f4f4f5";
           } else if (pt.lum > 0.35) {
-            ctx.fillStyle = "#a1a1aa"; // Midtone
+            ctx.fillStyle = "#a1a1aa";
           } else {
-            ctx.fillStyle = "#3f3f46"; // Shadow
+            ctx.fillStyle = "#3f3f46";
           }
         } else {
-          if (distSq < 3600) {
-            ctx.fillStyle = "#ea580c";
-          } else if (pt.lum > 0.6) {
+          if (pt.lum > 0.6) {
             ctx.fillStyle = "#1c1917";
           } else if (pt.lum > 0.3) {
             ctx.fillStyle = "#57534e";
@@ -927,7 +915,67 @@ const tp = useTranslatedPath(lang);
           }
         }
 
-        ctx.fillText(char, pt.x, pt.y);
+        ctx.fillText(pt.bit, pt.x, pt.y);
+      }
+
+      // 2. Draw Inverted Lens Layer if Hovering
+      if (isHovering) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, lensRadius, 0, Math.PI * 2);
+        ctx.clip();
+
+        // Inverted Lens Background
+        ctx.fillStyle = isDark ? "#f4f4f5" : "#0a0a0a";
+        ctx.fillRect(mouseX - lensRadius - 2, mouseY - lensRadius - 2, (lensRadius + 2) * 2, (lensRadius + 2) * 2);
+
+        // Render Inverted Bits (1 -> 0, 0 -> 1) with Inverted Typography
+        for (let i = 0; i < gridData.length; i++) {
+          const pt = gridData[i];
+          const dx = pt.x - mouseX;
+          const dy = pt.y - mouseY;
+          if (dx * dx + dy * dy <= lensRadiusSq + 400) {
+            // INVERT BIT:
+            const invertedBit = pt.bit === "1" ? "0" : "1";
+
+            if (isDark) {
+              if (pt.lum > 0.65) {
+                ctx.fillStyle = "#0a0a0a"; // Crisp black on bright lens
+              } else if (pt.lum > 0.35) {
+                ctx.fillStyle = "#52525b";
+              } else {
+                ctx.fillStyle = "#a1a1aa";
+              }
+            } else {
+              if (pt.lum > 0.6) {
+                ctx.fillStyle = "#fafaf9"; // Crisp white on dark lens
+              } else if (pt.lum > 0.3) {
+                ctx.fillStyle = "#d4d4d8";
+              } else {
+                ctx.fillStyle = "#71717a";
+              }
+            }
+
+            ctx.fillText(invertedBit, pt.x, pt.y);
+          }
+        }
+        ctx.restore();
+
+        // 3. Cyber Reticle Ring around Invert Lens
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, lensRadius, 0, Math.PI * 2);
+        ctx.strokeStyle = isDark ? "rgba(234, 88, 12, 0.9)" : "rgba(234, 88, 12, 0.95)";
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]);
+        ctx.stroke();
+
+        // Small center pip
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = "#ea580c";
+        ctx.fill();
+        ctx.restore();
       }
     }
 

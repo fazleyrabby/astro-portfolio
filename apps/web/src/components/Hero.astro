@@ -920,13 +920,13 @@ const tp = useTranslatedPath(lang);
       const actualCellH = h / numRows;
       const fontSize = Math.floor(actualCellH * 0.92);
 
-      // 1. Draw 1:1 center-cropped atmospheric background image
-      ctx.fillStyle = isDark ? "#0a0a0a" : "#fafaf9";
+      // 1. Draw 1:1 center-cropped atmospheric background image (consistent dark terminal canvas)
+      ctx.fillStyle = "#0a0a0a";
       ctx.fillRect(0, 0, w, h);
 
       if (img && img.complete) {
         ctx.save();
-        ctx.globalAlpha = isDark ? 0.28 : 0.18;
+        ctx.globalAlpha = 0.28;
         ctx.drawImage(
           img,
           cropCoords.sx,
@@ -986,24 +986,15 @@ const tp = useTranslatedPath(lang);
           needsNextFrame = true;
         }
 
-        // Color and Opacity Shading (No Negative Colors)
+        // Color and Opacity Shading (Consistent across all theme modes)
         const displacement = Math.sqrt((pt.x - pt.homeX) ** 2 + (pt.y - pt.homeY) ** 2);
         const isDisplaced = displacement > 3;
 
-        if (isDark) {
-          if (isDisplaced) {
-            ctx.fillStyle = "#ea580c"; // Lively accent orange on jumping particles
-          } else {
-            const alpha = Math.min(1, pt.lum * 1.25 + 0.15);
-            ctx.fillStyle = `rgba(244, 244, 245, ${alpha.toFixed(2)})`;
-          }
+        if (isDisplaced) {
+          ctx.fillStyle = "#ea580c"; // Lively accent orange on jumping particles
         } else {
-          if (isDisplaced) {
-            ctx.fillStyle = "#ea580c";
-          } else {
-            const alpha = Math.min(1, (1 - pt.lum) * 1.15 + 0.2);
-            ctx.fillStyle = `rgba(28, 25, 23, ${alpha.toFixed(2)})`;
-          }
+          const alpha = Math.min(1, pt.lum * 1.25 + 0.15);
+          ctx.fillStyle = `rgba(244, 244, 245, ${alpha.toFixed(2)})`;
         }
 
         ctx.fillText(pt.char, pt.x, pt.y);

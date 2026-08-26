@@ -1,0 +1,207 @@
+---
+---
+
+<!-- Trigger Button -->
+<div class="fixed bottom-6 left-6 z-40 flex gap-3">
+    <button
+        id="support-modal-trigger"
+        class="p-2.5 md:px-4 md:py-2.5 rounded-lg cursor-pointer bg-[var(--bg-surface)] border border-[var(--border)] text-[var(--text-secondary)] hover:border-[#FFDD00] hover:text-[#FFDD00] transition-all flex items-center justify-center gap-2 shadow-md group"
+        aria-label="Support the project"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:-translate-y-0.5">
+            <path d="M17 8h1a4 4 0 1 1 0 8h-1"/>
+            <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
+            <line x1="6" x2="6" y1="2" y2="4"/>
+            <line x1="10" x2="10" y1="2" y2="4"/>
+            <line x1="14" x2="14" y1="2" y2="4"/>
+        </svg>
+        <span class="hidden md:inline-block font-sans font-semibold text-sm transition-transform group-hover:-translate-y-0.5">Support me</span>
+    </button>
+</div>
+
+<!-- Modal Backdrop -->
+<div 
+    id="support-modal-backdrop"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"
+    aria-hidden="true"
+>
+    <!-- Modal Container -->
+    <div 
+        id="support-modal"
+        class="relative w-full max-w-[520px] mx-4 p-6 sm:p-8 rounded-2xl bg-[#0f0f11] border border-white/10 shadow-2xl scale-95 opacity-0 transition-all duration-300 flex flex-col gap-6 font-sans text-white"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="support-modal-title"
+    >
+        <!-- Close Button -->
+        <button 
+            id="support-modal-close"
+            class="absolute top-6 right-6 p-1.5 rounded-md text-white/50 hover:text-white hover:bg-white/10 transition-colors"
+            aria-label="Close modal"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+            </svg>
+        </button>
+
+        <!-- Header -->
+        <div class="flex items-center gap-4 border-b border-white/10 pb-6">
+            <div class="w-12 h-12 flex items-center justify-center rounded-full border border-white/10 bg-white/5 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-white/80">
+                    <path d="M17 8h1a4 4 0 1 1 0 8h-1"/>
+                    <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
+                    <line x1="6" x2="6" y1="2" y2="4"/>
+                    <line x1="10" x2="10" y1="2" y2="4"/>
+                    <line x1="14" x2="14" y1="2" y2="4"/>
+                </svg>
+            </div>
+            <div class="flex flex-col">
+                <h2 id="support-modal-title" class="text-xl font-semibold m-0 text-white leading-tight">Support the Project</h2>
+                <p class="text-sm text-white/60 m-0 mt-1">Keep open source work & creative coding alive</p>
+            </div>
+        </div>
+
+        <!-- Buy Me a Coffee Option -->
+        <div class="relative group rounded-xl p-5 border border-[#FFDD00]/30 bg-gradient-to-b from-[#FFDD00]/10 to-transparent hover:border-[#FFDD00]/50 transition-colors">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-[#FFDD00] rounded-xl flex items-center justify-center shadow-lg shadow-[#FFDD00]/20 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 8h1a4 4 0 1 1 0 8h-1"/>
+                            <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
+                            <line x1="6" x2="6" y1="2" y2="4"/>
+                            <line x1="10" x2="10" y1="2" y2="4"/>
+                            <line x1="14" x2="14" y1="2" y2="4"/>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold text-lg text-white">Buy Me a Coffee</span>
+                            <span class="text-[10px] font-bold uppercase tracking-wider bg-[#FFDD00]/20 text-[#FFDD00] border border-[#FFDD00]/30 px-2 py-0.5 rounded-md">Fast</span>
+                        </div>
+                        <span class="text-xs text-white/50 mt-0.5">Card, Apple Pay, Google Pay</span>
+                    </div>
+                </div>
+                <a 
+                    href="https://buymeacoffee.com/fazleyrabbi" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="bg-[#FFDD00] hover:bg-[#ffe633] text-black font-semibold text-sm px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors whitespace-nowrap"
+                >
+                    Donate $3 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="flex items-center gap-4 text-xs font-mono text-white/40 uppercase tracking-widest my-1">
+            <div class="flex-1 h-px bg-white/10"></div>
+            <span>Or via direct Payoneer ($0 fee)</span>
+            <div class="flex-1 h-px bg-white/10"></div>
+        </div>
+
+        <!-- Payoneer Option -->
+        <div class="rounded-xl border border-white/10 bg-white/5 p-5 flex flex-col gap-4 hover:border-white/20 transition-colors">
+            <div class="flex items-center justify-between text-sm font-mono">
+                <span class="text-white/60">Payoneer Customer ID:</span>
+                <span class="text-[#10B981] font-semibold tracking-wide">$0 Fee Direct</span>
+            </div>
+            
+            <div class="flex items-center justify-between bg-black/50 border border-white/10 rounded-lg p-1.5 pl-4">
+                <span class="text-[#FFDD00] font-mono font-semibold text-lg tracking-wider" id="payoneer-id">24076084</span>
+                <button 
+                    id="copy-payoneer-btn"
+                    class="text-xs font-mono bg-white/10 hover:bg-white/20 text-white/90 px-3 py-2 rounded-md flex items-center gap-1.5 transition-colors"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                    <span>Copy ID</span>
+                </button>
+            </div>
+
+            <div class="text-xs text-white/50 leading-relaxed bg-white/5 rounded-md p-3">
+                <span class="text-white/80">💡 Payoneer app:</span> Go to <strong class="text-white/80 font-medium">Pay → Pay to recipient</strong> → Enter ID <span class="text-[#FFDD00]/90 font-mono">24076084</span>.
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="border-t border-white/10 pt-5 text-center">
+            <p class="text-xs text-white/40 m-0">Thank you for your support! ✨</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const setupSupportModal = () => {
+        const trigger = document.getElementById('support-modal-trigger');
+        const backdrop = document.getElementById('support-modal-backdrop');
+        const modal = document.getElementById('support-modal');
+        const closeBtn = document.getElementById('support-modal-close');
+        const copyBtn = document.getElementById('copy-payoneer-btn');
+        const payoneerId = document.getElementById('payoneer-id')?.textContent;
+
+        if (!trigger || !backdrop || !modal || !closeBtn) return;
+
+        const openModal = () => {
+            backdrop.classList.remove('opacity-0', 'pointer-events-none');
+            backdrop.classList.add('opacity-100');
+            modal.classList.remove('scale-95', 'opacity-0');
+            modal.classList.add('scale-100', 'opacity-100');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        };
+
+        const closeModal = () => {
+            backdrop.classList.remove('opacity-100');
+            backdrop.classList.add('opacity-0', 'pointer-events-none');
+            modal.classList.remove('scale-100', 'opacity-100');
+            modal.classList.add('scale-95', 'opacity-0');
+            document.body.style.overflow = ''; // Restore scrolling
+            
+            // Reset copy button text if it was changed
+            if (copyBtn) {
+                setTimeout(() => {
+                    const span = copyBtn.querySelector('span');
+                    if (span) span.textContent = 'Copy ID';
+                }, 300);
+            }
+        };
+
+        trigger.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', (e) => {
+            if (e.target === backdrop) closeModal();
+        });
+
+        // Handle Esc key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !backdrop.classList.contains('pointer-events-none')) {
+                closeModal();
+            }
+        });
+
+        // Handle Copy functionality
+        if (copyBtn && payoneerId) {
+            copyBtn.addEventListener('click', async () => {
+                try {
+                    await navigator.clipboard.writeText(payoneerId);
+                    const span = copyBtn.querySelector('span');
+                    if (span) {
+                        span.textContent = 'Copied!';
+                        // Optional: Add a success color temporarily
+                        copyBtn.classList.add('text-[#10B981]', 'bg-[#10B981]/20');
+                        setTimeout(() => {
+                            span.textContent = 'Copy ID';
+                            copyBtn.classList.remove('text-[#10B981]', 'bg-[#10B981]/20');
+                        }, 2000);
+                    }
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                }
+            });
+        }
+    };
+
+    // Run setup on load and on view transitions
+    setupSupportModal();
+    document.addEventListener('astro:page-load', setupSupportModal);
+</script>

@@ -1,6 +1,7 @@
 ---
 title: "Prompts Library"
 type: "Web / CLI"
+category: "experimental"
 problem: "AI prompts are scattered across docs and chats — copying, editing placeholders for each use, and re-navigating to ChatGPT or Claude every time is friction that kills reuse."
 solution: "An Astro static site + npm CLI for browsing, filling, and deep-linking AI prompts — with an interactive variable engine, fuzzy terminal search, and 1-click hand-off to ChatGPT/Claude."
 live: "https://prompts.fazleyrabbi.xyz/"

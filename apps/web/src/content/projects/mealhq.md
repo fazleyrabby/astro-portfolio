@@ -1,6 +1,7 @@
 ---
 title: "MealHQ"
 type: "Restaurant Platform"
+category: "experimental"
 featured: true
 problem: "Restaurants needed a polished online presence and an internal system to manage their menu, special offers, and staff — without juggling disconnected tools."
 solution: "Built a complete restaurant platform: a premium editorial public website (home, menu, about, contact), an admin dashboard for menu and offer management, a POS for order handling, and role-based staff access — all running on a single Dockerized Laravel stack."

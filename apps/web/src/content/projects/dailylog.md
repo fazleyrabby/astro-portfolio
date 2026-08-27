@@ -1,6 +1,7 @@
 ---
 title: "DailyLOG"
 type: "Personal Productivity / Life OS"
+category: "experimental"
 featured: true
 problem: "Individuals need a unified, high-density, and private single source of truth for notes, tasks, reflections, and learning paths without database bloat or vendor lock-in."
 solution: "A personal Life OS dashboard combining bi-directional note linking, structured daily journals, and priority-driven task boards into a fast, self-hostable monolith."

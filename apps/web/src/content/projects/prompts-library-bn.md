@@ -1,6 +1,7 @@
 ---
 title: "Prompts Library"
 type: "ওয়েব / CLI"
+category: "experimental"
 problem: "AI prompt ডক ও চ্যাটে ছড়িয়ে — প্রতি ব্যবহারে কপি করা, প্লেসহোল্ডার এডিট করা, ChatGPT/Claude-এ ফিরে যাওয়া — এই ফ্রিকশন পুনঃব্যবহার নষ্ট করে।"
 solution: "Astro স্ট্যাটিক সাইট + npm CLI — ইন্টারেক্টিভ ভ্যারিয়েবল ইঞ্জিন, ফাজি টার্মিনাল সার্চ ও ChatGPT/Claude-এ ১-ক্লিক হ্যান্ড-অফ সহ AI prompt ব্রাউজ, ফিল ও ডিপ-লিংক।"
 live: "https://prompts.fazleyrabbi.xyz/"

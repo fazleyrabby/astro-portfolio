@@ -13,6 +13,9 @@ const projects = all.filter(
   (p) => (p.data.lang || "en") === lang && !p.data.hidden,
 );
 projects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
+
+const mainProjects = projects.filter((p) => p.data.category !== "experimental");
+const experimentalProjects = projects.filter((p) => p.data.category === "experimental");
 ---
 
 <MainLayout title="Projects — Fazley Rabbi">
@@ -24,132 +27,106 @@ projects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
         <h1 class="page-title">Projects</h1>
       </header>
 
-      <!-- Filter tabs -->
-      <div class="projects-filters reveal">
-        <button class="filter-pill active" data-filter="all">All</button>
-        <button class="filter-pill" data-filter="backend">Backend</button>
-        <button class="filter-pill" data-filter="frontend">Frontend</button>
-      </div>
 
-      <!-- Project Grid -->
-      <div class="projects-grid" id="projects-grid">
-        {projects.map((project) => {
-          const { title, description, type, status, tech, live, github, thumbnail, problem, highlights } = project.data;
-          const baseSlug = project.slug.replace(/-bn$/, "");
-          const hasCase = !!(problem || (highlights && highlights.length));
-          const href = hasCase ? tp(`/projects/${baseSlug}`) : (live || github || "#");
 
+      <!-- Projects Sections -->
+      {
+        [
+          { title: "", items: mainProjects },
+          { title: "Experimental / Tinkering", items: experimentalProjects }
+        ].map((section) => {
+          if (section.items.length === 0) return null;
           return (
-            <article
-              class="project-card-editorial reveal"
-              data-type={type || "backend"}
-              data-title={title.toLowerCase()}
-            >
-              {/* Thumbnail */}
-              <a href={href} class="project-card-thumb">
-                {thumbnail ? (
-                  <img
-                    src={thumbnail}
-                    alt={title}
-                    loading="lazy"
-                    width="600"
-                    height="338"
-                  />
-                ) : (
-                  <div class="project-card-placeholder">
-                    <span>{title}</span>
-                  </div>
-                )}
-              </a>
+            <div class="projects-section mb-16">
+              {section.title && (
+                <header class="projects-page-header reveal mt-8 mb-8">
+                  <h2 class="page-title !text-3xl !font-display !font-medium !tracking-tight">{section.title}</h2>
+                </header>
+              )}
+              <div class="projects-grid">
+                {section.items.map((project) => {
+                  const { title, description, type, status, tech, live, github, thumbnail, problem, highlights } = project.data;
+                  const baseSlug = project.slug.replace(/-bn$/, "");
+                  const hasCase = !!(problem || (highlights && highlights.length));
+                  const href = hasCase ? tp(`/projects/${baseSlug}`) : (live || github || "#");
 
-              {/* Content */}
-              <div class="project-card-body">
-                <div class="project-card-meta">
-                  <span class="project-card-type">{type?.toUpperCase() || 'BACKEND'}</span>
-                  <span class="project-card-dot">·</span>
-                  <span class="project-card-status">{status?.toUpperCase() || 'ACTIVE'}</span>
-                </div>
+                  return (
+                    <article
+                      class="project-card-editorial reveal"
+                      data-type={type || "backend"}
+                      data-title={title.toLowerCase()}
+                    >
+                      {/* Thumbnail */}
+                      <a href={href} class="project-card-thumb">
+                        {thumbnail ? (
+                          <img
+                            src={thumbnail}
+                            alt={title}
+                            loading="lazy"
+                            width="600"
+                            height="338"
+                          />
+                        ) : (
+                          <div class="project-card-placeholder">
+                            <span>{title}</span>
+                          </div>
+                        )}
+                      </a>
 
-                <h2 class="project-card-title">
-                  <a href={href}>{title}</a>
-                </h2>
+                      {/* Content */}
+                      <div class="project-card-body">
+                        <div class="project-card-meta">
+                          <span class="project-card-type">{type?.toUpperCase() || 'PROJECT'}</span>
+                          <span class="project-card-dot">·</span>
+                          <span class="project-card-status">{status?.toUpperCase() || 'ACTIVE'}</span>
+                        </div>
 
-                <p class="project-card-desc">{description}</p>
+                        <h3 class="project-card-title">
+                          <a href={href}>{title}</a>
+                        </h3>
 
-                {/* Tech stack */}
-                {tech && tech.length > 0 && (
-                  <div class="project-card-tags">
-                    {tech.slice(0, 5).map((t) => (
-                      <span class="tag">{t}</span>
-                    ))}
-                    {tech.length > 5 && <span class="tag">+{tech.length - 5}</span>}
-                  </div>
-                )}
+                        <p class="project-card-desc">{description}</p>
 
-                {/* Links */}
-                <div class="project-card-links">
-                  {hasCase && (
-                    <a href={href} class="project-card-link project-card-link--primary">
-                      Case Study
-                      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                    </a>
-                  )}
-                  {live && (
-                    <a href={live} target="_blank" rel="noreferrer" class="project-card-link">Live ↗</a>
-                  )}
-                  {github && (
-                    <a href={github} target="_blank" rel="noreferrer" class="project-card-link">GitHub ↗</a>
-                  )}
-                </div>
+                        {/* Tech stack */}
+                        {tech && tech.length > 0 && (
+                          <div class="project-card-tags">
+                            {tech.slice(0, 5).map((t) => (
+                              <span class="tag">{t}</span>
+                            ))}
+                            {tech.length > 5 && <span class="tag">+{tech.length - 5}</span>}
+                          </div>
+                        )}
+
+                        {/* Links */}
+                        <div class="project-card-links">
+                          {hasCase && (
+                            <a href={href} class="project-card-link project-card-link--primary">
+                              Case Study
+                              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                            </a>
+                          )}
+                          {live && (
+                            <a href={live} target="_blank" rel="noreferrer" class="project-card-link">Live ↗</a>
+                          )}
+                          {github && (
+                            <a href={github} target="_blank" rel="noreferrer" class="project-card-link">GitHub ↗</a>
+                          )}
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
-            </article>
+            </div>
           );
-        })}
-      </div>
+        })
+      }
 
     </div>
   </main>
 </MainLayout>
 
-<script is:inline>
-  (function() {
-    const tabs = document.querySelectorAll(".filter-pill");
-    const cards = document.querySelectorAll(".project-card-editorial");
 
-    let currentFilter = localStorage.getItem("projects-filter") || "all";
-
-    // Set initial active tab
-    tabs.forEach((tab) => {
-      if (tab.getAttribute("data-filter") === currentFilter) {
-        tab.classList.add("active");
-      } else {
-        tab.classList.remove("active");
-      }
-    });
-
-    function applyFilter() {
-      cards.forEach((card) => {
-        const type = card.getAttribute("data-type") || "backend";
-        let show = true;
-        if (currentFilter === "backend") show = type !== "frontend";
-        else if (currentFilter === "frontend") show = type === "frontend";
-        card.style.display = show ? "" : "none";
-      });
-    }
-
-    applyFilter();
-
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        tabs.forEach((t) => t.classList.remove("active"));
-        tab.classList.add("active");
-        currentFilter = tab.getAttribute("data-filter") || "all";
-        localStorage.setItem("projects-filter", currentFilter);
-        applyFilter();
-      });
-    });
-  })();
-</script>
 
 <style>
   .projects-page {
@@ -165,34 +142,7 @@ projects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
     margin-bottom: 2rem;
   }
 
-  /* Filters */
-  .projects-filters {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: clamp(2rem, 4vw, 3rem);
-    flex-wrap: wrap;
-  }
-  .filter-pill {
-    font-family: var(--font-sans);
-    font-size: 0.8125rem;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 9999px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  .filter-pill:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-  .filter-pill.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
+
 
   /* Grid */
   .projects-grid {

@@ -10,7 +10,7 @@ description: "Unified POS + multi-theme e-commerce on Laravel — sales, stock, 
 tech: ["Laravel", "DaisyUI", "Tailwind", "Alpine.js", "MySQL 8", "Redis", "Docker", "Cloudflare Tunnel", "SSLCommerz", "bKash", "Stripe"]
 status: "Active"
 commits: 87
-position: 3
+position: 2
 period: "Mar 2026 – Present"
 role: "Full-stack Engineer"
 highlights:

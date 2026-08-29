@@ -8,5 +8,6 @@ tech:
   - Directory
   - Curation
 status: ACTIVE
-position: 2
+hidden: true
+position: 20
 ---

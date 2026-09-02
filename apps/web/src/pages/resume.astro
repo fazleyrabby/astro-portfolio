@@ -92,12 +92,10 @@ import MainLayout from '@layouts/MainLayout.astro';
                 </div>
                 <ul class="cv-list">
                   <li>Architect and maintain backend systems for a high-volume digital marketplace processing thousands of daily transactions and orders.</li>
-                  <li>Engineered bundle product architectures and multi-gateway checkout with dynamic currency conversion, driving a 30%+ increase in sales and lifting Average Order Value (AOV).</li>
-                  <li>Designed and deployed an automated checkout fraud detection engine using IP/card/email velocity checks, BIN/ASN validation, and risk scoring to mitigate payment chargebacks.</li>
-                  <li>Built real-time dispute and chargeback webhook synchronization pipelines for PayPal and Checkout.com, eliminating manual financial reconciliation workflows.</li>
-                  <li>Integrated global payment providers including Checkout.com, PayPal, Apple Pay, and Google Pay with idempotent webhook handlers and transaction logging.</li>
-                  <li>Built ClickHouse-powered analytics pipelines delivering sub-second reporting for high-volume customer behavior, transaction fees, and revenue metrics.</li>
-                  <li>Optimized backend scalability and database latency by introducing MySQL read replicas and Redis caching for heavy search and reporting workloads.</li>
+                  <li>Engineered bundle product architectures and multi-gateway checkout with dynamic currency conversion, driving 30%+ sales increase and lifting AOV.</li>
+                  <li>Designed and deployed an automated checkout fraud detection engine using velocity checks, BIN/ASN validation, and risk scoring to mitigate payment chargebacks.</li>
+                  <li>Integrated global payment providers (Checkout.com, PayPal, Apple Pay, Google Pay) with idempotent webhook synchronization pipelines, eliminating manual financial reconciliation.</li>
+                  <li>Built ClickHouse-powered analytics pipelines delivering sub-second reporting; optimized MySQL latency via read replicas and Redis caching for heavy search workloads.</li>
                   <li>Designed versioned REST APIs powering web applications, mobile apps, and automated customer support services.</li>
                 </ul>
                 <p class="cv-tech">
@@ -164,9 +162,8 @@ import MainLayout from '@layouts/MainLayout.astro';
                   <span class="cv-project-sub">— Real-time persistent digital canvas & distributed engine (<a href="https://claimyourspot.lol" target="_blank" style="color: inherit; text-decoration: underline;">claimyourspot.lol</a>)</span>
                 </h4>
                 <ul class="cv-list">
-                  <li>Architected and deployed a containerized real-time 10,000-tile digital canvas featuring sub-50ms rendering, Server-Sent Events (SSE) synchronization, and WebAuthn/OAuth security.</li>
-                  <li>Engineered a resilient 3-tier downtime fail-safe queue with client-side persistence and auto-retry pollers, guaranteeing zero transaction loss during network drops.</li>
-                  <li>Configured self-hosted bare-metal Linux infrastructure with Docker Compose, automated PostgreSQL backup pipelines, Cloudflare reverse proxy, and instant rollback automation.</li>
+                  <li>Architected a containerized real-time 10,000-tile digital canvas featuring sub-50ms rendering, Server-Sent Events (SSE) synchronization, and WebAuthn/OAuth security.</li>
+                  <li>Engineered a resilient 3-tier downtime fail-safe queue ensuring zero data loss, and configured self-hosted bare-metal Linux infrastructure with Docker Compose, automated backup pipelines, and rollback automation.</li>
                 </ul>
                 <p class="cv-tech">
                   <strong>Technologies:</strong> TypeScript, Node.js, PostgreSQL, Server-Sent Events (SSE), Docker, Linux (Self-Hosted), Astro
@@ -471,18 +468,18 @@ import MainLayout from '@layouts/MainLayout.astro';
     color: var(--text-muted);
   }
 
-  /* Well-Balanced A4/Letter Print Stylesheet */
+  /* Compact Single-Page A4/Letter Print Stylesheet */
   @media print {
     @page {
       size: A4 portrait;
-      margin: 7mm 11mm;
+      margin: 5.5mm 9.5mm;
     }
     :global(html), :global(body) {
       background: #ffffff !important;
       color: #000000 !important;
       font-family: Georgia, serif !important;
-      font-size: 8.55pt !important;
-      line-height: 1.32 !important;
+      font-size: 8.15pt !important;
+      line-height: 1.25 !important;
       width: 100% !important;
       margin: 0 !important;
       padding: 0 !important;
@@ -536,30 +533,30 @@ import MainLayout from '@layouts/MainLayout.astro';
       color: #000000 !important;
     }
     .cv-header {
-      padding-bottom: 5pt !important;
-      margin-bottom: 5pt !important;
+      padding-bottom: 3pt !important;
+      margin-bottom: 3pt !important;
       border-bottom: 1.2pt solid #000000 !important;
       text-align: center !important;
       break-inside: avoid !important;
       page-break-inside: avoid !important;
     }
     .cv-name {
-      font-size: 16.5pt !important;
+      font-size: 15pt !important;
       font-weight: 700 !important;
       color: #000000 !important;
-      margin-bottom: 2pt !important;
+      margin-bottom: 1.5pt !important;
       line-height: 1.1 !important;
     }
     .cv-tagline {
-      font-size: 9.1pt !important;
+      font-size: 8.8pt !important;
       font-weight: 600 !important;
       color: #000000 !important;
-      margin: 0 0 2.5pt !important;
+      margin: 0 0 2pt !important;
     }
     .cv-contacts {
-      font-size: 8.3pt !important;
+      font-size: 8pt !important;
       color: #000000 !important;
-      gap: 2pt 7pt !important;
+      gap: 1.5pt 6pt !important;
       justify-content: center !important;
     }
     .cv-contacts a {
@@ -567,10 +564,10 @@ import MainLayout from '@layouts/MainLayout.astro';
       text-decoration: none !important;
     }
     .cv-body {
-      gap: 5pt !important;
+      gap: 3.5pt !important;
     }
     .cv-section {
-      padding-bottom: 4.5pt !important;
+      padding-bottom: 2.8pt !important;
       border-bottom: 0.5pt solid #cccccc !important;
     }
     .cv-section--last {
@@ -578,76 +575,76 @@ import MainLayout from '@layouts/MainLayout.astro';
       padding-bottom: 0 !important;
     }
     .cv-section-title {
-      font-size: 9.1pt !important;
+      font-size: 8.8pt !important;
       color: #000000 !important;
-      margin-bottom: 2.5pt !important;
+      margin-bottom: 1.8pt !important;
       letter-spacing: 0.08em !important;
       font-weight: 700 !important;
     }
     .cv-summary {
-      font-size: 8.5pt !important;
-      line-height: 1.32 !important;
+      font-size: 8.15pt !important;
+      line-height: 1.24 !important;
       color: #000000 !important;
       margin: 0 !important;
     }
     .cv-entries {
-      gap: 4pt !important;
+      gap: 2.5pt !important;
     }
     .cv-entry {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
     }
     .cv-entry-head {
-      margin-bottom: 0.8pt !important;
+      margin-bottom: 0.4pt !important;
     }
     .cv-entry-company {
-      font-size: 9.3pt !important;
+      font-size: 8.9pt !important;
       font-weight: 700 !important;
       color: #000000 !important;
     }
     .cv-entry-role {
-      font-size: 8.5pt !important;
+      font-size: 8.15pt !important;
       color: #000000 !important;
     }
     .cv-entry-meta {
-      font-size: 8.1pt !important;
+      font-size: 7.8pt !important;
       color: #000000 !important;
     }
     .cv-list {
-      margin: 1.2pt 0 !important;
-      padding-left: 11pt !important;
+      margin: 0.6pt 0 !important;
+      padding-left: 10pt !important;
     }
     .cv-list li {
-      font-size: 8.4pt !important;
-      line-height: 1.30 !important;
-      margin-bottom: 1.2pt !important;
+      font-size: 8.05pt !important;
+      line-height: 1.23 !important;
+      margin-bottom: 0.6pt !important;
       color: #000000 !important;
     }
     .cv-list li::marker {
       color: #000000 !important;
     }
     .cv-tech {
-      font-size: 8.1pt !important;
-      margin: 1.2pt 0 0 !important;
+      font-size: 7.8pt !important;
+      margin: 0.6pt 0 0 !important;
       color: #000000 !important;
-      line-height: 1.26 !important;
+      line-height: 1.20 !important;
     }
     .cv-project-title {
-      margin-bottom: 0.8pt !important;
-      font-size: 9.1pt !important;
+      margin-bottom: 0.4pt !important;
+      font-size: 8.8pt !important;
     }
     .cv-project-name {
       font-weight: 700 !important;
       color: #000000 !important;
     }
     .cv-project-sub {
-      font-size: 8.5pt !important;
+      font-size: 8.15pt !important;
     }
     .cv-skills-grid {
       grid-template-columns: 145px 1fr !important;
-      gap: 1.8pt 7pt !important;
-      font-size: 8.4pt !important;
-      line-height: 1.30 !important;
+      gap: 1.2pt 6pt !important;
+      font-size: 8.05pt !important;
+      line-height: 1.23 !important;
       page-break-inside: avoid !important;
       break-inside: avoid !important;
     }
@@ -659,7 +656,7 @@ import MainLayout from '@layouts/MainLayout.astro';
       color: #000000 !important;
     }
     .cv-edu-list {
-      gap: 2pt !important;
+      gap: 1.2pt !important;
     }
     .cv-edu-item {
       display: flex !important;
@@ -669,23 +666,23 @@ import MainLayout from '@layouts/MainLayout.astro';
       break-inside: avoid !important;
     }
     .cv-edu-school {
-      font-size: 8.9pt !important;
+      font-size: 8.6pt !important;
       font-weight: 700 !important;
       color: #000000 !important;
     }
     .cv-edu-degree {
-      font-size: 8.4pt !important;
+      font-size: 8.05pt !important;
       color: #000000 !important;
     }
     .cv-edu-year {
-      font-size: 8pt !important;
+      font-size: 7.8pt !important;
       color: #000000 !important;
     }
     .cv-languages {
-      font-size: 8.4pt !important;
-      margin: 2.5pt 0 0 !important;
+      font-size: 8.05pt !important;
+      margin: 1.2pt 0 0 !important;
       color: #000000 !important;
-      line-height: 1.28 !important;
+      line-height: 1.20 !important;
     }
   }
 </style>

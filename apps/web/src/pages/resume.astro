@@ -469,17 +469,17 @@ import MainLayout from '@layouts/MainLayout.astro';
     color: var(--text-muted);
   }
 
-  /* Flawless 1-Page Full-Bleed A4 Print Stylesheet */
+  /* Flawless 1-Page Evenly Spaced A4 Print Stylesheet */
   @media print {
     @page {
       size: A4 portrait;
-      margin: 6mm 10.5mm 5mm 10.5mm;
+      margin: 5.5mm 10.5mm 4.5mm 10.5mm;
     }
     :global(html), :global(body) {
       background: #ffffff !important;
       color: #000000 !important;
       font-family: Georgia, serif !important;
-      font-size: 8.4pt !important;
+      font-size: 8.35pt !important;
       line-height: 1.28 !important;
       width: 100% !important;
       margin: 0 !important;
@@ -539,8 +539,8 @@ import MainLayout from '@layouts/MainLayout.astro';
       color: #000000 !important;
     }
     .cv-header {
-      padding-bottom: 3.5pt !important;
-      margin-bottom: 4.5pt !important;
+      padding-bottom: 4.5pt !important;
+      margin-bottom: 5.5pt !important;
       border-bottom: 1.2pt solid #000000 !important;
       text-align: center !important;
       break-inside: avoid !important;
@@ -572,10 +572,10 @@ import MainLayout from '@layouts/MainLayout.astro';
     .cv-body {
       display: flex !important;
       flex-direction: column !important;
-      gap: 4.2pt !important;
+      gap: 6.2pt !important;
     }
     .cv-section {
-      padding-bottom: 3.8pt !important;
+      padding-bottom: 5.2pt !important;
       border-bottom: 0.5pt solid #cccccc !important;
     }
     .cv-section--last {
@@ -585,22 +585,22 @@ import MainLayout from '@layouts/MainLayout.astro';
       page-break-inside: avoid !important;
     }
     .cv-section-title {
-      font-size: 9pt !important;
+      font-size: 9.1pt !important;
       color: #000000 !important;
-      margin-bottom: 2.2pt !important;
+      margin-bottom: 2.8pt !important;
       letter-spacing: 0.08em !important;
       font-weight: 700 !important;
     }
     .cv-summary {
-      font-size: 8.4pt !important;
-      line-height: 1.29 !important;
+      font-size: 8.35pt !important;
+      line-height: 1.28 !important;
       color: #000000 !important;
       margin: 0 !important;
     }
     .cv-entries {
       display: flex !important;
       flex-direction: column !important;
-      gap: 3.2pt !important;
+      gap: 4.2pt !important;
     }
     .cv-entry {
       page-break-inside: avoid !important;
@@ -615,7 +615,7 @@ import MainLayout from '@layouts/MainLayout.astro';
       color: #000000 !important;
     }
     .cv-entry-role {
-      font-size: 8.4pt !important;
+      font-size: 8.35pt !important;
       color: #000000 !important;
     }
     .cv-entry-meta {
@@ -627,7 +627,7 @@ import MainLayout from '@layouts/MainLayout.astro';
       padding-left: 11pt !important;
     }
     .cv-list li {
-      font-size: 8.3pt !important;
+      font-size: 8.25pt !important;
       line-height: 1.27 !important;
       margin-bottom: 1.1pt !important;
       color: #000000 !important;
@@ -650,12 +650,12 @@ import MainLayout from '@layouts/MainLayout.astro';
       color: #000000 !important;
     }
     .cv-project-sub {
-      font-size: 8.4pt !important;
+      font-size: 8.35pt !important;
     }
     .cv-skills-grid {
       grid-template-columns: 145px 1fr !important;
-      gap: 1.6pt 7pt !important;
-      font-size: 8.3pt !important;
+      gap: 1.8pt 7pt !important;
+      font-size: 8.25pt !important;
       line-height: 1.27 !important;
       page-break-inside: avoid !important;
       break-inside: avoid !important;
@@ -668,7 +668,7 @@ import MainLayout from '@layouts/MainLayout.astro';
       color: #000000 !important;
     }
     .cv-edu-list {
-      gap: 2pt !important;
+      gap: 2.5pt !important;
     }
     .cv-edu-item {
       display: flex !important;
@@ -683,7 +683,7 @@ import MainLayout from '@layouts/MainLayout.astro';
       color: #000000 !important;
     }
     .cv-edu-degree {
-      font-size: 8.3pt !important;
+      font-size: 8.25pt !important;
       color: #000000 !important;
     }
     .cv-edu-year {
@@ -691,8 +691,8 @@ import MainLayout from '@layouts/MainLayout.astro';
       color: #000000 !important;
     }
     .cv-languages {
-      font-size: 8.3pt !important;
-      margin: 2pt 0 0 !important;
+      font-size: 8.25pt !important;
+      margin: 2.5pt 0 0 !important;
       color: #000000 !important;
       line-height: 1.24 !important;
     }

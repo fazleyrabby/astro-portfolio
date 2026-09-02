@@ -34,6 +34,8 @@ import MainLayout from '@layouts/MainLayout.astro';
             <a href="https://github.com/fazleyrabby" target="_blank">github.com/fazleyrabby</a>
             <span class="cv-sep">|</span>
             <a href="https://fazleyrabbi.xyz" target="_blank">fazleyrabbi.xyz</a>
+            <span class="cv-sep">|</span>
+            <span>Chittagong, Bangladesh (Open to Remote)</span>
           </div>
         </div>
 
@@ -43,7 +45,7 @@ import MainLayout from '@layouts/MainLayout.astro';
           <section class="cv-section">
             <h3 class="cv-section-title">Professional Summary</h3>
             <p class="cv-summary">
-              Backend Engineer with 5+ years of professional experience building production e-commerce and digital marketplace systems using PHP, Laravel, MySQL, REST APIs, Redis, and third-party integrations. Experienced in payments, fraud detection, asynchronous processing, database optimization, and scalable backend architecture.
+              Backend Engineer with 5+ years of professional experience building high-performance e-commerce platforms, distributed systems, and real-time backend architectures using PHP, Laravel, Node.js, TypeScript, MySQL, and Redis. Proven expertise in multi-gateway payments, automated fraud prevention, asynchronous processing, database scaling, and production cloud & self-hosted Linux environments.
             </p>
           </section>
 
@@ -52,22 +54,22 @@ import MainLayout from '@layouts/MainLayout.astro';
             <h3 class="cv-section-title">Technical Skills & Core Competencies</h3>
             <div class="cv-skills-grid">
               <span class="cv-skill-cat">Languages</span>
-              <span class="cv-skill-val">PHP, SQL, JavaScript</span>
+              <span class="cv-skill-val">PHP, TypeScript, JavaScript, SQL</span>
 
               <span class="cv-skill-cat">Backend</span>
-              <span class="cv-skill-val">Laravel, REST APIs, Queues</span>
+              <span class="cv-skill-val">Laravel, Node.js, REST APIs, SSE, WebSockets, Queues</span>
 
-              <span class="cv-skill-cat">Databases</span>
-              <span class="cv-skill-val">MySQL, ClickHouse, Redis</span>
+              <span class="cv-skill-cat">Databases & Cache</span>
+              <span class="cv-skill-val">MySQL, PostgreSQL, ClickHouse, Redis</span>
 
-              <span class="cv-skill-cat">Infrastructure</span>
-              <span class="cv-skill-val">Docker, Linux, Nginx, Git</span>
+              <span class="cv-skill-cat">DevOps & Cloud</span>
+              <span class="cv-skill-val">Docker, Linux (Bare-Metal/VPS), Nginx, GitHub Actions, Cloudflare, Self-Hosted Infrastructure</span>
 
               <span class="cv-skill-cat">Payments</span>
-              <span class="cv-skill-val">PayPal, Stripe, Checkout.com, Webhooks</span>
+              <span class="cv-skill-val">PayPal, Stripe, Checkout.com, Idempotent Webhooks</span>
 
-              <span class="cv-skill-cat">Other</span>
-              <span class="cv-skill-val">Fraud Detection, API Design, Database Optimization</span>
+              <span class="cv-skill-cat">Architecture</span>
+              <span class="cv-skill-val">Fraud Detection, High Concurrency, DB Replication</span>
             </div>
           </section>
 
@@ -155,10 +157,27 @@ import MainLayout from '@layouts/MainLayout.astro';
           <section class="cv-section">
             <h3 class="cv-section-title">Key Projects</h3>
             <div class="cv-entries">
+              <!-- SPOT -->
               <div class="cv-entry">
                 <h4 class="cv-project-title">
-                  <span class="cv-project-name">E-Bank</span>
-                  <span class="cv-project-sub">— Online banking system with DPS, loan management & multi-gateway payments</span>
+                  <span class="cv-project-name">SPOT</span>
+                  <span class="cv-project-sub">— Real-time persistent digital canvas & distributed engine (<a href="https://claimyourspot.lol" target="_blank" style="color: inherit; text-decoration: underline;">claimyourspot.lol</a>)</span>
+                </h4>
+                <ul class="cv-list">
+                  <li>Architected and deployed a containerized real-time 10,000-tile digital canvas featuring sub-50ms rendering, Server-Sent Events (SSE) synchronization, and WebAuthn/OAuth security.</li>
+                  <li>Engineered a resilient 3-tier downtime fail-safe queue with client-side persistence and auto-retry pollers, guaranteeing zero transaction loss during network drops.</li>
+                  <li>Configured self-hosted bare-metal Linux infrastructure with Docker Compose, automated PostgreSQL backup pipelines, Cloudflare reverse proxy, and instant rollback automation.</li>
+                </ul>
+                <p class="cv-tech">
+                  <strong>Technologies:</strong> TypeScript, Node.js, PostgreSQL, Server-Sent Events (SSE), Docker, Linux (Self-Hosted), Astro
+                </p>
+              </div>
+
+              <!-- E-Bank -->
+              <div class="cv-entry">
+                <h4 class="cv-project-title">
+                  <span class="cv-project-name"><a href="https://codecanyon.net/item/ebank-complete-online-banking-system-with-dps-loan/30597974?s_rank=21" target="_blank" style="color: inherit; text-decoration: none;">E-Bank</a></span>
+                  <span class="cv-project-sub">— Online banking system with DPS, loan management & multi-gateway payments (<a href="https://codecanyon.net/item/ebank-complete-online-banking-system-with-dps-loan/30597974?s_rank=21" target="_blank" style="color: inherit; text-decoration: underline;">CodeCanyon</a>)</span>
                 </h4>
                 <ul class="cv-list">
                   <li>Engineered core banking backend with Deposit Pension Schemes (DPS), automated loan schedules, and account transaction ledgers.</li>
@@ -166,20 +185,6 @@ import MainLayout from '@layouts/MainLayout.astro';
                 </ul>
                 <p class="cv-tech">
                   <strong>Technologies:</strong> PHP, Laravel, MySQL, JavaScript, REST APIs, Payment Gateways
-                </p>
-              </div>
-
-              <div class="cv-entry">
-                <h4 class="cv-project-title">
-                  <span class="cv-project-name">Routine Management System</span>
-                  <span class="cv-project-sub">— University scheduling & automated conflict-detection engine</span>
-                </h4>
-                <ul class="cv-list">
-                  <li>Designed automated scheduling system modeling 15 interconnected entities (teachers, batches, rooms, courses, and time slots).</li>
-                  <li>Eliminated scheduling double-booking with real-time conflict validation and dynamic PDF timetable generation.</li>
-                </ul>
-                <p class="cv-tech">
-                  <strong>Technologies:</strong> PHP, Laravel, MySQL, jQuery, REST APIs
                 </p>
               </div>
             </div>
@@ -639,7 +644,7 @@ import MainLayout from '@layouts/MainLayout.astro';
       font-size: 8.5pt !important;
     }
     .cv-skills-grid {
-      grid-template-columns: 135px 1fr !important;
+      grid-template-columns: 145px 1fr !important;
       gap: 1.8pt 7pt !important;
       font-size: 8.4pt !important;
       line-height: 1.30 !important;

@@ -162,8 +162,9 @@ import MainLayout from '@layouts/MainLayout.astro';
                   <span class="cv-project-sub">— Real-time persistent digital canvas & distributed engine (<a href="https://claimyourspot.lol" target="_blank" style="color: inherit; text-decoration: underline;">claimyourspot.lol</a>)</span>
                 </h4>
                 <ul class="cv-list">
-                  <li>Architected a containerized real-time 10,000-tile digital canvas featuring sub-50ms rendering, Server-Sent Events (SSE) synchronization, and WebAuthn/OAuth security.</li>
-                  <li>Engineered a resilient 3-tier downtime fail-safe queue ensuring zero data loss, and configured self-hosted bare-metal Linux infrastructure with Docker Compose, automated backup pipelines, and rollback automation.</li>
+                  <li>Architected and deployed a containerized real-time 10,000-tile digital canvas featuring sub-50ms rendering, Server-Sent Events (SSE) synchronization, and WebAuthn/OAuth security.</li>
+                  <li>Engineered a resilient 3-tier downtime fail-safe queue with persistent client storage and smart retry pollers, guaranteeing zero transaction loss during network disruptions.</li>
+                  <li>Configured self-hosted bare-metal Linux infrastructure with Docker Compose, automated PostgreSQL backup pipelines, Cloudflare reverse proxy, and instant rollback automation.</li>
                 </ul>
                 <p class="cv-tech">
                   <strong>Technologies:</strong> TypeScript, Node.js, PostgreSQL, Server-Sent Events (SSE), Docker, Linux (Self-Hosted), Astro
@@ -468,17 +469,17 @@ import MainLayout from '@layouts/MainLayout.astro';
     color: var(--text-muted);
   }
 
-  /* Guaranteed Strict 1-Page Full A4 Print Stylesheet */
+  /* Flawless 1-Page Full-Bleed A4 Print Stylesheet */
   @media print {
     @page {
       size: A4 portrait;
-      margin: 6mm 10mm 5mm 10mm;
+      margin: 6mm 10.5mm 5mm 10.5mm;
     }
     :global(html), :global(body) {
       background: #ffffff !important;
       color: #000000 !important;
       font-family: Georgia, serif !important;
-      font-size: 8.35pt !important;
+      font-size: 8.4pt !important;
       line-height: 1.28 !important;
       width: 100% !important;
       margin: 0 !important;
@@ -546,20 +547,20 @@ import MainLayout from '@layouts/MainLayout.astro';
       page-break-inside: avoid !important;
     }
     .cv-name {
-      font-size: 16pt !important;
+      font-size: 16.5pt !important;
       font-weight: 700 !important;
       color: #000000 !important;
       margin-bottom: 2pt !important;
       line-height: 1.1 !important;
     }
     .cv-tagline {
-      font-size: 9pt !important;
+      font-size: 9.1pt !important;
       font-weight: 600 !important;
       color: #000000 !important;
       margin: 0 0 2.5pt !important;
     }
     .cv-contacts {
-      font-size: 8.2pt !important;
+      font-size: 8.3pt !important;
       color: #000000 !important;
       gap: 1.8pt 7pt !important;
       justify-content: center !important;
@@ -591,15 +592,15 @@ import MainLayout from '@layouts/MainLayout.astro';
       font-weight: 700 !important;
     }
     .cv-summary {
-      font-size: 8.35pt !important;
-      line-height: 1.28 !important;
+      font-size: 8.4pt !important;
+      line-height: 1.29 !important;
       color: #000000 !important;
       margin: 0 !important;
     }
     .cv-entries {
       display: flex !important;
       flex-direction: column !important;
-      gap: 3.5pt !important;
+      gap: 3.2pt !important;
     }
     .cv-entry {
       page-break-inside: avoid !important;
@@ -609,12 +610,12 @@ import MainLayout from '@layouts/MainLayout.astro';
       margin-bottom: 0.6pt !important;
     }
     .cv-entry-company {
-      font-size: 9.1pt !important;
+      font-size: 9.2pt !important;
       font-weight: 700 !important;
       color: #000000 !important;
     }
     .cv-entry-role {
-      font-size: 8.35pt !important;
+      font-size: 8.4pt !important;
       color: #000000 !important;
     }
     .cv-entry-meta {
@@ -626,16 +627,16 @@ import MainLayout from '@layouts/MainLayout.astro';
       padding-left: 11pt !important;
     }
     .cv-list li {
-      font-size: 8.25pt !important;
+      font-size: 8.3pt !important;
       line-height: 1.27 !important;
-      margin-bottom: 1.2pt !important;
+      margin-bottom: 1.1pt !important;
       color: #000000 !important;
     }
     .cv-list li::marker {
       color: #000000 !important;
     }
     .cv-tech {
-      font-size: 7.95pt !important;
+      font-size: 8pt !important;
       margin: 1pt 0 0 !important;
       color: #000000 !important;
       line-height: 1.22 !important;
@@ -649,12 +650,12 @@ import MainLayout from '@layouts/MainLayout.astro';
       color: #000000 !important;
     }
     .cv-project-sub {
-      font-size: 8.35pt !important;
+      font-size: 8.4pt !important;
     }
     .cv-skills-grid {
       grid-template-columns: 145px 1fr !important;
       gap: 1.6pt 7pt !important;
-      font-size: 8.25pt !important;
+      font-size: 8.3pt !important;
       line-height: 1.27 !important;
       page-break-inside: avoid !important;
       break-inside: avoid !important;
@@ -682,7 +683,7 @@ import MainLayout from '@layouts/MainLayout.astro';
       color: #000000 !important;
     }
     .cv-edu-degree {
-      font-size: 8.25pt !important;
+      font-size: 8.3pt !important;
       color: #000000 !important;
     }
     .cv-edu-year {
@@ -690,7 +691,7 @@ import MainLayout from '@layouts/MainLayout.astro';
       color: #000000 !important;
     }
     .cv-languages {
-      font-size: 8.25pt !important;
+      font-size: 8.3pt !important;
       margin: 2pt 0 0 !important;
       color: #000000 !important;
       line-height: 1.24 !important;

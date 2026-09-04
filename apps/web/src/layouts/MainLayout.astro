@@ -162,20 +162,21 @@ const {
 
         try {
           const telemetry = await collectVisitorTelemetry();
-          const apiUrl =
-            document.body?.getAttribute("data-api-url") ||
-            "https://cms.fazleyrabbi.xyz";
 
-          let res = await fetch(`${apiUrl}/track`, {
+          // Primary: Vercel serverless function on same origin (100% serverless, zero VPS required)
+          let res = await fetch("/api/track", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(telemetry),
             keepalive: true,
           }).catch(() => null);
 
-          // Fallback to local Vercel serverless function if VPS is unreachable
+          // Fallback if local dev or different environment
           if (!res || !res.ok) {
-            res = await fetch("/api/track", {
+            const apiUrl =
+              document.body?.getAttribute("data-api-url") ||
+              "https://cms.fazleyrabbi.xyz";
+            res = await fetch(`${apiUrl}/track`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(telemetry),

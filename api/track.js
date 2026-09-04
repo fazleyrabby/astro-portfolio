@@ -69,6 +69,15 @@ function getCountryFlag(countryCode) {
   }
 }
 
+function cleanLocation(str) {
+  if (!str) return null;
+  try {
+    return decodeURIComponent(str.replace(/\+/g, ' ')).trim();
+  } catch {
+    return str.replace(/%20/g, ' ').trim();
+  }
+}
+
 function isAutomatedBot(ua = '', body = {}) {
   const s = ua.toLowerCase();
   const botPatterns = [
@@ -103,10 +112,36 @@ function isAutomatedBot(ua = '', body = {}) {
     'applebot',
     'petalbot',
     'ptst',
+    'mandiant',
+    'censys',
+    'shodan',
+    'qualys',
+    'nessus',
+    'zgrab',
+    'masscan',
   ];
   if (botPatterns.some((p) => s.includes(p))) return true;
+
+  // W3C automation indicator
   if (body.webdriver === true) return true;
-  if (body.hardware && /swiftshader|llvmpipe/i.test(body.hardware)) return true;
+
+  // Synthetic Edge 12 spoofing on modern Chrome (common scanner signature)
+  if (/chrome\/\d+/i.test(ua) && /edge\/1[0-8]\./i.test(ua)) return true;
+
+  const isMobile = /mobile|iphone|android.*mobile|ipad|tablet/i.test(ua);
+
+  // Default headless/scanner screen resolution (800x600 on desktop)
+  if (!isMobile && body.screen && body.screen.startsWith('800x600')) return true;
+
+  // Software/Headless WebGL or disabled WebGL on desktop
+  if (body.hardware) {
+    if (/swiftshader|llvmpipe/i.test(body.hardware)) return true;
+    if (!isMobile && /gpu:\s*no_webgl/i.test(body.hardware)) return true;
+  }
+
+  // Known scanner ISP / organizations
+  if (body.isp && /mandiant|censys|shodan|qualys|netcraft|datadog/i.test(body.isp)) return true;
+
   return false;
 }
 
@@ -139,9 +174,9 @@ export default async function handler(req, res) {
     }
 
     // Vercel / Cloudflare Geolocation Headers
-    let country = headers['x-vercel-ip-country'] || headers['cf-ipcountry'] || body.country || null;
-    let city = headers['x-vercel-ip-city'] || headers['cf-ipcity'] || body.city || null;
-    let region = headers['x-vercel-ip-country-region'] || headers['cf-region'] || body.region || null;
+    let country = cleanLocation(headers['x-vercel-ip-country'] || headers['cf-ipcountry'] || body.country);
+    let city = cleanLocation(headers['x-vercel-ip-city'] || headers['cf-ipcity'] || body.city);
+    let region = cleanLocation(headers['x-vercel-ip-country-region'] || headers['cf-region'] || body.region);
     let isp = body.isp || null;
 
     // Fallback IP lookup if geolocation headers are absent and IP is public
@@ -151,13 +186,18 @@ export default async function handler(req, res) {
         if (geoRes.ok) {
           const geoData = await geoRes.json();
           if (geoData.success) {
-            country = geoData.country_code || geoData.country;
-            city = geoData.city;
-            region = geoData.region;
+            country = cleanLocation(geoData.country_code || geoData.country);
+            city = cleanLocation(geoData.city);
+            region = cleanLocation(geoData.region);
             isp = geoData.connection?.isp || geoData.connection?.org;
           }
         }
       } catch (_) {}
+    }
+
+    // Second check after ISP lookup if scanner ISP is detected
+    if (!isTest && isAutomatedBot(userAgent, { ...body, isp })) {
+      return res.status(200).json({ ok: true, skipped: 'automated_bot' });
     }
 
     const { os, browser, device } = parseUserAgent(userAgent);

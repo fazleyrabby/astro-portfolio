@@ -147,7 +147,7 @@ export async function collectVisitorTelemetry(): Promise<VisitorTelemetry> {
 }
 
 /**
- * Filter out automated test runners, scrapers, and headless crawlers.
+ * Filter out automated test runners, scrapers, headless crawlers, and cloud security scanners.
  */
 export function isLikelyHuman(): boolean {
   if (typeof window === 'undefined') return false;
@@ -158,7 +158,7 @@ export function isLikelyHuman(): boolean {
     return false;
   }
 
-  // 2. Headless Chrome / Bot User-Agent detection
+  // 2. Headless Chrome / Bot / Scanner User-Agent detection
   const ua = (nav.userAgent || '').toLowerCase();
   const botKeywords = [
     'headless',
@@ -172,17 +172,40 @@ export function isLikelyHuman(): boolean {
     'phantomjs',
     'lighthouse',
     'postman',
+    'mandiant',
+    'censys',
+    'shodan',
+    'qualys',
+    'nessus',
+    'zgrab',
+    'masscan',
   ];
   if (botKeywords.some((kw) => ua.includes(kw))) {
     return false;
   }
 
-  // 3. Software/Headless WebGL SwiftShader detection
+  // 3. Synthetic Edge/12 spoofing on modern Chrome (common scanner signature)
+  if (/chrome\/\d+/i.test(ua) && /edge\/1[0-8]\./i.test(ua)) {
+    return false;
+  }
+
+  const isMobile = /mobile|iphone|android.*mobile|ipad|tablet/i.test(ua);
+
+  // 4. Default headless/scanner screen resolution (800x600 on desktop)
+  if (!isMobile && window.screen.width === 800 && window.screen.height === 600) {
+    return false;
+  }
+
+  // 5. Software/Headless WebGL or missing WebGL on desktop
   const webgl = getWebGLInfo();
-  if (/swiftshader/i.test(webgl.renderer) || /llvmpipe/i.test(webgl.renderer)) {
+  if (!isMobile && (webgl.renderer === 'no_webgl' || webgl.vendor === 'no_webgl')) {
+    return false;
+  }
+  if (/swiftshader|llvmpipe/i.test(webgl.renderer)) {
     return false;
   }
 
   return true;
 }
+
 

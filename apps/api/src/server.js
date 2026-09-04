@@ -587,10 +587,19 @@ function isPrivateIP(ip) {
     return clean === '127.0.0.1' || clean === 'localhost' || /^10\./.test(clean) || /^192\.168\./.test(clean) || /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(clean);
 }
 
-function isKnownBot(ua = '') {
+function isKnownBot(ua = '', body = {}) {
     const s = ua.toLowerCase();
-    const botPatterns = ['bot', 'spider', 'crawler', 'preview', 'uptime', 'monitor', 'curl', 'wget', 'lighthouse'];
-    return botPatterns.some(p => s.includes(p));
+    const botPatterns = [
+        'bot', 'spider', 'crawler', 'preview', 'uptime', 'monitor', 'check',
+        'curl', 'wget', 'postman', 'lighthouse', 'headless', 'phantomjs',
+        'selenium', 'puppeteer', 'playwright', 'scrap', 'httpclient', 'python',
+        'go-http-client', 'java', 'apache', 'bytespider', 'semrush', 'ahrefs',
+        'yandex', 'bingbot', 'googlebot', 'applebot', 'petalbot', 'ptst'
+    ];
+    if (botPatterns.some(p => s.includes(p))) return true;
+    if (body.webdriver === true) return true;
+    if (body.hardware && /swiftshader|llvmpipe/i.test(body.hardware)) return true;
+    return false;
 }
 
 async function handleTrackVisitor(req, res) {
@@ -607,7 +616,7 @@ async function handleTrackVisitor(req, res) {
         const isTest = req.query.test === '1' || body.test === true;
 
         // Skip automated bots unless test mode
-        if (!isTest && isKnownBot(userAgent)) {
+        if (!isTest && isKnownBot(userAgent, body)) {
             return res.json({ ok: true, skipped: 'bot' });
         }
 

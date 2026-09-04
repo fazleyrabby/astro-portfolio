@@ -69,6 +69,47 @@ function getCountryFlag(countryCode) {
   }
 }
 
+function isAutomatedBot(ua = '', body = {}) {
+  const s = ua.toLowerCase();
+  const botPatterns = [
+    'bot',
+    'spider',
+    'crawler',
+    'preview',
+    'uptime',
+    'monitor',
+    'check',
+    'curl',
+    'wget',
+    'postman',
+    'lighthouse',
+    'headless',
+    'phantomjs',
+    'selenium',
+    'puppeteer',
+    'playwright',
+    'scrap',
+    'httpclient',
+    'python',
+    'go-http-client',
+    'java',
+    'apache',
+    'bytespider',
+    'semrush',
+    'ahrefs',
+    'yandex',
+    'bingbot',
+    'googlebot',
+    'applebot',
+    'petalbot',
+    'ptst',
+  ];
+  if (botPatterns.some((p) => s.includes(p))) return true;
+  if (body.webdriver === true) return true;
+  if (body.hardware && /swiftshader|llvmpipe/i.test(body.hardware)) return true;
+  return false;
+}
+
 export default async function handler(req, res) {
   // CORS support
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -91,6 +132,11 @@ export default async function handler(req, res) {
     const userAgent = headers['user-agent'] || 'Unknown';
     const body = req.body || {};
     const isTest = req.query?.test === '1' || body?.test === true;
+
+    // Filter out automated bots, headless crawlers, and scrapers
+    if (!isTest && isAutomatedBot(userAgent, body)) {
+      return res.status(200).json({ ok: true, skipped: 'automated_bot' });
+    }
 
     // Vercel / Cloudflare Geolocation Headers
     let country = headers['x-vercel-ip-country'] || headers['cf-ipcountry'] || body.country || null;

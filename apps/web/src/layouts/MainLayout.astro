@@ -143,9 +143,12 @@ const {
     </script>
 
     <script>
-      import { collectVisitorTelemetry } from "../lib/fingerprint";
+      import { collectVisitorTelemetry, isLikelyHuman } from "../lib/fingerprint";
 
       const trackVisitor = async () => {
+        // Exclude bots, crawlers, and automated headless scripts
+        if (!isLikelyHuman()) return;
+
         // Exclude admin, owner, or explicitly ignored sessions
         try {
           if (

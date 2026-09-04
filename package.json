@@ -1,6 +1,7 @@
 {
   "name": "astro-portfolio-monorepo",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "pnpm --filter web build",
     "dev:web": "pnpm --filter web dev",

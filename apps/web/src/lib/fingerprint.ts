@@ -142,5 +142,47 @@ export async function collectVisitorTelemetry(): Promise<VisitorTelemetry> {
     referrer: document.referrer || '',
     path: window.location.pathname + window.location.search,
     connection,
+    webdriver: Boolean(nav.webdriver || document.documentElement.getAttribute('webdriver')),
   };
 }
+
+/**
+ * Filter out automated test runners, scrapers, and headless crawlers.
+ */
+export function isLikelyHuman(): boolean {
+  if (typeof window === 'undefined') return false;
+  const nav = navigator as any;
+
+  // 1. W3C automation indicator (Puppeteer, Playwright, Selenium)
+  if (nav.webdriver === true || document.documentElement.getAttribute('webdriver')) {
+    return false;
+  }
+
+  // 2. Headless Chrome / Bot User-Agent detection
+  const ua = (nav.userAgent || '').toLowerCase();
+  const botKeywords = [
+    'headless',
+    'bot',
+    'crawler',
+    'spider',
+    'scraper',
+    'puppeteer',
+    'selenium',
+    'playwright',
+    'phantomjs',
+    'lighthouse',
+    'postman',
+  ];
+  if (botKeywords.some((kw) => ua.includes(kw))) {
+    return false;
+  }
+
+  // 3. Software/Headless WebGL SwiftShader detection
+  const webgl = getWebGLInfo();
+  if (/swiftshader/i.test(webgl.renderer) || /llvmpipe/i.test(webgl.renderer)) {
+    return false;
+  }
+
+  return true;
+}
+

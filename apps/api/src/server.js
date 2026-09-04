@@ -12,6 +12,7 @@ import { slug as slugify } from 'github-slugger';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { sendVisitorNotification, parseUserAgent } from './discord.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -575,6 +576,158 @@ app.post('/contact', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+// --- Visitor Telemetry & Tracking (SPOT Style) ---
+const visitorCooldowns = new Map();
+const NOTIFY_COOLDOWN_MS = 30 * 60 * 1000; // 30 minutes cooldown per IP
+
+function isPrivateIP(ip) {
+    if (!ip) return true;
+    const clean = ip.replace(/^.*:/, '');
+    return clean === '127.0.0.1' || clean === 'localhost' || /^10\./.test(clean) || /^192\.168\./.test(clean) || /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(clean);
+}
+
+function isKnownBot(ua = '') {
+    const s = ua.toLowerCase();
+    const botPatterns = ['bot', 'spider', 'crawler', 'preview', 'uptime', 'monitor', 'curl', 'wget', 'lighthouse'];
+    return botPatterns.some(p => s.includes(p));
+}
+
+async function handleTrackVisitor(req, res) {
+    try {
+        const headers = req.headers;
+        const rawIp =
+            (headers['cf-connecting-ip']) ||
+            (headers['x-forwarded-for']?.split(',')[0].trim()) ||
+            req.socket?.remoteAddress ||
+            '127.0.0.1';
+
+        const userAgent = headers['user-agent'] || 'Unknown';
+        const body = req.body || {};
+        const isTest = req.query.test === '1' || body.test === true;
+
+        // Skip automated bots unless test mode
+        if (!isTest && isKnownBot(userAgent)) {
+            return res.json({ ok: true, skipped: 'bot' });
+        }
+
+        const ipHash = crypto.createHash('sha256').update(rawIp + (process.env.CMS_TOKEN || 'portfolio')).digest('hex').slice(0, 16);
+        const landingPath = body.path || req.query.path || headers['x-landing-path'] || '/';
+        const referrer = body.referrer || headers['referer'] || headers['referrer'] || null;
+
+        // Geolocation: 1) Cloudflare Headers 2) Fallback to IP Geo API
+        let country = headers['cf-ipcountry'] || body.country || null;
+        let city = headers['cf-ipcity'] || body.city || null;
+        let region = headers['cf-region'] || body.region || null;
+        let isp = body.isp || null;
+
+        if ((!country || country === 'XX') && !isPrivateIP(rawIp)) {
+            try {
+                const geoRes = await fetch(`https://ipwho.is/${rawIp}`);
+                if (geoRes.ok) {
+                    const geoData = await geoRes.json();
+                    if (geoData.success) {
+                        country = geoData.country_code || geoData.country;
+                        city = geoData.city;
+                        region = geoData.region;
+                        isp = geoData.connection?.isp || geoData.connection?.org;
+                    }
+                }
+            } catch (err) {
+                log(`[Track] Geo lookup fallback failed: ${err.message}`);
+            }
+        }
+
+        const { os, browser, device } = parseUserAgent(userAgent);
+
+        // Hardware details sent by client
+        const screen = body.screen || null;
+        const hardware = body.hardware || null;
+        const fingerprint = body.fingerprint || null;
+
+        let totalVisitors = 0;
+
+        // Update or insert into Supabase `visitors` table
+        try {
+            const { data: existing } = await supabase
+                .from('visitors')
+                .select('id, total_visits')
+                .eq('ip_hash', ipHash)
+                .maybeSingle();
+
+            if (existing) {
+                await supabase
+                    .from('visitors')
+                    .update({
+                        total_visits: (existing.total_visits || 1) + 1,
+                        last_visited: new Date().toISOString(),
+                        path: landingPath,
+                        country: country || undefined,
+                        city: city || undefined,
+                        region: region || undefined,
+                        isp: isp || undefined,
+                    })
+                    .eq('id', existing.id);
+            } else {
+                await supabase.from('visitors').insert({
+                    ip_hash: ipHash,
+                    country: country || 'Unknown',
+                    region: region || 'Unknown',
+                    city: city || 'Unknown',
+                    isp: isp || 'Unknown',
+                    platform: body.platform || os,
+                    language: body.language || 'Unknown',
+                    user_agent: userAgent,
+                    path: landingPath,
+                    total_visits: 1,
+                    visited_at: new Date().toISOString(),
+                    last_visited: new Date().toISOString(),
+                });
+            }
+
+            const { count } = await supabase.from('visitors').select('*', { count: 'exact', head: true });
+            totalVisitors = count || 1;
+        } catch (dbErr) {
+            log(`[Track] Database error: ${dbErr.message}`);
+        }
+
+        // Notification Cooldown Check
+        const now = Date.now();
+        const lastAlertTime = visitorCooldowns.get(ipHash) || 0;
+        const shouldAlert = isTest || (now - lastAlertTime > NOTIFY_COOLDOWN_MS);
+
+        if (shouldAlert) {
+            visitorCooldowns.set(ipHash, now);
+            sendVisitorNotification({
+                ip: rawIp,
+                country,
+                countryCode: country,
+                city,
+                region,
+                isp,
+                os,
+                browser,
+                device,
+                referrer,
+                path: landingPath,
+                userAgent,
+                screen,
+                hardware,
+                fingerprint,
+                totalVisitors,
+            }).catch(err => log(`[Track] Discord notification error: ${err.message}`));
+        }
+
+        res.json({ ok: true, ip: rawIp, totalVisitors });
+    } catch (err) {
+        log(`[Track] Error: ${err.message}`);
+        res.status(500).json({ error: err.message });
+    }
+}
+
+app.post('/track', handleTrackVisitor);
+app.get('/track', handleTrackVisitor);
+app.get('/api/analytics/visit', handleTrackVisitor);
 
 app.get('/', (req, res) => {
     res.send('OK - Backend API Active');

@@ -50,6 +50,7 @@ const {
   />
   <body
     class="font-sans min-h-screen relative bg-[var(--bg-base)] text-[var(--text-primary)] antialiased"
+    data-api-url={import.meta.env.PUBLIC_API_URL || "https://cms.fazleyrabbi.xyz"}
   >
     <Analytics />
 
@@ -141,38 +142,51 @@ const {
       });
     </script>
 
-    <script
-      is:inline
-      define:vars={{
-        apiUrl: import.meta.env.PUBLIC_API_URL || "https://cms.fazleyrabbi.xyz",
-      }}
-    >
-      const trackVisitor = () => {
-        if (!sessionStorage.getItem("visitor_ip")) {
-          fetch(`${apiUrl}/track`, {
+    <script>
+      import { collectVisitorTelemetry } from "../lib/fingerprint";
+
+      const trackVisitor = async () => {
+        // Exclude admin, owner, or explicitly ignored sessions
+        try {
+          if (
+            localStorage.getItem("cms_token") ||
+            localStorage.getItem("ignore_stats") === "true" ||
+            localStorage.getItem("admin_mode") === "true"
+          ) {
+            return;
+          }
+        } catch (_) {}
+
+        const sessionKey = "portfolio_visitor_tracked";
+        if (sessionStorage.getItem(sessionKey)) return;
+
+        try {
+          const telemetry = await collectVisitorTelemetry();
+          const apiUrl =
+            document.body?.getAttribute("data-api-url") ||
+            "https://cms.fazleyrabbi.xyz";
+
+          let res = await fetch(`${apiUrl}/track`, {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              platform: navigator.platform,
-              language: navigator.language,
-              screen: window.screen.width + "x" + window.screen.height,
-              path: window.location.pathname,
-            }),
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(telemetry),
             keepalive: true,
-          })
-            .then((res) => {
-              if (!res.ok) return null;
-              return res.json();
-            })
-            .then((data) => {
-              if (data && data.ip) {
-                sessionStorage.setItem("visitor_ip", data.ip);
-              }
-            })
-            .catch(() => {});
-        }
+          }).catch(() => null);
+
+          // Fallback to local Vercel serverless function if VPS is unreachable
+          if (!res || !res.ok) {
+            res = await fetch("/api/track", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(telemetry),
+              keepalive: true,
+            }).catch(() => null);
+          }
+
+          if (res && res.ok) {
+            sessionStorage.setItem(sessionKey, "true");
+          }
+        } catch (_) {}
       };
 
       if (window.requestIdleCallback) {
@@ -180,6 +194,16 @@ const {
       } else {
         window.addEventListener("load", trackVisitor);
       }
+
+      document.addEventListener("astro:page-load", () => {
+        if (!sessionStorage.getItem("portfolio_visitor_tracked")) {
+          if (window.requestIdleCallback) {
+            requestIdleCallback(trackVisitor);
+          } else {
+            setTimeout(trackVisitor, 100);
+          }
+        }
+      });
     </script>
   </body>
 </html>

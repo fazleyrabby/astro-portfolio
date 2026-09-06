@@ -19,7 +19,7 @@ export const en = {
   'footer.powered': 'Powered by',
   'footer.built': 'Built with ❤ by',
   'footer.visitors': 'Visits',
-  'hero.available': 'Available for freelance & collaboration',
+  'hero.available': 'Available for Mid-Level Backend Roles & Consulting',
   'hero.hi': "Hi, I'm",
   'hero.name': 'Md. Fazley Rabbi',
   'hero.tagline': 'Designing scalable backend systems, payment infrastructure, and APIs for products that serve real users.',

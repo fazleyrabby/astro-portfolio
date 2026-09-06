@@ -16,7 +16,7 @@ const tp = useTranslatedPath(lang);
       </h2>
 
       <p class="contact-subtitle">
-        {t('contact.subtitle') || "Available for architectural consulting, backend leadership, and end-to-end product development. Currently accepting new collaborations for late 2026."}
+        {t('contact.subtitle') || "Available for mid-level backend engineering roles (remote), high-throughput API design, and database/queue scaling. Open to full-time opportunities and technical consulting."}
       </p>
 
       <div class="contact-actions">
@@ -25,7 +25,11 @@ const tp = useTranslatedPath(lang);
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
         </a>
         <a href={tp("/resume/")} class="btn-ghost">
-          {t('contact.resumeBtn') || "Download Resume"}
+          {t('contact.resumeBtn') || "View Resume"}
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        </a>
+        <a href="https://github.com/fazleyrabby" target="_blank" rel="noopener noreferrer" class="btn-ghost">
+          GitHub ↗
         </a>
       </div>
     </div>

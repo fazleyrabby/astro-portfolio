@@ -6,12 +6,10 @@ import crypto from 'crypto';
  * Dispatches rich visitor telemetry notifications to Discord and updates Supabase.
  */
 
-const DISCORD_WEBHOOK_URL =
-  process.env.DISCORD_WEBHOOK_URL ||
-  'https://discord.com/api/webhooks/1545508644974760036/PLyVNUiInt5KCRkbQ9IbrB1qVT4TvyM8RGImQitRNdwQQVshqYi5HpcpLJODEcmk8eZS';
+const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://pwqzjazzlysvilumztww.supabase.co';
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY || 'sb_publishable_rKuXk6jFMkN_Or0dn6jl9Q_Fc7K1Jdk';
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
 
 // In-memory cooldown cache per serverless execution instance
 const lastAlertMap = new Map();

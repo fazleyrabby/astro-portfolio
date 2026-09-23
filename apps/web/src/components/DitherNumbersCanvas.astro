@@ -260,6 +260,7 @@ const { opacity = '0.24' } = Astro.props;
 
 <style>
   .hero-dither-bg {
+    --dither-copy-mask: 0.38;
     position: absolute;
     inset: 0;
     width: 100%;
@@ -269,11 +270,27 @@ const { opacity = '0.24' } = Astro.props;
     opacity: var(--dither-opacity, 0.6);
     mix-blend-mode: normal;
     image-rendering: auto;
+    -webkit-mask-image: linear-gradient(to right, rgb(0 0 0 / var(--dither-copy-mask)) 0%, rgb(0 0 0 / 0.55) 42%, #000 72%);
+    mask-image: linear-gradient(to right, rgb(0 0 0 / var(--dither-copy-mask)) 0%, rgb(0 0 0 / 0.55) 42%, #000 72%);
   }
 
   :global(.dark) .hero-dither-bg {
     opacity: var(--dither-opacity, 0.55);
     mix-blend-mode: screen;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  @media (max-width: 900px) {
+    .hero-dither-bg {
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 32%, rgb(0 0 0 / 0.38) 54%, rgb(0 0 0 / 0.38) 100%);
+      mask-image: linear-gradient(to bottom, #000 0%, #000 32%, rgb(0 0 0 / 0.38) 54%, rgb(0 0 0 / 0.38) 100%);
+    }
+
+    :global(.dark) .hero-dither-bg {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
   }
 
   .hero-dither-overlay {

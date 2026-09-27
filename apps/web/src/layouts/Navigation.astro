@@ -26,6 +26,11 @@ const navItems = [
     match: cleanPath.startsWith("/projects"),
   },
   {
+    href: translatePath("/experiments/"),
+    label: t("nav.experiments") || "Experiments",
+    match: cleanPath.startsWith("/experiments"),
+  },
+  {
     href: translatePath("/posts/"),
     label: t("nav.blog") || "Blog",
     match: cleanPath.startsWith("/posts"),

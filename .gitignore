@@ -39,3 +39,4 @@ debug.log
 .cache/
 .cache
 .cache*
+.playwright-mcp/

@@ -3,6 +3,7 @@ export const en = {
   'nav.about': 'About',
   'nav.work': 'Work',
   'nav.projects': 'Projects',
+  'nav.experiments': 'Experiments',
   'nav.resume': 'Resume',
   'nav.uses': 'Uses',
   'nav.journey': 'Journey',

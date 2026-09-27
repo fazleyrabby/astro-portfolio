@@ -3,6 +3,7 @@ export const bn = {
   'nav.about': 'সম্পর্কে',
   'nav.work': 'ওয়ার্ক',
   'nav.projects': 'প্রজেক্টস',
+  'nav.experiments': 'এক্সপেরিমেন্ট',
   'nav.resume': 'রিজুমে',
   'nav.uses': 'ব্যবহার',
   'nav.journey': 'জার্নি',

@@ -15,7 +15,6 @@ const projects = all.filter(
 projects.sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
 
 const mainProjects = projects.filter((p) => p.data.category !== "experimental");
-const experimentalProjects = projects.filter((p) => p.data.category === "experimental");
 ---
 
 <MainLayout title="Projects — Fazley Rabbi">
@@ -27,100 +26,81 @@ const experimentalProjects = projects.filter((p) => p.data.category === "experim
         <h1 class="page-title">Projects</h1>
       </header>
 
+      <!-- Projects Grid -->
+      <div class="projects-grid">
+        {mainProjects.map((project) => {
+          const { title, description, type, status, tech, live, github, thumbnail, problem, highlights } = project.data;
+          const baseSlug = project.slug.replace(/-bn$/, "");
+          const hasCase = !!(problem || (highlights && highlights.length));
+          const href = hasCase ? tp(`/projects/${baseSlug}`) : (live || github || "#");
 
-
-      <!-- Projects Sections -->
-      {
-        [
-          { title: "", items: mainProjects },
-          { title: "Experimental / Tinkering", items: experimentalProjects }
-        ].map((section) => {
-          if (section.items.length === 0) return null;
           return (
-            <div class="projects-section mb-16">
-              {section.title && (
-                <header class="projects-page-header reveal mt-8 mb-8">
-                  <h2 class="page-title !text-3xl !font-display !font-medium !tracking-tight">{section.title}</h2>
-                </header>
-              )}
-              <div class="projects-grid">
-                {section.items.map((project) => {
-                  const { title, description, type, status, tech, live, github, thumbnail, problem, highlights } = project.data;
-                  const baseSlug = project.slug.replace(/-bn$/, "");
-                  const hasCase = !!(problem || (highlights && highlights.length));
-                  const href = hasCase ? tp(`/projects/${baseSlug}`) : (live || github || "#");
+            <article
+              class="project-card-editorial reveal"
+              data-type={type || "backend"}
+              data-title={title.toLowerCase()}
+            >
+              {/* Thumbnail */}
+              <a href={href} class="project-card-thumb">
+                {thumbnail ? (
+                  <img
+                    src={thumbnail}
+                    alt={title}
+                    loading="lazy"
+                    width="600"
+                    height="338"
+                  />
+                ) : (
+                  <div class="project-card-placeholder">
+                    <span>{title}</span>
+                  </div>
+                )}
+              </a>
 
-                  return (
-                    <article
-                      class="project-card-editorial reveal"
-                      data-type={type || "backend"}
-                      data-title={title.toLowerCase()}
-                    >
-                      {/* Thumbnail */}
-                      <a href={href} class="project-card-thumb">
-                        {thumbnail ? (
-                          <img
-                            src={thumbnail}
-                            alt={title}
-                            loading="lazy"
-                            width="600"
-                            height="338"
-                          />
-                        ) : (
-                          <div class="project-card-placeholder">
-                            <span>{title}</span>
-                          </div>
-                        )}
-                      </a>
+              {/* Content */}
+              <div class="project-card-body">
+                <div class="project-card-meta">
+                  <span class="project-card-type">{type?.toUpperCase() || 'PROJECT'}</span>
+                  <span class="project-card-dot">·</span>
+                  <span class="project-card-status">{status?.toUpperCase() || 'ACTIVE'}</span>
+                </div>
 
-                      {/* Content */}
-                      <div class="project-card-body">
-                        <div class="project-card-meta">
-                          <span class="project-card-type">{type?.toUpperCase() || 'PROJECT'}</span>
-                          <span class="project-card-dot">·</span>
-                          <span class="project-card-status">{status?.toUpperCase() || 'ACTIVE'}</span>
-                        </div>
+                <h3 class="project-card-title">
+                  <a href={href}>{title}</a>
+                </h3>
 
-                        <h3 class="project-card-title">
-                          <a href={href}>{title}</a>
-                        </h3>
+                <p class="project-card-desc">{description}</p>
 
-                        <p class="project-card-desc">{description}</p>
+                {/* Tech stack */}
+                {tech && tech.length > 0 && (
+                  <div class="project-card-tags">
+                    {tech.slice(0, 5).map((t) => (
+                      <span class="tag">{t}</span>
+                    ))}
+                    {tech.length > 5 && <span class="tag">+{tech.length - 5}</span>}
+                  </div>
+                )}
 
-                        {/* Tech stack */}
-                        {tech && tech.length > 0 && (
-                          <div class="project-card-tags">
-                            {tech.slice(0, 5).map((t) => (
-                              <span class="tag">{t}</span>
-                            ))}
-                            {tech.length > 5 && <span class="tag">+{tech.length - 5}</span>}
-                          </div>
-                        )}
-
-                        {/* Links */}
-                        <div class="project-card-links">
-                          {hasCase && (
-                            <a href={href} class="project-card-link project-card-link--primary">
-                              Case Study
-                              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                            </a>
-                          )}
-                          {live && (
-                            <a href={live} target="_blank" rel="noreferrer" class="project-card-link">Live ↗</a>
-                          )}
-                          {github && (
-                            <a href={github} target="_blank" rel="noreferrer" class="project-card-link">GitHub ↗</a>
-                          )}
-                        </div>
-                      </div>
-                    </article>
-                  );
-                })}
+                {/* Links */}
+                <div class="project-card-links">
+                  {hasCase && (
+                    <a href={href} class="project-card-link project-card-link--primary">
+                      Case Study
+                      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                    </a>
+                  )}
+                  {live && (
+                    <a href={live} target="_blank" rel="noreferrer" class="project-card-link">Live ↗</a>
+                  )}
+                  {github && (
+                    <a href={github} target="_blank" rel="noreferrer" class="project-card-link">GitHub ↗</a>
+                  )}
+                </div>
               </div>
-            </div>
+            </article>
           );
-        })
-      }
+        })}
+      </div>
 
     </div>
   </main>

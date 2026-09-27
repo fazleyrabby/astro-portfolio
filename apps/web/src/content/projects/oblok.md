@@ -9,7 +9,7 @@ thumbnail: "/projects/oblok.png"
 description: "Self-hosted Developer Operations Platform for service monitoring, log aggregation, queue tracking, and incident management."
 tech: ["Laravel 13", "PHP 8.4", "PostgreSQL", "Redis", "Laravel Reverb", "Alpine.js", "Tailwind CSS", "ApexCharts"]
 status: "WIP"
-position: 2
+position: 4
 period: "Jun 2026 – Present"
 role: "Solo Developer"
 commits: 105

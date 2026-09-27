@@ -8,7 +8,7 @@ const tp = useTranslatedPath(lang);
 
 const all = await getCollection("projects");
 const localized = all
-  .filter((p) => (p.data.lang || "en") === lang && !p.data.hidden)
+  .filter((p) => (p.data.lang || "en") === lang && !p.data.hidden && p.data.category !== "experimental")
   .sort((a, b) => (a.data.position || 0) - (b.data.position || 0))
   .slice(0, 4);
 ---

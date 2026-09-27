@@ -4,7 +4,7 @@ description: A browser-based real-time strategy (RTS) diorama game inspired by c
 category: experimental
 type: Game
 thumbnail: /projects/ironstead.png
-live: https://ironstead.vercel.app
+live: https://ironstead-rts.vercel.app/
 github: https://github.com/fazleyrabby/ironstead
 tech:
   - TypeScript

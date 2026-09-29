@@ -216,6 +216,11 @@ const categories = [
         })}
       </div>
 
+      <!-- CTA -->
+      <div class="experiments-cta reveal">
+        <p>Want to build something like this? Hit me up on <a href="https://x.com/itsfazley" target="_blank" rel="noopener noreferrer">X&nbsp;↗</a> or email me at <a href="mailto:fazley111@gmail.com">fazley111@gmail.com</a></p>
+      </div>
+
     </div>
   </main>
 </MainLayout>
@@ -749,5 +754,34 @@ const categories = [
     color: var(--text-primary);
     border-color: var(--border-hover);
     background: var(--bg-surface);
+  }
+
+  /* CTA */
+  .experiments-cta {
+    margin-top: 3.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .experiments-cta p {
+    font-family: var(--font-sans);
+    font-size: clamp(0.9375rem, 2vw, 1.0625rem);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .experiments-cta a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s ease;
+  }
+
+  .experiments-cta a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 </style>

@@ -283,11 +283,16 @@ const categories = [
 
       const cacheKey = `views_cache_${project}`;
       const countEl = el.querySelector('.views-count');
+      const cardEl = el.closest('.experiment-card');
 
       // 1. Show cached data immediately if available
       if (countEl && countEl.textContent === '--') {
         const cached = localStorage.getItem(cacheKey);
-        if (cached) countEl.textContent = Number(cached).toLocaleString();
+        if (cached) {
+          const views = Number(cached);
+          countEl.textContent = views.toLocaleString();
+          if (cardEl) cardEl.style.order = -views;
+        }
       }
 
       // 2. Fetch live data silently
@@ -297,6 +302,7 @@ const categories = [
           const data = await res.json();
           if (data && typeof data.views === 'number') {
             if (countEl) countEl.textContent = data.views.toLocaleString();
+            if (cardEl) cardEl.style.order = -data.views;
             localStorage.setItem(cacheKey, data.views.toString()); // Update cache
           }
         }

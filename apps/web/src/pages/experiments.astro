@@ -100,7 +100,7 @@ const categories = [
       <!-- Experiments Grid -->
       <div class="experiments-grid" id="experiments-grid">
         {experiments.map((item) => {
-          const { title, description, type, status, tech, live, github, thumbnail } = item.data;
+          const { title, description, type, status, tech, live, github, thumbnail, views_project } = item.data;
           const normType = (type || "").toLowerCase();
           
           let filterCat = "other";
@@ -160,6 +160,15 @@ const categories = [
                     <span class="status-indicator"></span>
                     {status || "ACTIVE"}
                   </span>
+                  {views_project && (
+                    <>
+                      <span class="meta-dot">·</span>
+                      <span class="meta-views" data-views-project={views_project} title="Live Views">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="views-icon"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <span class="views-count">--</span>
+                      </span>
+                    </>
+                  )}
                 </div>
 
                 {/* Title */}
@@ -264,6 +273,32 @@ const categories = [
 
   document.addEventListener("DOMContentLoaded", setupFilter);
   document.addEventListener("astro:page-load", setupFilter);
+
+  async function fetchViews() {
+    const viewElements = document.querySelectorAll('.meta-views');
+    if (!viewElements.length) return;
+
+    for (const el of viewElements) {
+      const project = el.getAttribute('data-views-project');
+      if (!project) continue;
+
+      try {
+        const res = await fetch(`https://views.fazleyrabbi.xyz/api/get?project=${project}&key=visitors`, { signal: AbortSignal.timeout(4000) });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && typeof data.views === 'number') {
+            const countEl = el.querySelector('.views-count');
+            if (countEl) countEl.textContent = data.views.toLocaleString();
+          }
+        }
+      } catch (e) {
+        // Fail silently
+      }
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", fetchViews);
+  document.addEventListener("astro:page-load", fetchViews);
 </script>
 
 <style>
@@ -651,6 +686,23 @@ const categories = [
     border-radius: 50%;
     background: #10b981;
     box-shadow: 0 0 6px #10b981;
+  }
+
+  .meta-views {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    color: var(--text-muted);
+  }
+
+  .views-icon {
+    opacity: 0.7;
+  }
+
+  .views-count {
+    letter-spacing: 0.05em;
   }
 
   .card-title {

@@ -13,4 +13,5 @@ tech:
   - Vite
 status: ACTIVE
 position: 0
+views_project: mystical-ride
 ---

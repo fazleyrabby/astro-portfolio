@@ -14,4 +14,5 @@ tech:
 status: ACTIVE
 position: 0
 lang: bn
+views_project: mystical-ride
 ---

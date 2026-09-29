@@ -21,6 +21,7 @@ const projectsCollection = defineCollection({
         scope: z.array(z.string()).optional(),
         hidden: z.boolean().default(false),
         category: z.string().optional(),
+        views_project: z.string().optional(),
         lang: z.enum(['en', 'bn']).optional().default('en'),
     }),
 });

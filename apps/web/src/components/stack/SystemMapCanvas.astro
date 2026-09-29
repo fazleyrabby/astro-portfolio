@@ -1,0 +1,116 @@
+---
+type Props = {
+  layers: { id: string; name: string; accent?: string }[];
+  nodes: { label: string; layer: string; href?: string }[];
+  legend?: boolean;
+};
+
+const { layers, nodes, legend = true } = Astro.props;
+const payload = JSON.stringify({ layers, nodes });
+---
+
+<div class="systemmap">
+  <canvas class="systemmap__canvas" data-systemmap-canvas aria-hidden="true"></canvas>
+  {legend && (
+    <p class="systemmap__legend mono">
+      <span>Live system map</span>
+      <span>{layers.length} layers · {nodes.length} services</span>
+    </p>
+  )}
+  <script type="application/json" data-systemmap-data set:html={payload} />
+</div>
+
+<script>
+  import { createSystemMap, type SystemMapData, type SystemMapContext } from "../../stack/systemmap";
+  import { getState, subscribe } from "../../stack/store";
+
+  const root = document.querySelector<HTMLElement>(".systemmap");
+  const canvas = root?.querySelector<HTMLCanvasElement>("[data-systemmap-canvas]");
+  const dataEl = root?.querySelector<HTMLScriptElement>("[data-systemmap-data]");
+  if (root && canvas && dataEl) {
+    const data = JSON.parse(dataEl.textContent || "{}") as SystemMapData;
+    let map = createSystemMap();
+    let visible = false;
+
+    const context = (): SystemMapContext => {
+      const s = getState();
+      return { mode: s.mode, reducedMotion: s.reducedMotion, lowPower: s.quality === "performance" };
+    };
+    const start = () => {
+      if (visible && !document.hidden) map.resume();
+    };
+    const stop = () => map.pause();
+
+    map.attach(canvas, data, context());
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          visible = entry.isIntersecting;
+          visible ? start() : stop();
+        }
+      },
+      { threshold: 0.1 },
+    );
+    observer.observe(root);
+
+    document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));
+
+    window.addEventListener("resize", () => {
+      map.destroy();
+      map = createSystemMap();
+      map.attach(canvas, data, context());
+    });
+
+    let prev = context();
+    subscribe(() => {
+      const next = context();
+      if (
+        next.mode === prev.mode &&
+        next.reducedMotion === prev.reducedMotion &&
+        next.lowPower === prev.lowPower
+      ) {
+        return;
+      }
+      prev = next;
+      map.destroy();
+      map = createSystemMap();
+      map.attach(canvas, data, context());
+      visible ? map.resume() : map.poster();
+    });
+  }
+</script>
+
+<style>
+  .systemmap {
+    position: relative;
+    display: flex;
+    height: 100%;
+    min-height: 320px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--layer);
+    overflow: hidden;
+    box-shadow: var(--shadow-panel);
+  }
+  .systemmap__canvas {
+    display: block;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+  }
+  .systemmap__legend {
+    position: absolute;
+    left: var(--space-3);
+    bottom: var(--space-2);
+    right: var(--space-3);
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin: 0;
+    color: var(--text-lo);
+    text-transform: none;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+  }
+</style>

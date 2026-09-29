@@ -1,0 +1,125 @@
+---
+import { profile } from "../../data/profile";
+import { primaryNav } from "../../data/nav";
+---
+
+<footer class="site-footer">
+  <div class="content-width site-footer__inner">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <p class="site-footer__name">Fazley Rabbi<span style="color: var(--accent)">.</span></p>
+        <p class="site-footer__position">{profile.positioning}</p>
+        <p class="mono site-footer__avail">
+          <span class="site-footer__dot" aria-hidden="true"></span>
+          {profile.availability.headline}
+        </p>
+      </div>
+
+      <nav class="site-footer__nav" aria-label="Footer">
+        <p class="mono site-footer__label">Index</p>
+        <ul>
+          {primaryNav.map((item) => (
+            <li><a href={item.href}>{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="site-footer__contact">
+        <p class="mono site-footer__label">Connect</p>
+        <ul>
+          <li><a href={`mailto:${profile.email}`}>{profile.email}</a></li>
+          {profile.socials
+            .filter((s) => s.id !== "email")
+            .map((s) => (
+              <li><a href={s.href} target="_blank" rel="noopener noreferrer">{s.label} ↗</a></li>
+            ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__base">
+      <p class="mono">© {new Date().getFullYear()} Md. Fazley Rabbi · {profile.location.city}, {profile.location.country}</p>
+      <p class="mono">Layered-systems portfolio · <a href="/stack">The Stack</a> · <a href="/manifest">Manifest</a></p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    background: var(--layer);
+    margin-top: var(--space-16);
+  }
+  .site-footer__inner {
+    padding-block: var(--space-12) var(--space-6);
+    padding-left: max(var(--space-6), var(--footer-left, 0px));
+    padding-right: max(var(--space-6), var(--footer-right, 0px));
+  }
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: var(--space-8);
+  }
+  .site-footer__name {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 var(--space-2);
+    color: var(--text-hi);
+  }
+  .site-footer__position {
+    color: var(--text-mid);
+    max-width: 44ch;
+    margin: 0 0 var(--space-4);
+  }
+  .site-footer__avail {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-lo);
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  .site-footer__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 22%, transparent);
+  }
+  .site-footer__label {
+    color: var(--text-lo);
+    margin: 0 0 var(--space-3);
+  }
+  .site-footer__nav ul,
+  .site-footer__contact ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .site-footer__base {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-top: var(--space-12);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+    color: var(--text-lo);
+  }
+  .site-footer__base p {
+    margin: 0;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 767px) {
+    .site-footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .site-footer__brand {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

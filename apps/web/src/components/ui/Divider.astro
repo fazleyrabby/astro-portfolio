@@ -1,0 +1,38 @@
+---
+type Props = {
+  label?: string;
+};
+const { label } = Astro.props;
+---
+
+{
+  label ? (
+    <div class="divider divider--labeled" role="separator" aria-label={label}>
+      <span class="mono">{label}</span>
+    </div>
+  ) : (
+    <hr class="divider" />
+  )
+}
+
+<style>
+  .divider {
+    border: 0;
+    border-top: 1px solid var(--line);
+    margin: var(--space-8) 0;
+  }
+  .divider--labeled {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: var(--space-8) 0;
+    color: var(--text-lo);
+  }
+  .divider--labeled::before,
+  .divider--labeled::after {
+    content: "";
+    height: 1px;
+    background: var(--line);
+    flex: 1;
+  }
+</style>

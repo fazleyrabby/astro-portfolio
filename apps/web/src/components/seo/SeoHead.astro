@@ -1,0 +1,54 @@
+---
+import { SITE_URL, absoluteUrl } from "../../lib/seo";
+
+type Props = {
+  title: string;
+  description?: string;
+  path?: string;
+  canonical?: string;
+  image?: string;
+  type?: "website" | "article";
+  lang?: string;
+  robots?: string;
+  alternates?: { hreflang: string; href: string }[];
+};
+
+const {
+  title,
+  description = "",
+  path,
+  canonical,
+  image = "/og.png",
+  type = "website",
+  lang = "en",
+  robots = "index,follow",
+  alternates = [],
+} = Astro.props;
+
+const canonicalUrl = canonical ?? absoluteUrl(path ?? Astro.url.pathname);
+const imageUrl = absoluteUrl(image);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+{description && <meta name="description" content={description} />}
+<link rel="canonical" href={canonicalUrl} />
+<meta name="robots" content={robots} />
+<meta property="og:site_name" content="Fazley Rabbi" />
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+{description && <meta property="og:description" content={description} />}
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:locale" content={lang === "bn" ? "bn_BD" : "en_US"} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+{description && <meta name="twitter:description" content={description} />}
+<meta name="twitter:image" content={imageUrl} />
+<link rel="alternate" type="application/rss+xml" title="Fazley Rabbi — Notes" href={`${SITE_URL}/notes/rss.xml`} />
+{
+  alternates.map((alt) => (
+    <link rel="alternate" hreflang={alt.hreflang} href={absoluteUrl(alt.href)} />
+  ))
+}

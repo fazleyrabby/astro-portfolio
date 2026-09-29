@@ -1,0 +1,93 @@
+/* THE STACK — single token system (§10). Two runtime states, one set of names. */
+
+:root,
+[data-mode="runtime"] {
+  --bg: #f5f4f1;
+  --void: #eae9e4;
+  --layer: #ffffff;
+  --layer-2: #f0efea;
+  --grid: rgba(20, 23, 28, 0.06);
+  --trace: rgba(20, 23, 28, 0.16);
+  --line: rgba(20, 23, 28, 0.12);
+  --text-hi: #14171c;
+  --text-mid: #4a5260;
+  --text-lo: #6b7280;
+  --accent: #c2410c;
+  --accent-hi: #ea580c;
+  --signal: #0e7490;
+  --lab: #be185d;
+  --ok: #047857;
+  --warn: #b45309;
+  --danger: #b91c1c;
+  --focus: #0e7490;
+
+  --shadow-hard: 0 3px 0 rgba(0, 0, 0, 0.35);
+  --shadow-panel: 0 12px 32px -8px rgba(0, 0, 0, 0.35);
+  --glass-bg: rgba(255, 255, 255, 0.72);
+
+  color-scheme: light;
+}
+
+[data-mode="debug"] {
+  --bg: #0a0d12;
+  --void: #06080c;
+  --layer: #121722;
+  --layer-2: #1a2130;
+  --grid: rgba(255, 255, 255, 0.05);
+  --trace: rgba(120, 220, 255, 0.2);
+  --line: rgba(255, 255, 255, 0.1);
+  --text-hi: #e8edf5;
+  --text-mid: #9aa7b8;
+  --text-lo: #6b7a8d;
+  --accent: #f5a524;
+  --accent-hi: #ffc24d;
+  --signal: #4cc9f0;
+  --lab: #fb7185;
+  --ok: #34d399;
+  --warn: #fbbf24;
+  --danger: #f87171;
+  --focus: #ffd166;
+
+  --shadow-hard: 0 3px 0 #000;
+  --shadow-panel: 0 12px 32px -8px rgba(0, 0, 0, 0.6);
+  --glass-bg: rgba(18, 23, 34, 0.72);
+
+  color-scheme: dark;
+}
+
+:root {
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-bengali: "Hind Siliguri", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* fluid type scale (§10.4) */
+  --type-display-xl: clamp(2.5rem, 6vw, 5rem);
+  --type-display-l: clamp(2rem, 4vw, 3.25rem);
+  --type-h3: 1.5rem;
+  --type-body-l: 1.125rem;
+  --type-body: 1rem;
+  --type-small: 0.875rem;
+  --type-micro: 0.75rem;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --width-content: 1200px;
+  --width-reading: 680px;
+  --layer-rhythm: clamp(80px, 12vh, 160px);
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-pill: 999px;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}

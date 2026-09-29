@@ -1,0 +1,82 @@
+---
+import DocumentLayout from "../layouts/DocumentLayout.astro";
+---
+
+<DocumentLayout
+  title="Node unreachable — 404 — Fazley Rabbi"
+  description="This node is unreachable. Return to the Edge layer or open the Manifest."
+  path="/404"
+  robots="noindex,follow"
+>
+  <section class="not-found">
+    <p class="mono status" role="status">● node unreachable — 404</p>
+    <h1>This service is not in the stack.</h1>
+    <p class="reading">
+      The address you requested does not resolve to a running layer. The trace was dropped.
+    </p>
+    <nav class="actions" aria-label="Recovery">
+      <a class="btn" href="/">Return to the Edge</a>
+      <a class="btn btn--ghost" href="/manifest/">Open the Manifest</a>
+      <a class="btn btn--ghost" href="/work/">Browse Work</a>
+    </nav>
+    <pre class="trace" aria-hidden="true">$ stack resolve --path "{Astro.url.pathname}"
+  → ERR_NODE_UNREACHABLE
+  → fallback: /manifest</pre>
+  </section>
+</DocumentLayout>
+
+<style>
+  .not-found {
+    max-width: 720px;
+    padding-block: var(--space-12);
+  }
+  .status {
+    color: var(--danger);
+    margin-bottom: var(--space-4);
+  }
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-8);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: var(--space-2) var(--space-4);
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-hard);
+    font-weight: 600;
+  }
+  .btn:hover {
+    background: var(--accent-hi);
+    color: #fff;
+  }
+  .btn--ghost {
+    background: var(--layer);
+    color: var(--text-hi);
+    border: 1px solid var(--line);
+    box-shadow: none;
+  }
+  .btn--ghost:hover {
+    color: var(--text-hi);
+    border-color: var(--accent);
+  }
+  .trace {
+    margin-top: var(--space-12);
+    padding: var(--space-4);
+    background: var(--void);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    color: var(--text-lo);
+    font-size: 0.8125rem;
+    overflow-x: auto;
+  }
+</style>

@@ -1,0 +1,202 @@
+---
+import { getCollection } from "astro:content";
+import StackLayout from "../layouts/StackLayout.astro";
+import ProjectGrid from "../components/content/ProjectGrid.astro";
+import SkillGroups from "../components/content/SkillGroups.astro";
+import Timeline from "../components/content/Timeline.astro";
+import KeycapButton from "../components/ui/KeycapButton.astro";
+import Chip from "../components/ui/Chip.astro";
+import GenerativeExhibit from "../components/stack/GenerativeExhibit.astro";
+import { profile } from "../data/profile";
+import { capabilities } from "../data/capabilities";
+import { layers } from "../data/layers";
+
+const projects = await getCollection("projects");
+const visible = projects
+  .filter((p) => (p.data.lang ?? "en") === "en" && !p.data.hidden)
+  .sort((a, b) => (a.data.position ?? 999) - (b.data.position ?? 999));
+const production = visible.filter((p) => p.data.category === "production");
+const experiments = visible.filter((p) => p.data.category === "experimental");
+
+const notes = (await getCollection("notes"))
+  .filter((n) => !n.draft)
+  .sort((a, b) => new Date(b.data.published_at).valueOf() - new Date(a.data.published_at).valueOf());
+const featured = notes.find((n) => n.data.featured) ?? notes[0];
+const latestNotes = notes.slice(0, 8);
+const noteHref = (n: (typeof notes)[number]) => `/notes/${n.data.slug ?? n.slug}/`;
+
+const experiences = (await getCollection("experiences")).filter(
+  (e) => (e.data.lang ?? "en") === "en",
+);
+
+const mapLayers = layers
+  .filter((layer) => layer.kind === "layer")
+  .map((layer) => ({ id: layer.id, name: layer.name, accent: layer.accent }));
+
+const mapNodes = [
+  { label: "Contact", layer: "edge", href: `mailto:${profile.email}` },
+  { label: "Résumé", layer: "edge", href: profile.resume.pdf },
+  { label: "Availability", layer: "edge" },
+  ...capabilities.map((group) => ({ label: group.name, layer: "api" })),
+  ...production.map((p) => ({ label: p.data.title, layer: "app", href: `/work/${p.slug}/` })),
+  ...experiments.map((p) => ({ label: p.data.title, layer: "jobs", href: `/work/${p.slug}/` })),
+  { label: "Notes", layer: "data", href: "/notes/" },
+  { label: "The Long Way", layer: "data", href: "/journey/" },
+  { label: "Workbench", layer: "data", href: "/uses/" },
+  ...experiences.map((e) => ({ label: e.data.title, layer: "infra" })),
+  { label: "Education", layer: "infra" },
+  { label: "Email", layer: "observability", href: `mailto:${profile.email}` },
+  { label: "GitHub", layer: "observability", href: profile.links.github },
+  { label: "LinkedIn", layer: "observability", href: profile.links.linkedin },
+];
+---
+
+<StackLayout
+  title="The Stack — Md. Fazley Rabbi"
+  description="Descend the stack. Inspect the services. See how I build. A layered-systems portfolio for Md. Fazley Rabbi, Backend Engineer (Laravel)."
+  path="/stack"
+  mapLayers={mapLayers}
+  mapNodes={mapNodes}
+>
+  <!-- L0 · EDGE -->
+  <section class="layer" id="layer-edge" data-layer="edge" aria-labelledby="edge-h">
+    <header class="layer__header edge-hero__body">
+      <p class="layer__eyebrow mono">L0 · Edge</p>
+      <h1 id="edge-h" class="edge-hero__name">{profile.shortName}<span style="color:var(--accent)">.</span></h1>
+      <p class="edge-hero__role mono">{profile.role} · {profile.location.city}, {profile.location.country}</p>
+      <p class="edge-hero__position">{profile.positioning}</p>
+      <p class="layer__purpose">{profile.secondary}</p>
+      <div class="edge-hero__actions">
+        <KeycapButton href={`mailto:${profile.email}`}>Contact</KeycapButton>
+        <KeycapButton href={profile.resume.pdf} variant="ghost">View Résumé</KeycapButton>
+        <KeycapButton href="/work/" variant="ghost">Browse Work</KeycapButton>
+      </div>
+      <p class="layer__purpose" style="margin-top:var(--space-6)">
+        <span class="mono" style="color:var(--ok)">● AVAILABLE</span> — {profile.availability.headline}.
+      </p>
+      <ul class="edge-hud">
+        <li>
+          <span class="edge-hud__v">{profile.experience.claim}</span>
+          <span class="edge-hud__k mono">production experience</span>
+        </li>
+        <li>
+          <span class="edge-hud__v">{production.length}</span>
+          <span class="edge-hud__k mono">production systems</span>
+        </li>
+        <li>
+          <span class="edge-hud__v">{experiments.length}</span>
+          <span class="edge-hud__k mono">experiments</span>
+        </li>
+        <li>
+          <span class="edge-hud__v">{notes.length}</span>
+          <span class="edge-hud__k mono">notes</span>
+        </li>
+      </ul>
+    </header>
+  </section>
+
+  <!-- L1 · INTERFACE -->
+  <section class="layer" id="layer-api" data-layer="api" aria-labelledby="api-h">
+    <header class="layer__header">
+      <p class="layer__eyebrow mono">L1 · Interface</p>
+      <h2 id="api-h" class="layer__title">Capabilities</h2>
+      <p class="layer__purpose">The services I run in production: backend, data, infrastructure, and integrations.</p>
+    </header>
+    <SkillGroups />
+  </section>
+
+  <!-- L2 · APPLICATION -->
+  <section class="layer" id="layer-app" data-layer="app" aria-labelledby="app-h">
+    <header class="layer__header">
+      <p class="layer__eyebrow mono">L2 · Application</p>
+      <h2 id="app-h" class="layer__title">Production systems</h2>
+      <p class="layer__purpose">Systems I designed, built, and maintain. Open a case study for problem, approach, and impact.</p>
+    </header>
+    <ProjectGrid projects={production.slice(0, 6)} />
+    <p style="margin-top:var(--space-6)">
+      <a href="/work/" class="mono">All production systems →</a>
+    </p>
+  </section>
+
+  <!-- L3 · JOBS & QUEUE -->
+  <section class="layer" id="layer-jobs" data-layer="jobs" aria-labelledby="jobs-h">
+    <header class="layer__header">
+      <p class="layer__eyebrow mono">L3 · Jobs &amp; Queue</p>
+      <h2 id="jobs-h" class="layer__title">Experiments</h2>
+      <p class="layer__purpose">Creative and generative work — games, real-time systems, ASCII, and math art. The lab.</p>
+    </header>
+    <ProjectGrid projects={experiments} />
+    <GenerativeExhibit kind="formula" label="Generative exhibit · parametric curves · Canvas 2D · no WebGL · press A for ASCII" />
+  </section>
+
+  <!-- L4 · DATA & ARCHIVE -->
+  <section class="layer" id="layer-data" data-layer="data" aria-labelledby="data-h">
+    <header class="layer__header">
+      <p class="layer__eyebrow mono">L4 · Data &amp; Archive</p>
+      <h2 id="data-h" class="layer__title">Writing &amp; archive</h2>
+      <p class="layer__purpose">{notes.length} notes, the memoir, and the workbench.</p>
+    </header>
+    <div class="stack-grid">
+      <div>
+        <h3>Latest notes</h3>
+        <ul class="stack-list">
+          {latestNotes.map((note) => (
+            <li>
+              <a href={noteHref(note)}>{note.data.title}</a>
+              <span class="mono note-meta">{new Date(note.data.published_at).toISOString().slice(0, 10)}</span>
+            </li>
+          ))}
+        </ul>
+        <p style="margin-top:var(--space-4)"><a href="/notes/" class="mono">All {notes.length} notes →</a></p>
+      </div>
+      <div>
+        <h3>Archive</h3>
+        <ul class="stack-list">
+          <li><a href="/journey/">The Long Way — memoir</a><span class="mono note-meta">6 chapters</span></li>
+          <li><a href="/uses/">Workbench &amp; homelab</a><span class="mono note-meta">41+ containers</span></li>
+          {featured && <li><a href={noteHref(featured)}>Featured: {featured.data.title}</a></li>}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- L5 · INFRASTRUCTURE -->
+  <section class="layer" id="layer-infra" data-layer="infra" aria-labelledby="infra-h">
+    <header class="layer__header">
+      <p class="layer__eyebrow mono">L5 · Infrastructure</p>
+      <h2 id="infra-h" class="layer__title">Experience &amp; foundation</h2>
+      <p class="layer__purpose">{profile.experience.claim} of production experience. Education, languages, and the résumé.</p>
+    </header>
+    <Timeline experiences={experiences} />
+    <div style="margin-top:var(--space-8)">
+      <h3>Education</h3>
+      <ul class="stack-list">
+        {profile.education.map((e) => (
+          <li><span>{e.credential} — {e.institution}</span><span class="mono note-meta">{e.year}</span></li>
+        ))}
+      </ul>
+      <p style="margin-top:var(--space-6)">
+        <KeycapButton href={profile.resume.pdf}>Download Résumé (PDF)</KeycapButton>
+      </p>
+    </div>
+  </section>
+
+  <!-- ⊕ OBSERVABILITY -->
+  <section class="layer" id="layer-observability" data-layer="observability" aria-labelledby="observability-h">
+    <header class="layer__header">
+      <p class="layer__eyebrow mono">⊕ Observability</p>
+      <h2 id="observability-h" class="layer__title">Contact</h2>
+      <p class="layer__purpose">{profile.availability.headline}. {profile.availability.detail}</p>
+    </header>
+    <div class="edge-hero__actions">
+      <KeycapButton href={`mailto:${profile.email}`}>Email {profile.email}</KeycapButton>
+      <KeycapButton href={profile.resume.pdf} variant="ghost">Résumé</KeycapButton>
+      <KeycapButton href="/manifest/" variant="ghost">Manifest</KeycapButton>
+    </div>
+    <ul class="stack-list" style="margin-top:var(--space-8);max-width:520px">
+      {profile.socials.map((s) => (
+        <li><a href={s.href}>{s.label}</a><span class="mono note-meta">{s.href.replace(/^https?:\/\//, "")}</span></li>
+      ))}
+    </ul>
+  </section>
+</StackLayout>

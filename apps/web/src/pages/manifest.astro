@@ -1,0 +1,416 @@
+---
+import { getCollection } from "astro:content";
+import DocumentLayout from "../layouts/DocumentLayout.astro";
+import ContentRequired from "../components/ui/ContentRequired.astro";
+import { profile } from "../data/profile";
+import { capabilities } from "../data/capabilities";
+import { personJsonLd, absoluteUrl } from "../lib/seo";
+
+const allProjects = await getCollection("projects");
+const production = allProjects
+  .filter((p) => (p.data.lang ?? "en") === "en" && !p.data.hidden && p.data.category === "production")
+  .sort((a, b) => (a.data.position ?? 999) - (b.data.position ?? 999));
+const experiments = allProjects
+  .filter((p) => (p.data.lang ?? "en") === "en" && !p.data.hidden && p.data.category === "experimental")
+  .sort((a, b) => (a.data.position ?? 999) - (b.data.position ?? 999));
+
+const notes = (await getCollection("notes"))
+  .filter((n) => !n.draft)
+  .sort((a, b) => new Date(b.data.published_at).valueOf() - new Date(a.data.published_at).valueOf());
+const featuredNote = notes.find((n) => n.data.featured);
+
+const experiences = (await getCollection("experiences"))
+  .filter((e) => (e.data.lang ?? "en") === "en")
+  .sort((a, b) => (b.data.timeline ?? "").localeCompare(a.data.timeline ?? ""));
+
+const bnNoteCount = notes.filter((n) => n.data.lang === "bn").length;
+
+const contentGaps = [
+  "B1 Portrait photo",
+  "B2 Project screenshots / demo videos",
+  "B3 Architecture diagrams (Electronic First, EduBase, SignalStack)",
+  "B4 Lessons learned per project",
+  "B6 Canonical résumé PDF",
+  "B8 Verifiable metrics (optional)",
+];
+
+const noteHref = (n: (typeof notes)[number]) => `/notes/${n.data.slug ?? n.slug}/`;
+
+const title = "Manifest — Md. Fazley Rabbi";
+const description =
+  "A flat, complete index of everything: projects, experience, capabilities, and writing by Md. Fazley Rabbi, Backend Engineer (Laravel).";
+---
+
+<DocumentLayout
+  title={title}
+  description={description}
+  path="/manifest"
+  jsonLd={personJsonLd()}
+>
+  <header class="manifest-header">
+    <p class="mono manifest-eyebrow">⊕ Manifest · flat index · no-JS / SEO / AT fallback</p>
+    <h1>{profile.name}</h1>
+    <p class="manifest-positioning">{profile.positioning}</p>
+    <p class="manifest-secondary">{profile.secondary}</p>
+    <dl class="manifest-meta">
+      <div><dt>Role</dt><dd>{profile.role}</dd></div>
+      <div><dt>Location</dt><dd>{profile.location.city}, {profile.location.country} · {profile.location.timezone} · Remote</dd></div>
+      <div><dt>Availability</dt><dd>{profile.availability.headline}</dd></div>
+      <div><dt>Experience</dt><dd>{profile.experience.claim} (since {profile.experience.start})</dd></div>
+      <div><dt>Focus</dt><dd>{profile.focus.join(" · ")}</dd></div>
+    </dl>
+    <nav class="manifest-actions" aria-label="Primary actions">
+      <a class="btn" href={`mailto:${profile.email}`}>Contact</a>
+      <a class="btn" href={profile.resume.pdf}>Résumé (PDF)</a>
+      <a class="btn" href="/journey/">Journey</a>
+    </nav>
+    <ul class="manifest-links">
+      {profile.socials.map((s) => (
+        <li><a href={s.href}>{s.label}</a></li>
+      ))}
+    </ul>
+  </header>
+
+  <section id="capabilities" aria-labelledby="capabilities-h">
+    <h2 id="capabilities-h">Capabilities</h2>
+    <div class="grid-2">
+      {capabilities.map((group) => (
+        <div class="card">
+          <h3>{group.name}</h3>
+          <ul class="chips">
+            {group.items.map((item) => (
+              <li class:list={["chip", { "chip--primary": item.primary }]}>{item.name}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section id="work" aria-labelledby="work-h">
+    <h2 id="work-h">Application — production systems</h2>
+    <p class="section-note mono">{production.length} systems · full case studies ship with /work in Phase 1</p>
+    <ol class="entry-list">
+      {production.map((project) => {
+        const d = project.data;
+        return (
+          <li class="entry card" id={`project-${project.slug}`}>
+            <div class="entry-head">
+              <h3>{d.title}</h3>
+              <span class="mono entry-status">{d.status ?? "Status n/a"}</span>
+            </div>
+            <p class="entry-type mono">{d.type ?? "—"}{d.period ? ` · ${d.period}` : ""}{d.role ? ` · ${d.role}` : ""}</p>
+            <p>{d.description}</p>
+            {d.problem && <p><strong>The Problem.</strong> {d.problem}</p>}
+            {d.solution && <p><strong>The Approach.</strong> {d.solution}</p>}
+            {d.impact && <p><strong>Impact.</strong> {d.impact}</p>}
+            {d.highlights && d.highlights.length > 0 && (
+              <details>
+                <summary>Highlights ({d.highlights.length})</summary>
+                <ul>
+                  {d.highlights.map((h) => <li>{h}</li>)}
+                </ul>
+              </details>
+            )}
+            {d.scope && d.scope.length > 0 && (
+              <details>
+                <summary>Scope of work ({d.scope.length})</summary>
+                <ul>
+                  {d.scope.map((s) => <li>{s}</li>)}
+                </ul>
+              </details>
+            )}
+            <p class="entry-links">
+              {d.live && <a href={d.live}>Live ↗</a>}
+              {d.github && <a href={d.github}>Repository ↗</a>}
+            </p>
+            <p class="entry-tech mono">{(d.tech ?? []).join(" · ")}</p>
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+
+  <section id="jobs" aria-labelledby="jobs-h">
+    <h2 id="jobs-h">Jobs &amp; Queue — experiments</h2>
+    <ol class="entry-list">
+      {experiments.map((project) => {
+        const d = project.data;
+        return (
+          <li class="entry card" id={`project-${project.slug}`}>
+            <div class="entry-head">
+              <h3>{d.title}</h3>
+              <span class="mono entry-status">{d.status ?? "Status n/a"}</span>
+            </div>
+            <p>{d.description}</p>
+            {d.impact && <p><strong>Impact.</strong> {d.impact}</p>}
+            <p class="entry-links">
+              {d.live && <a href={d.live}>Live ↗</a>}
+              {d.github && <a href={d.github}>Repository ↗</a>}
+            </p>
+            <p class="entry-tech mono">{(d.tech ?? []).join(" · ")}</p>
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+
+  <section id="experience" aria-labelledby="experience-h">
+    <h2 id="experience-h">Experience</h2>
+    <ol class="timeline">
+      {experiences.map((exp) => {
+        const d = exp.data;
+        return (
+          <li class="timeline-item">
+            <p class="mono timeline-when">{d.from} – {d.to}</p>
+            <h3>{d.role} · {d.link ? <a href={d.link}>{d.title} ↗</a> : d.title}</h3>
+            {d.skills && <p class="timeline-skills">{d.skills}</p>}
+          </li>
+        );
+      })}
+    </ol>
+    <h3>Education</h3>
+    <ul>
+      {profile.education.map((e) => (
+        <li>{e.credential} — {e.institution} ({e.year})</li>
+      ))}
+    </ul>
+    <h3>Languages</h3>
+    <ul>
+      {profile.languages.map((l) => <li>{l.name} — {l.level}</li>)}
+    </ul>
+  </section>
+
+  <section id="writing" aria-labelledby="writing-h">
+    <h2 id="writing-h">Writing</h2>
+    <p class="section-note mono">{notes.length} notes · {bnNoteCount} Bengali</p>
+    {featuredNote && (
+      <p class="featured-note">
+        <strong>Featured:</strong>{" "}
+        <a href={noteHref(featuredNote)}>{featuredNote.data.title}</a>
+      </p>
+    )}
+    <ul class="notes-list">
+      {notes.map((note) => (
+        <li>
+          <a href={noteHref(note)}>{note.data.title}</a>
+          <span class="mono note-meta">
+            {new Date(note.data.published_at).toISOString().slice(0, 10)}
+            {note.data.lang === "bn" ? " · BN" : ""}
+            {note.data.tags.length ? ` · ${note.data.tags.join(", ")}` : ""}
+          </span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section id="content-gaps" aria-labelledby="gaps-h">
+    <h2 id="gaps-h">Known content gaps</h2>
+    <p class="section-note">
+      These are surfaced honestly as <ContentRequired /> until supplied by the author. No fabricated assets or metrics.
+    </p>
+    <ul>
+      {contentGaps.map((gap) => <li><ContentRequired label={gap} /></li>)}
+    </ul>
+  </section>
+
+  <section id="contact" aria-labelledby="contact-h">
+    <h2 id="contact-h">Contact</h2>
+    <p>{profile.availability.headline}. {profile.availability.detail}</p>
+    <p>
+      Email <a href={`mailto:${profile.email}`}>{profile.email}</a> ·
+      {" "}<a href={profile.resume.pdf}>Résumé</a> ·
+      {" "}<a href={absoluteUrl("/manifest")}>Manifest</a>
+    </p>
+  </section>
+</DocumentLayout>
+
+<style>
+  .manifest-header {
+    max-width: 820px;
+  }
+  .manifest-eyebrow {
+    color: var(--signal);
+    margin: 0 0 var(--space-3);
+  }
+  .manifest-header h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    margin-bottom: var(--space-3);
+  }
+  .manifest-positioning {
+    font-size: 1.125rem;
+    color: var(--text-hi);
+    max-width: 60ch;
+  }
+  .manifest-secondary {
+    color: var(--text-mid);
+    max-width: 60ch;
+  }
+  .manifest-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-4);
+    margin-block: var(--space-8);
+    padding-block: var(--space-4);
+    border-block: 1px solid var(--line);
+  }
+  .manifest-meta dt {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-lo);
+  }
+  .manifest-meta dd {
+    margin: var(--space-1) 0 0;
+    color: var(--text-hi);
+  }
+  .manifest-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    min-height: 44px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-hard);
+    font-weight: 600;
+  }
+  .btn:hover {
+    background: var(--accent-hi);
+    color: #fff;
+  }
+  .manifest-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    list-style: none;
+    padding: 0;
+  }
+  section {
+    margin-top: var(--space-16);
+    scroll-margin-top: var(--space-8);
+  }
+  h2 {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: var(--space-2);
+    display: inline-block;
+  }
+  .section-note {
+    color: var(--text-lo);
+    margin-top: calc(-1 * var(--space-2));
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-4);
+  }
+  .card {
+    background: var(--layer);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .chip {
+    font-size: 0.8125rem;
+    padding: 2px var(--space-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    color: var(--text-mid);
+  }
+  .chip--primary {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .entry-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+  }
+  .entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .entry-head h3 {
+    margin: 0;
+  }
+  .entry-status {
+    color: var(--ok);
+  }
+  .entry-type {
+    color: var(--text-lo);
+    margin: var(--space-1) 0 var(--space-3);
+  }
+  .entry-links {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-2);
+  }
+  .entry-tech {
+    color: var(--text-lo);
+    margin: 0;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  .timeline {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-6);
+    border-left: 1px solid var(--line);
+    padding-left: var(--space-6);
+  }
+  .timeline-when {
+    color: var(--text-lo);
+    margin: 0;
+  }
+  .timeline-item h3 {
+    margin: var(--space-1) 0 var(--space-2);
+  }
+  .timeline-skills {
+    color: var(--text-mid);
+    margin: 0;
+  }
+  .featured-note {
+    margin-bottom: var(--space-4);
+  }
+  .notes-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+  .notes-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--line);
+    padding-block: var(--space-2);
+  }
+  .note-meta {
+    color: var(--text-lo);
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+</style>

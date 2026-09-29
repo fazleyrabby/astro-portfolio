@@ -1,0 +1,18 @@
+---
+type Props = {
+  label?: string;
+};
+
+const { label } = Astro.props;
+---
+
+<span class="content-required" role="note">
+  [CONTENT REQUIRED]{label && <span class="content-required__label"> {label}</span>}
+</span>
+
+<style>
+  .content-required__label {
+    text-transform: none;
+    letter-spacing: 0;
+  }
+</style>

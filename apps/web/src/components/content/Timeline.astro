@@ -1,0 +1,84 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+type Props = {
+  experiences: CollectionEntry<"experiences">[];
+};
+
+const { experiences } = Astro.props;
+const sorted = [...experiences].sort((a, b) =>
+  (b.data.timeline ?? "").localeCompare(a.data.timeline ?? ""),
+);
+---
+
+<ol class="timeline">
+  {
+    sorted.map((exp) => {
+      const d = exp.data;
+      return (
+        <li class="timeline__item">
+          <p class="mono timeline__when">
+            {d.from} – {d.to}
+          </p>
+          <h3 class="timeline__role">
+            {d.role}
+            <span class="timeline__org">
+              {" · "}
+              {d.link ? (
+                <a href={d.link} target="_blank" rel="noopener noreferrer">
+                  {d.title} ↗
+                </a>
+              ) : (
+                d.title
+              )}
+            </span>
+          </h3>
+          {d.skills && <p class="timeline__skills">{d.skills}</p>}
+        </li>
+      );
+    })
+  }
+</ol>
+
+<style>
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 var(--space-6);
+    border-left: 1px solid var(--line);
+    display: grid;
+    gap: var(--space-8);
+  }
+  .timeline__item {
+    position: relative;
+  }
+  .timeline__item::before {
+    content: "";
+    position: absolute;
+    left: calc(-1 * var(--space-6) - 4px);
+    top: 0.55em;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--bg);
+  }
+  .timeline__when {
+    margin: 0 0 var(--space-1);
+    color: var(--text-lo);
+  }
+  .timeline__role {
+    margin: 0 0 var(--space-1);
+    font-size: 1.125rem;
+  }
+  .timeline__org {
+    font-weight: 400;
+    color: var(--text-mid);
+    font-size: 1rem;
+  }
+  .timeline__skills {
+    margin: 0;
+    color: var(--text-mid);
+    font-size: 0.875rem;
+  }
+</style>

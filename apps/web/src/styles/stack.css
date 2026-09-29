@@ -1,0 +1,303 @@
+/* THE STACK — depth model (§12). Global so it reaches slotted layer sections. */
+
+/* Registered so discrete depth changes can interpolate smoothly (no per-frame wobble). */
+@property --dp {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --trace-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.stack {
+  --rail-w: 168px;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Schematic environment: grid + vignette, fixed behind the content (§10.7). */
+.stack::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(
+      ellipse 70% 45% at 50% -8%,
+      color-mix(in srgb, var(--signal) 10%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 120% 90% at 50% 50%,
+      transparent 55%,
+      color-mix(in srgb, var(--void) 80%, transparent) 100%
+    ),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  background-size:
+    100% 100%,
+    100% 100%,
+    32px 32px,
+    32px 32px,
+    140px 140px;
+  background-repeat: no-repeat, no-repeat, repeat, repeat, repeat;
+}
+
+.stack.is-low-power::after {
+  background-image:
+    radial-gradient(
+      ellipse 70% 45% at 50% -8%,
+      color-mix(in srgb, var(--signal) 8%, transparent),
+      transparent 70%
+    ),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+}
+
+.stage {
+  perspective: 1400px;
+  perspective-origin: 50% 0%;
+}
+
+.layer {
+  position: relative;
+  transform-origin: 50% 50%;
+  padding-block: var(--layer-rhythm);
+  will-change: transform, opacity;
+  transform: translate3d(0, calc(var(--dp, 0) * 14px), 0)
+    scale(calc(1 - var(--dp, 0) * 0.018));
+  opacity: calc(1 - var(--dp, 0) * 0.08);
+  transition:
+    --dp 700ms var(--ease-expo),
+    transform 700ms var(--ease-expo),
+    opacity 500ms var(--ease-in-out);
+}
+
+.layer + .layer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line) 20%, var(--line) 80%, transparent);
+}
+
+.layer:first-child {
+  padding-top: var(--space-12);
+}
+
+.stack.is-reduced .layer,
+.stack.is-low-power .layer {
+  transform: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+  transition: none !important;
+}
+
+.layer__header {
+  position: relative;
+  display: grid;
+  gap: var(--space-2);
+  margin-bottom: var(--space-12);
+  max-width: 720px;
+  padding-left: var(--space-8);
+}
+
+/* Trace node marker per layer (§12.3) */
+.layer__header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--layer-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--layer-accent) 16%, transparent);
+}
+
+.layer__header::after {
+  content: "";
+  position: absolute;
+  left: 4.5px;
+  top: 22px;
+  bottom: calc(-1 * var(--space-12) + 10px);
+  width: 1px;
+  background: var(--trace);
+}
+
+.layer[data-layer="edge"] .layer__header::before {
+  width: 13px;
+  height: 13px;
+}
+
+.edge-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.edge-hero__body {
+  max-width: 640px;
+}
+
+@media (min-width: 900px) {
+  .edge-hero {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    align-items: center;
+  }
+  .edge-hero__diagram {
+    padding-top: var(--space-2);
+  }
+}
+
+/* Per-layer identity (§6.1): each layer carries its own accent. */
+.layer {
+  --layer-accent: var(--signal);
+}
+
+.layer[data-layer="edge"],
+.layer[data-layer="app"],
+.layer[data-layer="infra"] {
+  --layer-accent: var(--accent);
+}
+
+.layer[data-layer="jobs"] {
+  --layer-accent: var(--lab);
+}
+
+.layer[data-layer="observability"] {
+  --layer-accent: var(--ok);
+}
+
+.layer__eyebrow {
+  color: var(--layer-accent);
+  margin: 0;
+}
+
+.layer__title {
+  position: relative;
+}
+
+.layer__title {
+  font-size: var(--type-display-l);
+  margin: 0;
+}
+
+.layer__purpose {
+  color: var(--text-mid);
+  margin: 0;
+  font-size: var(--type-body-l);
+}
+
+.edge-hero__name {
+  font-size: clamp(2.5rem, 4.6vw, 4.25rem);
+  margin: 0 0 var(--space-2);
+  letter-spacing: -0.035em;
+  font-weight: 600;
+  line-height: 0.98;
+  overflow-wrap: anywhere;
+}
+
+.edge-hero__body {
+  min-width: 0;
+}
+
+.edge-hud {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: var(--space-4);
+  margin: var(--space-8) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+  max-width: 560px;
+}
+
+.edge-hud__v {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-hi);
+  line-height: 1.1;
+}
+
+.edge-hud__k {
+  color: var(--text-lo);
+}
+
+.edge-hero__role {
+  color: var(--accent);
+  margin: 0 0 var(--space-3);
+}
+
+.edge-hero__position {
+  font-size: var(--type-body-l);
+  color: var(--text-hi);
+  max-width: 60ch;
+}
+
+.edge-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.stack-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+}
+
+.stack-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.stack-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line);
+  padding-block: var(--space-2);
+}
+
+.stack-list .note-meta {
+  color: var(--text-lo);
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+/* DEBUG runtime mode adds subtle scanlines to the environment (§10.7) */
+.stack[data-mode="debug"]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.02) 0 1px,
+    transparent 1px 3px
+  );
+  opacity: 0.6;
+}
+
+.stack.is-low-power[data-mode="debug"]::before {
+  display: none;
+}

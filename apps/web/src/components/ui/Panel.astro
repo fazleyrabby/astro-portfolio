@@ -1,0 +1,25 @@
+---
+type Props = {
+  as?: "div" | "article" | "section" | "li";
+  elevation?: boolean;
+  id?: string;
+};
+
+const { as: Tag = "div", elevation = false, id } = Astro.props;
+---
+
+<Tag id={id} class:list={["panel", { "panel--elevated": elevation }]}>
+  <slot />
+</Tag>
+
+<style>
+  .panel {
+    background: var(--layer);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+  .panel--elevated {
+    box-shadow: var(--shadow-panel);
+  }
+</style>

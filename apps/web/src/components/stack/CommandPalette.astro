@@ -1,0 +1,283 @@
+---
+export type PaletteItem = {
+  id: string;
+  label: string;
+  group: string;
+  keywords?: string;
+  href?: string;
+  layer?: string;
+  action?: string;
+};
+
+type Props = { items: PaletteItem[] };
+const { items } = Astro.props;
+---
+
+<div class="palette" data-palette hidden>
+  <div class="palette__backdrop" data-palette-close></div>
+  <div class="palette__panel" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="palette__field">
+      <span class="mono palette__prompt" aria-hidden="true">›</span>
+      <input
+        class="palette__input"
+        data-palette-input
+        type="text"
+        placeholder="Jump to a layer, project, note, or action…"
+        autocomplete="off"
+        spellcheck="false"
+        aria-controls="palette-list"
+      />
+      <kbd class="mono">ESC</kbd>
+    </div>
+    <ul class="palette__list" id="palette-list" role="listbox" aria-label="Results" data-palette-list>
+      {
+        items.map((it) => (
+          <li>
+            <button
+              class="palette__item"
+              type="button"
+              role="option"
+              data-palette-item
+              data-label={it.label}
+              data-keywords={`${it.label} ${it.group} ${it.keywords ?? ""}`}
+              data-href={it.href}
+              data-target-layer={it.layer}
+              data-action={it.action}
+            >
+              <span class="palette__group mono">{it.group}</span>
+              <span class="palette__label">{it.label}</span>
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="palette__empty mono" data-palette-empty hidden>No matches</p>
+  </div>
+</div>
+
+<script>
+  import { getState, setState, subscribe } from "../../stack/store";
+
+  const root = document.querySelector<HTMLElement>("[data-palette]");
+  if (root) {
+    const input = root.querySelector<HTMLInputElement>("[data-palette-input]")!;
+    const list = root.querySelector<HTMLElement>("[data-palette-list]")!;
+    const empty = root.querySelector<HTMLElement>("[data-palette-empty]")!;
+    const all = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-palette-item]"));
+    let visible = all;
+
+    const fuzzy = (needle: string, haystack: string) => {
+      if (!needle) return true;
+      let i = 0;
+      const hay = haystack.toLowerCase();
+      for (const ch of needle.toLowerCase()) {
+        i = hay.indexOf(ch, i);
+        if (i === -1) return false;
+        i += 1;
+      }
+      return true;
+    };
+
+    const setActive = (index: number) => {
+      visible.forEach((el, i) => {
+        el.classList.toggle("is-active", i === index);
+        el.setAttribute("aria-selected", String(i === index));
+      });
+      visible[index]?.scrollIntoView({ block: "nearest" });
+    };
+
+    const filter = (query: string) => {
+      visible = [];
+      for (const el of all) {
+        const match = fuzzy(query.trim(), el.dataset.keywords ?? "");
+        const li = el.closest("li") as HTMLElement;
+        li.hidden = !match;
+        if (match) visible.push(el);
+      }
+      empty.hidden = visible.length > 0;
+      if (visible.length) setActive(0);
+    };
+
+    const activate = (el: HTMLButtonElement) => {
+      close();
+      const layer = el.dataset.targetLayer;
+      const href = el.dataset.href;
+      const action = el.dataset.action;
+      if (layer) {
+        document.querySelector<HTMLElement>(`[data-jump="${layer}"]`)?.click();
+      } else if (href) {
+        window.location.assign(href);
+      } else if (action === "mode") {
+        document.querySelector<HTMLElement>("[data-mode-toggle]")?.click();
+      } else if (action === "sound") {
+        document.querySelector<HTMLElement>("[data-sound-toggle]")?.click();
+      } else if (action === "email") {
+        window.location.assign("mailto:fazley111@gmail.com");
+      }
+    };
+
+    let openState = false;
+    const open = () => {
+      setState({ paletteOpen: true });
+    };
+    const close = () => setState({ paletteOpen: false });
+
+    root.addEventListener("click", (event) => {
+      const el = event.target as HTMLElement;
+      if (el.closest("[data-palette-close]")) close();
+      const item = el.closest<HTMLButtonElement>("[data-palette-item]");
+      if (item) activate(item);
+    });
+
+    input.addEventListener("input", () => filter(input.value));
+
+    // Focus trap: keep Tab within the dialog while open.
+    root.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab") return;
+      const focusables = Array.from(
+        root.querySelectorAll<HTMLElement>('input, button:not([hidden])'),
+      ).filter((el) => el.offsetParent !== null);
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
+    input.addEventListener("keydown", (event) => {
+      const index = visible.findIndex((el) => el.classList.contains("is-active"));
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        setActive(Math.min(visible.length - 1, index + 1));
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        setActive(Math.max(0, index - 1));
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        if (visible[index]) activate(visible[index]);
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        close();
+      }
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        getState().paletteOpen ? close() : open();
+      } else if (event.key === "Escape" && getState().paletteOpen) {
+        close();
+      } else if (event.key === "/" && !getState().paletteOpen) {
+        const tag = (event.target as HTMLElement)?.tagName;
+        if (tag !== "INPUT" && tag !== "TEXTAREA") {
+          event.preventDefault();
+          open();
+        }
+      }
+    });
+
+    document.querySelector("[data-palette-toggle]")?.addEventListener("click", open);
+
+    subscribe((s) => {
+      if (s.paletteOpen !== openState) {
+        openState = s.paletteOpen;
+        root.hidden = !s.paletteOpen;
+        if (s.paletteOpen) {
+          input.value = "";
+          filter("");
+          input.focus({ preventScroll: true });
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  .palette[hidden] {
+    display: none;
+  }
+  .palette {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    display: grid;
+    place-items: start center;
+    padding-top: 12vh;
+  }
+  .palette__backdrop {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--void) 78%, transparent);
+    backdrop-filter: blur(3px);
+  }
+  .palette__panel {
+    position: relative;
+    width: min(640px, calc(100vw - 2rem));
+    background: var(--layer);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-panel);
+    overflow: hidden;
+  }
+  .palette__field {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--line);
+  }
+  .palette__prompt {
+    color: var(--accent);
+  }
+  .palette__input {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    color: var(--text-hi);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    outline: none;
+  }
+  .palette__list {
+    list-style: none;
+    margin: 0;
+    padding: var(--space-2);
+    max-height: 52vh;
+    overflow-y: auto;
+  }
+  .palette__item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-sm);
+    color: var(--text-hi);
+    cursor: pointer;
+    text-align: left;
+  }
+  .palette__item.is-active {
+    background: var(--layer-2);
+    box-shadow: inset 2px 0 0 var(--accent);
+  }
+  .palette__group {
+    color: var(--text-lo);
+    flex: 0 0 96px;
+    text-align: left;
+  }
+  .palette__label {
+    flex: 1;
+  }
+  .palette__empty {
+    padding: var(--space-4);
+    color: var(--text-lo);
+    margin: 0;
+  }
+</style>

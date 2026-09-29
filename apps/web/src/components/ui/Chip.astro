@@ -1,0 +1,54 @@
+---
+type Props = {
+  tone?: "default" | "primary" | "signal" | "lab";
+  href?: string;
+};
+
+const { tone = "default", href } = Astro.props;
+const classes = ["chip", `chip--${tone}`];
+---
+
+{
+  href ? (
+    <a class={classes} href={href}>
+      <slot />
+    </a>
+  ) : (
+    <span class={classes}>
+      <slot />
+    </span>
+  )
+}
+
+<style>
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 2px var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    background: var(--layer-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+  }
+  .chip--primary {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: transparent;
+  }
+  .chip--signal {
+    color: var(--signal);
+    border-color: var(--signal);
+    background: transparent;
+  }
+  .chip--lab {
+    color: var(--lab);
+    border-color: var(--lab);
+    background: transparent;
+  }
+</style>

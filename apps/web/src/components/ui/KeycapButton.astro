@@ -1,0 +1,103 @@
+---
+type Props = {
+  href?: string;
+  type?: "button" | "submit";
+  variant?: "primary" | "ghost" | "signal";
+  size?: "md" | "sm";
+  external?: boolean;
+  ariaLabel?: string;
+};
+
+const {
+  href,
+  type = "button",
+  variant = "primary",
+  size = "md",
+  external = false,
+  ariaLabel,
+  ...rest
+} = Astro.props;
+
+const classes = ["keycap", `keycap--${variant}`, `keycap--${size}`];
+---
+
+{
+  href ? (
+    <a
+      class={classes}
+      href={href}
+      aria-label={ariaLabel}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      {...rest}
+    >
+      <slot />
+      {external && <span aria-hidden="true"> ↗</span>}
+    </a>
+  ) : (
+    <button class={classes} type={type} aria-label={ariaLabel} {...rest}>
+      <slot />
+    </button>
+  )
+}
+
+<style>
+  .keycap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    padding: var(--space-2) var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    box-shadow: var(--shadow-hard);
+    cursor: pointer;
+    transition:
+      transform 120ms var(--ease-expo),
+      box-shadow 120ms var(--ease-expo),
+      background-color 120ms var(--ease-expo);
+  }
+  .keycap:active {
+    transform: translateY(3px);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.35);
+  }
+  .keycap--sm {
+    min-height: 36px;
+    padding: var(--space-1) var(--space-3);
+  }
+  .keycap--primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .keycap--primary:hover {
+    background: var(--accent-hi);
+    color: #fff;
+  }
+  .keycap--signal {
+    background: var(--signal);
+    color: #fff;
+  }
+  .keycap--ghost {
+    background: var(--layer);
+    color: var(--text-hi);
+    border-color: var(--line);
+    box-shadow: none;
+  }
+  .keycap--ghost:hover {
+    color: var(--text-hi);
+    border-color: var(--accent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .keycap,
+    .keycap:active {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,67 @@
+---
+import { getCollection } from "astro:content";
+import DocumentLayout from "../../layouts/DocumentLayout.astro";
+
+const notes = (await getCollection("notes"))
+  .filter((n) => !n.draft)
+  .sort((a, b) => new Date(b.data.published_at).valueOf() - new Date(a.data.published_at).valueOf());
+
+const noteHref = (n: (typeof notes)[number]) => `/notes/${n.data.slug ?? n.slug}/`;
+
+const title = "Notes — Fazley Rabbi";
+const description =
+  "Writing on Laravel production patterns, scaling, payments, queues, ClickHouse, homelabs, and AI workflows.";
+---
+
+<DocumentLayout title={title} description={description} path="/notes">
+  <header>
+    <p class="mono eyebrow">Data &amp; Archive · writing</p>
+    <h1>Notes</h1>
+    <p class="reading">
+      {notes.length} notes on backend engineering, systems, and the workbench. Featured and latest first.
+    </p>
+  </header>
+
+  <ul class="notes">
+    {notes.map((note) => (
+      <li>
+        <a href={noteHref(note)}>{note.data.title}</a>
+        <span class="mono meta">
+          {new Date(note.data.published_at).toISOString().slice(0, 10)}
+          {note.data.lang === "bn" ? " · BN" : ""}
+          {note.data.featured ? " · Featured" : ""}
+        </span>
+      </li>
+    ))}
+  </ul>
+</DocumentLayout>
+
+<style>
+  .eyebrow {
+    color: var(--signal);
+    margin-bottom: var(--space-2);
+  }
+  h1 {
+    font-size: clamp(2rem, 4vw, 3.25rem);
+  }
+  .notes {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-8);
+    display: grid;
+    gap: var(--space-2);
+  }
+  .notes li {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--line);
+    padding-block: var(--space-3);
+  }
+  .meta {
+    color: var(--text-lo);
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+</style>

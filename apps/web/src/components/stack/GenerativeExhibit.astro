@@ -1,0 +1,100 @@
+---
+type Props = {
+  kind?: "formula" | "ascii";
+  label?: string;
+};
+
+const { kind = "formula", label = "Generative exhibit · Canvas 2D · no WebGL" } = Astro.props;
+---
+
+<figure class="exhibit" data-exhibit data-kind={kind}>
+  <canvas class="exhibit__canvas" data-exhibit-canvas aria-hidden="true"></canvas>
+  <figcaption class="mono exhibit__cap">{label}</figcaption>
+</figure>
+
+<script>
+  import { createExhibit, type ExhibitContext } from "../../stack/exhibits";
+  import { getState, subscribe } from "../../stack/store";
+
+  const roots = document.querySelectorAll<HTMLElement>("[data-exhibit]");
+  roots.forEach((root) => {
+    const canvas = root.querySelector<HTMLCanvasElement>("[data-exhibit-canvas]");
+    if (!canvas) return;
+    const kind = (root.dataset.kind as "formula" | "ascii") ?? "formula";
+    let exhibit = createExhibit(kind);
+    let visible = false;
+
+    const context = (): ExhibitContext => {
+      const s = getState();
+      return { mode: s.mode, reducedMotion: s.reducedMotion, lowPower: s.quality === "performance" };
+    };
+
+    const start = () => {
+      if (visible && !document.hidden) exhibit.resume();
+    };
+    const stop = () => exhibit.pause();
+
+    exhibit.mount(canvas, context());
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          visible = entry.isIntersecting;
+          visible ? start() : stop();
+        }
+      },
+      { threshold: 0.15 },
+    );
+    observer.observe(root);
+
+    document.addEventListener("visibilitychange", () => {
+      document.hidden ? stop() : start();
+    });
+
+    window.addEventListener("resize", () => {
+      exhibit.destroy();
+      exhibit = createExhibit(kind);
+      exhibit.mount(canvas, context());
+    });
+
+    // Re-mount only when mode / reduced-motion / quality actually change.
+    let prev = context();
+    subscribe(() => {
+      const next = context();
+      if (
+        next.mode === prev.mode &&
+        next.reducedMotion === prev.reducedMotion &&
+        next.lowPower === prev.lowPower
+      ) {
+        return;
+      }
+      prev = next;
+      exhibit.destroy();
+      exhibit = createExhibit(kind);
+      visible ? exhibit.resume() : exhibit.mount(canvas, context());
+    });
+  });
+</script>
+
+<style>
+  .exhibit {
+    margin: var(--space-6) 0 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--void);
+  }
+  .exhibit__canvas {
+    display: block;
+    width: 100%;
+    height: 220px;
+  }
+  .exhibit__cap {
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    border-top: 1px solid var(--line);
+    color: var(--text-lo);
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+</style>

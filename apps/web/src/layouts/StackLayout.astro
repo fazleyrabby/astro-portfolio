@@ -1,0 +1,599 @@
+---
+import { getCollection } from "astro:content";
+import SeoHead from "../components/seo/SeoHead.astro";
+import JsonLd from "../components/seo/JsonLd.astro";
+import CommandPalette, { type PaletteItem } from "../components/stack/CommandPalette.astro";
+import AsciiOverlay from "../components/stack/AsciiOverlay.astro";
+import SystemMapCanvas from "../components/stack/SystemMapCanvas.astro";
+import SiteFooter from "../components/shell/SiteFooter.astro";
+import { personJsonLd, websiteJsonLd } from "../lib/seo";
+import { layers } from "../data/layers";
+import { profile } from "../data/profile";
+import "../styles/fonts.css";
+import "../styles/tokens.css";
+import "../styles/base.css";
+import "../styles/stack.css";
+import "../styles/print.css";
+
+type MapLayer = { id: string; name: string; accent?: string };
+type MapNode = { label: string; layer: string; href?: string };
+
+type Props = {
+  title: string;
+  description?: string;
+  path?: string;
+  mapLayers?: MapLayer[];
+  mapNodes?: MapNode[];
+};
+
+const { title, description, path = "/stack", mapLayers, mapNodes } = Astro.props;
+const jumpLayers = layers.filter((l) => l.id !== "manifest");
+
+const [projects, notes] = await Promise.all([
+  getCollection("projects"),
+  getCollection("notes"),
+]);
+
+const paletteItems: PaletteItem[] = [
+  ...jumpLayers.map((layer) => ({
+    id: `layer-${layer.id}`,
+    label: `Go to ${layer.name}`,
+    group: "Layer",
+    keywords: `layer ${layer.id} ${layer.purpose}`,
+    layer: layer.id,
+  })),
+  { id: "route-work", label: "Work", group: "Page", keywords: "projects case studies", href: "/work/" },
+  { id: "route-notes", label: "Notes", group: "Page", keywords: "writing blog articles", href: "/notes/" },
+  { id: "route-manifest", label: "Manifest", group: "Page", keywords: "index all sitemap", href: "/manifest/" },
+  { id: "route-about", label: "About", group: "Page", keywords: "profile bio", href: "/about/" },
+  { id: "route-uses", label: "Uses", group: "Page", keywords: "setup workbench homelab", href: "/uses/" },
+  { id: "route-journey", label: "Journey", group: "Page", keywords: "memoir story", href: "/journey/" },
+  { id: "route-resume", label: "Résumé", group: "Page", keywords: "cv download", href: "/resume/" },
+  ...projects
+    .filter((p) => (p.data.lang ?? "en") === "en" && !p.data.hidden)
+    .map((p) => ({
+      id: `project-${p.slug}`,
+      label: p.data.title,
+      group: "Project",
+      keywords: `${p.data.tech?.join(" ") ?? ""} ${p.data.category}`,
+      href: `/work/${p.slug}/`,
+    })),
+  ...notes.map((n) => ({
+    id: `note-${n.data.slug ?? n.slug}`,
+    label: n.data.title,
+    group: "Note",
+    keywords: (n.data.tags ?? []).join(" "),
+    href: `/notes/${n.data.slug ?? n.slug}/`,
+  })),
+  { id: "action-email", label: "Email Fazley Rabbi", group: "Action", keywords: "contact mail hire", action: "email" },
+  { id: "action-resume", label: "Download Résumé", group: "Action", keywords: "cv pdf", href: profile.resume.pdf },
+  { id: "action-mode", label: "Toggle runtime mode", group: "Action", keywords: "debug dark theme", action: "mode" },
+  { id: "action-sound", label: "Toggle interface sound", group: "Action", keywords: "audio mute", action: "sound" },
+];
+---
+
+<!doctype html>
+<html lang="en" data-mode="runtime">
+  <head>
+    <SeoHead title={title} description={description} path={path} />
+    <JsonLd data={[websiteJsonLd(), personJsonLd()]} />
+    <link rel="preload" href="/fonts/inter-latin-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/space-grotesk-latin-600.woff2" as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <div class="stack" data-stack-root data-mode="runtime">
+      <a class="skip-link" href="#layer-edge">Skip to content</a>
+
+      <header class="topbar">
+        <a class="topbar__brand mono" href="/">FAZLEY RABBI</a>
+        <p class="topbar__readout mono" data-depth-readout aria-live="polite">L0 · EDGE</p>
+        <p class="topbar__status mono"><span class="topbar__statusdot" aria-hidden="true"></span>Available</p>
+        <div class="topbar__controls">
+          <button class="ctrl mono" type="button" data-mode-toggle aria-label="Toggle runtime mode">
+            <span class="ctrl__dot" aria-hidden="true"></span>
+            <span class="ctrl__label">Runtime</span>
+          </button>
+          <button class="ctrl mono" type="button" data-sound-toggle aria-label="Toggle interface sound" aria-pressed="false">Sound</button>
+          <button class="ctrl mono" type="button" data-palette-toggle aria-label="Open command palette">Search <kbd>⌘K</kbd></button>
+          <button class="ctrl mono" type="button" data-map-toggle aria-label="Open system map">Map <kbd>M</kbd></button>
+          <a class="ctrl mono" href="/manifest/">Manifest</a>
+        </div>
+        <span class="topbar__progress" aria-hidden="true"></span>
+      </header>
+
+      <nav class="rail" aria-label="Stack layers">
+        <span class="rail__trace" aria-hidden="true"><span class="rail__packet"></span></span>
+        <ul>
+          {
+            jumpLayers.map((layer) => (
+              <li>
+                <button
+                  class="rail__item"
+                  type="button"
+                  data-nav-layer={layer.id}
+                  data-name={layer.name}
+                  data-jump={layer.id}
+                >
+                  <span class="rail__index mono">L{layer.index}</span>
+                  <span class="rail__name mono">{layer.name}</span>
+                </button>
+              </li>
+            ))
+          }
+          <li>
+            <a class="rail__item rail__item--route" href="/manifest/">
+              <span class="rail__index mono">⊕</span>
+              <span class="rail__name mono">Manifest</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="stage">
+        <slot />
+      </div>
+
+      <SiteFooter />
+
+      {
+        mapLayers && mapNodes && (
+          <aside class="mapdock" aria-label="System map — click a node to open it">
+            <SystemMapCanvas layers={mapLayers} nodes={mapNodes} legend={false} />
+          </aside>
+        )
+      }
+
+      <nav class="strip" aria-label="Stack layers">
+        {
+          jumpLayers.map((layer) => (
+            <button class="strip__item mono" type="button" data-nav-layer={layer.id} data-name={layer.name} data-jump={layer.id}>
+              L{layer.index} {layer.name}
+            </button>
+          ))
+        }
+        <a class="strip__item mono" href="/manifest/">Manifest</a>
+      </nav>
+
+      <div class="statuspill" role="status">
+        <span class="statuspill__dot" aria-hidden="true"></span>
+        <span class="mono">{profile.availability.headline}</span>
+      </div>
+
+      <div class="sysmap" data-system-map hidden>
+        <div class="sysmap__backdrop" data-map-backdrop></div>
+        <div class="sysmap__panel" role="dialog" aria-modal="true" aria-label="System map">
+          <div class="sysmap__head">
+            <p class="mono">System map · {layers.length} nodes</p>
+            <button class="ctrl mono" type="button" data-map-close aria-label="Close system map">Close ✕</button>
+          </div>
+          <ol class="sysmap__list">
+            {
+              layers.map((layer) => (
+                <li>
+                  {layer.id === "manifest" ? (
+                    <a class="sysmap__node" href="/manifest/">
+                      <span class="mono">⊕</span>
+                      <span>{layer.name}</span>
+                      <span class="sysmap__purpose">{layer.purpose}</span>
+                    </a>
+                  ) : (
+                    <button class="sysmap__node" type="button" data-map-jump data-jump={layer.id}>
+                      <span class="mono">L{layer.index}</span>
+                      <span>{layer.name}</span>
+                      <span class="sysmap__purpose">{layer.purpose}</span>
+                    </button>
+                  )}
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+      </div>
+
+      <CommandPalette items={paletteItems} />
+
+      <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
+
+      <AsciiOverlay />
+    </div>
+
+    <script>
+      import { initStack } from "../stack/depth";
+      import { subscribe } from "../stack/store";
+      initStack();
+
+      const toast = document.querySelector<HTMLElement>("[data-toast]");
+      let toastTimer = 0;
+      const showToast = (message: string) => {
+        if (!toast) return;
+        toast.textContent = message;
+        toast.hidden = false;
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => {
+          toast.hidden = true;
+        }, 2200);
+      };
+
+      document.addEventListener("click", async (event) => {
+        const copy = (event.target as HTMLElement).closest<HTMLElement>("[data-copy]");
+        if (!copy) return;
+        const value = copy.dataset.copy ?? "";
+        try {
+          await navigator.clipboard.writeText(value);
+          showToast(`Copied ${value}`);
+        } catch {
+          showToast("Copy failed");
+        }
+      });
+
+      subscribe((s) => {
+        const map = document.querySelector<HTMLElement>("[data-system-map]");
+        if (map) map.hidden = !s.systemMapOpen;
+        const toggle = document.querySelector<HTMLElement>("[data-mode-toggle] .ctrl__label");
+        if (toggle) toggle.textContent = s.mode === "debug" ? "Debug" : "Runtime";
+        const modeBtn = document.querySelector<HTMLElement>("[data-mode-toggle]");
+        modeBtn?.setAttribute("aria-pressed", String(s.mode === "debug"));
+        const soundBtn = document.querySelector<HTMLElement>("[data-sound-toggle]");
+        if (soundBtn) {
+          soundBtn.setAttribute("aria-pressed", String(s.sound));
+          soundBtn.textContent = s.sound ? "Sound on" : "Sound off";
+        }
+      });
+    </script>
+
+    <style>
+      .stack {
+        --rail-w: 168px;
+      }
+      .topbar {
+        position: fixed;
+        inset: 0 0 auto 0;
+        z-index: 40;
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        padding: var(--space-2) var(--space-4);
+        background: color-mix(in srgb, var(--bg) 82%, transparent);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+      }
+      .topbar__brand {
+        color: var(--text-hi);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .topbar__readout {
+        color: var(--accent);
+        margin: 0;
+      }
+      .topbar__controls {
+        margin-left: auto;
+        display: flex;
+        gap: var(--space-2);
+        align-items: center;
+      }
+      .topbar__progress {
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        height: 2px;
+        width: calc(var(--trace-progress, 0) * 100%);
+        background: linear-gradient(90deg, var(--signal), var(--accent));
+        transition: width 700ms var(--ease-expo);
+      }
+      .topbar__status {
+        display: none;
+        align-items: center;
+        gap: var(--space-2);
+        margin: 0;
+        color: var(--text-lo);
+      }
+      .topbar__statusdot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--ok);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 22%, transparent);
+      }
+      .ctrl {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+        min-height: 36px;
+        padding: var(--space-1) var(--space-3);
+        background: var(--layer);
+        color: var(--text-hi);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .ctrl:hover {
+        border-color: var(--accent);
+        color: var(--text-hi);
+      }
+      .ctrl__dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+      [data-mode="debug"] .ctrl__dot {
+        background: var(--signal);
+      }
+      kbd {
+        font-size: 0.625rem;
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        padding: 0 3px;
+      }
+
+      .rail {
+        position: fixed;
+        left: var(--space-4);
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 30;
+        display: none;
+      }
+      .rail ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: var(--space-1);
+        position: relative;
+      }
+      .rail__trace {
+        position: absolute;
+        left: 5px;
+        top: 6px;
+        bottom: 6px;
+        width: 1px;
+        background: var(--trace);
+      }
+      .rail__packet {
+        position: absolute;
+        left: -3px;
+        top: calc(var(--trace-progress, 0) * 100%);
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+        transition: top 700ms var(--ease-expo);
+      }
+      .rail__item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4);
+        background: transparent;
+        border: 0;
+        color: var(--text-lo);
+        cursor: pointer;
+        text-align: left;
+        text-decoration: none;
+        border-radius: var(--radius-sm);
+      }
+      .rail__item:hover {
+        color: var(--text-hi);
+      }
+      .rail__item.is-active {
+        color: var(--accent);
+      }
+      .rail__item.is-active .rail__index {
+        opacity: 1;
+      }
+      .rail__index {
+        opacity: 0.6;
+      }
+      .rail__name {
+        opacity: 0.85;
+      }
+
+      .stage {
+        max-width: var(--width-content);
+        margin-inline: auto;
+        padding: 72px var(--space-4) var(--space-16);
+      }
+
+      .strip {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 40;
+        display: flex;
+        gap: var(--space-2);
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: var(--space-2) var(--space-3);
+        background: color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid var(--line);
+      }
+      .strip__item {
+        flex: 0 0 auto;
+        scroll-snap-align: center;
+        min-height: 36px;
+        padding: var(--space-1) var(--space-3);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-pill);
+        background: var(--layer);
+        color: var(--text-mid);
+        text-decoration: none;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .strip__item.is-active {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .statuspill {
+        position: fixed;
+        right: var(--space-4);
+        bottom: var(--space-4);
+        z-index: 35;
+        display: none;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-2) var(--space-3);
+        background: var(--layer);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-pill);
+        box-shadow: var(--shadow-panel);
+        color: var(--text-mid);
+      }
+      .statuspill__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--ok);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 25%, transparent);
+      }
+
+      .toast[hidden] {
+        display: none;
+      }
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: calc(var(--space-6) + 56px);
+        transform: translateX(-50%);
+        z-index: 80;
+        padding: var(--space-2) var(--space-4);
+        background: var(--text-hi);
+        color: var(--bg);
+        border-radius: var(--radius-pill);
+        font-size: 0.875rem;
+        box-shadow: var(--shadow-panel);
+      }
+
+      .sysmap[hidden] {
+        display: none;
+      }
+      .sysmap {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: grid;
+        place-items: center;
+      }
+      .sysmap__backdrop {
+        position: absolute;
+        inset: 0;
+        background: color-mix(in srgb, var(--void) 80%, transparent);
+        backdrop-filter: blur(3px);
+      }
+      .sysmap__panel {
+        position: relative;
+        width: min(880px, calc(100vw - 2rem));
+        max-height: 80vh;
+        overflow: auto;
+        background: var(--layer);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-panel);
+        padding: var(--space-6);
+      }
+      .sysmap__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-4);
+      }
+      .sysmap__head p {
+        margin: 0;
+        color: var(--signal);
+      }
+      .sysmap__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: var(--space-2);
+      }
+      .sysmap__node {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 48px 160px 1fr;
+        gap: var(--space-3);
+        align-items: center;
+        text-align: left;
+        padding: var(--space-3);
+        background: var(--layer-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-md);
+        color: var(--text-hi);
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .sysmap__node:hover {
+        border-color: var(--accent);
+      }
+      .sysmap__purpose {
+        color: var(--text-mid);
+        font-size: 0.875rem;
+      }
+
+      .mapdock {
+        display: none;
+      }
+
+      @media (min-width: 1024px) {
+        .stack {
+          --footer-left: calc(var(--rail-w) + var(--space-8));
+        }
+        .rail {
+          display: block;
+        }
+        .stage {
+          padding-left: calc(var(--rail-w) + var(--space-8));
+        }
+        .statuspill {
+          display: flex;
+        }
+        .topbar__status {
+          display: inline-flex;
+        }
+        .strip {
+          display: none;
+        }
+      }
+
+      @media (min-width: 1280px) {
+        .mapdock {
+          display: block;
+          position: fixed;
+          top: 60px;
+          right: var(--space-4);
+          bottom: var(--space-4);
+          width: 288px;
+          z-index: 20;
+        }
+        .stage {
+          max-width: none;
+          padding-right: 320px;
+        }
+        .stack {
+          --footer-right: 320px;
+        }
+        .statuspill {
+          display: none;
+        }
+      }
+      @media (max-width: 1023px) {
+        .statuspill {
+          bottom: 64px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .rail__packet {
+          transition: none;
+        }
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+---
+import { getCollection } from "astro:content";
+import DocumentLayout from "../../layouts/DocumentLayout.astro";
+import ProjectGrid from "../../components/content/ProjectGrid.astro";
+
+const projects = await getCollection("projects");
+const visible = projects
+  .filter((p) => (p.data.lang ?? "en") === "en" && !p.data.hidden)
+  .sort((a, b) => (a.data.position ?? 999) - (b.data.position ?? 999));
+
+const production = visible.filter((p) => p.data.category === "production");
+const experiments = visible.filter((p) => p.data.category === "experimental");
+
+const title = "Work — Fazley Rabbi";
+const description =
+  "Production systems and experiments by Md. Fazley Rabbi: backend architecture, payments, APIs, queues, and creative engineering.";
+---
+
+<DocumentLayout title={title} description={description} path="/work">
+  <header class="work-header">
+    <p class="mono eyebrow">Application &amp; Jobs · {visible.length} services</p>
+    <h1>Work</h1>
+    <p class="reading">
+      Flat, crawlable index of every system. Production first, then experiments.
+      Every project also appears in the <a href="/manifest/">Manifest</a>.
+    </p>
+  </header>
+
+  <section aria-labelledby="production-h">
+    <h2 id="production-h">Application — production</h2>
+    <ProjectGrid projects={production} />
+  </section>
+
+  <section aria-labelledby="experiments-h">
+    <h2 id="experiments-h">Jobs &amp; Queue — experiments</h2>
+    <ProjectGrid projects={experiments} />
+  </section>
+</DocumentLayout>
+
+<style>
+  .work-header {
+    max-width: 720px;
+    margin-bottom: var(--space-12);
+  }
+  .eyebrow {
+    color: var(--signal);
+    margin-bottom: var(--space-2);
+  }
+  h1 {
+    font-size: var(--type-display-l);
+  }
+  h2 {
+    font-size: 1.5rem;
+    margin: var(--space-12) 0 var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  h2::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+</style>

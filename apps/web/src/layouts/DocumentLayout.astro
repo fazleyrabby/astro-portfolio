@@ -1,0 +1,132 @@
+---
+import SeoHead from "../components/seo/SeoHead.astro";
+import JsonLd from "../components/seo/JsonLd.astro";
+import SiteFooter from "../components/shell/SiteFooter.astro";
+import { primaryNav } from "../data/nav";
+import { websiteJsonLd } from "../lib/seo";
+import "../styles/fonts.css";
+import "../styles/tokens.css";
+import "../styles/base.css";
+import "../styles/print.css";
+
+type Props = {
+  title: string;
+  description?: string;
+  path?: string;
+  image?: string;
+  type?: "website" | "article";
+  robots?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  showChrome?: boolean;
+};
+
+const {
+  title,
+  description,
+  path,
+  image,
+  type,
+  robots,
+  jsonLd = [],
+  showChrome = true,
+} = Astro.props;
+
+const structured = [websiteJsonLd(), ...(Array.isArray(jsonLd) ? jsonLd : [jsonLd])];
+---
+
+<!doctype html>
+<html lang="en" data-mode="runtime">
+  <head>
+    <SeoHead
+      title={title}
+      description={description}
+      path={path}
+      image={image}
+      type={type}
+      robots={robots}
+    />
+    <JsonLd data={structured} />
+    <link
+      rel="preload"
+      href="/fonts/inter-latin-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/space-grotesk-latin-600.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+  </head>
+  <body class="document">
+    <a class="skip-link" href="#main">Skip to content</a>
+    {
+      showChrome && (
+        <header class="doc-header">
+          <div class="content-width doc-header__inner">
+            <a class="doc-brand mono" href="/">
+              FAZLEY RABBI
+            </a>
+            <nav aria-label="Primary">
+              <ul class="doc-nav">
+                {primaryNav.map((item) => (
+                  <li><a href={item.href}>{item.label}</a></li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+        </header>
+      )
+    }
+    <main id="main" class="content-width">
+      <slot />
+    </main>
+    <SiteFooter />
+    <style>
+      .doc-header {
+        border-bottom: 1px solid var(--line);
+        background: var(--layer);
+      }
+      .doc-header__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        min-height: 56px;
+        flex-wrap: wrap;
+      }
+      .doc-brand {
+        color: var(--text-hi);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .doc-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .doc-footer {
+        border-top: 1px solid var(--line);
+        margin-top: var(--space-16);
+        padding-block: var(--space-6);
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+      }
+      .doc-footer__meta {
+        color: var(--text-lo);
+        margin: 0;
+      }
+      main {
+        padding-block: var(--space-12);
+      }
+    </style>
+  </body>
+</html>

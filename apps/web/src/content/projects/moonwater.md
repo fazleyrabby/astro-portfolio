@@ -1,5 +1,5 @@
 ---
-title: Moonwater
+title: Mystical Ride
 description: An interactive moonlit boat ride through a dense jungle waterway, with reflective waves, a fading wake, and switchable dawn and rain.
 category: experimental
 type: 3D & WebGL

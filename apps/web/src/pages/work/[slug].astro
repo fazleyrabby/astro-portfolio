@@ -1,0 +1,356 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import DocumentLayout from "../../layouts/DocumentLayout.astro";
+import ContentRequired from "../../components/ui/ContentRequired.astro";
+import Callout from "../../components/ui/Callout.astro";
+import Chip from "../../components/ui/Chip.astro";
+import ProjectSigil from "../../components/ui/ProjectSigil.astro";
+import KeycapButton from "../../components/ui/KeycapButton.astro";
+import { creativeWorkJsonLd, absoluteUrl } from "../../lib/seo";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  const visible = projects
+    .filter((p) => (p.data.lang ?? "en") === "en" && !p.data.hidden)
+    .sort((a, b) => (a.data.position ?? 999) - (b.data.position ?? 999));
+
+  return visible.map((project, index) => ({
+    params: { slug: project.slug },
+    props: {
+      project,
+      prev: visible[index - 1] ?? null,
+      next: visible[index + 1] ?? null,
+    },
+  }));
+}
+
+type Props = {
+  project: CollectionEntry<"projects">;
+  prev: CollectionEntry<"projects"> | null;
+  next: CollectionEntry<"projects"> | null;
+};
+
+const { project, prev, next } = Astro.props;
+const d = project.data;
+const url = absoluteUrl(`/work/${project.slug}/`);
+const isExperiment = d.category === "experimental";
+---
+
+<DocumentLayout
+  title={`${d.title} — Case Study — Fazley Rabbi`}
+  description={d.description}
+  path={`/work/${project.slug}/`}
+  image={d.thumbnail}
+  type="article"
+  jsonLd={creativeWorkJsonLd({
+    title: d.title,
+    description: d.description,
+    url,
+    live: d.live,
+    tech: d.tech,
+  })}
+>
+  <article class="case">
+    <a class="back mono" href="/work/">← Work</a>
+
+    <header class="case__header">
+      <div class="case__headings">
+        <p class="mono eyebrow">
+          {d.type ?? d.category}{d.period ? ` · ${d.period}` : ""}
+        </p>
+        <h1>{d.title}</h1>
+        <p class="lede">{d.description}</p>
+        <div class="case__facts">
+          {d.role && <span class="mono fact">ROLE · {d.role}</span>}
+          {d.status && <span class:list={["mono", "fact", { "fact--ok": /active|production|ongoing/i.test(d.status) }]}>{d.status}</span>}
+          {d.commits != null && <span class="mono fact">{d.commits} commits</span>}
+        </div>
+        <div class="case__actions">
+          {d.live && <KeycapButton href={d.live} external>Live site</KeycapButton>}
+          {d.github && <KeycapButton href={d.github} external variant="ghost">Repository</KeycapButton>}
+          <KeycapButton href="/" variant="ghost">View in Stack</KeycapButton>
+        </div>
+      </div>
+      <div class="case__sigil">
+        <ProjectSigil seed={d.sigil_seed ?? project.slug} size={9} cell={18} label={`${d.title} sigil`} />
+      </div>
+    </header>
+
+    {(d.problem || d.solution || d.impact) && (
+      <div class="case__triptych">
+        {d.problem && (
+          <section class="triptych__item">
+            <h2>The Problem</h2>
+            <p>{d.problem}</p>
+          </section>
+        )}
+        {d.solution && (
+          <section class="triptych__item">
+            <h2>The Approach</h2>
+            <p>{d.solution}</p>
+          </section>
+        )}
+        {d.impact && (
+          <section class="triptych__item">
+            <h2>Impact</h2>
+            <p>{d.impact}</p>
+          </section>
+        )}
+      </div>
+    )}
+
+    {d.highlights && d.highlights.length > 0 && (
+      <section aria-labelledby="highlights-h">
+        <h2 id="highlights-h">Highlights</h2>
+        <ul class="highlights">
+          {d.highlights.map((h) => <li>{h}</li>)}
+        </ul>
+      </section>
+    )}
+
+    {d.scope && d.scope.length > 0 && (
+      <details class="scope">
+        <summary>Scope of work ({d.scope.length})</summary>
+        <ul>
+          {d.scope.map((s) => <li>{s}</li>)}
+        </ul>
+      </details>
+    )}
+
+    {d.tech && d.tech.length > 0 && (
+      <section aria-labelledby="stack-h">
+        <h2 id="stack-h">Stack</h2>
+        <ul class="tech">
+          {d.tech.map((tech) => <li><Chip tone={isExperiment ? "lab" : "signal"}>{tech}</Chip></li>)}
+        </ul>
+      </section>
+    )}
+
+    <section aria-labelledby="architecture-h">
+      <h2 id="architecture-h">Architecture</h2>
+      {d.architecture ? (
+        <p>{d.architecture}</p>
+      ) : (
+        <div class="schematic-frame">
+          <p class="mono frame-label">System diagram</p>
+          <ContentRequired label="Architecture diagram (B3)" />
+        </div>
+      )}
+    </section>
+
+    <section aria-labelledby="media-h">
+      <h2 id="media-h">Media</h2>
+      {d.media && d.media.length > 0 ? (
+        <ul class="media">
+          {d.media.map((m) => (
+            <li>
+              {m.type === "video" ? (
+                <video src={m.src} controls preload="metadata"></video>
+              ) : (
+                <img src={m.src} alt={m.alt} loading="lazy" width="1200" height="675" />
+              )}
+              {m.caption && <p class="mono caption">{m.caption}</p>}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div class="schematic-frame">
+          <ProjectSigil seed={`${d.sigil_seed ?? project.slug}-media`} size={7} cell={16} />
+          <p><ContentRequired label="Screenshots / demo video (B2)" /></p>
+        </div>
+      )}
+    </section>
+
+    <section aria-labelledby="lessons-h">
+      <h2 id="lessons-h">Lessons learned</h2>
+      {d.lessons && d.lessons.length > 0 ? (
+        <ul class="highlights">
+          {d.lessons.map((l) => <li>{l}</li>)}
+        </ul>
+      ) : (
+        <Callout tone="warn" title="Not yet written">
+          <ContentRequired label="Lessons learned (B4)" />
+        </Callout>
+      )}
+    </section>
+
+    <nav class="case__nav" aria-label="Project navigation">
+      {prev ? (
+        <a class="case__nav-item" href={`/work/${prev.slug}/`}>
+          <span class="mono">← Previous</span>
+          <span>{prev.data.title}</span>
+        </a>
+      ) : (
+        <span></span>
+      )}
+      {next ? (
+        <a class="case__nav-item case__nav-item--next" href={`/work/${next.slug}/`}>
+          <span class="mono">Next →</span>
+          <span>{next.data.title}</span>
+        </a>
+      ) : (
+        <span></span>
+      )}
+    </nav>
+  </article>
+</DocumentLayout>
+
+<style>
+  .case {
+    max-width: 900px;
+    margin-inline: auto;
+  }
+  .back {
+    display: inline-block;
+    margin-bottom: var(--space-6);
+    color: var(--text-mid);
+    text-decoration: none;
+  }
+  .case__header {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-8);
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--line);
+  }
+  .case__headings {
+    flex: 1 1 420px;
+  }
+  .eyebrow {
+    color: var(--signal);
+    margin-bottom: var(--space-2);
+  }
+  h1 {
+    font-size: var(--type-display-l);
+  }
+  .lede {
+    font-size: var(--type-body-l);
+    color: var(--text-mid);
+    max-width: 60ch;
+  }
+  .case__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin: var(--space-4) 0;
+  }
+  .fact {
+    color: var(--text-lo);
+  }
+  .fact--ok {
+    color: var(--ok);
+  }
+  .case__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+  .case__triptych {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: var(--space-6);
+    margin-top: var(--space-8);
+  }
+  .triptych__item h2 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+  section h2 {
+    font-size: 1.375rem;
+    margin-top: var(--space-12);
+  }
+  .highlights {
+    display: grid;
+    gap: var(--space-3);
+    padding-left: var(--space-5, 20px);
+  }
+  .highlights li {
+    padding-left: var(--space-1);
+  }
+  .scope {
+    margin-top: var(--space-8);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    background: var(--layer);
+  }
+  .scope summary {
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+  }
+  .schematic-frame {
+    border: 1px dashed var(--line);
+    border-radius: var(--radius-md);
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 100% 24px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 24px 100%,
+      var(--void);
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    text-align: center;
+  }
+  .frame-label {
+    color: var(--text-lo);
+    margin: 0;
+  }
+  .media {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+  }
+  .media img,
+  .media video {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line);
+  }
+  .caption {
+    color: var(--text-lo);
+    text-transform: none;
+  }
+  .case__nav {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-16);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+  .case__nav-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    text-decoration: none;
+    color: var(--text-hi);
+  }
+  .case__nav-item--next {
+    text-align: right;
+    margin-left: auto;
+  }
+  .case__nav-item .mono {
+    color: var(--text-lo);
+  }
+</style>

@@ -1,0 +1,57 @@
+---
+import { capabilities } from "../../data/capabilities";
+
+type Props = {
+  compact?: boolean;
+};
+const { compact = false } = Astro.props;
+---
+
+<div class:list={["skills", { "skills--compact": compact }]}>
+  {
+    capabilities.map((group) => (
+      <section class="skills__group" aria-labelledby={`skill-${group.id}`}>
+        <h3 id={`skill-${group.id}`}>{group.name}</h3>
+        <ul class="skills__list">
+          {group.items.map((item) => (
+            <li class:list={["skills__item", { "skills__item--primary": item.primary }]}>
+              {item.name}
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  .skills {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  }
+  .skills__group h3 {
+    font-size: 1rem;
+    margin: 0 0 var(--space-2);
+    color: var(--text-hi);
+  }
+  .skills__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .skills__item {
+    font-size: 0.875rem;
+    color: var(--text-mid);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2px;
+  }
+  .skills__item--primary {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+  }
+</style>

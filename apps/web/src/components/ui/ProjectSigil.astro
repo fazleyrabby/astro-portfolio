@@ -1,0 +1,55 @@
+---
+import { generateSigil } from "../../lib/sigil";
+
+type Props = {
+  seed: string;
+  size?: number;
+  cell?: number;
+  label?: string;
+};
+
+const { seed, size = 7, cell = 14, label } = Astro.props;
+const sigil = generateSigil(seed, size);
+const dimension = sigil.size * cell;
+const gap = Math.max(2, Math.round(cell * 0.18));
+---
+
+<svg
+  class="sigil"
+  width={dimension}
+  height={dimension}
+  viewBox={`0 0 ${dimension} ${dimension}`}
+  role={label ? "img" : "presentation"}
+  aria-label={label ?? undefined}
+  aria-hidden={label ? undefined : "true"}
+>
+  {
+    sigil.cells.map((on, index) => {
+      if (!on) return null;
+      const x = (index % sigil.size) * cell + gap / 2;
+      const y = Math.floor(index / sigil.size) * cell + gap / 2;
+      const w = cell - gap;
+      return (
+        <rect
+          x={x}
+          y={y}
+          width={w}
+          height={w}
+          rx={1}
+          fill={sigil.accent}
+          opacity={0.85}
+        />
+      );
+    })
+  }
+</svg>
+
+<style>
+  .sigil {
+    display: block;
+    flex: none;
+    background: var(--void);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+</style>

@@ -1,0 +1,89 @@
+---
+import { layers } from "../../data/layers";
+
+const stackLayers = layers.filter((l) => l.kind === "layer");
+const rowH = 46;
+const gap = 8;
+const width = 320;
+const height = stackLayers.length * (rowH + gap);
+const accent: Record<string, string> = {
+  edge: "var(--accent)",
+  api: "var(--signal)",
+  app: "var(--accent)",
+  jobs: "var(--lab)",
+  data: "var(--signal)",
+  infra: "var(--accent)",
+};
+---
+
+<svg
+  class="stack-diagram"
+  viewBox={`0 0 ${width} ${height}`}
+  role="img"
+  aria-label="Cross-section of the stack: Edge, Interface, Application, Jobs and Queue, Data and Archive, Infrastructure."
+  preserveAspectRatio="xMidYMid meet"
+>
+  <defs>
+    <linearGradient id="plane" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="var(--layer-2)" />
+      <stop offset="1" stop-color="var(--layer)" />
+    </linearGradient>
+  </defs>
+
+  {
+    stackLayers.map((layer, i) => {
+      const y = i * (rowH + gap);
+      const inset = i * 10;
+      const w = width - inset * 2;
+      return (
+        <g>
+          <rect
+            x={inset}
+            y={y}
+            width={w}
+            height={rowH}
+            rx={4}
+            fill="url(#plane)"
+            stroke="var(--line)"
+          />
+          <rect x={inset} y={y} width={3} height={rowH} rx={1.5} fill={accent[layer.id]} />
+          <text x={inset + 16} y={y + 20} fill="var(--text-lo)" class="diagram-idx">
+            L{layer.index}
+          </text>
+          <text x={inset + 44} y={y + 20} fill="var(--text-hi)" class="diagram-name">
+            {layer.name}
+          </text>
+          <text x={inset + 16} y={y + 36} fill="var(--text-mid)" class="diagram-purpose">
+            {layer.purpose}
+          </text>
+        </g>
+      );
+    })
+  }
+
+  <line x1={width / 2} y1={0} x2={width / 2} y2={height} stroke="var(--trace)" stroke-dasharray="2 4" />
+</svg>
+
+<style>
+  .stack-diagram {
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    display: block;
+  }
+  .diagram-idx {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+  }
+  .diagram-name {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .diagram-purpose {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    opacity: 0.85;
+  }
+</style>

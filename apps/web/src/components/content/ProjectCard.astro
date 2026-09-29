@@ -1,0 +1,128 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ProjectSigil from "../ui/ProjectSigil.astro";
+import Chip from "../ui/Chip.astro";
+
+type Props = {
+  project: CollectionEntry<"projects">;
+};
+
+const { project } = Astro.props;
+const d = project.data;
+const href = `/work/${project.slug}/`;
+---
+
+<article class:list={["project-card", { "project-card--experiment": d.category === "experimental" }]}>
+  <a class="project-card__main" href={href}>
+    <ProjectSigil seed={d.sigil_seed ?? project.slug} label={`${d.title} sigil`} />
+    <div class="project-card__text">
+      <h3>{d.title}</h3>
+      <p>{d.description}</p>
+    </div>
+  </a>
+
+  <div class="project-card__meta">
+    {d.status && <span class="mono project-card__status">{d.status}</span>}
+    <span class="mono project-card__type">{d.type ?? d.category}</span>
+  </div>
+
+  {
+    d.tech && d.tech.length > 0 && (
+      <ul class="project-card__tech">
+        {d.tech.slice(0, 5).map((tech) => (
+          <li>
+            <Chip>{tech}</Chip>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  <div class="project-card__links">
+    <a href={href}>Case study →</a>
+    {d.live && <a href={d.live} target="_blank" rel="noopener noreferrer">Live ↗</a>}
+    {d.github && <a href={d.github} target="_blank" rel="noopener noreferrer">Repo ↗</a>}
+  </div>
+</article>
+
+<style>
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    position: relative;
+    background: linear-gradient(
+      180deg,
+      var(--layer) 0%,
+      color-mix(in srgb, var(--layer) 94%, var(--void)) 100%
+    );
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--text-hi) 6%, transparent);
+    transition:
+      transform 180ms var(--ease-expo),
+      border-color 180ms var(--ease-expo),
+      box-shadow 180ms var(--ease-expo);
+  }
+  .project-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, var(--text-hi) 6%, transparent),
+      var(--shadow-panel);
+  }
+  .project-card--experiment:hover {
+    border-color: var(--lab);
+  }
+  .project-card__main {
+    display: flex;
+    gap: var(--space-4);
+    text-decoration: none;
+    color: inherit;
+    align-items: flex-start;
+  }
+  .project-card__text h3 {
+    margin: 0 0 var(--space-1);
+    font-size: 1.25rem;
+  }
+  .project-card__text p {
+    margin: 0;
+    color: var(--text-mid);
+    font-size: 0.9375rem;
+  }
+  .project-card__meta {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+  }
+  .project-card__status {
+    color: var(--ok);
+  }
+  .project-card__type {
+    color: var(--text-lo);
+  }
+  .project-card__tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .project-card__links {
+    display: flex;
+    gap: var(--space-4);
+    margin-top: auto;
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--line);
+    font-size: 0.875rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .project-card,
+    .project-card:hover {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,58 @@
+@media print {
+  :root {
+    --bg: #ffffff;
+    --layer: #ffffff;
+    --layer-2: #ffffff;
+    --void: #ffffff;
+    --text-hi: #000000;
+    --text-mid: #222222;
+    --text-lo: #444444;
+    --line: #cccccc;
+  }
+
+  .doc-header,
+  .doc-footer,
+  .skip-link,
+  .keycap,
+  .no-print,
+  nav[aria-label="Primary"] {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+
+  main {
+    padding: 0;
+    max-width: none;
+  }
+
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  .panel,
+  .callout,
+  .case,
+  .project-card {
+    box-shadow: none !important;
+    border-color: #ccc !important;
+    break-inside: avoid;
+  }
+
+  section {
+    break-inside: avoid;
+  }
+
+  .resume__entry {
+    break-inside: avoid;
+  }
+
+  @page {
+    margin: 16mm;
+  }
+}

@@ -1,0 +1,76 @@
+---
+type Props = {
+  value: string | number;
+  label: string;
+  suffix?: string;
+};
+
+const { value, label, suffix } = Astro.props;
+const numeric = typeof value === "number" ? value : Number(value);
+const isNumeric = Number.isFinite(numeric);
+const decimals = isNumeric && !Number.isInteger(numeric) ? 1 : 0;
+---
+
+<div class="stat" data-stat>
+  <p class="stat__value">
+    <span data-stat-value data-to={isNumeric ? numeric : undefined} data-decimals={decimals}>
+      {value}
+    </span>{suffix && <span class="stat__suffix">{suffix}</span>}
+  </p>
+  <p class="stat__label mono">{label}</p>
+</div>
+
+<script>
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const stats = document.querySelectorAll<HTMLElement>("[data-stat]");
+
+  const animate = (el: HTMLElement) => {
+    const target = Number(el.dataset.to);
+    const decimals = Number(el.dataset.decimals ?? 0);
+    if (!Number.isFinite(target)) return;
+    const duration = 900;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = (target * eased).toFixed(decimals);
+      if (progress < 1) requestAnimationFrame(tick);
+      else el.textContent = target.toFixed(decimals);
+    };
+    requestAnimationFrame(tick);
+  };
+
+  if (!reduce) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const el = entry.target.querySelector<HTMLElement>("[data-stat-value]");
+          if (el && el.dataset.to) animate(el);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.4 },
+    );
+    stats.forEach((el) => observer.observe(el));
+  }
+</script>
+
+<style>
+  .stat__value {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1;
+    margin: 0;
+    color: var(--text-hi);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat__suffix {
+    color: var(--accent);
+  }
+  .stat__label {
+    margin: var(--space-1) 0 0;
+    color: var(--text-lo);
+  }
+</style>

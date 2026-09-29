@@ -1,0 +1,32 @@
+---
+type Props = {
+  tone?: "info" | "warn" | "ok";
+  title?: string;
+};
+
+const { tone = "info", title } = Astro.props;
+---
+
+<aside class:list={["callout", `callout--${tone}`]} role="note">
+  {title && <p class="callout__title mono">{title}</p>}
+  <div class="callout__body"><slot /></div>
+</aside>
+
+<style>
+  .callout {
+    border-left: 2px solid var(--signal);
+    background: var(--layer-2);
+    padding: var(--space-3) var(--space-4);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+  .callout--warn {
+    border-left-color: var(--warn);
+  }
+  .callout--ok {
+    border-left-color: var(--ok);
+  }
+  .callout__title {
+    margin: 0 0 var(--space-1);
+    color: var(--text-lo);
+  }
+</style>

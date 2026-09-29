@@ -1,0 +1,103 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import DocumentLayout from "../../layouts/DocumentLayout.astro";
+import { blogPostingJsonLd, absoluteUrl } from "../../lib/seo";
+
+export async function getStaticPaths() {
+  const notes = (await getCollection("notes")).filter((n) => !n.draft);
+  return notes.map((note) => ({
+    params: { slug: note.data.slug ?? note.slug },
+    props: { note },
+  }));
+}
+
+type Props = { note: CollectionEntry<"notes"> };
+const { note } = Astro.props;
+const { Content } = await note.render();
+const { data } = note;
+const slug = data.slug ?? note.slug;
+---
+
+<DocumentLayout
+  title={`${data.title} — Fazley Rabbi`}
+  description={data.description}
+  path={`/notes/${slug}/`}
+  type="article"
+  jsonLd={blogPostingJsonLd({
+    title: data.title,
+    description: data.description,
+    url: absoluteUrl(`/notes/${slug}/`),
+    published: data.published_at,
+    updated: data.updated_at,
+    tags: data.tags,
+  })}
+>
+  <article class="note">
+    <header>
+      <p class="mono eyebrow">Note · {new Date(data.published_at).toISOString().slice(0, 10)}</p>
+      <h1>{data.title}</h1>
+      {data.description && <p class="lede">{data.description}</p>}
+      {data.tags.length > 0 && (
+        <ul class="chips">
+          {data.tags.map((tag) => <li class="chip">{tag}</li>)}
+        </ul>
+      )}
+    </header>
+    <div class="prose reading">
+      <Content />
+    </div>
+    <nav class="note-footer">
+      <a href="/notes/">← All notes</a>
+      <a href="/manifest/">Manifest →</a>
+    </nav>
+  </article>
+</DocumentLayout>
+
+<style>
+  .note header {
+    margin-bottom: var(--space-8);
+  }
+  .eyebrow {
+    color: var(--signal);
+    margin-bottom: var(--space-2);
+  }
+  h1 {
+    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  }
+  .lede {
+    color: var(--text-mid);
+    font-size: 1.125rem;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    padding: 0;
+  }
+  .chip {
+    font-size: 0.8125rem;
+    padding: 2px var(--space-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    color: var(--text-mid);
+  }
+  .prose :global(h2) {
+    margin-top: var(--space-8);
+  }
+  .prose :global(pre) {
+    overflow-x: auto;
+    padding: var(--space-4);
+    background: var(--void);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+  }
+  .note-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-12);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+</style>

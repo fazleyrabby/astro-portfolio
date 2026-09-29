@@ -271,8 +271,7 @@ const categories = [
     });
   }
 
-  document.addEventListener("DOMContentLoaded", setupFilter);
-  document.addEventListener("astro:page-load", setupFilter);
+  let viewsInterval;
 
   async function fetchViews() {
     const viewElements = document.querySelectorAll('.meta-views');
@@ -297,8 +296,17 @@ const categories = [
     }
   }
 
-  document.addEventListener("DOMContentLoaded", fetchViews);
-  document.addEventListener("astro:page-load", fetchViews);
+  function initPage() {
+    setupFilter();
+    fetchViews();
+    // Clear any existing interval to prevent duplicates during view transitions
+    if (viewsInterval) clearInterval(viewsInterval);
+    // Poll for live updates every 15 seconds
+    viewsInterval = setInterval(fetchViews, 15000);
+  }
+
+  document.addEventListener("DOMContentLoaded", initPage);
+  document.addEventListener("astro:page-load", initPage);
 </script>
 
 <style>

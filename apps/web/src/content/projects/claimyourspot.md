@@ -16,4 +16,5 @@ tech:
   - SSE
 status: ACTIVE
 position: 9
+views_project: claimyourspot
 ---

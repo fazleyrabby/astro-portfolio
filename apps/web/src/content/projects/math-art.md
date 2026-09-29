@@ -14,4 +14,5 @@ tech:
   - Mathematics
 status: ACTIVE
 position: 8
+views_project: formula-art
 ---

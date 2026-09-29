@@ -14,4 +14,5 @@ tech:
   - Game Dev
 status: ACTIVE
 position: 5
+views_project: bloodpixel
 ---

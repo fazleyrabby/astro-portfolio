@@ -14,4 +14,5 @@ tech:
   - Tower Defense
 status: ACTIVE
 position: 7
+views_project: swarmguard
 ---

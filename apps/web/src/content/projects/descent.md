@@ -14,4 +14,5 @@ tech:
   - Oceanography
 status: ACTIVE
 position: 4
+views_project: descent
 ---

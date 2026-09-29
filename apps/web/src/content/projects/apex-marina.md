@@ -14,4 +14,5 @@ tech:
   - Game Dev
 status: ACTIVE
 position: 1
+views_project: apex-marina
 ---

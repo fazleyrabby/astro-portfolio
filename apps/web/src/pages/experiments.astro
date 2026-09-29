@@ -281,17 +281,27 @@ const categories = [
       const project = el.getAttribute('data-views-project');
       if (!project) continue;
 
+      const cacheKey = `views_cache_${project}`;
+      const countEl = el.querySelector('.views-count');
+
+      // 1. Show cached data immediately if available
+      if (countEl && countEl.textContent === '--') {
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) countEl.textContent = Number(cached).toLocaleString();
+      }
+
+      // 2. Fetch live data silently
       try {
         const res = await fetch(`https://views.fazleyrabbi.xyz/api/get?project=${project}&key=visitors`, { signal: AbortSignal.timeout(4000) });
         if (res.ok) {
           const data = await res.json();
           if (data && typeof data.views === 'number') {
-            const countEl = el.querySelector('.views-count');
             if (countEl) countEl.textContent = data.views.toLocaleString();
+            localStorage.setItem(cacheKey, data.views.toString()); // Update cache
           }
         }
       } catch (e) {
-        // Fail silently
+        // Fail silently; cached data remains on screen
       }
     }
   }

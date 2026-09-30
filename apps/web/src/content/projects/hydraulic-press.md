@@ -4,7 +4,7 @@ description: A 100-ton hydraulic press takes on a Nokia 3310 and loses. Plates c
 category: experimental
 type: 3D & WebGL
 thumbnail: /projects/hydraulic-press.png
-live: https://hydraulic-press.vercel.app
+live: https://hydraulicpress.vercel.app
 github: https://github.com/fazleyrabby/hydraulic-press
 tech:
   - Three.js

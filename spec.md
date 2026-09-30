@@ -985,7 +985,7 @@ The project is Done when **all** of the following hold:
 - Email: `fazley111@gmail.com`
 - GitHub: `https://github.com/fazleyrabby`
 - LinkedIn: `https://linkedin.com/in/fazley-rabby`
-- X/Twitter: `https://x.com/fazley111`
+- X/Twitter: `https://x.com/itsfazley`
 - YouTube: `https://youtube.com/@fazleyrabby`
 - CodePen: `https://codepen.io/fazleyrabby`
 - Résumé PDFs exist: `resume.pdf`, `cv.pdf`, `Fazley_Rabby_cv.pdf`

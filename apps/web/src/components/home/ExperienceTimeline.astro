@@ -1,0 +1,184 @@
+---
+import { getCollection } from "astro:content";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../../i18n/utils";
+import { profile } from "../../data/profile";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
+
+const all = await getCollection("experiences");
+const items = all
+  .filter((e) => (e.data.lang || "en") === lang)
+  .sort((a, b) => {
+    const da = a.data.timeline ? new Date(a.data.timeline).getTime() : 0;
+    const db = b.data.timeline ? new Date(b.data.timeline).getTime() : 0;
+    return db - da;
+  })
+  .map((e) => ({
+    company: e.data.title,
+    role: e.data.role,
+    link: e.data.link && e.data.link !== "#" ? e.data.link : null,
+    range: `${e.data.from} – ${e.data.to}`,
+    current: /present/i.test(e.data.to),
+    // The entry's opening paragraph from its markdown.
+    summary: (e.body ?? "").trim().split(/\n\s*\n/)[0]?.replace(/[*_`#>]/g, "").trim() ?? "",
+  }));
+
+const education = profile.education[0];
+---
+
+<section class="xp" aria-labelledby="xp-title">
+  <div class="xp-container">
+    <div class="xp-header reveal">
+      <div>
+        <span class="section-label">Experience</span>
+        <h2 id="xp-title" class="xp-title">{t("experience.title") || "Career Journey"}</h2>
+      </div>
+      <a href={tp("/resume/")} class="xp-more">
+        Full résumé
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </a>
+    </div>
+
+    <ol class="xp-list">
+      {items.map((item) => (
+        <li class:list={["xp-item reveal", { "is-current": item.current }]}>
+          <span class="xp-date">{item.range}</span>
+          <div class="xp-body">
+            <h3 class="xp-role">{item.role}</h3>
+            <p class="xp-company">
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noopener noreferrer">{item.company}</a>
+              ) : (
+                item.company
+              )}
+              {item.current && <span class="xp-now">Now</span>}
+            </p>
+            {item.summary && <p class="xp-summary">{item.summary}</p>}
+          </div>
+        </li>
+      ))}
+      {education && (
+        <li class="xp-item reveal">
+          <span class="xp-date">{education.year}</span>
+          <div class="xp-body">
+            <h3 class="xp-role">{education.credential}</h3>
+            <p class="xp-company">{education.institution}</p>
+          </div>
+        </li>
+      )}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .xp {
+    padding: var(--space-section) 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .xp-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+  }
+  .xp-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: clamp(1rem, 2vw, 1.5rem);
+  }
+  .xp-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.375rem, 2.5vw, 1.875rem);
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+  .xp-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--accent-text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .xp-more:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .xp-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .xp-item {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: 0.25rem clamp(1rem, 3vw, 2.5rem);
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .xp-date {
+    padding-top: 0.2rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .xp-item.is-current .xp-date {
+    color: var(--accent-text);
+  }
+  .xp-role {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.0625rem;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  .xp-company {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin: 0.125rem 0 0;
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+  }
+  .xp-company a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 3px;
+  }
+  .xp-company a:hover {
+    color: var(--accent-text);
+    text-decoration-color: currentColor;
+  }
+  .xp-now {
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--accent-text);
+    background: var(--accent-dim);
+  }
+  .xp-summary {
+    margin: 0.5rem 0 0;
+    max-width: 62ch;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 640px) {
+    .xp-item {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

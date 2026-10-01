@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import MainLayout from "@layouts/MainLayout.astro";
+import PortBanner from "@components/port/PortBanner.astro";
 import { getLangFromUrl, useTranslations, useTranslatedPath } from "@i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
@@ -28,16 +29,17 @@ const categories = [
   ogTitle="Experiments & Creative Lab — Fazley Rabbi"
   ogDescription="Explore interactive 3D worlds, browser games, creative shaders, and playful web experiments built from scratch."
 >
+  <PortBanner
+    title="Experiments"
+    kicker="The pier"
+    lede="Playable games, real-time 3D environments, generative math shaders, and tinkering projects exploring the edge of modern web capabilities."
+    motif="pier"
+  />
   <main class="experiments-page">
     <div class="experiments-container">
 
       <!-- Header -->
       <header class="experiments-header reveal">
-
-        <h1 class="page-title">Experiments</h1>
-        <p class="page-subtitle">
-          Playable games, real-time 3D environments, generative math shaders, and tinkering projects exploring the edge of modern web capabilities.
-        </p>
 
         <!-- AI-Assisted Workflow Callout -->
         <div class="ai-callout">

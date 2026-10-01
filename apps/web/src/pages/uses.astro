@@ -1,14 +1,13 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
+import PortBanner from "@components/port/PortBanner.astro";
 import { Content as UsesMarkdown } from "../content/uses.md";
 ---
 
 <MainLayout title="Setup & Workbench — Fazley Rabbi">
+  <PortBanner title="Uses" kicker="The workbench" lede="The hardware, software and homelab I work with." motif="bay" />
   <main class="uses-page">
     <div class="uses-container">
-      <header class="uses-header reveal">
-        <h1 class="page-title">Uses</h1>
-      </header>
 
       <div class="uses-content reveal">
         <article class="prose prose-neutral dark:prose-invert max-w-none">

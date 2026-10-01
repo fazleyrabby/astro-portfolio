@@ -1,0 +1,1031 @@
+---
+// The harbor: one fixed illustrated scene behind the page. Scroll position drives the
+// time of day (sky, light, sun, ship). Purely decorative, so it is aria-hidden.
+//
+// Performance model: the artwork is drawn on a 1600×520 "stage" that is scaled as a
+// whole. Static art lives in a few SVGs that only repaint when the light changes
+// (i.e. while scrolling). Everything that moves continuously (waves, ship, boats,
+// beam, clouds, birds) is its own element animated with transform/opacity only, so
+// the compositor handles it without repainting the illustration.
+
+const STAGE_W = 1600;
+const STAGE_H = 520;
+const QUAY_Y = 336; // top of the quay; containers and cranes stand on this line
+
+// Small deterministic PRNG so the build output is stable.
+let seed = 7;
+const rnd = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+
+// --- Stars: three box-shadow fields, each twinkling as one layer -----------------
+const starField = (n: number) =>
+  Array.from({ length: n }, () => {
+    const big = rnd() > 0.82;
+    return `${(rnd() * 100).toFixed(2)}vw ${(rnd() * 58).toFixed(2)}vh 0 ${big ? 0.6 : 0}px rgba(255,255,255,${(0.55 + rnd() * 0.45).toFixed(2)})`;
+  }).join(",");
+const starLayers = [starField(34), starField(30), starField(26)];
+
+// --- Containers --------------------------------------------------------------------
+const PAINT = ["#e8604c", "#f4b63f", "#2d8f8a", "#3f6fb5", "#f08a4b", "#7fb069"];
+const CW = 44;
+const CH = 20;
+// Each stack: left x, and how many containers high each column is.
+const stacks = [
+  { x: 452, cols: [2, 3, 3, 1] },
+  { x: 724, cols: [3, 4, 3, 2, 1] },
+  { x: 1010, cols: [1, 3, 2] },
+  { x: 1190, cols: [2, 2, 1] },
+];
+const containers = stacks.flatMap((s) =>
+  s.cols.flatMap((h, c) =>
+    Array.from({ length: h }, (_, r) => ({
+      x: s.x + c * (CW + 2),
+      y: QUAY_Y - (r + 1) * (CH + 1),
+      fill: PAINT[Math.floor(rnd() * PAINT.length)],
+    })),
+  ),
+);
+
+// --- City skyline on the hills -----------------------------------------------------
+const buildings = Array.from({ length: 34 }, (_, i) => {
+  const w = 22 + Math.floor(rnd() * 26);
+  const h = 26 + Math.floor(rnd() * 58);
+  return { x: 40 + i * 45 + Math.floor(rnd() * 14), w, h };
+});
+const windows = buildings.flatMap((b) => {
+  const out: { x: number; y: number }[] = [];
+  for (let wy = 8; wy < b.h - 8; wy += 11)
+    for (let wx = 5; wx < b.w - 6; wx += 8) if (rnd() > 0.52) out.push({ x: b.x + wx, y: 318 - b.h + wy });
+  return out;
+});
+
+// --- Ship-to-shore gantry crane ----------------------------------------------------
+// x = left leg. Returns the static structure; the hanging load is animated separately.
+const crane = (x: number, h = 0) => {
+  const top = 176 - h;
+  return `
+    <g class="crane">
+      <path d="M${x} ${QUAY_Y} V${top} M${x + 58} ${QUAY_Y} V${top}" stroke-width="9"/>
+      <path d="M${x} ${QUAY_Y - 34} H${x + 58} M${x} ${top + 48} H${x + 58}" stroke-width="6"/>
+      <path d="M${x} ${QUAY_Y - 34} L${x + 58} ${top + 48} M${x + 58} ${QUAY_Y - 34} L${x} ${top + 48}" stroke-width="2.5"/>
+      <path d="M${x} ${top + 48} L${x + 58} ${top} M${x + 58} ${top + 48} L${x} ${top}" stroke-width="2.5"/>
+      <path d="M${x - 96} ${top} H${x + 176}" stroke-width="10"/>
+      <path d="M${x - 96} ${top + 9} H${x + 176}" stroke-width="2" opacity="0.5"/>
+      <path d="M${x + 29} ${top - 62} L${x - 90} ${top - 2} M${x + 29} ${top - 62} L${x + 170} ${top - 2} M${x + 29} ${top - 62} V${top} M${x + 4} ${top - 49} L${x + 29} ${top} L${x + 54} ${top - 49}" stroke-width="2.5"/>
+      <rect x="${x + 6}" y="${top - 22}" width="46" height="20" class="fill"/>
+      <rect x="${x + 12}" y="${top - 17}" width="9" height="7" class="cabin-glass"/>
+      <rect x="${x - 84}" y="${top + 6}" width="18" height="12" class="fill"/>
+      <path d="M${x - 8} ${QUAY_Y} h16 M${x + 50} ${QUAY_Y} h16" stroke-width="7"/>
+    </g>`;
+};
+const cranes = [
+  { x: 560, h: 0 },
+  { x: 880, h: 16 },
+  { x: 1120, h: -10 },
+];
+// Hanging loads: one per crane, moving on its cable.
+const loads = cranes.map((c, i) => ({
+  x: c.x - 97,
+  top: 176 - c.h + 18,
+  fill: PAINT[(i * 2 + 1) % PAINT.length],
+  delay: -i * 3.5,
+}));
+
+const lamps = [436, 706, 992, 1176, 1330];
+const CLOUD = "M30 60a22 22 0 0 1 4-43 34 34 0 0 1 64-6 26 26 0 0 1 44 10 22 22 0 0 1 60 14 16 16 0 0 1 4 31z";
+---
+
+<div class="port-scene" data-port-scene data-stage-w={STAGE_W} data-stage-h={STAGE_H} aria-hidden="true">
+  <div class="sky"></div>
+  <div class="haze"></div>
+
+  <div class="stars">
+    {starLayers.map((s, i) => <i class={`sf sf${i}`} style={`box-shadow:${s}`} />)}
+  </div>
+
+  <div class="orb sun" data-sun></div>
+  <div class="orb moon" data-moon></div>
+
+  <div class="clouds far">
+    <svg viewBox="0 0 240 70" class="cl" style="left:4%;top:26%;width:clamp(70px,9vw,150px)"><path d={CLOUD} /></svg>
+    <svg viewBox="0 0 240 70" class="cl" style="left:74%;top:5%;width:clamp(70px,10vw,150px)"><path d={CLOUD} /></svg>
+    <svg viewBox="0 0 240 70" class="cl" style="left:30%;top:50%;width:clamp(70px,8vw,130px)"><path d={CLOUD} /></svg>
+  </div>
+  <div class="clouds near">
+    <svg viewBox="0 0 240 70" class="cl" style="left:18%;top:9%;width:clamp(120px,15vw,240px)"><path d={CLOUD} /></svg>
+    <svg viewBox="0 0 240 70" class="cl" style="left:52%;top:36%;width:clamp(100px,12vw,200px)"><path d={CLOUD} /></svg>
+  </div>
+
+  <svg class="birds" viewBox="0 0 160 60">
+    <path d="M6 30q9-10 16 0q7-10 16 0M52 14q8-9 14 0q6-9 14 0M70 44q7-8 12 0q5-8 12 0M112 24q8-9 14 0q6-9 14 0M30 52q6-7 10 0q4-7 10 0" />
+  </svg>
+
+  <div class="stage" data-stage>
+    <!-- Mountains, hills and the city: repaint only when the light changes -->
+    <svg class="layer back" viewBox={`0 0 ${STAGE_W} ${STAGE_H}`} data-depth="0.25">
+      <path class="hill-far" transform="translate(0 52)" d="M-900 360V214c120-40 210-92 330-74 110 16 150 66 250 58 120-10 170-104 300-116 120-12 170 62 280 74 110 12 170-74 300-88 130-14 200 70 320 76 120 6 180-78 310-70 120 8 170 78 290 76 120-2 190-60 320-48 110 10 160 62 300 72V360z" />
+      <path class="ridge" transform="translate(0 52)" d="M-900 214c120-40 210-92 330-74 110 16 150 66 250 58 120-10 170-104 300-116 120-12 170 62 280 74 110 12 170-74 300-88 130-14 200 70 320 76 120 6 180-78 310-70 120 8 170 78 290 76 120-2 190-60 320-48 110 10 160 62 300 72" />
+    </svg>
+
+    <svg class="layer mid" viewBox={`0 0 ${STAGE_W} ${STAGE_H}`} data-depth="0.5">
+      <path class="hill-mid" d="M-900 360V262c150-34 240-22 370-34 140-12 200-58 340-46 130 12 180 54 320 50 150-4 210-66 350-60 130 6 190 62 330 58 140-4 200-48 340-40 130 8 210 44 350 36 110-6 180-30 300-18V360z" />
+      <!-- Hilltop mast -->
+      <path class="mast" d="M318 196 L306 262 M318 196 L330 262 M309 244 H327 M312 226 H324 M315 210 H321 M318 172 V196" />
+      <circle class="beacon" cx="318" cy="172" r="3" />
+    </svg>
+
+    <svg class="layer town" viewBox={`0 0 ${STAGE_W} ${STAGE_H}`} data-depth="0.7">
+      <g class="city">
+        {buildings.map((b) => <rect x={b.x} y={318 - b.h} width={b.w} height={b.h + 24} />)}
+        <!-- Mosque: dome and minarets -->
+        <path d="M1228 318v-38h6v-10a24 24 0 0 1 48 0v10h6v38z M1252 246v-12h4v12z M1212 318v-74l5-10 5 10v74z M1294 318v-74l5-10 5 10v74z" />
+        <!-- Water tower -->
+        <path d="M150 318v-52h-8v-20h36v20h-8v52z" />
+      </g>
+      <g class="glow windows">
+        {windows.map((w) => <rect x={w.x} y={w.y} width="4" height="5" />)}
+        <rect x="1250" y="276" width="8" height="12" rx="4" />
+        <rect x="1266" y="276" width="8" height="12" rx="4" />
+      </g>
+      <path class="hill-near" d="M-900 360v-36c140-18 220-8 350-14 150-8 220-26 360-20 130 6 200 22 330 18 150-4 220-24 360-20 140 4 210 22 350 18 130-4 200-18 330-14 140 4 220 18 420 12v56z" />
+    </svg>
+
+    <!-- Sea -->
+    <div class="sea"></div>
+    <div class="glint" data-glint></div>
+    <div class="wave w1"></div>
+
+    <!-- The port itself -->
+    <svg class="layer port" viewBox={`0 0 ${STAGE_W} ${STAGE_H}`}>
+      <!-- Warehouses and the lighthouse rock -->
+      <g class="struct">
+        <path d="M36 336v-58l62-24 62 24v58z" />
+        <path d="M168 336v-70l76-30 76 30v70z" />
+        <path d="M330 336v-46h96v46z" />
+        <path d="M1380 352c16-34 60-52 104-46 44 6 74 26 92 46z" />
+      </g>
+      <g class="detail">
+        <path d="M56 336v-34h30v34z M110 336v-34h30v34z M196 336v-42h40v42z M252 336v-42h40v42z M344 336v-26h26v26z M384 336v-26h26v26z" />
+      </g>
+      <path class="edge" d="M36 278l62-24 62 24 M168 266l76-30 76 30 M330 290h96" />
+      <path class="rib" d="M62 302v34 M68 302v34 M74 302v34 M80 302v34 M116 302v34 M122 302v34 M128 302v34 M134 302v34 M206 294v42 M216 294v42 M226 294v42 M262 294v42 M272 294v42 M282 294v42" />
+
+      <!-- Containers, plus a truck carrying one along the quay -->
+      <g class="cargo">
+        {containers.map((c) => (
+          <g>
+            <rect x={c.x} y={c.y} width={CW} height={CH} fill={c.fill} />
+            <path class="corr" d={`M${c.x + 7} ${c.y + 3}v14M${c.x + 13} ${c.y + 3}v14M${c.x + 19} ${c.y + 3}v14M${c.x + 25} ${c.y + 3}v14M${c.x + 31} ${c.y + 3}v14M${c.x + 37} ${c.y + 3}v14`} />
+            <rect class="lid" x={c.x} y={c.y} width={CW} height="2.5" />
+          </g>
+        ))}
+        <rect x="648" y="306" width="52" height="20" fill="#3f6fb5" />
+        <path class="corr" d="M655 309v14M662 309v14M669 309v14M676 309v14M683 309v14M690 309v14" />
+        <path d="M702 326v-16h14l8 9v7z" fill="#f4b63f" />
+      </g>
+      <!-- Night shade over painted things: opacity only, no filter repaint -->
+      <g class="shade">
+        {containers.map((c) => <rect x={c.x} y={c.y} width={CW} height={CH} />)}
+        <rect x="648" y="306" width="52" height="20" />
+        <path d="M702 326v-16h14l8 9v7z" />
+      </g>
+      <g class="struct">
+        <rect x="644" y="326" width="82" height="4" />
+        <circle cx="658" cy="332" r="5" /><circle cx="672" cy="332" r="5" /><circle cx="714" cy="332" r="5" />
+      </g>
+
+      <!-- Cranes -->
+      <g class="cranes" set:html={cranes.map((c) => crane(c.x, c.h)).join("")} />
+
+      <!-- Lamp posts -->
+      <g class="lamp-posts">
+        {lamps.map((x) => <path d={`M${x} ${QUAY_Y}V${QUAY_Y - 62}q0-8 12-8`} />)}
+      </g>
+
+      <!-- Lighthouse -->
+      <path class="lh-body" d="M1454 322l9-98h34l9 98z" />
+      <path class="lh-stripe" d="M1459 268h44l2 22h-48z M1463 224h34l1 12h-36z" />
+      <path class="shade" d="M1454 322l9-98h34l9 98z" />
+      <path class="struct" d="M1456 214h48v10h-48z M1474 300h12v22h-12z" />
+      <path class="lh-rail" d="M1454 214v-8h52v8 M1462 206v8 M1472 206v8 M1488 206v8 M1498 206v8" />
+      <rect class="lh-lamp" x="1468" y="196" width="24" height="18" />
+      <path class="struct" d="M1462 196l18-18 18 18z M1479 170h2v8h-2z" />
+      <rect class="lh-window" x="1476" y="246" width="8" height="12" rx="4" />
+
+      <!-- Quay -->
+      <rect class="struct" x="-900" y={QUAY_Y} width="3400" height="18" />
+      <rect class="quay-edge" x="-900" y={QUAY_Y} width="3400" height="2.5" />
+      <g class="struct">
+        {Array.from({ length: 22 }, (_, i) => <rect x={60 + i * 68} y={QUAY_Y - 6} width="8" height="7" rx="2" />)}
+      </g>
+      <g class="tyres">
+        {Array.from({ length: 16 }, (_, i) => <circle cx={110 + i * 88} cy={QUAY_Y + 12} r="5" />)}
+      </g>
+    </svg>
+
+    <!-- Lights: one layer, faded in at night -->
+    <svg class="layer glow lights" viewBox={`0 0 ${STAGE_W} ${STAGE_H}`}>
+      <g class="pane">
+        <rect x="62" y="286" width="12" height="9" /><rect x="118" y="286" width="12" height="9" />
+        <rect x="204" y="276" width="12" height="10" /><rect x="268" y="276" width="12" height="10" />
+        <rect x="348" y="298" width="14" height="7" /><rect x="390" y="298" width="14" height="7" />
+        {cranes.map((c) => <rect x={c.x + 12} y={176 - c.h - 17} width="9" height="7" />)}
+        <rect x="1476" y="246" width="8" height="12" rx="4" />
+      </g>
+      {lamps.map((x) => (
+        <g>
+          <path class="cone" d={`M${x + 12} ${QUAY_Y - 70}l-30 70h60z`} />
+          <circle class="bulb" cx={x + 12} cy={QUAY_Y - 70} r="3.5" />
+        </g>
+      ))}
+      <g class="blink">
+        {cranes.map((c) => <circle cx={c.x + 29} cy={176 - c.h - 64} r="3.2" />)}
+      </g>
+    </svg>
+
+    <!-- Lighthouse beam: its own layer, rotates on the compositor -->
+    <div class="beam"></div>
+
+    <!-- Crane loads -->
+    {loads.map((l) => (
+      <div class="load" style={`left:${l.x}px;top:${l.top}px`}>
+        <span class="hoist" style={`animation-delay:${l.delay}s`}>
+          <i class="cable"></i>
+          <b style={`background:${l.fill}`}></b>
+        </span>
+      </div>
+    ))}
+
+    <!-- Buoy -->
+    <div class="buoy"><i></i></div>
+
+    <!-- Cargo ship: crosses the bay as the day goes on -->
+    <div class="ship" data-ship>
+      <svg viewBox="0 0 340 130" class="bob">
+        <g class="smoke">
+          <circle cx="262" cy="18" r="7" /><circle cx="274" cy="8" r="9" /><circle cx="290" cy="2" r="6" />
+        </g>
+        <path class="hull" d="M4 82h324l-22 38H30z" />
+        <path class="hull-stripe" d="M10 94h312l-4 7H15z" />
+        <path class="keel" d="M24 110h290l-6 10H30z" />
+        <g class="deck-cargo">
+          {[0, 1, 2, 3, 4].map((i) => <rect x={36 + i * 38} y="62" width="36" height="20" fill={PAINT[i % PAINT.length]} />)}
+          {[0, 1, 2, 3].map((i) => <rect x={36 + i * 38} y="41" width="36" height="20" fill={PAINT[(i + 3) % PAINT.length]} />)}
+          {[0, 1].map((i) => <rect x={74 + i * 38} y="20" width="36" height="20" fill={PAINT[(i + 1) % PAINT.length]} />)}
+        </g>
+        <g class="shade">
+          <rect x="36" y="62" width="188" height="20" /><rect x="36" y="41" width="150" height="20" /><rect x="74" y="20" width="74" height="20" />
+        </g>
+        <path class="hull" d="M236 82V34h62v48z M250 34V20h20v14z M258 20V6h10v14z M300 82V58h14v24z" />
+        <path class="mast" d="M20 82V52 M14 60h12" />
+        <g class="portholes">
+          <rect x="244" y="42" width="8" height="7" /><rect x="258" y="42" width="8" height="7" /><rect x="272" y="42" width="8" height="7" /><rect x="286" y="42" width="8" height="7" />
+          <rect x="244" y="58" width="8" height="7" /><rect x="258" y="58" width="8" height="7" /><rect x="272" y="58" width="8" height="7" /><rect x="286" y="58" width="8" height="7" />
+        </g>
+        <path class="wake" d="M0 118q12-8 24 0t24 0 M300 118q12-8 24 0t20 0" />
+      </svg>
+    </div>
+
+    <!-- Sampans: the crescent boats of Chattogram -->
+    <svg class="sampan s1" viewBox="0 0 120 70"><path class="sail" d="M58 8v40M58 10l26 34H58z" /><path class="hull" d="M4 44q10 20 56 20t56-26q-22 14-56 14T4 44z" /><circle class="lantern" cx="40" cy="46" r="3" /></svg>
+    <svg class="sampan s2" viewBox="0 0 120 70"><path class="sail" d="M58 8v40M58 10l26 34H58z" /><path class="hull" d="M4 44q10 20 56 20t56-26q-22 14-56 14T4 44z" /><circle class="lantern" cx="40" cy="46" r="3" /></svg>
+
+    <div class="wave w2"></div>
+    <div class="wave w3"></div>
+
+    <!-- Foreground: closest to the viewer, moves the most -->
+    <svg class="layer fore" viewBox={`0 0 ${STAGE_W} ${STAGE_H}`} data-depth="1.6">
+      <!-- Left: rocks and palms -->
+      <path d="M-900 520v-70c220-6 470 4 700 8 60-22 130-30 190-12 40-26 110-22 150 8 50 4 96 22 120 66z" />
+      <path d="M96 458c-2-44 2-92 14-132l7 2c-10 40-12 86-9 130z" />
+      <path d="M112 326c-26-20-58-22-84-6 30-4 54 2 78 14z M114 326c-12-30-38-48-70-48 28 10 48 26 62 52z M116 326c8-32 34-54 68-56-28 12-48 32-58 60z M118 328c26-16 60-12 82 8-28-8-54-6-78 2z M114 330c-22 6-38 26-40 52 10-22 24-36 44-46z" />
+      <path d="M222 470c0-34 4-70 14-100l6 2c-8 30-11 64-10 98z" />
+      <path d="M238 370c-20-16-46-18-68-4 24-4 44 2 62 12z M240 370c-8-26-30-42-58-40 24 8 40 22 52 44z M242 370c8-26 30-42 56-42-22 10-38 24-48 46z M244 372c22-12 48-8 66 8-22-6-44-6-62 0z" />
+      <!-- Right: jetty with bollard, crates and rope -->
+      <path d="M1180 520v-52h1420v52z" />
+      <path d="M1236 468v-22h-5v-8h24v8h-5v22z" />
+      <path d="M1318 468v-30h36v30z M1358 468v-20h26v20z M1326 438v-22h24v22z" />
+      <path class="rope" d="M1243 444c40 30 60 30 80 0" />
+    </svg>
+  </div>
+</div>
+
+<style is:global>
+  .port-scene {
+    --sky-1: #7fa6d9;
+    --sky-2: #f7c9b0;
+    --sky-3: #ffb487;
+    --hill-far: #c9b3d1;
+    --hill-mid: #a58fc0;
+    --hill-near: #7d6fa3;
+    --city: #8f7fb4;
+    --sea-1: #f2a98a;
+    --sea-2: #5f6fa8;
+    --struct: #3a3566;
+    --fore: #2a2550;
+    --sun-color: #ffd9a0;
+    --night: 0; /* 0 day → 1 night */
+    --s: 1; /* stage scale, set by script */
+
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    contain: strict;
+  }
+  .port-scene svg {
+    display: block;
+    overflow: visible;
+  }
+
+  /* ---- Sky ---- */
+  .port-scene .sky {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, var(--sky-1) 0%, var(--sky-2) 46%, var(--sky-3) 70%);
+  }
+  .port-scene .haze {
+    /* Low band of light where the sky meets the hills. */
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 62vh;
+    background: linear-gradient(to top, color-mix(in srgb, var(--sky-3) 70%, transparent), transparent);
+    opacity: 0.5;
+  }
+
+  .port-scene .stars {
+    position: absolute;
+    inset: 0;
+    opacity: var(--night);
+  }
+  .port-scene .sf {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    animation: port-twinkle 4s ease-in-out infinite;
+    will-change: opacity;
+  }
+  .port-scene .sf1 {
+    animation-delay: -1.4s;
+    animation-duration: 5.2s;
+  }
+  .port-scene .sf2 {
+    animation-delay: -2.7s;
+    animation-duration: 6.4s;
+  }
+  @keyframes port-twinkle {
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  .port-scene .orb {
+    --size: clamp(70px, 9vw, 128px);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--size);
+    height: var(--size);
+    margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+    border-radius: 50%;
+    will-change: transform;
+  }
+  .port-scene .sun {
+    background: var(--sun-color);
+    box-shadow:
+      0 0 0 16px color-mix(in srgb, var(--sun-color) 22%, transparent),
+      0 0 0 40px color-mix(in srgb, var(--sun-color) 10%, transparent),
+      0 0 110px 36px color-mix(in srgb, var(--sun-color) 34%, transparent);
+  }
+  .port-scene .moon {
+    --size: clamp(48px, 6vw, 84px);
+    background:
+      radial-gradient(circle at 34% 30%, rgba(180, 176, 158, 0.55) 0 9%, transparent 10%),
+      radial-gradient(circle at 62% 58%, rgba(180, 176, 158, 0.45) 0 12%, transparent 13%),
+      radial-gradient(circle at 40% 72%, rgba(180, 176, 158, 0.4) 0 6%, transparent 7%), #f4f1e4;
+    box-shadow:
+      inset -10px -7px 0 0 #d9d5c3,
+      0 0 60px 12px rgba(244, 241, 228, 0.25);
+    opacity: var(--night);
+  }
+
+  .port-scene .clouds {
+    /* Sky lane: the right side only, so nothing drifts behind the headline. */
+    position: absolute;
+    inset: 0 0 0 68%;
+    opacity: calc(1 - var(--night) * 0.8);
+    animation: port-drift 140s linear infinite alternate;
+    will-change: transform;
+  }
+  .port-scene .clouds.near {
+    animation-duration: 90s;
+  }
+  .port-scene .cl {
+    position: absolute;
+    fill: rgba(255, 255, 255, 0.78);
+  }
+  .port-scene .clouds.far .cl {
+    fill: rgba(255, 255, 255, 0.5);
+  }
+  @keyframes port-drift {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(5vw, 0, 0);
+    }
+  }
+
+  .port-scene .birds {
+    position: absolute;
+    top: 24%;
+    left: 0;
+    width: clamp(90px, 11vw, 160px);
+    fill: none;
+    stroke: var(--struct);
+    stroke-width: 2;
+    stroke-linecap: round;
+    opacity: calc(0.75 - var(--night));
+    animation: port-fly 64s linear infinite;
+    will-change: transform;
+  }
+  @keyframes port-fly {
+    /* Fades in past the text column, then crosses the open sky. */
+    0% {
+      transform: translate3d(68vw, 8vh, 0);
+      opacity: 0;
+    }
+    8% {
+      opacity: calc(0.75 - var(--night));
+    }
+    100% {
+      transform: translate3d(112vw, -8vh, 0);
+    }
+  }
+
+  /* ---- Stage ---- */
+  .port-scene .stage {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 1600px;
+    height: 520px;
+    transform-origin: 50% 100%;
+    transform: translateX(-50%) scale(var(--s));
+  }
+  .port-scene .layer {
+    position: absolute;
+    inset: 0;
+    width: 1600px;
+    height: 520px;
+  }
+
+  .port-scene .hill-far {
+    fill: var(--hill-far);
+  }
+  .port-scene .ridge {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.22);
+    stroke-width: 2;
+  }
+  .port-scene .hill-mid {
+    fill: var(--hill-mid);
+  }
+  .port-scene .mast {
+    fill: none;
+    stroke: var(--struct);
+    stroke-width: 2;
+  }
+  .port-scene .city {
+    fill: var(--city);
+  }
+  .port-scene .hill-near {
+    fill: var(--hill-near);
+  }
+
+  .port-scene .sea {
+    position: absolute;
+    left: -1400px;
+    right: -1400px;
+    top: 352px;
+    bottom: -40px;
+    background: linear-gradient(to bottom, var(--sea-1), var(--sea-2) 85%);
+  }
+  .port-scene .glint {
+    /* Sun or moon path on the water. */
+    position: absolute;
+    left: 0;
+    top: 356px;
+    width: 150px;
+    height: 150px;
+    margin-left: -75px;
+    background: repeating-linear-gradient(to bottom, var(--glint, #ffd9a0) 0 3px, transparent 3px 11px);
+    -webkit-mask-image: radial-gradient(ellipse 50% 100% at 50% 0, #000 20%, transparent 72%);
+    mask-image: radial-gradient(ellipse 50% 100% at 50% 0, #000 20%, transparent 72%);
+    opacity: 0.55;
+    will-change: transform;
+  }
+
+  .port-scene .wave {
+    position: absolute;
+    left: -1400px;
+    width: 4400px;
+    height: 16px;
+    background-repeat: repeat-x;
+    will-change: transform;
+    animation: port-swell linear infinite;
+  }
+  .port-scene .w1 {
+    top: 368px;
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='16'%3E%3Cpath d='M0 9q20-9 40 0t40 0' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+    --tile: 80px;
+    animation-duration: 9s;
+  }
+  .port-scene .w2 {
+    top: 418px;
+    opacity: 0.38;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='16'%3E%3Cpath d='M0 9q30-10 60 0t60 0' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    --tile: 120px;
+    animation-duration: 12s;
+    animation-direction: reverse;
+  }
+  .port-scene .w3 {
+    top: 468px;
+    opacity: 0.28;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='16'%3E%3Cpath d='M0 9q42-11 85 0t85 0' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+    --tile: 170px;
+    animation-duration: 15s;
+  }
+  @keyframes port-swell {
+    to {
+      transform: translate3d(var(--tile), 0, 0);
+    }
+  }
+
+  /* ---- Port ---- */
+  .port-scene .struct,
+  .port-scene .crane .fill {
+    fill: var(--struct);
+  }
+  .port-scene .detail {
+    fill: color-mix(in srgb, var(--struct) 78%, #000);
+  }
+  .port-scene .edge {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.16);
+    stroke-width: 2;
+  }
+  .port-scene .rib {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.08);
+    stroke-width: 1.5;
+  }
+  .port-scene .corr {
+    fill: none;
+    stroke: rgba(0, 0, 0, 0.2);
+    stroke-width: 1.6;
+  }
+  .port-scene .lid {
+    fill: rgba(255, 255, 255, 0.22);
+  }
+  .port-scene .shade {
+    fill: var(--struct);
+    opacity: calc(var(--night) * 0.72);
+  }
+  .port-scene .crane {
+    fill: none;
+    stroke: var(--struct);
+    stroke-linecap: square;
+  }
+  .port-scene .crane .fill {
+    stroke: none;
+  }
+  .port-scene .cabin-glass {
+    fill: rgba(255, 255, 255, 0.35);
+    stroke: none;
+  }
+  .port-scene .lamp-posts {
+    fill: none;
+    stroke: var(--struct);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .port-scene .quay-edge {
+    fill: rgba(255, 255, 255, 0.2);
+  }
+  .port-scene .tyres {
+    fill: none;
+    stroke: color-mix(in srgb, var(--struct) 60%, #000);
+    stroke-width: 3;
+  }
+  .port-scene .lh-body {
+    fill: #f6efe2;
+  }
+  .port-scene .lh-stripe {
+    fill: #e8604c;
+  }
+  .port-scene .lh-rail {
+    fill: none;
+    stroke: var(--struct);
+    stroke-width: 2;
+  }
+  .port-scene .lh-lamp {
+    fill: color-mix(in srgb, #ffe9a8 calc(var(--night) * 100%), #9fb6c6);
+  }
+  .port-scene .lh-window {
+    fill: var(--struct);
+  }
+
+  /* Lights */
+  .port-scene .glow {
+    opacity: var(--night);
+  }
+  .port-scene .windows {
+    fill: #ffd98a;
+  }
+  .port-scene .pane rect,
+  .port-scene .bulb {
+    fill: #ffe2a0;
+  }
+  .port-scene .cone {
+    fill: #ffe2a0;
+    opacity: 0.13;
+  }
+  .port-scene .blink circle,
+  .port-scene .beacon {
+    fill: #ff5a4e;
+  }
+  .port-scene .beacon {
+    opacity: var(--night);
+  }
+  .port-scene .beam {
+    position: absolute;
+    left: 1480px;
+    top: 205px;
+    width: 620px;
+    height: 150px;
+    margin: -75px 0 0 -620px;
+    background: linear-gradient(to left, rgba(255, 233, 168, 0.5), rgba(255, 233, 168, 0));
+    clip-path: polygon(100% 50%, 0 0, 0 100%);
+    transform-origin: 100% 50%;
+    opacity: calc(var(--night) * 0.7);
+    animation: port-sweep 9s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  @keyframes port-sweep {
+    from {
+      transform: rotate(-9deg);
+    }
+    to {
+      transform: rotate(8deg);
+    }
+  }
+
+  .port-scene .load {
+    /* Clips the cable at the trolley so it never pokes above the boom. */
+    position: absolute;
+    width: 44px;
+    height: 150px;
+    overflow: hidden;
+  }
+  .port-scene .hoist {
+    display: block;
+    animation: port-hoist 11s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .port-scene .load .cable {
+    display: block;
+    width: 2px;
+    height: 110px;
+    margin: -110px auto 0;
+    background: var(--struct);
+  }
+  .port-scene .load b {
+    display: block;
+    width: 44px;
+    height: 20px;
+    box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.22);
+    filter: brightness(calc(1 - var(--night) * 0.6));
+  }
+  @keyframes port-hoist {
+    from {
+      transform: translate3d(0, 30px, 0);
+    }
+    to {
+      transform: translate3d(0, 96px, 0);
+    }
+  }
+
+  .port-scene .buoy {
+    position: absolute;
+    left: 330px;
+    top: 396px;
+    width: 14px;
+    height: 20px;
+    border-radius: 4px 4px 7px 7px;
+    background: linear-gradient(#e8604c 55%, #f6efe2 55%);
+    animation: port-bob 4s ease-in-out infinite alternate;
+  }
+  .port-scene .buoy i {
+    position: absolute;
+    left: 4px;
+    top: -9px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ffd98a;
+    box-shadow: 0 0 10px 3px rgba(255, 217, 138, 0.7);
+    opacity: var(--night);
+  }
+
+  /* ---- Boats ---- */
+  .port-scene .ship {
+    position: absolute;
+    left: 0;
+    top: 286px;
+    width: 340px;
+    will-change: transform;
+  }
+  .port-scene .bob {
+    animation: port-bob 5s ease-in-out infinite alternate;
+    transform-origin: 50% 80%;
+    will-change: transform;
+  }
+  @keyframes port-bob {
+    from {
+      transform: translate3d(0, 0, 0) rotate(-0.5deg);
+    }
+    to {
+      transform: translate3d(0, 4px, 0) rotate(0.5deg);
+    }
+  }
+  .port-scene .hull {
+    fill: var(--struct);
+  }
+  .port-scene .hull-stripe {
+    fill: #e8604c;
+  }
+  .port-scene .keel {
+    fill: color-mix(in srgb, var(--struct) 70%, #7a1f1a);
+  }
+  .port-scene .ship .mast {
+    stroke-width: 2.5;
+  }
+  .port-scene .sail {
+    fill: color-mix(in srgb, #f6efe2 calc(100% - var(--night) * 55%), var(--struct));
+    stroke: var(--struct);
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+  }
+  .port-scene .portholes rect {
+    fill: color-mix(in srgb, #ffe2a0 calc(20% + var(--night) * 80%), var(--struct));
+  }
+  .port-scene .smoke circle {
+    fill: rgba(255, 255, 255, 0.5);
+  }
+  .port-scene .wake {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.6);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .port-scene .sampan {
+    position: absolute;
+    width: 96px;
+    animation: port-bob 3.6s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .port-scene .s1 {
+    left: 1090px;
+    top: 392px;
+  }
+  .port-scene .s2 {
+    left: 470px;
+    top: 442px;
+    width: 128px;
+    animation-delay: -1.8s;
+  }
+  .port-scene .lantern {
+    fill: #ffd98a;
+    opacity: var(--night);
+  }
+
+  .port-scene .fore {
+    fill: var(--fore);
+  }
+  .port-scene .fore .rope {
+    fill: none;
+    stroke: var(--fore);
+    stroke-width: 3;
+  }
+
+  @media (max-width: 900px) {
+    /* The headline spans the full width here, so the sky stays empty behind it. */
+    .port-scene .clouds,
+    .port-scene .birds {
+      display: none;
+    }
+  }
+
+  /* Things that only exist at one end of the day are switched off at the other,
+     so they stop animating and drop their layers. */
+  .port-scene.is-day .stars,
+  .port-scene.is-day .beam,
+  .port-scene.is-day .moon,
+  .port-scene.is-night .birds,
+  .port-scene.is-night .sun {
+    display: none;
+  }
+  .port-scene.is-paused * {
+    animation-play-state: paused !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .port-scene * {
+      animation: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Time of day is tied to story chapters, not raw scroll distance: every element with
+  // [data-time-stop="0..1"] pins that moment of the day to its position on the page.
+  type Stop = { t: number; c: Record<string, string> };
+
+  const PALETTE: Stop[] = [
+    { t: 0, c: { "sky-1": "#7fa6d9", "sky-2": "#f7c9b0", "sky-3": "#ffb487", "hill-far": "#c9b3d1", "hill-mid": "#a58fc0", "hill-near": "#7d6fa3", city: "#8f7fb4", "sea-1": "#f2a98a", "sea-2": "#5f6fa8", struct: "#3a3566", fore: "#2a2550", "sun-color": "#ffd9a0" } },
+    { t: 0.25, c: { "sky-1": "#5fb4e6", "sky-2": "#a8dcf2", "sky-3": "#e6f5f2", "hill-far": "#b9dcd6", "hill-mid": "#8cc4b4", "hill-near": "#5fa596", city: "#6f9fa6", "sea-1": "#7fd0dc", "sea-2": "#2a8fa8", struct: "#2b4a63", fore: "#1d3a4d", "sun-color": "#fff0b8" } },
+    { t: 0.5, c: { "sky-1": "#3e9fe0", "sky-2": "#8fd1f2", "sky-3": "#ddf3f7", "hill-far": "#b4dccb", "hill-mid": "#7fbf9c", "hill-near": "#4e9a7a", city: "#5f93a0", "sea-1": "#58c2d6", "sea-2": "#1e7f9c", struct: "#25435c", fore: "#1a3447", "sun-color": "#fff4c2" } },
+    { t: 0.75, c: { "sky-1": "#3a2a6e", "sky-2": "#c4517c", "sky-3": "#f7a066", "hill-far": "#a2608f", "hill-mid": "#7a4a86", "hill-near": "#4a2f66", city: "#5b3a78", "sea-1": "#d9637a", "sea-2": "#3a2a6e", struct: "#24173f", fore: "#170e2b", "sun-color": "#ff9a5a" } },
+    { t: 1, c: { "sky-1": "#060a22", "sky-2": "#0d1740", "sky-3": "#1d2b66", "hill-far": "#1f2c68", "hill-mid": "#18235a", "hill-near": "#101a45", city: "#0d1538", "sea-1": "#152258", "sea-2": "#070c28", struct: "#070b20", fore: "#04071a", "sun-color": "#ff7a4a" } },
+  ];
+  // Pre-parse once; scroll frames only do arithmetic.
+  const RGB = PALETTE.map((s) =>
+    Object.fromEntries(Object.entries(s.c).map(([k, h]) => [k, [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16))])),
+  );
+  const KEYS = Object.keys(PALETTE[0].c);
+  const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+
+  function setupScene() {
+    const scene = document.querySelector<HTMLElement>("[data-port-scene]");
+    if (!scene || scene.dataset.ready) return;
+    scene.dataset.ready = "1";
+
+    const root = document.documentElement;
+    const sun = scene.querySelector<HTMLElement>("[data-sun]")!;
+    const moon = scene.querySelector<HTMLElement>("[data-moon]")!;
+    const ship = scene.querySelector<HTMLElement>("[data-ship]")!;
+    const glint = scene.querySelector<HTMLElement>("[data-glint]")!;
+    const layers = Array.from(scene.querySelectorAll<HTMLElement>("[data-depth]"));
+    const STAGE_W = Number(scene.dataset.stageW);
+    const STAGE_H = Number(scene.dataset.stageH);
+    const SKYLINE_Y = 96; // highest point of the artwork (mountain peaks, crane tips) on the stage
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let vw = 0;
+    let vh = 0;
+    let scale = 1;
+    let anchors: { y: number; t: number }[] = [];
+
+    const measure = () => {
+      vw = window.innerWidth;
+      vh = window.innerHeight;
+      // Fill the width, but keep the harbor between ~42% and ~60% of the screen height.
+      scale = Math.min(Math.max(vw / STAGE_W, (vh * 0.42) / STAGE_H), (vh * 0.6) / STAGE_H);
+      // Keep the artwork below the hero copy. If the screen is too short for that
+      // without shrinking the harbor to a sliver, the copy gets a paper backing instead.
+      const copy = document.querySelector<HTMLElement>("[data-hero-copy]");
+      if (copy) {
+        const room = vh - (copy.getBoundingClientRect().bottom + window.scrollY) - 20;
+        const fit = room / (STAGE_H - SKYLINE_Y);
+        const floor = scale * 0.62;
+        root.classList.toggle("hero-backed", fit < floor);
+        scale = Math.min(scale, Math.max(fit, floor));
+      }
+      scene.style.setProperty("--s", scale.toFixed(4));
+
+      anchors = Array.from(document.querySelectorAll<HTMLElement>("[data-time-stop]"))
+        .map((el) => {
+          const r = el.getBoundingClientRect();
+          return { y: r.top + window.scrollY + r.height / 2, t: Number(el.dataset.timeStop) };
+        })
+        .sort((a, b) => a.y - b.y);
+    };
+
+    // Piecewise-linear time of day at the viewport centre.
+    const timeAt = (y: number) => {
+      if (anchors.length === 0) {
+        const max = document.documentElement.scrollHeight - vh;
+        return max > 0 ? clamp01(window.scrollY / max) : 0;
+      }
+      if (y <= anchors[0].y) return anchors[0].t;
+      for (let i = 1; i < anchors.length; i++) {
+        const [a, b] = [anchors[i - 1], anchors[i]];
+        if (y <= b.y) return a.t + ((y - a.y) / (b.y - a.y)) * (b.t - a.t);
+      }
+      return anchors[anchors.length - 1].t;
+    };
+
+    let lastP = -1;
+    let lastDark: boolean | null = null;
+    let lastPhase = "";
+
+    const paint = (force = false) => {
+      const p = clamp01(timeAt(window.scrollY + vh / 2));
+      if (!force && Math.abs(p - lastP) < 0.0006) return;
+      lastP = p;
+
+      // Light
+      let i = 1;
+      while (i < PALETTE.length - 1 && p > PALETTE[i].t) i++;
+      const k = (p - PALETTE[i - 1].t) / (PALETTE[i].t - PALETTE[i - 1].t);
+      for (const key of KEYS) {
+        const [a, b] = [RGB[i - 1][key], RGB[i][key]];
+        scene.style.setProperty(
+          `--${key}`,
+          `rgb(${Math.round(a[0] + (b[0] - a[0]) * k)} ${Math.round(a[1] + (b[1] - a[1]) * k)} ${Math.round(a[2] + (b[2] - a[2]) * k)})`,
+        );
+      }
+      const night = clamp01((p - 0.7) / 0.25);
+      scene.style.setProperty("--night", night.toFixed(3));
+
+      // Sun: rises on the right, arcs over, sets behind the hills on the left.
+      const day = clamp01(p / 0.84);
+      const sunX = (0.8 - day * 0.62) * vw;
+      const sunY = (0.66 - Math.sin(day * Math.PI) * 0.52 + night * 0.4) * vh;
+      sun.style.transform = `translate3d(${sunX.toFixed(1)}px, ${sunY.toFixed(1)}px, 0)`;
+      const moonX = 0.76 * vw;
+      moon.style.transform = `translate3d(${moonX.toFixed(1)}px, ${((0.6 - night * 0.42) * vh).toFixed(1)}px, 0)`;
+
+      // Reflection follows whichever is in the sky, in stage coordinates.
+      const moonUp = night > 0.5;
+      const orbX = moonUp ? moonX : sunX;
+      glint.style.transform = `translate3d(${(STAGE_W / 2 + (orbX - vw / 2) / scale).toFixed(1)}px, 0, 0)`;
+      glint.style.setProperty("--glint", moonUp ? "#e9e6d6" : "var(--sun-color)");
+      glint.style.opacity = (moonUp ? (night - 0.5) * 0.9 : (1 - night * 2) * 0.55).toFixed(2);
+
+      // Ship enters from the left at dawn and leaves to the right at night.
+      ship.style.transform = `translate3d(${(-420 + p * 2240).toFixed(1)}px, 0, 0)`;
+
+      // Parallax: nearer layers travel further.
+      if (!reduceMotion) {
+        for (const l of layers) l.style.transform = `translate3d(${(-p * 46 * Number(l.dataset.depth)).toFixed(1)}px, 0, 0)`;
+      }
+
+      const phase = night <= 0.02 ? "is-day" : night >= 0.98 ? "is-night" : "";
+      if (phase !== lastPhase) {
+        scene.classList.remove("is-day", "is-night");
+        if (phase) scene.classList.add(phase);
+        lastPhase = phase;
+      }
+
+      // Ink flips with the light so text stays readable. Not persisted: the
+      // visitor's saved theme still applies on every other page.
+      const dark = p > 0.62;
+      if (dark !== lastDark) {
+        root.classList.toggle("dark", dark);
+        lastDark = dark;
+      }
+    };
+
+    let queued = false;
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        paint();
+      });
+    };
+    const refresh = () => {
+      measure();
+      paint(true);
+    };
+
+    refresh();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", refresh);
+    window.addEventListener("load", refresh);
+    // Layout shifts as images and fonts load; re-measure when the page height changes.
+    let resizeQueued = false;
+    new ResizeObserver(() => {
+      if (resizeQueued) return;
+      resizeQueued = true;
+      requestAnimationFrame(() => {
+        resizeQueued = false;
+        refresh();
+      });
+    }).observe(document.body);
+    // Nothing animates while the tab is in the background.
+    document.addEventListener("visibilitychange", () => scene.classList.toggle("is-paused", document.hidden));
+  }
+
+  setupScene();
+  document.addEventListener("astro:page-load", setupScene);
+</script>

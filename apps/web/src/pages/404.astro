@@ -1,82 +1,295 @@
 ---
-import DocumentLayout from "../layouts/DocumentLayout.astro";
+import { getCollection } from "astro:content";
+import MainLayout from "@layouts/MainLayout.astro";
+
+// Real routes only — the "did you mean" suggestions are computed against these.
+const pages = [
+  "/",
+  "/projects/",
+  "/experiments/",
+  "/posts/",
+  "/notes/",
+  "/about/",
+  "/journey/",
+  "/uses/",
+  "/gallery/",
+  "/resources/",
+  "/resume/",
+];
+const projects = (await getCollection("projects"))
+  .filter((p) => (p.data.lang || "en") === "en" && !p.data.hidden)
+  .map((p) => `/projects/${p.slug.replace(/-bn$/, "")}/`);
+const routes = [...pages, ...projects];
 ---
 
-<DocumentLayout
-  title="Node unreachable — 404 — Fazley Rabbi"
-  description="This node is unreachable. Return to the Edge layer or open the Manifest."
-  path="/404"
-  robots="noindex,follow"
+<MainLayout
+  title="404 Not Found — Fazley Rabbi"
+  description="This route could not be found."
 >
-  <section class="not-found">
-    <p class="mono status" role="status">● node unreachable — 404</p>
-    <h1>This service is not in the stack.</h1>
-    <p class="reading">
-      The address you requested does not resolve to a running layer. The trace was dropped.
-    </p>
-    <nav class="actions" aria-label="Recovery">
-      <a class="btn" href="/">Return to the Edge</a>
-      <a class="btn btn--ghost" href="/manifest/">Open the Manifest</a>
-      <a class="btn btn--ghost" href="/work/">Browse Work</a>
-    </nav>
-    <pre class="trace" aria-hidden="true">$ stack resolve --path "{Astro.url.pathname}"
-  → ERR_NODE_UNREACHABLE
-  → fallback: /manifest</pre>
-  </section>
-</DocumentLayout>
+  <main class="nf" data-routes={JSON.stringify(routes)}>
+    <div class="nf-container">
+      <div class="nf-card">
+        <header class="nf-head">
+          <div class="nf-exc">
+            <span class="nf-class">Symfony\Component\HttpKernel\Exception\<b>NotFoundHttpException</b></span>
+            <h1 class="nf-msg">
+              The route <code data-nf-path>this page</code> could not be found.
+            </h1>
+          </div>
+          <dl class="nf-env">
+            <div><dt>status</dt><dd class="nf-code">404</dd></div>
+            <div><dt>php</dt><dd>8.4</dd></div>
+            <div><dt>laravel</dt><dd>12.x</dd></div>
+          </dl>
+        </header>
+
+        <section class="nf-solution" aria-labelledby="nf-solution-title">
+          <h2 id="nf-solution-title">💡 Did you mean one of these?</h2>
+          <ul class="nf-suggest" data-nf-suggest>
+            <li><a href="/">/</a></li>
+            <li><a href="/projects/">/projects/</a></li>
+            <li><a href="/experiments/">/experiments/</a></li>
+          </ul>
+        </section>
+
+        <section class="nf-trace" aria-label="Stack trace (a joke)">
+          <ol>
+            <li class="is-app">
+              <span class="nf-frame">App\Http\Controllers\VisitorController<b>::wander()</b></span>
+              <span class="nf-file">app/Http/Controllers/VisitorController.php:42</span>
+            </li>
+            <li>
+              <span class="nf-frame">Illuminate\Routing\Router<b>::dispatch()</b></span>
+              <span class="nf-file">vendor/laravel/framework/src/Illuminate/Routing/Router.php:740</span>
+            </li>
+            <li>
+              <span class="nf-frame">Illuminate\Foundation\Http\Kernel<b>::handle()</b></span>
+              <span class="nf-file">vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:145</span>
+            </li>
+            <li>
+              <span class="nf-frame">public/index.php</span>
+              <span class="nf-file">public/index.php:17</span>
+            </li>
+          </ol>
+        </section>
+
+        <footer class="nf-foot">
+          <a href="/" class="btn-primary">Back to home</a>
+          <a href="/experiments/" class="btn-ghost">Play something instead</a>
+        </footer>
+      </div>
+    </div>
+  </main>
+</MainLayout>
 
 <style>
-  .not-found {
-    max-width: 720px;
-    padding-block: var(--space-12);
+  .nf {
+    padding: clamp(3rem, 8vh, 6rem) 0 clamp(4rem, 10vh, 8rem);
   }
-  .status {
-    color: var(--danger);
-    margin-bottom: var(--space-4);
+  .nf-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
   }
-  h1 {
-    font-size: clamp(2rem, 5vw, 3.5rem);
+  .nf-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-surface);
+    overflow: hidden;
   }
-  .actions {
+
+  .nf-head {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    margin-top: var(--space-8);
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border-bottom: 1px solid var(--border);
+    border-left: 4px solid #ef4444;
   }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    padding: var(--space-2) var(--space-4);
-    background: var(--accent);
-    color: #fff;
-    text-decoration: none;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-hard);
+  .nf-class {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+    word-break: break-all;
+  }
+  .nf-class b {
+    color: #ef4444;
     font-weight: 600;
   }
-  .btn:hover {
-    background: var(--accent-hi);
-    color: #fff;
+  .nf-msg {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.375rem, 3vw, 2rem);
+    line-height: 1.25;
+    color: var(--text-primary);
+    margin: 0;
   }
-  .btn--ghost {
-    background: var(--layer);
-    color: var(--text-hi);
-    border: 1px solid var(--line);
-    box-shadow: none;
+  .nf-msg code {
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+    padding: 0.05em 0.35em;
+    border-radius: 4px;
+    background: var(--accent-dim);
+    color: var(--accent-text);
+    word-break: break-all;
   }
-  .btn--ghost:hover {
-    color: var(--text-hi);
-    border-color: var(--accent);
+  .nf-env {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    white-space: nowrap;
   }
-  .trace {
-    margin-top: var(--space-12);
-    padding: var(--space-4);
-    background: var(--void);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    color: var(--text-lo);
+  .nf-env div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .nf-env dt {
+    color: var(--text-muted);
+  }
+  .nf-env dd {
+    margin: 0;
+    color: var(--text-secondary);
+  }
+  .nf-env .nf-code {
+    color: #ef4444;
+    font-weight: 600;
+  }
+
+  .nf-solution {
+    padding: 1.25rem clamp(1.25rem, 3vw, 2rem);
+    background: color-mix(in srgb, #22c55e 7%, transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  .nf-solution h2 {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 0.75rem;
+  }
+  .nf-suggest {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nf-suggest :global(a) {
+    display: inline-block;
+    font-family: var(--font-mono);
     font-size: 0.8125rem;
-    overflow-x: auto;
+    padding: 0.3rem 0.625rem;
+    border: 1px solid color-mix(in srgb, #22c55e 45%, var(--border));
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background var(--t-fast) ease;
+  }
+  .nf-suggest :global(a:hover),
+  .nf-suggest :global(a:focus-visible) {
+    background: color-mix(in srgb, #22c55e 18%, transparent);
+  }
+
+  .nf-trace ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+  .nf-trace li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.75rem clamp(1.25rem, 3vw, 2rem);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .nf-trace li.is-app {
+    background: var(--accent-dim);
+  }
+  .nf-frame {
+    color: var(--text-secondary);
+    word-break: break-all;
+  }
+  .nf-frame b {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .nf-file {
+    font-size: 0.6875rem;
+    word-break: break-all;
+  }
+
+  .nf-foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 1.25rem clamp(1.25rem, 3vw, 2rem);
+  }
+
+  @media (max-width: 640px) {
+    .nf-head {
+      flex-direction: column;
+    }
+    .nf-env {
+      flex-direction: row;
+      gap: 1rem;
+    }
   }
 </style>
+
+<script>
+  function levenshtein(a: string, b: string) {
+    const row = Array.from({ length: b.length + 1 }, (_, i) => i);
+    for (let i = 1; i <= a.length; i++) {
+      let prev = row[0];
+      row[0] = i;
+      for (let j = 1; j <= b.length; j++) {
+        const tmp = row[j];
+        row[j] = Math.min(row[j] + 1, row[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1));
+        prev = tmp;
+      }
+    }
+    return row[b.length];
+  }
+
+  function setupNotFound() {
+    const root = document.querySelector<HTMLElement>(".nf");
+    if (!root) return;
+    const path = decodeURIComponent(location.pathname);
+    const pathEl = root.querySelector("[data-nf-path]");
+    if (pathEl) pathEl.textContent = path;
+
+    const routes: string[] = JSON.parse(root.dataset.routes || "[]");
+    const norm = (s: string) => s.toLowerCase().replace(/\/+$/, "");
+    const target = norm(path);
+    const best = routes
+      .map((r) => ({ r, d: levenshtein(target, norm(r)) }))
+      .sort((a, b) => a.d - b.d)
+      .slice(0, 3);
+
+    const list = root.querySelector("[data-nf-suggest]");
+    if (!list || best.length === 0) return;
+    list.replaceChildren(
+      ...best.map(({ r }) => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = r;
+        a.textContent = r;
+        li.append(a);
+        return li;
+      }),
+    );
+  }
+
+  setupNotFound();
+  document.addEventListener("astro:page-load", setupNotFound);
+</script>

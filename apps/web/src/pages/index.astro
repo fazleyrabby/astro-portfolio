@@ -1,34 +1,140 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
-import Hero from "@components/Hero.astro";
+import PortScene from "@components/port/PortScene.astro";
+import PortHero from "@components/port/PortHero.astro";
+import Chapter from "@components/port/Chapter.astro";
+import ChapterRail from "@components/port/ChapterRail.astro";
 import ProjectsGrid from "@components/home/ProjectsGrid.astro";
-import ExperienceCompact from "@components/home/ExperienceCompact.astro";
+import ArcadeShelf from "@components/home/ArcadeShelf.astro";
+import GitLogExperience from "@components/home/GitLogExperience.astro";
 import SkillsSection from "@components/home/SkillsSection.astro";
 import LatestNotes from "@components/home/LatestNotes.astro";
 import ContactCTA from "@components/ContactCTA.astro";
+import RequestTracer from "@components/fun/RequestTracer.astro";
+
+// The homepage is a story: one day at the port, told in chapters. The narrative
+// lines are taken from content/journey.md — keep them factual when editing.
 ---
 
 <MainLayout title="Fazley Rabbi — Backend Engineer (Laravel)">
-  <main>
+  <PortScene />
+  <ChapterRail />
 
-    <!-- Hero -->
-    <Hero />
+  <main class="port-home">
+    <!-- Dawn -->
+    <PortHero />
 
-    <!-- Featured Projects -->
-    <ProjectsGrid />
+    <!-- Morning: curiosity and tinkering, which is where the experiments come from -->
+    <Chapter id="first-light" number={1} time="Morning" years="2001 – 2013" title="It started with a family computer." stop={0.25}>
+      <Fragment slot="lede">
+        <p>
+          Around 2001 our family got its first computer. Later came a Symbian phone, then a Nexus 4
+          running every custom ROM I could find. I kept opening things up to see how they worked.
+        </p>
+        <p><strong>I still do. These are the things I build for fun.</strong></p>
+      </Fragment>
+      <ArcadeShelf />
+    </Chapter>
 
-    <!-- Experience Timeline -->
-    <ExperienceCompact />
+    <!-- Midday: first jobs -->
+    <Chapter id="learning-to-ship" number={2} time="Midday" years="2016 – 2021" title="I learned to ship. Then I started over." stop={0.5}>
+      <Fragment slot="lede">
+        <p>
+          In 2016 I joined a software company in Chittagong as an intern and built my first real
+          applications. By 2021 I knew my fundamentals weren't strong enough, so I began again as an
+          intern at AMCoders.
+        </p>
+        <p><strong>Starting over was one of the best decisions of my career.</strong></p>
+      </Fragment>
+      <GitLogExperience />
+    </Chapter>
 
-    <!-- Technical Capabilities & Stack -->
-    <SkillsSection />
+    <!-- Dusk: production work -->
+    <Chapter id="cargo" number={3} time="Dusk" years="2021 – now" title="A hundred applications. One offer. Five years in production." stop={0.75}>
+      <Fragment slot="lede">
+        <p>
+          In October 2021 I joined Electronic First. I went from small backend fixes to designing
+          systems that process thousands of transactions every day.
+        </p>
+        <p><strong>This is the work I'm known for.</strong></p>
+      </Fragment>
+      <ProjectsGrid />
+      <section class="tracer-block">
+        <div class="tracer-block-inner">
+          <div>
+            <span class="section-label">Try it</span>
+            <h3 class="tracer-block-title">Send a request through my stack</h3>
+            <p class="tracer-block-text">
+              The first one goes all the way to the database. The next ones are served from cache.
+              Keep pressing and you'll meet the rate limiter.
+            </p>
+          </div>
+          <RequestTracer />
+        </div>
+      </section>
+      <SkillsSection />
+    </Chapter>
 
-    <!-- Writing / Notes -->
-    <LatestNotes />
+    <!-- Night: writing and contact -->
+    <Chapter id="lights-on" number={4} time="Night" years="Today" title="Still learning. Still building." stop={1}>
+      <Fragment slot="lede">
+        <p>
+          The industry keeps changing, and I write down what I learn along the way. If you have a
+          system that needs to stay reliable, the light is on.
+        </p>
+      </Fragment>
+      <LatestNotes />
+      <ContactCTA />
+    </Chapter>
 
-    <!-- Direct Contact & Inquiry -->
-    <ContactCTA />
-
+    <div class="port-end" aria-hidden="true"></div>
   </main>
 </MainLayout>
 
+<style>
+  /* Time of day follows the scroll on this page, so the manual theme switch is hidden here. */
+  :global(#theme-toggle) {
+    display: none;
+  }
+  /* Let the harbor show through the page shell. */
+  :global(body) {
+    background: transparent;
+  }
+
+  .port-end {
+    /* A full screen of night harbor before the footer slides in. */
+    height: 55vh;
+  }
+
+  .tracer-block-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 520px);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+  }
+  .tracer-block-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.375rem, 2.5vw, 1.875rem);
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin: 0 0 0.75rem;
+  }
+  .tracer-block-text {
+    margin: 0;
+    max-width: 40ch;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .tracer-block :global(.tracer) {
+    margin-bottom: 0;
+  }
+  @media (max-width: 860px) {
+    .tracer-block-inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

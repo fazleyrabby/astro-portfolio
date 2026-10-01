@@ -7,23 +7,31 @@
    ============================================ */
 
 :root {
-  /* — Color Palette — */
-  --bg-base: #fafaf9;
-  --bg-surface: #ffffff;
-  --bg-card: #ffffff;
-  --border: #e5e5e5;
-  --border-hover: rgba(234, 88, 12, 0.4);
-  --accent: #ea580c;
-  --accent-dim: rgba(234, 88, 12, 0.08);
-  --accent-glow: 0 4px 20px rgba(234, 88, 12, 0.06);
-  --accent-text: #ea580c;
-  --text-primary: #1c1917;
-  --text-secondary: #44403c;
-  --text-muted: #78716c;
+  /* — Color Palette: the port by day — sand paper, navy ink, sea teal — */
+  --bg-base: #f6efe2;
+  --bg-surface: #fffaf1;
+  --bg-card: #fffaf1;
+  --border: rgba(22, 33, 58, 0.14);
+  --accent-rgb: 14 124 134;
+  --accent: #0e7c86;
+  --accent-hover: #12939e;
+  --accent-deep: #07525a;
+  --accent-text: #0b6a73;
+  --border-hover: rgb(var(--accent-rgb) / 0.45);
+  --accent-dim: rgb(var(--accent-rgb) / 0.1);
+  --accent-glow: 0 4px 20px rgb(var(--accent-rgb) / 0.08);
+  --text-primary: #16213a;
+  --text-secondary: #3f4b66;
+  --text-muted: #6f7a92;
+
+  /* — Cargo colors: container paint, used sparingly for emphasis — */
+  --sun: #f4b63f;
+  --coral: #e8604c;
+  --navy: #16213a;
 
   /* — Typography — */
-  --font-display: "Spectral", "Georgia", serif;
-  --font-sans: "Geist", system-ui, -apple-system, sans-serif;
+  --font-display: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 
   /* — Timing — */
@@ -41,12 +49,12 @@
   --reading-max: 680px;
 
   /* — Surfaces — */
-  --radius: 6px;
-  --radius-lg: 8px;
+  --radius: 8px;
+  --radius-lg: 14px;
   --border-width: 1px;
-  --shadow-main: 0 1px 3px rgba(0, 0, 0, 0.04);
-  --grid-line: rgba(28, 25, 23, 0.06);
-  --grid-line-strong: rgba(28, 25, 23, 0.10);
+  --shadow-main: 0 1px 3px rgba(22, 33, 58, 0.06);
+  --grid-line: rgba(22, 33, 58, 0.06);
+  --grid-line-strong: rgba(22, 33, 58, 0.12);
 
   /* — Theme aliases — */
   --color-bg: var(--bg-base);
@@ -58,22 +66,28 @@
   --noise-opacity: 0.015;
 }
 
+/* The port by night — deep navy water, harbor-light teal */
 .dark {
-  --bg-base: #0a0a0a;
-  --bg-surface: #141414;
-  --bg-card: #141414;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(234, 88, 12, 0.4);
-  --accent: #ea580c;
-  --accent-dim: rgba(234, 88, 12, 0.10);
-  --accent-glow: 0 4px 20px rgba(234, 88, 12, 0.08);
-  --accent-text: #f97316;
-  --text-primary: #f4f4f5;
-  --text-secondary: #a8a29e;
-  --text-muted: #78716c;
-  --grid-line: rgba(255, 255, 255, 0.04);
-  --grid-line-strong: rgba(255, 255, 255, 0.08);
-  --shadow-main: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --bg-base: #0b1330;
+  --bg-surface: #131d45;
+  --bg-card: #131d45;
+  --border: rgba(238, 241, 250, 0.12);
+  --accent-rgb: 60 198 190;
+  --accent: #1f9d9a;
+  --accent-hover: #27b3af;
+  --accent-deep: #0c5856;
+  --accent-text: #5fdad2;
+  --border-hover: rgb(var(--accent-rgb) / 0.45);
+  --accent-dim: rgb(var(--accent-rgb) / 0.12);
+  --accent-glow: 0 4px 20px rgb(var(--accent-rgb) / 0.1);
+  --text-primary: #eef1fa;
+  --text-secondary: #b4beda;
+  --text-muted: #7f8bb0;
+  --sun: #ffc857;
+  --coral: #ff7a66;
+  --grid-line: rgba(238, 241, 250, 0.05);
+  --grid-line-strong: rgba(238, 241, 250, 0.1);
+  --shadow-main: 0 1px 3px rgba(0, 0, 0, 0.3);
   --noise-opacity: 0.03;
 
   --color-bg: var(--bg-base);
@@ -302,21 +316,21 @@
     box-shadow:
       inset 0 1.5px 0 0 rgba(255, 255, 255, 0.4),
       inset 0 -1px 0 0 rgba(0, 0, 0, 0.2),
-      0 3.5px 0 0 #9a3412,
+      0 3.5px 0 0 var(--accent-deep),
       0 4.5px 0 0 rgba(0, 0, 0, 0.25),
-      0 6px 14px 0 rgba(234, 88, 12, 0.3);
+      0 6px 14px 0 rgb(var(--accent-rgb) / 0.3);
   }
 
   .btn-primary:hover {
-    background-color: #f97316;
+    background-color: var(--accent-hover);
     color: #ffffff;
     transform: translateY(-1px);
     box-shadow:
       inset 0 1.5px 0 0 rgba(255, 255, 255, 0.5),
       inset 0 -1px 0 0 rgba(0, 0, 0, 0.2),
-      0 4.5px 0 0 #9a3412,
+      0 4.5px 0 0 var(--accent-deep),
       0 5.5px 0 0 rgba(0, 0, 0, 0.28),
-      0 8px 18px 0 rgba(234, 88, 12, 0.4);
+      0 8px 18px 0 rgb(var(--accent-rgb) / 0.4);
   }
 
   /* Mechanical Bottom Out (Press Key All The Way Down) */
@@ -325,7 +339,7 @@
     box-shadow:
       inset 0 1.5px 3px 0 rgba(0, 0, 0, 0.35),
       inset 0 0 0 1px rgba(0, 0, 0, 0.2),
-      0 0 0 0 #9a3412,
+      0 0 0 0 var(--accent-deep),
       0 1px 2px 0 rgba(0, 0, 0, 0.2) !important;
   }
 
@@ -427,7 +441,7 @@
   }
 
   .project-card:hover {
-    border-color: rgba(234, 88, 12, 0.35);
+    border-color: rgb(var(--accent-rgb) / 0.35);
     box-shadow: 0 12px 36px -10px rgba(0, 0, 0, 0.15),
                 0 0 1px 1px rgba(255, 255, 255, 0.1);
   }
@@ -435,7 +449,7 @@
   .dark .project-card:hover {
     border-color: rgba(255, 255, 255, 0.22);
     box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.6),
-                0 0 20px -4px rgba(234, 88, 12, 0.15);
+                0 0 20px -4px rgb(var(--accent-rgb) / 0.15);
   }
 
   /* — Link underline — */
@@ -571,12 +585,12 @@
   }
 
   .submit-btn:hover {
-    background-color: #f97316;
+    background-color: var(--accent-hover);
     transform: translateY(-1px);
     box-shadow:
       inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
       inset 0 -1px 0 0 rgba(0, 0, 0, 0.25),
-      0 2px 6px 0 rgba(234, 88, 12, 0.25);
+      0 2px 6px 0 rgb(var(--accent-rgb) / 0.25);
   }
 
   .submit-btn:active {

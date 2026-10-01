@@ -1,0 +1,253 @@
+---
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../../i18n/utils";
+import { profile } from "../../data/profile";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
+---
+
+<section id="hero" class="port-hero" data-chapter data-chapter-label="Dawn" data-time-stop="0">
+  <div class="port-hero-inner" data-hero-copy>
+    <div class="port-hero-copy">
+      <p class="port-hero-kicker">
+        {profile.location.city}, {profile.location.country} · {profile.role}
+      </p>
+
+      <h1 class="port-hero-title">{t("hero.name") || profile.name}</h1>
+
+      <p class="port-hero-tagline">{t("hero.tagline") || profile.positioning}</p>
+
+      <div class="port-hero-actions">
+        <a href={tp("/resume/")} class="btn-primary">{t("nav.resume") || "Resume"}</a>
+        <a href="#contact-cta" class="btn-ghost">Contact</a>
+      </div>
+
+      <p class="port-hero-story">
+        This page is one day at the port.<br />
+        Scroll, and my story moves from first light to night.
+      </p>
+    </div>
+
+    <!-- Postcard from the port: tilted photo on wide screens, round avatar on small ones -->
+    <figure class="port-hero-card">
+      <img src="/me.webp" alt={`${profile.shortName}, ${profile.role}`} width="480" height="480" loading="eager" fetchpriority="high" decoding="async" />
+      <figcaption>{profile.shortName} · {profile.location.city}</figcaption>
+    </figure>
+  </div>
+
+  <a href="#first-light" class="port-hero-scroll" aria-label="Start the story">
+    <span>Begin</span>
+    <svg width="14" height="22" viewBox="0 0 14 22" fill="none" aria-hidden="true">
+      <path d="M7 1v18m0 0l-6-6m6 6l6-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </a>
+</section>
+
+<style>
+  .port-hero {
+    position: relative;
+    min-height: calc(100svh - 64px);
+    display: flex;
+    flex-direction: column;
+  }
+  .port-hero-inner {
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    padding: clamp(2rem, 7vh, 4.5rem) clamp(1.25rem, 4vw, 2rem) 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  .port-hero-card {
+    margin: 0.5rem 0 0;
+    padding: 10px 10px 0;
+    width: clamp(190px, 21vw, 280px);
+    background: #fffaf1;
+    border-radius: 6px;
+    box-shadow:
+      0 1px 0 rgba(22, 33, 58, 0.08),
+      0 24px 50px -22px rgba(22, 33, 58, 0.55);
+    transform: rotate(3deg);
+    transition: transform var(--t-mid) var(--ease-out-expo);
+  }
+  .port-hero-card:hover {
+    transform: rotate(0deg) scale(1.02);
+  }
+  .port-hero-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 3px;
+  }
+  .port-hero-card figcaption {
+    padding: 0.625rem 0 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    color: #16213a;
+  }
+
+  @media (max-width: 900px) {
+    .port-hero-inner {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    /* Small screens: the postcard becomes a round avatar above the copy. */
+    .port-hero-card {
+      order: -1;
+      width: 72px;
+      margin: 0;
+      padding: 3px;
+      border-radius: 50%;
+      transform: none;
+    }
+    .port-hero-card img {
+      border-radius: 50%;
+    }
+    .port-hero-card figcaption {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .port-hero-card {
+      transition: none;
+    }
+  }
+
+  /* Set by the scene script when the screen is too short to keep the harbor clear
+     of the copy: the copy then sits on paper, like the chapter sheets. */
+  :global(.hero-backed) .port-hero-inner {
+    width: calc(100% - clamp(1.5rem, 5vw, 4rem));
+    margin-top: 1rem;
+    padding: clamp(1.25rem, 4vw, 2rem);
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--bg-base) 88%, transparent);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+
+  .port-hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin: 0 0 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+  .port-hero-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.5rem, 7.6vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin: 0 0 1.25rem;
+  }
+
+  .port-hero-tagline {
+    max-width: 34ch;
+    margin: 0 0 1.75rem;
+    font-size: clamp(1.0625rem, 1.7vw, 1.375rem);
+    line-height: 1.45;
+    color: var(--text-primary);
+  }
+
+  .port-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .port-hero-story {
+    margin: 0;
+    font-style: italic;
+    font-size: clamp(0.9375rem, 1.3vw, 1.0625rem);
+    line-height: 1.5;
+    color: var(--text-secondary);
+  }
+
+  .port-hero-scroll {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(1rem, 4vh, 2.5rem);
+    transform: translateX(-50%);
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.625rem 1rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #fff;
+    background: rgba(22, 33, 58, 0.55);
+    backdrop-filter: blur(8px);
+  }
+  .port-hero-scroll svg {
+    animation: nudge 1.8s ease-in-out infinite;
+  }
+  .port-hero-scroll:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+  /* Short screens (small laptops, landscape phones): tighten the copy so the
+     harbor still has room underneath. */
+  @media (max-height: 760px) {
+    .port-hero-inner {
+      padding-top: clamp(1rem, 4vh, 2rem);
+    }
+    .port-hero-card {
+      width: clamp(72px, 24vh, 190px);
+    }
+    .port-hero-title {
+      font-size: clamp(2.25rem, 9.5vh, 4.5rem);
+      margin-bottom: 0.75rem;
+    }
+    .port-hero-tagline {
+      font-size: 1.0625rem;
+      max-width: 44ch;
+      margin-bottom: 1.25rem;
+    }
+    .port-hero-kicker {
+      margin-bottom: 0.75rem;
+    }
+    .port-hero-actions {
+      margin-bottom: 0;
+    }
+    .port-hero-story {
+      display: none;
+    }
+  }
+
+  @media (max-height: 480px) {
+    .port-hero-scroll {
+      display: none;
+    }
+  }
+
+  @keyframes nudge {
+    50% {
+      transform: translateY(4px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .port-hero-scroll svg {
+      animation: none;
+    }
+  }
+</style>

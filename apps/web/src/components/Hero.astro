@@ -5,6 +5,8 @@ import {
   useTranslatedPath,
 } from "../i18n/utils";
 import DitherNumbersCanvas from "./DitherNumbersCanvas.astro";
+import RequestTracer from "./fun/RequestTracer.astro";
+import { profile } from "../data/profile";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -28,26 +30,16 @@ const tp = useTranslatedPath(lang);
           {t("hero.name") || "Md. Fazley Rabbi"}
         </h1>
 
-        <p class="hero-role">Mid-Level Backend Engineer</p>
+        <p class="hero-role">{profile.role}</p>
 
         {t("hero.tagline") && <p class="hero-tagline">{t("hero.tagline")}</p>}
 
         {t("hero.body") && <p class="hero-body">{t("hero.body")}</p>}
 
-        <!-- Current Focus -->
-        <div class="hero-focus">
-          <span class="hero-focus-label">Current Focus</span>
-          <div class="hero-focus-tags">
-            {(
-              t("focus.desc") ||
-              "Distributed Systems, Payment Infra, Cloud Infrastructure, AI Workflows"
-            )
-              .split(",")
-              .map((tag) => <span class="hero-focus-tag">{tag.trim()}</span>)}
-          </div>
-        </div>
+        <!-- Playable: fire a real request through the stack -->
+        <RequestTracer />
 
-        <!-- CTAs: Priority 1 (Resume) -> Priority 2 (Inquire) -> Priority 3 (GitHub) -->
+        <!-- CTAs: Priority 1 (Resume) -> Priority 2 (Inquire); GitHub lives in the social row -->
         <div class="hero-actions">
           <a
             href={tp("/resume/")}
@@ -82,28 +74,6 @@ const tp = useTranslatedPath(lang);
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-              ></path></svg
-            >
-          </a>
-          <a
-            href="https://github.com/fazleyrabby"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn-ghost"
-            title="Inspect GitHub Code & Repositories"
-          >
-            GitHub
-            <svg
-              width="13"
-              height="13"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              ><path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
               ></path></svg
             >
           </a>

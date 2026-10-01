@@ -32,10 +32,6 @@ try {
   data-initial-count={initialCount}
   title="Total Site Visits • Live Telemetry"
 >
-  <span class="visitor-pulse" aria-hidden="true">
-    <span class="visitor-pulse-ping"></span>
-    <span class="visitor-pulse-core"></span>
-  </span>
   <span class="visitor-label">{label}</span>
   <span class="visitor-count" id="visitor-count-number" aria-live="polite">
     {initialCount.toLocaleString()}
@@ -258,35 +254,6 @@ try {
     border-color: rgba(255, 255, 255, 0.15);
   }
 
-  /* Live Pulse Indicator */
-  .visitor-pulse {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 7px;
-    height: 7px;
-  }
-
-  .visitor-pulse-ping {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 9999px;
-    background-color: #10b981;
-    opacity: 0.75;
-    animation: visitorPing 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
-  }
-
-  .visitor-pulse-core {
-    position: relative;
-    width: 5px;
-    height: 5px;
-    border-radius: 9999px;
-    background-color: #10b981;
-    box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
-  }
-
   .visitor-label {
     color: var(--text-muted);
     font-weight: 400;
@@ -298,12 +265,5 @@ try {
     font-weight: 600;
     color: var(--text-primary);
     min-width: 2ch;
-  }
-
-  @keyframes visitorPing {
-    75%, 100% {
-      transform: scale(2.5);
-      opacity: 0;
-    }
   }
 </style>

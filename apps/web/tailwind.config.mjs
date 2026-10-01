@@ -12,9 +12,11 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		fontFamily: {
-			display: ['Spectral', 'Georgia', 'serif'],
-			serif: ['Spectral', 'Georgia', 'serif'],
-			sans: ['Geist', 'system-ui', '-apple-system', 'sans-serif'],
+			// One family site-wide. `serif` is kept as an alias so older markup using
+			// font-serif renders in the same sans face instead of falling back to a serif.
+			display: ['DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
+			serif: ['DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
+			sans: ['DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
 			mono: ['IBM Plex Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
 		},
 		borderRadius: {

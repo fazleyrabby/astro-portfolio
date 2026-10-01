@@ -90,7 +90,10 @@
       return a;
     });
 
+    let queued = false;
     const setActive = () => {
+      queued = false;
+      if (rail.offsetParent === null && getComputedStyle(rail).display === "none") return;
       const mid = window.innerHeight / 2;
       let active = 0;
       chapters.forEach((ch, i) => {
@@ -103,7 +106,15 @@
     };
 
     setActive();
-    window.addEventListener("scroll", setActive, { passive: true });
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(setActive);
+      },
+      { passive: true },
+    );
   }
 
   setupRail();

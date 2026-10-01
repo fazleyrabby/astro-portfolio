@@ -459,6 +459,15 @@ const navItems = [
     -webkit-backdrop-filter: blur(12px) saturate(1.2);
     border-bottom-color: var(--border);
   }
+  /* Touch devices: a live blur under a fixed bar is re-rendered on every scroll
+     frame, so use a near-solid bar there instead. */
+  @media (pointer: coarse) {
+    .site-nav.is-scrolled {
+      background: color-mix(in srgb, var(--bg-base) 96%, transparent);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+  }
 
   .site-nav-inner {
     max-width: 1200px;

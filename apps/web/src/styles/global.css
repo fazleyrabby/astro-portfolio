@@ -144,7 +144,7 @@
   body::before {
     content: "";
     position: fixed;
-    inset: -100%;
+    inset: 0;
     z-index: 9997;
     pointer-events: none;
     opacity: var(--noise-opacity);
@@ -152,6 +152,13 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 150px 150px;
     background-repeat: repeat;
+  }
+  /* The grain is a full-screen layer blended over everything on every frame.
+     Barely visible on small screens, so skip it on touch devices. */
+  @media (pointer: coarse) {
+    body::before {
+      display: none;
+    }
   }
 
 

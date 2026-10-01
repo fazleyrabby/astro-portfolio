@@ -833,6 +833,29 @@ const CLOUD = "M30 60a22 22 0 0 1 4-43 34 34 0 0 1 64-6 26 26 0 0 1 44 10 22 22 
     }
   }
 
+  /* Lighter scene for phones and tablets (class set by the script). */
+  .port-scene.is-lite .glint,
+  .port-scene.is-lite .haze,
+  .port-scene.is-lite .w1,
+  .port-scene.is-lite .smoke {
+    display: none;
+  }
+  .port-scene.is-lite .sun {
+    box-shadow: 0 0 0 14px color-mix(in srgb, var(--sun-color) 20%, transparent);
+  }
+  .port-scene.is-lite .moon {
+    box-shadow: inset -10px -7px 0 0 #d9d5c3;
+  }
+  .port-scene.is-lite .load b {
+    filter: none;
+  }
+  .port-scene.is-lite .hoist,
+  .port-scene.is-lite .sampan,
+  .port-scene.is-lite .buoy,
+  .port-scene.is-lite .sf {
+    animation: none;
+  }
+
   /* Things that only exist at one end of the day are switched off at the other,
      so they stop animating and drop their layers. */
   .port-scene.is-day .stars,
@@ -888,14 +911,24 @@ const CLOUD = "M30 60a22 22 0 0 1 4-43 34 34 0 0 1 64-6 26 26 0 0 1 44 10 22 22 
     const SKYLINE_Y = 96; // highest point of the artwork (mountain peaks, crane tips) on the stage
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    // Phones and tablets get a lighter scene: no parallax layers, no masks, and the
+    // light is updated in coarser steps. Decided once; it does not flip mid-visit.
+    const lite = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 900;
+    scene.classList.toggle("is-lite", lite);
+    const LIGHT_STEP = lite ? 0.008 : 0.002;
+
     let vw = 0;
     let vh = 0;
     let scale = 1;
     let anchors: { y: number; t: number }[] = [];
 
     const measure = () => {
-      vw = window.innerWidth;
-      vh = window.innerHeight;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      // Mobile browsers change the viewport height as the address bar hides and
+      // shows. Ignore those small changes, or the harbor would rescale mid-scroll.
+      if (w !== vw || Math.abs(h - vh) > 160) vh = h;
+      vw = w;
       // Fill the width, but keep the harbor between ~42% and ~60% of the screen height.
       scale = Math.min(Math.max(vw / STAGE_W, (vh * 0.42) / STAGE_H), (vh * 0.6) / STAGE_H);
       // Keep the artwork below the hero copy. If the screen is too short for that
@@ -939,6 +972,7 @@ const CLOUD = "M30 60a22 22 0 0 1 4-43 34 34 0 0 1 64-6 26 26 0 0 1 44 10 22 22 
     };
 
     let lastP = -1;
+    let lastLightP = -1;
     let lastDark: boolean | null = null;
     let lastPhase = "";
 
@@ -946,20 +980,25 @@ const CLOUD = "M30 60a22 22 0 0 1 4-43 34 34 0 0 1 64-6 26 26 0 0 1 44 10 22 22 
       const p = clamp01(timeAt(window.scrollY + vh / 2));
       if (!force && Math.abs(p - lastP) < 0.0006) return;
       lastP = p;
-
-      // Light
-      let i = 1;
-      while (i < PALETTE.length - 1 && p > PALETTE[i].t) i++;
-      const k = (p - PALETTE[i - 1].t) / (PALETTE[i].t - PALETTE[i - 1].t);
-      for (const key of KEYS) {
-        const [a, b] = [RGB[i - 1][key], RGB[i][key]];
-        scene.style.setProperty(
-          `--${key}`,
-          `rgb(${Math.round(a[0] + (b[0] - a[0]) * k)} ${Math.round(a[1] + (b[1] - a[1]) * k)} ${Math.round(a[2] + (b[2] - a[2]) * k)})`,
-        );
-      }
       const night = clamp01((p - 0.7) / 0.25);
-      scene.style.setProperty("--night", night.toFixed(3));
+
+      // Light. Changing these variables repaints the artwork, so it is done in
+      // steps rather than on every scroll frame. Movement below stays per-frame
+      // because transforms are handled by the compositor.
+      if (force || Math.abs(p - lastLightP) >= LIGHT_STEP || p === 0 || p === 1) {
+        lastLightP = p;
+        let i = 1;
+        while (i < PALETTE.length - 1 && p > PALETTE[i].t) i++;
+        const k = (p - PALETTE[i - 1].t) / (PALETTE[i].t - PALETTE[i - 1].t);
+        for (const key of KEYS) {
+          const [a, b] = [RGB[i - 1][key], RGB[i][key]];
+          scene.style.setProperty(
+            `--${key}`,
+            `rgb(${Math.round(a[0] + (b[0] - a[0]) * k)} ${Math.round(a[1] + (b[1] - a[1]) * k)} ${Math.round(a[2] + (b[2] - a[2]) * k)})`,
+          );
+        }
+        scene.style.setProperty("--night", night.toFixed(2));
+      }
 
       // Sun: rises on the right, arcs over, sets behind the hills on the left.
       const day = clamp01(p / 0.84);
@@ -980,7 +1019,7 @@ const CLOUD = "M30 60a22 22 0 0 1 4-43 34 34 0 0 1 64-6 26 26 0 0 1 44 10 22 22 
       ship.style.transform = `translate3d(${(-420 + p * 2240).toFixed(1)}px, 0, 0)`;
 
       // Parallax: nearer layers travel further.
-      if (!reduceMotion) {
+      if (!reduceMotion && !lite) {
         for (const l of layers) l.style.transform = `translate3d(${(-p * 46 * Number(l.dataset.depth)).toFixed(1)}px, 0, 0)`;
       }
 

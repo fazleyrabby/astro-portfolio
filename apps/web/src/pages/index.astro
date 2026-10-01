@@ -6,7 +6,7 @@ import Chapter from "@components/port/Chapter.astro";
 import ChapterRail from "@components/port/ChapterRail.astro";
 import ProjectsGrid from "@components/home/ProjectsGrid.astro";
 import ArcadeShelf from "@components/home/ArcadeShelf.astro";
-import GitLogExperience from "@components/home/GitLogExperience.astro";
+import ExperienceTimeline from "@components/home/ExperienceTimeline.astro";
 import SkillsSection from "@components/home/SkillsSection.astro";
 import LatestNotes from "@components/home/LatestNotes.astro";
 import ContactCTA from "@components/ContactCTA.astro";
@@ -46,7 +46,7 @@ import RequestTracer from "@components/fun/RequestTracer.astro";
         </p>
         <p><strong>Starting over was one of the best decisions of my career.</strong></p>
       </Fragment>
-      <GitLogExperience />
+      <ExperienceTimeline />
     </Chapter>
 
     <!-- Dusk: production work -->
@@ -102,8 +102,8 @@ import RequestTracer from "@components/fun/RequestTracer.astro";
   }
 
   .port-end {
-    /* A full screen of night harbor before the footer slides in. */
-    height: 55vh;
+    /* A short glimpse of the night harbor before the footer. */
+    height: clamp(72px, 12vh, 140px);
   }
 
   .tracer-block-inner {

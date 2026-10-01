@@ -1,5 +1,6 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
+import PortBanner from "@components/port/PortBanner.astro";
 import { getAllPosts } from "@lib/supabase-cache";
 import {
   getLangFromUrl,
@@ -35,13 +36,14 @@ const archivePosts = publishedPosts.slice(1);
 ---
 
 <MainLayout title="Engineering Journal & Notes — Fazley Rabbi">
+  <PortBanner
+    title="Blog"
+    kicker="The lighthouse"
+    lede="Notes on backend engineering, written down as I learn."
+    motif="lighthouse"
+  />
   <main class="posts-page">
     <div class="posts-container">
-
-      <!-- Header -->
-      <header class="posts-header reveal">
-        <h1 class="page-title">Blog</h1>
-      </header>
 
       {publishedPosts.length === 0 ? (
         <div class="posts-empty">{t("posts.emptyMsg") || "Synchronizing brain dump... no articles found yet."}</div>

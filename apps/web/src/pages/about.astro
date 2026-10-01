@@ -1,5 +1,6 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
+import PortBanner from "@components/port/PortBanner.astro";
 import Github from "@components/Icons/Github.astro";
 import Youtube from "@components/Icons/Youtube.astro";
 import Email from "@components/Icons/Email.astro";
@@ -16,12 +17,9 @@ const translatePath = useTranslatedPath(lang);
 ---
 
 <MainLayout title={t('about.title')}>
+  <PortBanner title="About" kicker="Chattogram, Bangladesh" motif="bay" />
   <main class="about-page">
     <div class="about-container">
-      <!-- Header -->
-      <header class="about-header reveal">
-        <h1 class="page-title">About</h1>
-      </header>
 
       <!-- Content -->
       <div class="about-content reveal">

@@ -1,0 +1,265 @@
+---
+// Page header for inner pages: a strip of the harbor with the page title on the sky.
+// Static artwork (no scroll script). Day colors in the light theme, night in dark.
+// The title area and the artwork never overlap: the art is a fixed-height strip
+// below the copy, so the text stays readable at every screen size.
+interface Props {
+  title: string;
+  /** One line under the title. */
+  lede?: string;
+  /** Small label above the title. */
+  kicker?: string;
+  /** Which part of the port this page is. */
+  motif?: "yard" | "pier" | "lighthouse" | "coast" | "bay";
+}
+const { title, lede, kicker, motif = "bay" } = Astro.props;
+
+const PAINT = ["#e8604c", "#f4b63f", "#2d8f8a", "#3f6fb5", "#f08a4b", "#7fb069"];
+const G = 118; // ground line in the 2400×160 artwork
+
+// Container stack helper: columns of given heights starting at x.
+const stack = (x: number, cols: number[], offset = 0) =>
+  cols.flatMap((h, c) =>
+    Array.from({ length: h }, (_, r) => ({
+      x: x + c * 38,
+      y: G - (r + 1) * 17,
+      fill: PAINT[(c * 2 + r + offset) % PAINT.length],
+    })),
+  );
+
+const crane = (x: number) => `
+  <path d="M${x} ${G}V52M${x + 36} ${G}V52" stroke-width="6"/>
+  <path d="M${x} 96H${x + 36}M${x} 76L${x + 36} 52M${x + 36} 76L${x} 52M${x} 96L${x + 36} 76M${x + 36} 96L${x} 76" stroke-width="2"/>
+  <path d="M${x - 62} 52H${x + 104}" stroke-width="7"/>
+  <path d="M${x + 18} 14L${x - 58} 50M${x + 18} 14L${x + 100} 50M${x + 18} 14V52" stroke-width="2"/>
+  <path d="M${x - 46} 55V84" stroke-width="1.5"/>`;
+
+const yardBoxes = [...stack(1290, [2, 3, 1]), ...stack(1560, [1, 3, 2, 2], 3)];
+---
+
+<header class={`banner banner--${motif}`}>
+  <div class="banner-copy">
+    {kicker && <p class="banner-kicker">{kicker}</p>}
+    <h1 class="banner-title">{title}</h1>
+    {lede && <p class="banner-lede">{lede}</p>}
+    <slot />
+  </div>
+
+  <div class="banner-art" aria-hidden="true">
+    <span class="banner-orb"></span>
+    <svg viewBox="0 0 2400 160" width="2400" height="160">
+      <path class="b-far" d="M0 118V70c130-34 220-40 340-22 120 18 170 40 290 30 130-12 190-56 320-52 120 4 180 46 300 44 130-2 190-50 320-48 120 2 180 44 300 44 130 0 200-44 330-34 90 6 140 24 200 34V118z"/>
+      <path class="b-near" d="M0 118V98c150-18 240-10 380-14 150-4 220-22 360-18 140 4 210 18 350 16 150-2 220-20 360-16 140 4 210 16 350 14 130-2 200-14 330-10 100 2 170 10 270 8V118z"/>
+
+      {motif === "yard" && (
+        <g>
+          <g class="b-line" set:html={crane(1420) + crane(1760)} />
+          {yardBoxes.map((b) => (
+            <g>
+              <rect x={b.x} y={b.y} width="36" height="16" fill={b.fill} />
+              <path class="b-corr" d={`M${b.x + 7} ${b.y + 3}v10M${b.x + 14} ${b.y + 3}v10M${b.x + 21} ${b.y + 3}v10M${b.x + 28} ${b.y + 3}v10`} />
+            </g>
+          ))}
+        </g>
+      )}
+
+      {motif === "pier" && (
+        <g>
+          <!-- Ferris wheel -->
+          <g class="b-line">
+            <circle cx="1500" cy="62" r="44" stroke-width="3" fill="none"/>
+            <path d="M1500 18V106M1456 62H1544M1469 31L1531 93M1531 31L1469 93" stroke-width="1.5"/>
+            <path d="M1500 62L1478 118M1500 62L1522 118" stroke-width="4"/>
+          </g>
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
+            const a = (i * Math.PI) / 4;
+            return <rect x={(1500 + Math.cos(a) * 44 - 5).toFixed(1)} y={(62 + Math.sin(a) * 44 - 1).toFixed(1)} width="10" height="9" rx="2" fill={PAINT[i % PAINT.length]} />;
+          })}
+          <!-- Tents and bunting -->
+          <path d="M1590 118V96l28-22 28 22v22z" fill="#e8604c"/>
+          <path d="M1604 118V96l14-22 14 22v22z" fill="#f6efe2"/>
+          <path d="M1670 118V102l22-16 22 16v16z" fill="#f4b63f"/>
+          <path d="M1681 118V102l11-16 11 16v16z" fill="#f6efe2"/>
+          <path class="b-line" d="M1560 70Q1640 92 1720 74" stroke-width="1.5" fill="none"/>
+          {[0, 1, 2, 3, 4, 5].map((i) => <path d={`M${1574 + i * 26} ${76 + Math.sin((i + 1) / 2.2) * 8}l5 9 5-9z`} fill={PAINT[(i + 2) % PAINT.length]} />)}
+        </g>
+      )}
+
+      {motif === "lighthouse" && (
+        <g>
+          <path class="b-solid" d="M1420 118c18-26 60-38 100-32 40 6 66 18 80 32z"/>
+          <path class="b-beam" d="M1503 34L1180 6V70z"/>
+          <path d="M1486 96l6-56h22l6 56z" fill="#f6efe2"/>
+          <path d="M1489 68h28l1 14h-30z" fill="#e8604c"/>
+          <path class="b-solid" d="M1487 34h32v7h-32zM1492 22h22l6 12h-34zM1502 14h2v8h-2z"/>
+          <rect class="b-lamp" x="1496" y="24" width="14" height="10"/>
+        </g>
+      )}
+
+      {motif === "coast" && (
+        <g>
+          <path class="b-solid" d="M1560 118c-2-30 2-56 10-78l5 2c-8 22-10 48-8 76z"/>
+          <path class="b-solid" d="M1572 40c-18-14-40-14-58-2 20-4 38 0 54 8zM1574 40c-8-20-26-32-48-32 20 8 34 18 44 36zM1576 40c6-22 24-36 46-38-18 8-32 22-40 40zM1578 42c18-10 40-8 56 6-20-6-38-4-54 0z"/>
+        </g>
+      )}
+
+      <rect class="b-solid" x="0" y={G} width="2400" height="8"/>
+      <rect class="b-sea" x="0" y={G + 8} width="2400" height="40"/>
+      <path class="b-wave" d="M0 140q20-8 40 0t40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0"/>
+
+      {(motif === "coast" || motif === "bay") && (
+        <g>
+          <path class="b-sail" d="M1396 96v30M1396 98l20 26h-20z"/>
+          <path class="b-solid" d="M1356 124q8 16 42 16t42-20q-16 10-42 10t-42-6z"/>
+          <path class="b-sail" d="M1690 108v22M1690 110l14 18h-14z"/>
+          <path class="b-solid" d="M1662 128q6 12 30 12t30-15q-12 8-30 8t-30-5z"/>
+        </g>
+      )}
+    </svg>
+  </div>
+</header>
+
+<style>
+  .banner {
+    /* Day at the port */
+    --b-sky-1: #5fb4e6;
+    --b-sky-2: #cdeaf5;
+    --b-far: #b9dcd6;
+    --b-near: #7fbfa8;
+    --b-solid: #2b4a63;
+    --b-sea: #3fa7bf;
+    --b-orb: #fff0b8;
+    --b-ink: #16213a;
+    --b-ink-soft: #2f3d5c;
+
+    position: relative;
+    margin-top: -64px; /* run the sky up behind the navigation bar */
+    padding-top: 64px;
+    background: linear-gradient(to bottom, var(--b-sky-1), var(--b-sky-2));
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  :global(.dark) .banner {
+    /* Night at the port */
+    --b-sky-1: #070b24;
+    --b-sky-2: #1b2860;
+    --b-far: #1f2c68;
+    --b-near: #141f52;
+    --b-solid: #070b20;
+    --b-sea: #111c4a;
+    --b-orb: #f4f1e4;
+    --b-ink: #eef1fa;
+    --b-ink-soft: #c3cbe6;
+  }
+
+  .banner-copy {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 4vw, 2.75rem) clamp(1.25rem, 4vw, 2rem) clamp(1rem, 2vw, 1.5rem);
+  }
+  .banner-kicker {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--b-ink-soft);
+  }
+  .banner-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--b-ink);
+    margin: 0;
+  }
+  .banner-lede {
+    max-width: 56ch;
+    margin: 0.75rem 0 0;
+    font-size: clamp(1rem, 1.4vw, 1.125rem);
+    line-height: 1.55;
+    color: var(--b-ink-soft);
+  }
+
+  .banner-art {
+    position: relative;
+    height: clamp(96px, 14vw, 160px);
+  }
+  .banner-art svg {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    height: 100%;
+    width: auto;
+    transform: translateX(-50%);
+  }
+  .banner-orb {
+    position: absolute;
+    right: clamp(1.5rem, 12vw, 14rem);
+    top: -12%;
+    width: clamp(36px, 5vw, 64px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--b-orb);
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--b-orb) 22%, transparent);
+  }
+
+  .b-far {
+    fill: var(--b-far);
+  }
+  .b-near {
+    fill: var(--b-near);
+  }
+  .b-solid {
+    fill: var(--b-solid);
+  }
+  .b-sea {
+    fill: var(--b-sea);
+  }
+  .b-wave {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.4);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+  .b-line {
+    fill: none;
+    stroke: var(--b-solid);
+    stroke-linecap: square;
+  }
+  .b-corr {
+    fill: none;
+    stroke: rgba(0, 0, 0, 0.2);
+    stroke-width: 1.4;
+  }
+  .b-sail {
+    fill: #f6efe2;
+    stroke: var(--b-solid);
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+  .b-lamp {
+    fill: #9fb6c6;
+  }
+  .b-beam {
+    fill: #ffe9a8;
+    opacity: 0;
+  }
+  :global(.dark) .b-lamp {
+    fill: #ffe9a8;
+  }
+  :global(.dark) .b-beam {
+    opacity: 0.22;
+  }
+
+  /* The motif sits right of centre in the artwork; on narrow screens slide the
+     art left so it stays in view. */
+  @media (max-width: 900px) {
+    .banner-art svg {
+      transform: translateX(-62%);
+    }
+  }
+</style>

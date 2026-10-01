@@ -39,6 +39,11 @@ const { id, number, time, years, title, stop } = Astro.props;
     scroll-margin-top: -6vh;
   }
 
+  /* No extra gap after the hero: it already shows the harbor on its own. */
+  :global(.port-hero) + .chapter {
+    padding-top: clamp(16px, 3vh, 40px);
+  }
+
   .chapter-caption {
     display: flex;
     align-items: center;

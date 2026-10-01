@@ -216,6 +216,10 @@ const SAMPAN_HULL = "M0 34q8 16 42 16t42-20q-16 10-42 10T0 34z";
   .banner-art {
     position: relative;
     height: calc(160px * var(--bs));
+    /* Lift the artwork into the empty sky beside the copy. The lift is no more
+       than the clear sky at the top of the drawing, so the hills never reach
+       the text; the cranes and sun rise on the right, where there is no copy. */
+    margin-top: calc(-56px * var(--bs));
   }
   .banner-stage {
     position: absolute;
@@ -450,6 +454,10 @@ const SAMPAN_HULL = "M0 34q8 16 42 16t42-20q-16 10-42 10T0 34z";
     }
   }
   @media (max-width: 900px) {
+    /* Narrow screens: the copy spans the full width, so the art stays below it. */
+    .banner-art {
+      margin-top: 0;
+    }
     /* The motif sits right of centre on the stage; on narrow screens slide the
        stage left so it stays in view. */
     .banner-stage {

@@ -906,7 +906,13 @@ const CLOUD = "M30 60a22 22 0 0 1 4-43 34 34 0 0 1 64-6 26 26 0 0 1 44 10 22 22 
         const fit = room / (STAGE_H - SKYLINE_Y);
         const floor = scale * 0.62;
         root.classList.toggle("hero-backed", fit < floor);
-        scale = Math.min(scale, Math.max(fit, floor));
+        if (fit < scale) {
+          scale = Math.max(fit, floor);
+        } else {
+          // Spare room (tall screens): grow the harbor into it, within reason.
+          const roomy = (room - 48) / (STAGE_H - SKYLINE_Y);
+          scale = Math.min(Math.max(scale, roomy), scale * 1.35);
+        }
       }
       scene.style.setProperty("--s", scale.toFixed(4));
 

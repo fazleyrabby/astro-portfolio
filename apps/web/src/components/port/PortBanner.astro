@@ -1,8 +1,13 @@
 ---
 // Page header for inner pages: a strip of the harbor with the page title on the sky.
-// Static artwork (no scroll script). Day colors in the light theme, night in dark.
-// The title area and the artwork never overlap: the art is a fixed-height strip
-// below the copy, so the text stays readable at every screen size.
+// Day colors in the light theme, night in dark. The title area and the artwork never
+// overlap: the art is a fixed-height strip below the copy, so the text stays readable
+// at every screen size.
+//
+// Motion: the artwork is drawn on a 2400×160 stage. The static drawing is one SVG;
+// each moving part (waves, crane load, ferris wheel, beam, boats) is its own element
+// animated with transform only, so the compositor moves it without repainting the
+// drawing. Animations pause while the banner is off screen.
 interface Props {
   title: string;
   /** One line under the title. */
@@ -15,7 +20,7 @@ interface Props {
 const { title, lede, kicker, motif = "bay" } = Astro.props;
 
 const PAINT = ["#e8604c", "#f4b63f", "#2d8f8a", "#3f6fb5", "#f08a4b", "#7fb069"];
-const G = 118; // ground line in the 2400×160 artwork
+const G = 118; // ground line on the stage
 
 // Container stack helper: columns of given heights starting at x.
 const stack = (x: number, cols: number[], offset = 0) =>
@@ -31,13 +36,14 @@ const crane = (x: number) => `
   <path d="M${x} ${G}V52M${x + 36} ${G}V52" stroke-width="6"/>
   <path d="M${x} 96H${x + 36}M${x} 76L${x + 36} 52M${x + 36} 76L${x} 52M${x} 96L${x + 36} 76M${x + 36} 96L${x} 76" stroke-width="2"/>
   <path d="M${x - 62} 52H${x + 104}" stroke-width="7"/>
-  <path d="M${x + 18} 14L${x - 58} 50M${x + 18} 14L${x + 100} 50M${x + 18} 14V52" stroke-width="2"/>
-  <path d="M${x - 46} 55V84" stroke-width="1.5"/>`;
+  <path d="M${x + 18} 14L${x - 58} 50M${x + 18} 14L${x + 100} 50M${x + 18} 14V52" stroke-width="2"/>`;
 
 const yardBoxes = [...stack(1290, [2, 3, 1]), ...stack(1560, [1, 3, 2, 2], 3)];
+const SAMPAN_SAIL = "M40 6v30M40 8l20 26H40z";
+const SAMPAN_HULL = "M0 34q8 16 42 16t42-20q-16 10-42 10T0 34z";
 ---
 
-<header class={`banner banner--${motif}`}>
+<header class={`banner banner--${motif}`} data-port-banner>
   <div class="banner-copy">
     {kicker && <p class="banner-kicker">{kicker}</p>}
     <h1 class="banner-title">{title}</h1>
@@ -47,75 +53,89 @@ const yardBoxes = [...stack(1290, [2, 3, 1]), ...stack(1560, [1, 3, 2, 2], 3)];
 
   <div class="banner-art" aria-hidden="true">
     <span class="banner-orb"></span>
-    <svg viewBox="0 0 2400 160" width="2400" height="160">
-      <path class="b-far" d="M0 118V70c130-34 220-40 340-22 120 18 170 40 290 30 130-12 190-56 320-52 120 4 180 46 300 44 130-2 190-50 320-48 120 2 180 44 300 44 130 0 200-44 330-34 90 6 140 24 200 34V118z"/>
-      <path class="b-near" d="M0 118V98c150-18 240-10 380-14 150-4 220-22 360-18 140 4 210 18 350 16 150-2 220-20 360-16 140 4 210 16 350 14 130-2 200-14 330-10 100 2 170 10 270 8V118z"/>
+
+    <div class="banner-stage">
+      <!-- Static drawing -->
+      <svg class="b-base" viewBox="0 0 2400 160" width="2400" height="160">
+        <path class="b-far" d="M0 118V70c130-34 220-40 340-22 120 18 170 40 290 30 130-12 190-56 320-52 120 4 180 46 300 44 130-2 190-50 320-48 120 2 180 44 300 44 130 0 200-44 330-34 90 6 140 24 200 34V118z"/>
+        <path class="b-near" d="M0 118V98c150-18 240-10 380-14 150-4 220-22 360-18 140 4 210 18 350 16 150-2 220-20 360-16 140 4 210 16 350 14 130-2 200-14 330-10 100 2 170 10 270 8V118z"/>
+
+        {motif === "yard" && (
+          <g>
+            <g class="b-line" set:html={crane(1420) + crane(1760)} />
+            {yardBoxes.map((b) => (
+              <g>
+                <rect x={b.x} y={b.y} width="36" height="16" fill={b.fill} />
+                <path class="b-corr" d={`M${b.x + 7} ${b.y + 3}v10M${b.x + 14} ${b.y + 3}v10M${b.x + 21} ${b.y + 3}v10M${b.x + 28} ${b.y + 3}v10`} />
+              </g>
+            ))}
+          </g>
+        )}
+
+        {motif === "pier" && (
+          <g>
+            <!-- Ferris wheel legs (the wheel itself turns, see below) -->
+            <path class="b-line" d="M1500 62L1478 118M1500 62L1522 118" stroke-width="4"/>
+            <!-- Tents and bunting -->
+            <path d="M1590 118V96l28-22 28 22v22z" fill="#e8604c"/>
+            <path d="M1604 118V96l14-22 14 22v22z" fill="#f6efe2"/>
+            <path d="M1670 118V102l22-16 22 16v16z" fill="#f4b63f"/>
+            <path d="M1681 118V102l11-16 11 16v16z" fill="#f6efe2"/>
+            <path class="b-line" d="M1560 70Q1640 92 1720 74" stroke-width="1.5" fill="none"/>
+            {[0, 1, 2, 3, 4, 5].map((i) => <path d={`M${1574 + i * 26} ${(76 + Math.sin((i + 1) / 2.2) * 8).toFixed(1)}l5 9 5-9z`} fill={PAINT[(i + 2) % PAINT.length]} />)}
+          </g>
+        )}
+
+        {motif === "lighthouse" && (
+          <g>
+            <path class="b-solid" d="M1420 118c18-26 60-38 100-32 40 6 66 18 80 32z"/>
+            <path d="M1486 96l6-56h22l6 56z" fill="#f6efe2"/>
+            <path d="M1489 68h28l1 14h-30z" fill="#e8604c"/>
+            <path class="b-solid" d="M1487 34h32v7h-32zM1492 22h22l6 12h-34zM1502 14h2v8h-2z"/>
+            <rect class="b-lamp" x="1496" y="24" width="14" height="10"/>
+          </g>
+        )}
+
+        {motif === "coast" && (
+          <g>
+            <path class="b-solid" d="M1560 118c-2-30 2-56 10-78l5 2c-8 22-10 48-8 76z"/>
+            <path class="b-solid" d="M1572 40c-18-14-40-14-58-2 20-4 38 0 54 8zM1574 40c-8-20-26-32-48-32 20 8 34 18 44 36zM1576 40c6-22 24-36 46-38-18 8-32 22-40 40zM1578 42c18-10 40-8 56 6-20-6-38-4-54 0z"/>
+          </g>
+        )}
+
+        <rect class="b-solid" x="0" y={G} width="2400" height="8"/>
+        <rect class="b-sea" x="0" y={G + 8} width="2400" height="40"/>
+      </svg>
+
+      <!-- Moving parts: one element each, transform-only -->
+      <div class="b-wave"></div>
 
       {motif === "yard" && (
-        <g>
-          <g class="b-line" set:html={crane(1420) + crane(1760)} />
-          {yardBoxes.map((b) => (
-            <g>
-              <rect x={b.x} y={b.y} width="36" height="16" fill={b.fill} />
-              <path class="b-corr" d={`M${b.x + 7} ${b.y + 3}v10M${b.x + 14} ${b.y + 3}v10M${b.x + 21} ${b.y + 3}v10M${b.x + 28} ${b.y + 3}v10`} />
-            </g>
-          ))}
-        </g>
+        <div class="b-load" style="left:1356px;top:55px">
+          <span class="b-hoist"><i></i><b></b></span>
+        </div>
       )}
 
       {motif === "pier" && (
-        <g>
-          <!-- Ferris wheel -->
-          <g class="b-line">
-            <circle cx="1500" cy="62" r="44" stroke-width="3" fill="none"/>
-            <path d="M1500 18V106M1456 62H1544M1469 31L1531 93M1531 31L1469 93" stroke-width="1.5"/>
-            <path d="M1500 62L1478 118M1500 62L1522 118" stroke-width="4"/>
-          </g>
+        <svg class="b-wheel" viewBox="-50 -50 100 100" width="100" height="100" style="left:1450px;top:12px">
+          <circle class="b-line" r="44" stroke-width="3"/>
+          <path class="b-line" d="M0-44V44M-44 0H44M-31-31L31 31M31-31L-31 31" stroke-width="1.5"/>
           {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
             const a = (i * Math.PI) / 4;
-            return <rect x={(1500 + Math.cos(a) * 44 - 5).toFixed(1)} y={(62 + Math.sin(a) * 44 - 1).toFixed(1)} width="10" height="9" rx="2" fill={PAINT[i % PAINT.length]} />;
+            return <circle cx={(Math.cos(a) * 44).toFixed(1)} cy={(Math.sin(a) * 44).toFixed(1)} r="5.5" fill={PAINT[i % PAINT.length]} />;
           })}
-          <!-- Tents and bunting -->
-          <path d="M1590 118V96l28-22 28 22v22z" fill="#e8604c"/>
-          <path d="M1604 118V96l14-22 14 22v22z" fill="#f6efe2"/>
-          <path d="M1670 118V102l22-16 22 16v16z" fill="#f4b63f"/>
-          <path d="M1681 118V102l11-16 11 16v16z" fill="#f6efe2"/>
-          <path class="b-line" d="M1560 70Q1640 92 1720 74" stroke-width="1.5" fill="none"/>
-          {[0, 1, 2, 3, 4, 5].map((i) => <path d={`M${1574 + i * 26} ${76 + Math.sin((i + 1) / 2.2) * 8}l5 9 5-9z`} fill={PAINT[(i + 2) % PAINT.length]} />)}
-        </g>
+        </svg>
       )}
 
-      {motif === "lighthouse" && (
-        <g>
-          <path class="b-solid" d="M1420 118c18-26 60-38 100-32 40 6 66 18 80 32z"/>
-          <path class="b-beam" d="M1503 34L1180 6V70z"/>
-          <path d="M1486 96l6-56h22l6 56z" fill="#f6efe2"/>
-          <path d="M1489 68h28l1 14h-30z" fill="#e8604c"/>
-          <path class="b-solid" d="M1487 34h32v7h-32zM1492 22h22l6 12h-34zM1502 14h2v8h-2z"/>
-          <rect class="b-lamp" x="1496" y="24" width="14" height="10"/>
-        </g>
-      )}
-
-      {motif === "coast" && (
-        <g>
-          <path class="b-solid" d="M1560 118c-2-30 2-56 10-78l5 2c-8 22-10 48-8 76z"/>
-          <path class="b-solid" d="M1572 40c-18-14-40-14-58-2 20-4 38 0 54 8zM1574 40c-8-20-26-32-48-32 20 8 34 18 44 36zM1576 40c6-22 24-36 46-38-18 8-32 22-40 40zM1578 42c18-10 40-8 56 6-20-6-38-4-54 0z"/>
-        </g>
-      )}
-
-      <rect class="b-solid" x="0" y={G} width="2400" height="8"/>
-      <rect class="b-sea" x="0" y={G + 8} width="2400" height="40"/>
-      <path class="b-wave" d="M0 140q20-8 40 0t40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0 40 0"/>
+      {motif === "lighthouse" && <div class="b-beam"></div>}
 
       {(motif === "coast" || motif === "bay") && (
-        <g>
-          <path class="b-sail" d="M1396 96v30M1396 98l20 26h-20z"/>
-          <path class="b-solid" d="M1356 124q8 16 42 16t42-20q-16 10-42 10t-42-6z"/>
-          <path class="b-sail" d="M1690 108v22M1690 110l14 18h-14z"/>
-          <path class="b-solid" d="M1662 128q6 12 30 12t30-15q-12 8-30 8t-30-5z"/>
-        </g>
+        <>
+          <svg class="b-boat b-boat--1" viewBox="0 0 84 50" width="84" height="50" style="left:1356px;top:90px"><path class="b-sail" d={SAMPAN_SAIL}/><path class="b-solid" d={SAMPAN_HULL}/></svg>
+          <svg class="b-boat b-boat--2" viewBox="0 0 84 50" width="60" height="36" style="left:1662px;top:104px"><path class="b-sail" d={SAMPAN_SAIL}/><path class="b-solid" d={SAMPAN_HULL}/></svg>
+        </>
       )}
-    </svg>
+    </div>
   </div>
 </header>
 
@@ -131,6 +151,8 @@ const yardBoxes = [...stack(1290, [2, 3, 1]), ...stack(1560, [1, 3, 2, 2], 3)];
     --b-orb: #fff0b8;
     --b-ink: #16213a;
     --b-ink-soft: #2f3d5c;
+    /* Stage scale: the 160px-tall artwork shrinks in steps on smaller screens. */
+    --bs: 1;
 
     position: relative;
     margin-top: -64px; /* run the sky up behind the navigation bar */
@@ -186,15 +208,19 @@ const yardBoxes = [...stack(1290, [2, 3, 1]), ...stack(1560, [1, 3, 2, 2], 3)];
 
   .banner-art {
     position: relative;
-    height: clamp(96px, 14vw, 160px);
+    height: calc(160px * var(--bs));
   }
-  .banner-art svg {
+  .banner-stage {
     position: absolute;
     left: 50%;
     bottom: 0;
-    height: 100%;
-    width: auto;
-    transform: translateX(-50%);
+    width: 2400px;
+    height: 160px;
+    transform-origin: 50% 100%;
+    transform: translateX(-50%) scale(var(--bs));
+  }
+  .b-base {
+    display: block;
   }
   .banner-orb {
     position: absolute;
@@ -219,12 +245,6 @@ const yardBoxes = [...stack(1290, [2, 3, 1]), ...stack(1560, [1, 3, 2, 2], 3)];
   .b-sea {
     fill: var(--b-sea);
   }
-  .b-wave {
-    fill: none;
-    stroke: rgba(255, 255, 255, 0.4);
-    stroke-width: 1.5;
-    stroke-linecap: round;
-  }
   .b-line {
     fill: none;
     stroke: var(--b-solid);
@@ -244,22 +264,174 @@ const yardBoxes = [...stack(1290, [2, 3, 1]), ...stack(1560, [1, 3, 2, 2], 3)];
   .b-lamp {
     fill: #9fb6c6;
   }
-  .b-beam {
-    fill: #ffe9a8;
-    opacity: 0;
-  }
   :global(.dark) .b-lamp {
     fill: #ffe9a8;
   }
-  :global(.dark) .b-beam {
-    opacity: 0.22;
+
+  /* ---- Moving parts ---- */
+  .b-wave {
+    position: absolute;
+    left: -80px;
+    top: 132px;
+    width: 2560px;
+    height: 16px;
+    opacity: 0.45;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='16'%3E%3Cpath d='M0 9q20-9 40 0t40 0' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E")
+      repeat-x;
+    animation: b-swell 10s linear infinite;
+    will-change: transform;
+  }
+  @keyframes b-swell {
+    to {
+      transform: translate3d(80px, 0, 0);
+    }
   }
 
-  /* The motif sits right of centre in the artwork; on narrow screens slide the
-     art left so it stays in view. */
+  /* Crane load: clipped at the boom so the cable never pokes above it. */
+  .b-load {
+    position: absolute;
+    width: 36px;
+    height: 64px;
+    overflow: hidden;
+  }
+  .b-hoist {
+    display: block;
+    animation: b-hoist 9s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .b-hoist i {
+    display: block;
+    width: 1.5px;
+    height: 60px;
+    margin: -60px auto 0;
+    background: var(--b-solid);
+  }
+  .b-hoist b {
+    display: block;
+    width: 36px;
+    height: 16px;
+    background: #f4b63f;
+    box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.25);
+  }
+  @keyframes b-hoist {
+    from {
+      transform: translate3d(0, 12px, 0);
+    }
+    to {
+      transform: translate3d(0, 44px, 0);
+    }
+  }
+
+  .b-wheel {
+    position: absolute;
+    overflow: visible;
+    animation: b-turn 48s linear infinite;
+    will-change: transform;
+  }
+  @keyframes b-turn {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .b-beam {
+    position: absolute;
+    left: 1503px;
+    top: 29px;
+    width: 340px;
+    height: 70px;
+    margin: -35px 0 0 -340px;
+    background: linear-gradient(to left, rgba(255, 233, 168, 0.55), rgba(255, 233, 168, 0));
+    clip-path: polygon(100% 50%, 0 0, 0 100%);
+    transform-origin: 100% 50%;
+    display: none;
+    animation: b-sweep 8s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  :global(.dark) .b-beam {
+    display: block;
+  }
+  @keyframes b-sweep {
+    from {
+      transform: rotate(-8deg);
+    }
+    to {
+      transform: rotate(7deg);
+    }
+  }
+
+  .b-boat {
+    position: absolute;
+    overflow: visible;
+    transform-origin: 50% 80%;
+    animation: b-bob 4.2s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .b-boat--2 {
+    animation-duration: 3.4s;
+    animation-delay: -1.6s;
+  }
+  @keyframes b-bob {
+    from {
+      transform: translate3d(0, 0, 0) rotate(-1.2deg);
+    }
+    to {
+      transform: translate3d(0, 3px, 0) rotate(1.2deg);
+    }
+  }
+
+  /* Off screen (class set by the script below): stop everything. */
+  .banner.is-offscreen :is(.b-wave, .b-hoist, .b-wheel, .b-beam, .b-boat) {
+    animation-play-state: paused;
+  }
+
+  @media (max-width: 1100px) {
+    .banner {
+      --bs: 0.8;
+    }
+  }
   @media (max-width: 900px) {
-    .banner-art svg {
-      transform: translateX(-62%);
+    /* The motif sits right of centre on the stage; on narrow screens slide the
+       stage left so it stays in view. */
+    .banner-stage {
+      transform: translateX(-62%) scale(var(--bs));
+    }
+  }
+  @media (max-width: 700px) {
+    .banner {
+      --bs: 0.625;
+    }
+    /* Phones: waves plus one signature movement per page. */
+    .b-boat--2 {
+      animation: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .b-wave,
+    .b-hoist,
+    .b-wheel,
+    .b-beam,
+    .b-boat {
+      animation: none;
     }
   }
 </style>
+
+<script>
+  // Pause banner animations while the banner is scrolled out of view.
+  function setupBanners() {
+    const banners = document.querySelectorAll<HTMLElement>("[data-port-banner]:not([data-observed])");
+    if (banners.length === 0 || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) e.target.classList.toggle("is-offscreen", !e.isIntersecting);
+    });
+    banners.forEach((b) => {
+      b.dataset.observed = "1";
+      io.observe(b);
+    });
+  }
+
+  setupBanners();
+  document.addEventListener("astro:page-load", setupBanners);
+</script>

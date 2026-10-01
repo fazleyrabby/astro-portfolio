@@ -35,13 +35,13 @@ const { id, number, time, years, title, stop } = Astro.props;
 <style>
   .chapter {
     /* The gap before each chapter is where the scenery gets the stage. */
-    padding-top: clamp(110px, 20vh, 200px);
+    padding-top: clamp(110px, 20svh, 200px);
     scroll-margin-top: -6vh;
   }
 
   /* No extra gap after the hero: it already shows the harbor on its own. */
   :global(.port-hero) + .chapter {
-    padding-top: clamp(16px, 3vh, 40px);
+    padding-top: clamp(16px, 3svh, 40px);
   }
 
   .chapter-caption {
@@ -58,9 +58,8 @@ const { id, number, time, years, title, stop } = Astro.props;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-primary);
-    background: color-mix(in srgb, var(--bg-surface) 82%, transparent);
+    background: color-mix(in srgb, var(--bg-surface) 94%, transparent);
     border: 1px solid var(--border);
-    backdrop-filter: blur(10px);
   }
   .chapter-no {
     color: var(--accent-text);
@@ -78,10 +77,12 @@ const { id, number, time, years, title, stop } = Astro.props;
     margin: 0 auto;
     width: calc(100% - clamp(1.5rem, 5vw, 4rem));
     border-radius: clamp(16px, 2.4vw, 28px);
-    background: color-mix(in srgb, var(--bg-base) 93%, transparent);
+    /* Solid paper, no backdrop blur: blurring a scene that animates underneath
+       forces the browser to redo the blur every frame, which is what made
+       scrolling stutter on phones. */
+    background: var(--bg-base);
     border: 1px solid var(--border);
-    box-shadow: 0 30px 80px -40px rgba(8, 14, 40, 0.55);
-    backdrop-filter: blur(14px) saturate(1.1);
+    box-shadow: 0 24px 50px -36px rgba(8, 14, 40, 0.5);
     /* clip, not hidden: hidden would turn the sheet into a scroll container and
        break position: sticky inside it (the projects showcase relies on that). */
     overflow: clip;
@@ -130,7 +131,7 @@ const { id, number, time, years, title, stop } = Astro.props;
 
   @media (max-width: 640px) {
     .chapter {
-      padding-top: 18vh;
+      padding-top: 16svh;
     }
   }
 </style>

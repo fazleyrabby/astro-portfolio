@@ -1,0 +1,332 @@
+---
+import { getCollection } from "astro:content";
+import { getLangFromUrl, useTranslatedPath } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const tp = useTranslatedPath(lang);
+
+// Experiments only exist in English; the shelf shows the same carts on /bn.
+const all = await getCollection("projects");
+const allExperiments = all.filter(
+  (p) => (p.data.lang || "en") === "en" && p.data.category === "experimental" && !p.data.hidden,
+);
+// Only carts with a screenshot and somewhere to play make the shelf.
+const experiments = allExperiments
+  .filter((p) => p.data.thumbnail && (p.data.live || p.data.github))
+  .sort((a, b) => (a.data.position || 0) - (b.data.position || 0));
+
+const SHELF_SIZE = 6;
+const total = allExperiments.length;
+// Render every eligible cart; the client re-sorts by live plays and shows the top SHELF_SIZE.
+---
+
+<section class="arcade" aria-labelledby="arcade-title">
+  <div class="arcade-container">
+    <div class="arcade-header reveal">
+      <div>
+        <span class="section-label">Side quests</span>
+        <h2 id="arcade-title" class="arcade-title">The Arcade</h2>
+        <p class="arcade-sub">What I build when the queue is empty: games, 3D toys and odd experiments. All playable in the browser.</p>
+      </div>
+      <a href={tp("/experiments/")} class="arcade-all">
+        All {total} experiments
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </a>
+    </div>
+
+    <ul class="arcade-shelf" data-arcade data-size={SHELF_SIZE}>
+      {experiments.map((item, i) => {
+        const { title, type, thumbnail, live, github, views_project } = item.data;
+        const href = live || github!;
+        return (
+          <li class="cart reveal" data-cart data-views-project={views_project} data-hidden={i >= SHELF_SIZE ? "" : undefined}>
+            <a href={href} target="_blank" rel="noopener noreferrer" class="cart-link" aria-label={`Play ${title} (opens in a new tab)`}>
+              <span class="cart-ridges" aria-hidden="true"></span>
+              <span class="cart-screen">
+                <img src={thumbnail} alt="" loading="lazy" width="720" height="405" />
+                <span class="cart-play" aria-hidden="true">▶ PLAY</span>
+              </span>
+              <span class="cart-label">
+                <span class="cart-title">{title}</span>
+                <span class="cart-meta">
+                  <span>{type || "Experiment"}</span>
+                  {views_project && (
+                    <span class="cart-plays" data-plays hidden>
+                      <span data-plays-count></span> plays
+                    </span>
+                  )}
+                </span>
+              </span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .arcade {
+    padding: var(--space-section) 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .arcade-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 2rem);
+  }
+  .arcade-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: clamp(1rem, 2vw, 1.5rem);
+  }
+  .arcade-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.375rem, 2.5vw, 1.875rem);
+    color: var(--text-primary);
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.02em;
+  }
+  .arcade-sub {
+    margin: 0;
+    max-width: 480px;
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+  .arcade-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--t-fast) ease;
+  }
+  .arcade-all:hover {
+    color: var(--accent);
+  }
+
+  .arcade-shelf {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .cart[data-hidden] {
+    display: none;
+  }
+
+  /* Cartridge shell: notched top, ridges, inset label. */
+  .cart-link {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.25rem 0.875rem 0.875rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 6px 6px 14px 14px;
+    clip-path: polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    text-decoration: none;
+    color: inherit;
+    transition:
+      transform var(--t-base) var(--ease-out-expo),
+      border-color var(--t-base) ease,
+      box-shadow var(--t-base) ease;
+  }
+  .cart-ridges {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    width: 38%;
+    height: 6px;
+    transform: translateX(-50%);
+    background: repeating-linear-gradient(90deg, var(--border) 0 2px, transparent 2px 6px);
+  }
+  .cart-screen {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+  }
+  .cart-screen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.85) contrast(1.05);
+    transition:
+      filter var(--t-mid) ease,
+      transform var(--t-mid) var(--ease-out-expo);
+  }
+  .cart-play {
+    position: absolute;
+    inset: auto 0.5rem 0.5rem auto;
+    padding: 0.2rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    color: #fff;
+    background: var(--accent);
+    border-radius: 3px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition:
+      opacity var(--t-fast) ease,
+      transform var(--t-fast) ease;
+  }
+  .cart-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--text-primary) 4%, transparent);
+  }
+  .cart-title {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cart-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .cart-plays {
+    color: var(--accent-text);
+  }
+
+  .cart-link:hover,
+  .cart-link:focus-visible {
+    transform: translateY(-6px) rotate(-0.6deg);
+    border-color: var(--border-hover);
+    box-shadow: 0 14px 30px -12px var(--accent-dim);
+  }
+  .cart:nth-child(even) .cart-link:hover,
+  .cart:nth-child(even) .cart-link:focus-visible {
+    transform: translateY(-6px) rotate(0.6deg);
+  }
+  .cart-link:hover img,
+  .cart-link:focus-visible img {
+    filter: none;
+    transform: scale(1.04);
+  }
+  .cart-link:hover .cart-play,
+  .cart-link:focus-visible .cart-play {
+    opacity: 1;
+    transform: none;
+  }
+  .cart-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 860px) {
+    .arcade-shelf {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 560px) {
+    .arcade-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .arcade-shelf {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cart-link,
+    .cart-screen img {
+      transition: none;
+    }
+    .cart-link:hover,
+    .cart-link:focus-visible,
+    .cart:nth-child(even) .cart-link:hover {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  // Live play counts from the same views service /experiments uses.
+  // Most-played carts float to the front; without data, the curated order stays.
+  const VIEWS_API = "https://views.fazleyrabbi.xyz/api/get";
+
+  async function loadPlays() {
+    const shelf = document.querySelector<HTMLElement>("[data-arcade]");
+    if (!shelf || shelf.dataset.loaded) return;
+    shelf.dataset.loaded = "1";
+
+    const size = Number(shelf.dataset.size) || 6;
+    const carts = Array.from(shelf.querySelectorAll<HTMLElement>("[data-cart]"));
+    const plays = new Map<HTMLElement, number>();
+
+    const show = (cart: HTMLElement, n: number) => {
+      plays.set(cart, n);
+      const badge = cart.querySelector<HTMLElement>("[data-plays]");
+      const count = cart.querySelector<HTMLElement>("[data-plays-count]");
+      if (badge && count) {
+        count.textContent = n.toLocaleString();
+        badge.hidden = false;
+      }
+    };
+
+    await Promise.all(
+      carts.map(async (cart) => {
+        const project = cart.dataset.viewsProject;
+        if (!project) return;
+        const cacheKey = `views_cache_${project}`;
+        try {
+          const cached = localStorage.getItem(cacheKey);
+          if (cached) show(cart, Number(cached));
+        } catch {}
+        try {
+          const res = await fetch(`${VIEWS_API}?project=${project}&key=visitors`, {
+            signal: AbortSignal.timeout(4000),
+          });
+          if (!res.ok) return;
+          const data = await res.json();
+          if (typeof data?.views !== "number") return;
+          show(cart, data.views);
+          try {
+            localStorage.setItem(cacheKey, String(data.views));
+          } catch {}
+        } catch {}
+      }),
+    );
+
+    if (plays.size === 0) return;
+    // Stable sort: carts with counts by plays desc, the rest keep curated order.
+    const ranked = [...carts].sort((a, b) => (plays.get(b) ?? -1) - (plays.get(a) ?? -1));
+    ranked.forEach((cart, i) => {
+      if (i < size) cart.removeAttribute("data-hidden");
+      else cart.setAttribute("data-hidden", "");
+      cart.classList.add("is-visible");
+      shelf.appendChild(cart);
+    });
+  }
+
+  loadPlays();
+  document.addEventListener("astro:page-load", loadPlays);
+</script>

@@ -1,0 +1,111 @@
+---
+// Side rail: shows where you are in the day and lets you jump between chapters.
+// Built on the client from every [data-chapter] on the page.
+---
+
+<nav class="rail" data-rail aria-label="Story chapters"></nav>
+
+<style>
+  .rail {
+    position: fixed;
+    right: clamp(0.75rem, 2vw, 1.75rem);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .rail :global(a) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.625rem;
+    padding: 0.375rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--text-primary);
+  }
+  .rail :global(a span) {
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg-surface) 85%, transparent);
+    opacity: 0;
+    transform: translateX(6px);
+    transition:
+      opacity var(--t-fast) ease,
+      transform var(--t-fast) ease;
+  }
+  .rail :global(a i) {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1.5px solid var(--text-primary);
+    background: color-mix(in srgb, var(--bg-surface) 70%, transparent);
+    transition:
+      background var(--t-fast) ease,
+      transform var(--t-fast) ease;
+  }
+  .rail :global(a:hover span),
+  .rail :global(a:focus-visible span),
+  .rail :global(a[aria-current="true"] span) {
+    opacity: 1;
+    transform: none;
+  }
+  .rail :global(a[aria-current="true"] i) {
+    background: var(--coral);
+    border-color: var(--coral);
+    transform: scale(1.35);
+  }
+  .rail :global(a:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 1320px) {
+    .rail {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  function setupRail() {
+    const rail = document.querySelector<HTMLElement>("[data-rail]");
+    if (!rail || rail.dataset.ready) return;
+    rail.dataset.ready = "1";
+
+    const chapters = Array.from(document.querySelectorAll<HTMLElement>("[data-chapter]"));
+    const links = chapters.map((ch) => {
+      const a = document.createElement("a");
+      a.href = `#${ch.id}`;
+      const label = document.createElement("span");
+      label.textContent = ch.dataset.chapterLabel || ch.id;
+      a.append(label, document.createElement("i"));
+      rail.append(a);
+      return a;
+    });
+
+    const setActive = () => {
+      const mid = window.innerHeight / 2;
+      let active = 0;
+      chapters.forEach((ch, i) => {
+        if (ch.getBoundingClientRect().top <= mid) active = i;
+      });
+      links.forEach((a, i) => {
+        if (i === active) a.setAttribute("aria-current", "true");
+        else a.removeAttribute("aria-current");
+      });
+    };
+
+    setActive();
+    window.addEventListener("scroll", setActive, { passive: true });
+  }
+
+  setupRail();
+  document.addEventListener("astro:page-load", setupRail);
+</script>

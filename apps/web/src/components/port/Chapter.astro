@@ -1,0 +1,131 @@
+---
+// One chapter of the story: a caption floating over the scenery, then a sheet of content.
+interface Props {
+  id: string;
+  number: number;
+  /** Time of day shown in the caption, e.g. "Morning". */
+  time: string;
+  /** Years this chapter covers, e.g. "2001 – 2013". */
+  years: string;
+  title: string;
+  /** Where in the day (0 dawn → 1 night) the scene should be when this chapter's caption is centred. */
+  stop: number;
+}
+const { id, number, time, years, title, stop } = Astro.props;
+---
+
+<section class="chapter" id={id} data-chapter data-chapter-label={time} aria-labelledby={`${id}-title`}>
+  <p class="chapter-caption reveal" data-time-stop={stop}>
+    <span class="chapter-no">Chapter {String(number).padStart(2, "0")}</span>
+    <span class="chapter-sep" aria-hidden="true"></span>
+    <span>{time}</span>
+    <span class="chapter-sep" aria-hidden="true"></span>
+    <span>{years}</span>
+  </p>
+
+  <div class="sheet">
+    <header class="chapter-head reveal">
+      <h2 id={`${id}-title`} class="chapter-title">{title}</h2>
+      <div class="chapter-lede"><slot name="lede" /></div>
+    </header>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .chapter {
+    /* The gap before each chapter is where the scenery gets the stage. */
+    padding-top: clamp(110px, 20vh, 200px);
+    scroll-margin-top: -6vh;
+  }
+
+  .chapter-caption {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    width: fit-content;
+    margin: 0 auto 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    background: color-mix(in srgb, var(--bg-surface) 82%, transparent);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+  }
+  .chapter-no {
+    color: var(--accent-text);
+    font-weight: 600;
+  }
+  .chapter-sep {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  .sheet {
+    max-width: 1180px;
+    margin: 0 auto;
+    width: calc(100% - clamp(1.5rem, 5vw, 4rem));
+    border-radius: clamp(16px, 2.4vw, 28px);
+    background: color-mix(in srgb, var(--bg-base) 93%, transparent);
+    border: 1px solid var(--border);
+    box-shadow: 0 30px 80px -40px rgba(8, 14, 40, 0.55);
+    backdrop-filter: blur(14px) saturate(1.1);
+    /* clip, not hidden: hidden would turn the sheet into a scroll container and
+       break position: sticky inside it (the projects showcase relies on that). */
+    overflow: clip;
+    transition:
+      background-color 0.6s ease,
+      border-color 0.6s ease;
+  }
+
+  .chapter-head {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 3.5vw, 2.5rem) clamp(1.25rem, 4vw, 2rem) 0.25rem;
+  }
+  .chapter-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3.2vw, 2.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin: 0 0 0.75rem;
+    max-width: 24ch;
+  }
+  .chapter-lede {
+    max-width: 58ch;
+    font-size: clamp(0.9375rem, 1.2vw, 1.0625rem);
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+  .chapter-lede :global(p) {
+    margin: 0 0 0.5rem;
+  }
+  .chapter-lede :global(strong) {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* Existing homepage sections sit inside the sheet: drop their own page-level spacing. */
+  .sheet > :global(section) {
+    padding-block: clamp(1.25rem, 2.5vw, 2rem);
+    border-bottom: 0;
+  }
+  .sheet > :global(section + section) {
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 640px) {
+    .chapter {
+      padding-top: 18vh;
+    }
+  }
+</style>

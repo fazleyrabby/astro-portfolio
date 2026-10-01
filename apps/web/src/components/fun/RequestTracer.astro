@@ -1,0 +1,379 @@
+---
+import { profile } from "../../data/profile";
+
+// The JSON "response body" — every field comes from data/profile.ts.
+const body = {
+  name: profile.shortName,
+  role: profile.role,
+  location: `${profile.location.city}, ${profile.location.country}`,
+  remote: profile.location.remote,
+  focus: profile.focus,
+  available: true,
+};
+// Pretty-print, but keep short string arrays on one line so the panel stays compact.
+const bodyJson = JSON.stringify(body, null, 2).replace(
+  /\[\s*((?:"[^"]*",?\s*)+)\]/g,
+  (_, items: string) => `[${items.trim().split(/,\s*/).join(", ")}]`,
+);
+
+const hops = [
+  { id: "client", label: "you" },
+  { id: "nginx", label: "nginx" },
+  { id: "laravel", label: "laravel" },
+  { id: "redis", label: "redis" },
+  { id: "mysql", label: "mysql" },
+];
+---
+
+<div class="tracer" data-tracer data-body={bodyJson}>
+  <div class="tracer-bar">
+    <span class="tracer-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="tracer-title">~/fazley — request tracer</span>
+  </div>
+
+  <div class="tracer-cmd">
+    <code><span class="tracer-prompt">$</span> curl -i /api/me</code>
+    <button type="button" class="tracer-send" data-tracer-send>
+      <span class="tracer-send-label">Send request</span>
+      <span aria-hidden="true">↵</span>
+    </button>
+  </div>
+
+  <ol class="tracer-path" aria-hidden="true">
+    {hops.map((h) => (
+      <li class="tracer-hop" data-hop={h.id}>
+        <span class="tracer-node">{h.label}</span>
+      </li>
+    ))}
+    <span class="tracer-packet" data-tracer-packet></span>
+  </ol>
+
+  <div class="tracer-out" data-tracer-out aria-live="polite">
+    <p class="tracer-hint">Press the button. A real request leaves your browser.</p>
+  </div>
+</div>
+
+<style>
+  .tracer {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--bg-surface) 88%, transparent);
+    backdrop-filter: blur(6px);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    margin-bottom: 2rem;
+    max-width: 520px;
+    overflow: hidden;
+  }
+
+  .tracer-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.6875rem;
+  }
+  .tracer-dots {
+    display: inline-flex;
+    gap: 5px;
+  }
+  .tracer-dots i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+  .tracer-dots i:first-child {
+    background: var(--accent);
+  }
+
+  .tracer-cmd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    color: var(--text-primary);
+  }
+  .tracer-prompt {
+    color: var(--accent);
+    margin-right: 0.25rem;
+  }
+  .tracer-send {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    font: inherit;
+    color: var(--text-primary);
+    background: var(--accent-dim);
+    border: 1px solid var(--border-hover);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition:
+      background var(--t-fast) ease,
+      transform var(--t-fast) ease;
+  }
+  .tracer-send:hover {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+  .tracer-send:active {
+    transform: translateY(1px);
+  }
+  .tracer-send:disabled {
+    opacity: 0.5;
+    cursor: wait;
+  }
+  .tracer-send:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* Hop path */
+  .tracer-path {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0.75rem 0.875rem;
+  }
+  .tracer-path::before {
+    content: "";
+    position: absolute;
+    left: 1.5rem;
+    right: 1.5rem;
+    top: calc(0.5rem + 0.8em);
+    border-top: 1px dashed var(--border);
+    z-index: 0;
+  }
+  .tracer-hop {
+    position: relative;
+    z-index: 1;
+  }
+  .tracer-node {
+    display: inline-block;
+    padding: 0.2rem 0.45rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg-base);
+    color: var(--text-muted);
+    transition:
+      color var(--t-fast) ease,
+      border-color var(--t-fast) ease,
+      box-shadow var(--t-fast) ease;
+  }
+  .tracer-hop.is-hit .tracer-node {
+    color: var(--text-primary);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+  .tracer-hop.is-cache .tracer-node {
+    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .tracer-hop.is-skipped .tracer-node {
+    opacity: 0.35;
+    text-decoration: line-through;
+  }
+  .tracer-packet {
+    position: absolute;
+    top: calc(0.5rem + 0.8em - 4px);
+    left: 1.5rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    opacity: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Output */
+  .tracer-out {
+    border-top: 1px solid var(--border);
+    padding: 0.75rem;
+    /* Fixed height: the response never shifts the hero layout. */
+    height: 11.5rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+  .tracer-hint {
+    margin: 0;
+    color: var(--text-muted);
+  }
+  .tracer-out :global(.t-status) {
+    color: var(--text-primary);
+  }
+  .tracer-out :global(.t-ok) {
+    color: #22c55e;
+  }
+  .tracer-out :global(.t-err) {
+    color: #ef4444;
+  }
+  .tracer-out :global(.t-dim) {
+    color: var(--text-muted);
+  }
+  .tracer-out :global(pre) {
+    margin: 0.5rem 0 0;
+    white-space: pre-wrap;
+    color: var(--text-primary);
+    font: inherit;
+  }
+  .tracer-out :global(.t-key) {
+    color: var(--accent-text);
+  }
+
+  @media (max-width: 480px) {
+    .tracer-node {
+      padding: 0.15rem 0.3rem;
+      font-size: 0.625rem;
+    }
+    .tracer-cmd code {
+      font-size: 0.6875rem;
+    }
+  }
+</style>
+
+<script>
+  // Rate limit mirrors a typical Laravel throttle:5,1 — five requests, then 429.
+  const LIMIT = 5;
+  const WINDOW_MS = 20_000;
+  const RETRY_AFTER_S = 10;
+
+  function setupTracer() {
+    const root = document.querySelector<HTMLElement>("[data-tracer]");
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = "1";
+
+    const btn = root.querySelector<HTMLButtonElement>("[data-tracer-send]")!;
+    const label = btn.querySelector<HTMLElement>(".tracer-send-label")!;
+    const out = root.querySelector<HTMLElement>("[data-tracer-out]")!;
+    const packet = root.querySelector<HTMLElement>("[data-tracer-packet]")!;
+    const hops = Array.from(root.querySelectorAll<HTMLElement>("[data-hop]"));
+    const body = root.dataset.body || "{}";
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let cacheWarm = false;
+    let sent: number[] = [];
+    let blockedUntil = 0;
+
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, reduceMotion ? 0 : ms));
+
+    const escape = (s: string) =>
+      s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]!);
+
+    const highlightJson = (json: string) =>
+      escape(json).replace(/"([^"]+)":/g, '<span class="t-key">"$1"</span>:');
+
+    function resetPath() {
+      hops.forEach((h) => h.classList.remove("is-hit", "is-cache", "is-skipped"));
+      packet.style.opacity = "0";
+    }
+
+    function packetTo(hop: HTMLElement) {
+      const pathRect = packet.parentElement!.getBoundingClientRect();
+      const r = hop.getBoundingClientRect();
+      const x = r.left + r.width / 2 - pathRect.left - 4;
+      packet.style.transition = reduceMotion ? "none" : "transform 220ms cubic-bezier(0.4, 0, 0.2, 1)";
+      packet.style.opacity = "1";
+      packet.style.transform = `translateX(${x - packet.offsetLeft}px)`;
+    }
+
+    // Real network round-trip to this origin — the only number we show.
+    async function measureRtt(): Promise<number | null> {
+      const t0 = performance.now();
+      try {
+        await fetch(`/favicon-16x16.png?trace=${Date.now()}`, { cache: "no-store" });
+        return Math.round(performance.now() - t0);
+      } catch {
+        return null;
+      }
+    }
+
+    async function tooManyRequests() {
+      resetPath();
+      hops[1].classList.add("is-hit");
+      packetTo(hops[1]);
+      let left = Math.ceil((blockedUntil - Date.now()) / 1000);
+      btn.disabled = true;
+      const render = () => {
+        out.innerHTML =
+          `<div class="t-status"><span class="t-err">HTTP/2 429 Too Many Requests</span></div>` +
+          `<div class="t-dim">Retry-After: ${left}</div>` +
+          `<pre>{\n  <span class="t-key">"message"</span>: "Easy there. I throttle my APIs too."\n}</pre>`;
+      };
+      render();
+      const timer = setInterval(() => {
+        left -= 1;
+        if (left <= 0) {
+          clearInterval(timer);
+          btn.disabled = false;
+          label.textContent = "Try again";
+          out.innerHTML = `<p class="tracer-hint">Rate limit window reset. Be gentle.</p>`;
+          resetPath();
+          return;
+        }
+        render();
+      }, 1000);
+    }
+
+    async function send() {
+      const now = Date.now();
+      sent = sent.filter((t) => now - t < WINDOW_MS);
+      if (now < blockedUntil) return tooManyRequests();
+      if (sent.length >= LIMIT) {
+        blockedUntil = now + RETRY_AFTER_S * 1000;
+        sent = [];
+        return tooManyRequests();
+      }
+      sent.push(now);
+
+      btn.disabled = true;
+      resetPath();
+      out.innerHTML = `<p class="tracer-hint">→ GET /api/me …</p>`;
+
+      const rttPromise = measureRtt();
+      // First request misses cache and hits MySQL; later ones stop at Redis.
+      const route = cacheWarm ? hops.slice(0, 4) : hops;
+      for (const hop of route) {
+        packetTo(hop);
+        await sleep(240);
+        hop.classList.add("is-hit");
+      }
+      if (cacheWarm) {
+        hops[3].classList.add("is-cache");
+        hops[4].classList.add("is-skipped");
+      }
+      for (const hop of [...route].reverse()) {
+        packetTo(hop);
+        await sleep(cacheWarm ? 110 : 160);
+      }
+
+      const rtt = await rttPromise;
+      const cache = cacheWarm ? "HIT" : "MISS";
+      out.innerHTML =
+        `<div class="t-status"><span class="t-ok">HTTP/2 200 OK</span></div>` +
+        `<div class="t-dim">content-type: application/json</div>` +
+        `<div class="t-dim">x-cache: ${cache}</div>` +
+        (rtt !== null ? `<div class="t-dim">x-round-trip: ${rtt}ms <span title="Measured from your browser">(real)</span></div>` : "") +
+        `<pre>${highlightJson(body)}</pre>`;
+
+      cacheWarm = true;
+      packet.style.opacity = "0";
+      btn.disabled = false;
+      label.textContent = "Send again";
+    }
+
+    btn.addEventListener("click", send);
+  }
+
+  setupTracer();
+  document.addEventListener("astro:page-load", setupTracer);
+</script>

@@ -5,605 +5,68 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from "../../i18n/u
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const tp = useTranslatedPath(lang);
-
-const all = await getCollection("projects");
-const localized = all
+const projects = (await getCollection("projects"))
   .filter((p) => (p.data.lang || "en") === lang && !p.data.hidden && p.data.category !== "experimental")
-  .sort((a, b) => (a.data.position || 0) - (b.data.position || 0))
+  .sort((a, b) => (a.data.position ?? 999) - (b.data.position ?? 999))
   .slice(0, 4);
 ---
 
-<section id="projects" class="projects-showcase-section">
-  <div class="projects-container">
-
-    <!-- Section Header -->
-    <div class="projects-header reveal">
-      <div>
-        <span class="section-label">Selected Work</span>
-        <h2 class="projects-title">{t("projects.title") || "Featured Projects"}</h2>
-      </div>
-      <a href={tp("/projects/")} class="projects-view-all">
-        {t("projects.viewAll") || "View All Projects"}
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-      </a>
-    </div>
-
-    <!-- Scroll-Driven Split Showcase -->
-    <div class="projects-scroll-showcase" id="projects-scroll-showcase">
-      
-      <!-- Left Column: Story Narratives -->
-      <div class="projects-story-track">
-        {localized.map((project, index) => {
-          const { title, description, type, status, problem, thumbnail, tech, live, github } = project.data;
-          const baseSlug = project.slug.replace(/-bn$/, "");
-          const hasCase = !!(problem || (project.data.highlights && project.data.highlights.length));
-          const href = hasCase ? tp(`/projects/${baseSlug}`) : (live || github || "#");
-
-          return (
-            <div
-              class:list={["project-story-item", { "is-active": index === 0 }]}
-              data-project-index={index}
-            >
-              <div class="project-story-meta">
-                <span class="project-story-num">0{index + 1}</span>
-                <span class="project-meta-sep">/</span>
-                <span class="project-meta-type">{type?.toUpperCase() || 'BACKEND'}</span>
-                <span class="project-meta-dot">·</span>
-                <span class="project-meta-status">{status?.toUpperCase() || 'ACTIVE'}</span>
-              </div>
-
-              <h3 class="project-story-title">
-                <a href={href}>{title}</a>
-              </h3>
-
-              <p class="project-story-desc">{description}</p>
-
-              {tech && tech.length > 0 && (
-                <div class="project-story-tags">
-                  {tech.slice(0, 5).map((tItem) => (
-                    <span class="project-story-tag">{tItem}</span>
-                  ))}
-                </div>
-              )}
-
-              <div class="project-story-actions">
-                <a href={href} class="project-story-cta">
-                  <span>Explore Case Study</span>
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                </a>
-
-                {live && (
-                  <a href={live} target="_blank" rel="noopener noreferrer" class="project-story-ext">
-                    Live System ↗
-                  </a>
-                )}
-
-                {github && (
-                  <a href={github} target="_blank" rel="noopener noreferrer" class="project-story-ext">
-                    GitHub ↗
-                  </a>
-                )}
-              </div>
-
-              <!-- Mobile Thumbnail Fallback -->
-              <div class="project-mobile-visual">
-                {thumbnail ? (
-                  <a href={href} class="project-mobile-thumb-link">
-                    <img src={thumbnail} alt={title} loading="lazy" width="600" height="338" />
-                  </a>
-                ) : null}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <!-- Right Column: Sticky Visual Stage -->
-      <div class="projects-stage-col">
-        <div class="projects-stage-sticky">
-          <div class="projects-stage-frame">
-            {localized.map((project, index) => {
-              const { title, thumbnail, problem } = project.data;
-              const baseSlug = project.slug.replace(/-bn$/, "");
-              const hasCase = !!(problem || (project.data.highlights && project.data.highlights.length));
-              const href = hasCase ? tp(`/projects/${baseSlug}`) : "#";
-
-              return (
-                <div
-                  class:list={["project-stage-slide", { "is-active": index === 0 }]}
-                  data-stage-index={index}
-                >
-                  {thumbnail ? (
-                    <a href={href} class="project-stage-link" title={`View ${title}`}>
-                      <img
-                        src={thumbnail}
-                        alt={title}
-                        loading={index === 0 ? "eager" : "lazy"}
-                        width="800"
-                        height="480"
-                        class="project-stage-img"
-                      />
-                      <div class="project-stage-hover-pill">
-                        <span>View Project ↗</span>
-                      </div>
-                    </a>
-                  ) : (
-                    <div class="project-stage-placeholder">
-                      <span>{title}</span>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+<div class="selected-work">
+  <header class="work-header">
+    <h2 id="selected-work-title">{t("projects.title")}</h2>
+    <a href={tp("/projects/")}>{t("projects.viewAll")}</a>
+  </header>
+  <div class="work-grid">
+    {projects.map(({ data, slug }) => {
+      const hasCase = !!(data.problem || data.highlights?.length);
+      const href = hasCase ? tp(`/projects/${slug.replace(/-bn$/, "")}/`) : (data.live || data.github || tp("/projects/"));
+      return (
+        <article class="work-item">
+          {data.thumbnail && (
+            <a class="work-image" href={href} aria-label={`${lang === "bn" ? "দেখুন" : "View"} ${data.title}`}>
+              <img src={data.thumbnail} alt="" loading="lazy" decoding="async" width="800" height="450" />
+            </a>
+          )}
+          <div class="work-body">
+          <h3><a href={href}>{data.title}</a></h3>
+          <p>{data.description}</p>
+          {data.tech?.length > 0 && <p class="work-tech">{data.tech.slice(0, 4).join(" · ")}</p>}
+          <div class="work-actions">
+          <a class="work-link" href={href}>
+            {hasCase ? (lang === "bn" ? "কেস স্টাডি পড়ুন" : "Read case study") : (lang === "bn" ? "প্রজেক্ট দেখুন" : "View project")}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </a>
+          {data.live && <a class="work-secondary" href={data.live} target="_blank" rel="noopener noreferrer">{lang === "bn" ? "লাইভ" : "Live"}</a>}
+          {data.github && <a class="work-secondary" href={data.github} target="_blank" rel="noopener noreferrer">GitHub</a>}
           </div>
-
-          <!-- Sticky Indicator Dots -->
-          <div class="projects-stage-indicators">
-            {localized.map((_, i) => (
-              <button
-                type="button"
-                class:list={["stage-indicator-btn", { "is-active": i === 0 }]}
-                data-target-index={i}
-                aria-label={`Jump to project 0${i + 1}`}
-              >
-                <span class="indicator-num">0{i + 1}</span>
-                <span class="indicator-line"></span>
-              </button>
-            ))}
           </div>
-        </div>
-      </div>
-
-    </div>
-
+        </article>
+      );
+    })}
   </div>
-</section>
-
-<script>
-  function initScrollShowcase() {
-    const section = document.getElementById("projects-scroll-showcase");
-    if (!section) return;
-
-    const stories = section.querySelectorAll<HTMLElement>(".project-story-item");
-    const slides = section.querySelectorAll<HTMLElement>(".project-stage-slide");
-    const indicators = section.querySelectorAll<HTMLElement>(".stage-indicator-btn");
-
-    function setActiveProject(index: number) {
-      stories.forEach((s, idx) => {
-        s.classList.toggle("is-active", idx === index);
-      });
-      slides.forEach((sl, idx) => {
-        sl.classList.toggle("is-active", idx === index);
-      });
-      indicators.forEach((ind, idx) => {
-        ind.classList.toggle("is-active", idx === index);
-      });
-    }
-
-    // Indicator click navigation
-    indicators.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const targetIdx = parseInt(btn.dataset.targetIndex || "0", 10);
-        const targetStory = stories[targetIdx];
-        if (targetStory) {
-          targetStory.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      });
-    });
-
-    // IntersectionObserver for scroll-driven state updates
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = parseInt(
-              (entry.target as HTMLElement).dataset.projectIndex || "0",
-              10
-            );
-            setActiveProject(idx);
-          }
-        });
-      },
-      {
-        rootMargin: "-25% 0px -25% 0px",
-        threshold: 0.2
-      }
-    );
-
-    stories.forEach((item) => observer.observe(item));
-  }
-
-  initScrollShowcase();
-  document.addEventListener("astro:page-load", initScrollShowcase);
-</script>
+</div>
 
 <style>
-  .projects-showcase-section {
-    padding: clamp(4rem, 8vw, 7rem) 0;
-    border-bottom: 1px solid var(--border);
-    position: relative;
+  .selected-work { padding: clamp(1.5rem, 3vw, 2.5rem); }
+  .work-header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.75rem 1.5rem; margin-bottom: 1.5rem; }
+  .work-header h2 { margin: 0; font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 600; }
+  .work-header > a, .work-link { font-size: 0.9375rem; color: var(--accent-text); text-underline-offset: 5px; }
+  .work-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.5rem, 3vw, 2.5rem); }
+  .work-item { min-width: 0; overflow: hidden; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; display: flex; flex-direction: column; }
+  .work-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
+  .work-actions { margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.25rem; }
+  .work-secondary { color: var(--text-secondary); font-size: 0.8125rem; text-underline-offset: 4px; padding-block: 0.375rem; }
+  .work-image { display: block; aspect-ratio: 2 / 1; overflow: hidden; background: var(--bg-surface); }
+  .work-image img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--t-mid) var(--ease-out-expo); }
+  .work-image:hover img { transform: scale(1.025); }
+  .work-item h3 { margin: 0 0 0.75rem; font-size: clamp(1.25rem, 2vw, 1.5rem); font-weight: 600; }
+  .work-item h3 a { color: var(--text-primary); text-decoration: none; }
+  .work-item h3 a:hover { color: var(--accent-text); }
+  .work-item p { font-size: 0.9375rem; line-height: 1.6; color: var(--text-secondary); margin: 0 0 0.75rem; }
+  .work-item .work-tech { font-size: 0.8125rem; }
+  .work-link { display: inline-flex; align-items: center; gap: 0.5rem; padding-block: 0.375rem; }
+  @media (max-width: 640px) {
+    .work-grid { grid-template-columns: 1fr; gap: 1.5rem; }
   }
-
-  .projects-container {
-    max-width: 1160px;
-    margin: 0 auto;
-    padding: 0 clamp(1.25rem, 4vw, 2.5rem);
-  }
-
-  /* Header */
-  .projects-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: clamp(1rem, 2vw, 1.5rem);
-    gap: 1.5rem;
-  }
-
-  .projects-title {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(1.5rem, 3vw, 2.125rem);
-    color: var(--text-primary);
-    margin: 0;
-    letter-spacing: -0.02em;
-  }
-
-  .projects-view-all {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--accent);
-    text-decoration: none;
-    white-space: nowrap;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-  }
-  .projects-view-all:hover {
-    opacity: 0.8;
-    transform: translateX(2px);
-  }
-
-  /* Split Scroll Layout */
-  .projects-scroll-showcase {
-    display: grid;
-    grid-template-columns: 1fr 1.25fr;
-    gap: clamp(1.5rem, 3.5vw, 3rem);
-    position: relative;
-    align-items: start;
-  }
-
-  /* Left Column: Story Narratives */
-  .projects-story-track {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .project-story-item {
-    min-height: clamp(280px, 40vh, 360px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 1.25rem 0;
-    opacity: 0.35;
-    transform: translateY(8px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-  }
-
-  .project-story-item.is-active {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .project-story-meta {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .project-story-num {
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: var(--accent);
-  }
-
-  .project-meta-sep,
-  .project-meta-dot {
-    color: var(--text-muted);
-    opacity: 0.4;
-    font-size: 0.75rem;
-  }
-
-  .project-meta-type,
-  .project-meta-status {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .project-meta-type { color: var(--text-muted); }
-  .project-meta-status { color: var(--accent); }
-
-  .project-story-title {
-    font-family: var(--font-display);
-    font-size: clamp(1.65rem, 3vw, 2.25rem);
-    font-weight: 500;
-    line-height: 1.18;
-    color: var(--text-primary);
-    margin: 0 0 0.85rem;
-    letter-spacing: -0.025em;
-  }
-  .project-story-title a {
-    color: inherit;
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-  .project-story-title a:hover {
-    color: var(--accent);
-  }
-
-  .project-story-desc {
-    font-family: var(--font-sans);
-    font-size: 0.9625rem;
-    color: var(--text-secondary);
-    line-height: 1.68;
-    margin: 0 0 1.5rem;
-    max-width: 440px;
-  }
-
-  /* Tags */
-  .project-story-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    margin-bottom: 1.75rem;
-  }
-
-  .project-story-tag {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    padding: 0.22rem 0.65rem;
-    border-radius: 999px;
-    background: rgba(0, 0, 0, 0.035);
-    color: var(--text-secondary);
-    border: 1px solid rgba(0, 0, 0, 0.04);
-    letter-spacing: 0.02em;
-  }
-  :global(.dark) .project-story-tag {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.06);
-    color: var(--text-secondary);
-  }
-
-  /* Action links */
-  .project-story-actions {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-
-  .project-story-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--accent);
-    text-decoration: none;
-    transition: all 0.2s ease;
-  }
-  .project-story-cta:hover {
-    opacity: 0.85;
-    transform: translateX(3px);
-  }
-
-  .project-story-ext {
-    font-family: var(--font-mono);
-    font-size: 0.775rem;
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: color 0.2s ease;
-  }
-  .project-story-ext:hover {
-    color: var(--text-primary);
-  }
-
-  /* Mobile Visual Hide by default */
-  .project-mobile-visual {
-    display: none;
-    margin-top: 1.5rem;
-  }
-
-  /* Right Column: Sticky Visual Stage */
-  .projects-stage-col {
-    position: relative;
-    height: 100%;
-  }
-
-  .projects-stage-sticky {
-    position: sticky;
-    top: calc(50vh - 170px);
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .projects-stage-frame {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16/10;
-    border-radius: 18px;
-    overflow: hidden;
-    background: var(--bg-surface);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow:
-      0 4px 24px -4px rgba(0, 0, 0, 0.04),
-      0 1px 2px rgba(0, 0, 0, 0.02);
-  }
-  :global(.dark) .projects-stage-frame {
-    border-color: rgba(255, 255, 255, 0.07);
-    box-shadow:
-      0 8px 32px -6px rgba(0, 0, 0, 0.4),
-      0 1px 2px rgba(0, 0, 0, 0.3);
-  }
-
-  .project-stage-slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transform: scale(0.975);
-    pointer-events: none;
-    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .project-stage-slide.is-active {
-    opacity: 1;
-    transform: scale(1);
-    pointer-events: auto;
-  }
-
-  .project-stage-link {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-
-  .project-stage-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .project-stage-link:hover .project-stage-img {
-    transform: scale(1.025);
-  }
-
-  .project-stage-hover-pill {
-    position: absolute;
-    bottom: 1.25rem;
-    right: 1.25rem;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: #ffffff;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 500;
-    padding: 0.35rem 0.85rem;
-    border-radius: 999px;
-    opacity: 0;
-    transform: translateY(4px);
-    transition: all 0.25s ease;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-  }
-
-  .project-stage-link:hover .project-stage-hover-pill {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .project-stage-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-style: italic;
-    color: var(--text-muted);
-  }
-
-  /* Stage Indicators */
-  .projects-stage-indicators {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-  }
-
-  .stage-indicator-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    background: transparent;
-    border: none;
-    padding: 0.25rem 0;
-    cursor: pointer;
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.725rem;
-    transition: color 0.25s ease;
-  }
-
-  .indicator-line {
-    display: inline-block;
-    width: 24px;
-    height: 2px;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-    transition: all 0.3s ease;
-  }
-  :global(.dark) .indicator-line {
-    background: rgba(255, 255, 255, 0.12);
-  }
-
-  .stage-indicator-btn.is-active {
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  .stage-indicator-btn.is-active .indicator-line {
-    width: 38px;
-    background: var(--accent);
-  }
-
-  /* Responsive / Mobile Breakpoint */
-  @media (max-width: 860px) {
-    .projects-scroll-showcase {
-      grid-template-columns: 1fr;
-      gap: 2.5rem;
-    }
-
-    .projects-stage-col {
-      display: none;
-    }
-
-    .project-story-item {
-      min-height: auto;
-      padding: 2rem 0;
-      opacity: 1;
-      transform: none;
-      border-bottom: 1px solid var(--border);
-    }
-    .project-story-item:last-child {
-      border-bottom: none;
-    }
-
-    .project-mobile-visual {
-      display: block;
-    }
-
-    .project-mobile-thumb-link {
-      display: block;
-      border-radius: 14px;
-      overflow: hidden;
-      aspect-ratio: 16/10;
-      border: 1px solid rgba(0, 0, 0, 0.06);
-    }
-    :global(.dark) .project-mobile-thumb-link {
-      border-color: rgba(255, 255, 255, 0.08);
-    }
-    .project-mobile-thumb-link img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
+  @media (prefers-reduced-motion: reduce) { .work-image img { transition: none; } }
 </style>

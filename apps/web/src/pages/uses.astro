@@ -20,12 +20,23 @@ import { Content as UsesMarkdown } from "../content/uses.md";
 
 <style>
   .uses-page {
-    padding: clamp(2rem, 5vw, 4rem) 0;
+    padding: 48px 0 64px;
   }
   .uses-container {
-    max-width: 720px;
+    width: min(900px, calc(100% - 48px));
     margin: 0 auto;
-    padding: 0 clamp(1.25rem, 4vw, 2rem);
+    padding: 0;
+  }
+  @media (max-width: 640px) {
+    .uses-page {
+      padding: 36px 0 48px;
+    }
+    .uses-container {
+      width: calc(100% - 40px);
+    }
+  }
+  .uses-content {
+    max-width: 720px;
   }
   .uses-header {
     margin-bottom: 2.5rem;

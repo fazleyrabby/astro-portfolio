@@ -338,7 +338,7 @@ const tp = useTranslatedPath(lang);
 
   .journey-experience {
     position: relative;
-    padding: clamp(3rem, 7vh, 6rem) 0 clamp(4rem, 8vh, 8rem);
+    padding: 48px 0 64px;
     background: var(--bg-base);
   }
 
@@ -359,17 +359,26 @@ const tp = useTranslatedPath(lang);
   .journey-layout {
     position: relative;
     z-index: 1;
-    max-width: 1040px;
+    width: min(900px, calc(100% - 48px));
     margin: 0 auto;
-    padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+    padding: 0;
     display: grid;
     grid-template-columns: 140px 1fr;
-    gap: clamp(2rem, 5vw, 4rem);
+    gap: clamp(2rem, 4vw, 3rem);
   }
 
   @media (max-width: 860px) {
     .journey-layout {
       grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .journey-experience {
+      padding: 36px 0 48px;
+    }
+    .journey-layout {
+      width: calc(100% - 40px);
     }
   }
 

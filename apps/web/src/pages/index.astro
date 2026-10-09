@@ -1,102 +1,35 @@
 ---
 import MainLayout from "@layouts/MainLayout.astro";
-import PortScene from "@components/port/PortScene.astro";
-import PortHero from "@components/port/PortHero.astro";
+import "../styles/modern-home.css";
+import ModernHero from "@components/home/ModernHero.astro";
 import ProjectsGrid from "@components/home/ProjectsGrid.astro";
 import ExperienceTimeline from "@components/home/ExperienceTimeline.astro";
 import SkillsSection from "@components/home/SkillsSection.astro";
 import LatestNotes from "@components/home/LatestNotes.astro";
 import ContactCTA from "@components/ContactCTA.astro";
-import RequestTracer from "@components/fun/RequestTracer.astro";
 ---
 
-<MainLayout title="Fazley Rabbi — Backend Engineer (Laravel)">
-  <PortScene />
+<MainLayout title="Fazley Rabbi — Backend Engineer (Laravel)" bodyClass="modern-home" designContract="THESIS: Work within easy reach; compact split intro replaces the full-height harbor. OWN-WORLD: Cool white and charcoal surfaces, DM Sans, sea teal actions, flat project captions, 14px imagery corners. STORY: Understand the engineer, inspect real projects, explore career and capabilities, read four posts, contact. FIRST VIEWPORT: 900px centered canvas; compact greeting and 104px portrait; work starts within the first viewport. FORM: User-approved reference synthesis: compact portfolio, fine system lines, charcoal dark mode; seed d1e1a1e0 overridden by pinned direction. FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance">
   <main class="port-home">
-    <PortHero />
-
-    <div id="learning-to-ship" class="home-sheet career-sheet" data-time-stop="0.35">
-      <ExperienceTimeline />
-    </div>
+    <ModernHero />
 
     <div id="cargo" class="home-sheet production-sheet">
-      <div id="work" data-time-stop="0.6"><ProjectsGrid /></div>
-      <section class="tracer-block" aria-labelledby="tracer-title">
-        <div class="tracer-block-inner">
-          <div>
-            <span class="section-label">Try it</span>
-            <h3 id="tracer-title" class="tracer-block-title">Send a request through my stack</h3>
-            <p class="tracer-block-text">
-              The first one goes all the way to the database. The next ones are served from cache.
-              Keep pressing and you'll meet the rate limiter.
-            </p>
-          </div>
-          <RequestTracer />
-        </div>
-      </section>
+      <div id="work"><ProjectsGrid /></div>
+
     </div>
 
-    <div id="capabilities" class="home-sheet capabilities-sheet" data-time-stop="0.8">
+    <div id="capabilities" class="home-sheet capabilities-sheet">
       <SkillsSection />
     </div>
 
-    <div id="lights-on" class="home-sheet writing-sheet" data-time-stop="1">
+    <div id="learning-to-ship" class="home-sheet career-sheet">
+      <ExperienceTimeline />
+    </div>
+
+    <div id="lights-on" class="home-sheet writing-sheet">
       <LatestNotes />
       <ContactCTA />
     </div>
     <div class="port-end" aria-hidden="true"></div>
   </main>
 </MainLayout>
-
-<style>
-  /* The harbor controls the time of day on the homepage. */
-  :global(#theme-toggle) { display: none; }
-  :global(body) { background: transparent; }
-  .home-sheet {
-    width: calc(100% - clamp(1.5rem, 5vw, 4rem));
-    max-width: 1180px;
-    margin: 0 auto;
-    background: var(--bg-base);
-    border: 1px solid var(--border);
-    border-radius: clamp(16px, 2.4vw, 28px);
-    overflow: clip;
-    scroll-margin-top: 80px;
-    transition: background-color 0.6s ease, border-color 0.6s ease;
-  }
-  .career-sheet { margin-top: clamp(1rem, 3svh, 2rem); }
-  .home-sheet + .home-sheet { margin-top: clamp(2rem, 5svh, 3.5rem); }
-  .career-sheet :global(.xp), .writing-sheet :global(.contact-editorial) {
-    padding-block: clamp(1.5rem, 3vw, 2.5rem);
-    border-bottom: 0;
-  }
-  .tracer-block {
-    margin-top: clamp(1.5rem, 3vw, 2.5rem);
-    padding-block: clamp(1.5rem, 3vw, 2.5rem);
-    border-top: 1px solid var(--border);
-  }
-  .tracer-block-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 clamp(1.25rem, 4vw, 2rem);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 520px);
-    gap: clamp(1.5rem, 4vw, 3rem);
-    align-items: center;
-  }
-  .tracer-block-title {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(1.375rem, 2.5vw, 1.875rem);
-    letter-spacing: -0.02em;
-    margin: 0 0 0.75rem;
-  }
-  .tracer-block-text { margin: 0; max-width: 40ch; color: var(--text-secondary); line-height: 1.6; }
-  .tracer-block :global(.tracer) { margin-bottom: 0; }
-  .capabilities-sheet :global(.skills-editorial) { padding-block: clamp(2rem, 4vw, 3rem); border-bottom: 0; }
-  .writing-sheet :global(.contact-editorial) { border-top: 1px solid var(--border); scroll-margin-top: 80px; }
-  #work { scroll-margin-top: 80px; }
-  .port-end { height: clamp(2rem, 5svh, 4rem); }
-  @media (max-width: 860px) {
-    .tracer-block-inner { grid-template-columns: 1fr; }
-  }
-</style>

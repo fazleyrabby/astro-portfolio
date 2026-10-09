@@ -227,7 +227,8 @@ const navItems = [
         >
       </button>
 
-      <LangToggle altUrl={altUrl} />
+      {/* Language toggle hidden: keeping English default */}
+      {false && <LangToggle altUrl={altUrl} />}
 
       <!-- Mobile hamburger -->
       <button

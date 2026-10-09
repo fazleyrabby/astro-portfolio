@@ -287,12 +287,20 @@ const jsonLd = JSON.stringify({
 
 <style>
   .article-page {
-    padding: clamp(2rem, 5vw, 4rem) 0;
+    padding: 48px 0 64px;
   }
   .article-container {
-    max-width: 840px;
+    width: min(900px, calc(100% - 48px));
     margin: 0 auto;
-    padding: 0 clamp(1.25rem, 4vw, 2rem);
+    padding: 0;
+  }
+  @media (max-width: 640px) {
+    .article-page {
+      padding: 36px 0 48px;
+    }
+    .article-container {
+      width: calc(100% - 40px);
+    }
   }
 
   .article-nav {
@@ -330,19 +338,18 @@ const jsonLd = JSON.stringify({
   .article-meta-dot { opacity: 0.4; }
 
   .article-title {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(1.625rem, 3vw, 2.25rem);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(1.85rem, 3.5vw, 2.5rem);
     line-height: 1.15;
     color: var(--text-primary);
     margin: 0 0 1rem;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
   }
 
   .article-subtitle {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 1.25rem;
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
     color: var(--text-secondary);
     line-height: 1.5;
     margin: 0 0 1.25rem;
@@ -357,7 +364,7 @@ const jsonLd = JSON.stringify({
   /* Cover */
   .article-cover {
     margin-bottom: 2.5rem;
-    border-radius: var(--radius-lg);
+    border-radius: 14px;
     overflow: hidden;
     border: 1px solid var(--border);
   }
@@ -390,12 +397,11 @@ const jsonLd = JSON.stringify({
     border-radius: 50%;
     object-fit: cover;
     border: 1px solid var(--border);
-    filter: grayscale(0.8);
   }
   .author-name {
     display: block;
-    font-family: var(--font-display);
-    font-weight: 500;
+    font-family: var(--font-sans);
+    font-weight: 600;
     font-size: 1.125rem;
     color: var(--text-primary);
   }

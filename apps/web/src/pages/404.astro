@@ -84,16 +84,24 @@ const routes = [...pages, ...projects];
 
 <style>
   .nf {
-    padding: clamp(3rem, 8vh, 6rem) 0 clamp(4rem, 10vh, 8rem);
+    padding: 48px 0 64px;
   }
   .nf-container {
-    max-width: 900px;
+    width: min(900px, calc(100% - 48px));
     margin: 0 auto;
-    padding: 0 clamp(1.25rem, 4vw, 2rem);
+    padding: 0;
+  }
+  @media (max-width: 640px) {
+    .nf {
+      padding: 36px 0 48px;
+    }
+    .nf-container {
+      width: calc(100% - 40px);
+    }
   }
   .nf-card {
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    border-radius: 12px;
     background: var(--bg-surface);
     overflow: hidden;
   }

@@ -21,14 +21,14 @@ const images = await cloudinary.search
 ---
 
 <MainLayout title="Photography">
-    <main class="container mx-auto px-4 md:px-8 py-8">
+    <main class="gallery-container">
         <p class="text-sm text-[var(--text-secondary)] text-center mb-8 leading-relaxed">
             Some random shots I have taken on various trips. Mostly using my smart phone!
         </p>
 
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
             {images.total_count > 0 && images.resources.map((img) => (
-                <div class="group relative overflow-hidden bg-[var(--bg-card)] aspect-square border border-[var(--border)]">
+                <div class="group relative overflow-hidden bg-[var(--bg-card)] aspect-square border border-[var(--border)] rounded-[10px]">
                     <Image
                         height={400} width={400} loading="lazy" layout="fullWidth"
                         class="w-full h-full object-cover cursor-pointer transition-transform duration-300"
@@ -46,3 +46,17 @@ const images = await cloudinary.search
         </p>
     </main>
 </MainLayout>
+
+<style>
+  .gallery-container {
+    width: min(900px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 48px 0 64px;
+  }
+  @media (max-width: 640px) {
+    .gallery-container {
+      width: calc(100% - 40px);
+      padding: 36px 0 48px;
+    }
+  }
+</style>

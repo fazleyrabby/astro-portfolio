@@ -7,27 +7,24 @@
    ============================================ */
 
 :root {
-  /* — Color Palette: the port by day — sand paper, navy ink, sea teal — */
-  --bg-base: #f6efe2;
-  --bg-surface: #fffaf1;
-  --bg-card: #fffaf1;
-  --border: rgba(22, 33, 58, 0.14);
-  --accent-rgb: 14 124 134;
-  --accent: #0e7c86;
-  --accent-hover: #12939e;
-  --accent-deep: #07525a;
-  --accent-text: #0b6a73;
-  --border-hover: rgb(var(--accent-rgb) / 0.45);
-  --accent-dim: rgb(var(--accent-rgb) / 0.1);
-  --accent-glow: 0 4px 20px rgb(var(--accent-rgb) / 0.08);
-  --text-primary: #16213a;
-  --text-secondary: #3f4b66;
-  --text-muted: #6f7a92;
-
-  /* — Cargo colors: container paint, used sparingly for emphasis — */
-  --sun: #f4b63f;
-  --coral: #e8604c;
-  --navy: #16213a;
+  /* — Color Palette: Modern Sans — cool white base, charcoal dark mode, sea teal accents — */
+  --bg-base: #fafbfc;
+  --bg-surface: #f0f3f5;
+  --bg-card: #ffffff;
+  --text-primary: #111c25;
+  --text-secondary: #4f606e;
+  --text-muted: #596b7a;
+  --border: #dce3e8;
+  --border-hover: #b5c4d0;
+  --accent-rgb: 13 105 112;
+  --accent: #0d6970;
+  --accent-hover: #09585e;
+  --accent-deep: #09585e;
+  --accent-text: #0d6970;
+  --accent-dim: rgba(13, 105, 112, 0.08);
+  --accent-glow: 0 4px 20px rgba(13, 105, 112, 0.08);
+  --grid-line: #e8edf0;
+  --grid-line-strong: #c5d0d8;
 
   /* — Typography — */
   --font-display: "DM Sans", system-ui, -apple-system, sans-serif;
@@ -42,19 +39,18 @@
   --t-mid: 0.5s;
   --t-slow: 0.7s;
 
-  /* — Spacing — */
-  --space-section: clamp(80px, 10vh, 140px);
-  --space-block: clamp(40px, 6vh, 72px);
-  --content-max: 1100px;
-  --reading-max: 680px;
+  /* — Spacing & Layout — */
+  --space-section: 48px;
+  --space-block: 32px;
+  --content-max: 900px;
+  --reading-max: 720px;
 
   /* — Surfaces — */
-  --radius: 8px;
+  --radius: 10px;
   --radius-lg: 14px;
+  --radius-panel: 16px;
   --border-width: 1px;
-  --shadow-main: 0 1px 3px rgba(22, 33, 58, 0.06);
-  --grid-line: rgba(22, 33, 58, 0.06);
-  --grid-line-strong: rgba(22, 33, 58, 0.12);
+  --shadow-main: none;
 
   /* — Theme aliases — */
   --color-bg: var(--bg-base);
@@ -62,39 +58,36 @@
   --color-surface: var(--bg-card);
   --color-border: var(--border);
   --color-accent: var(--accent);
-
-  --noise-opacity: 0.015;
+  color-scheme: light;
 }
 
-/* The port by night — deep navy water, harbor-light teal */
+/* Charcoal dark mode */
 .dark {
-  --bg-base: #0b1330;
-  --bg-surface: #131d45;
-  --bg-card: #131d45;
-  --border: rgba(238, 241, 250, 0.12);
-  --accent-rgb: 60 198 190;
-  --accent: #1f9d9a;
-  --accent-hover: #27b3af;
-  --accent-deep: #0c5856;
-  --accent-text: #5fdad2;
-  --border-hover: rgb(var(--accent-rgb) / 0.45);
-  --accent-dim: rgb(var(--accent-rgb) / 0.12);
-  --accent-glow: 0 4px 20px rgb(var(--accent-rgb) / 0.1);
-  --text-primary: #eef1fa;
-  --text-secondary: #b4beda;
-  --text-muted: #7f8bb0;
-  --sun: #ffc857;
-  --coral: #ff7a66;
-  --grid-line: rgba(238, 241, 250, 0.05);
-  --grid-line-strong: rgba(238, 241, 250, 0.1);
-  --shadow-main: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --noise-opacity: 0.03;
+  --bg-base: #12191e;
+  --bg-surface: #1d272e;
+  --bg-card: #182128;
+  --text-primary: #eef3f6;
+  --text-secondary: #b3c1cb;
+  --text-muted: #a0b2bf;
+  --border: #33424d;
+  --border-hover: #4d606e;
+  --accent-rgb: 89 198 182;
+  --accent: #59c6b6;
+  --accent-hover: #79d5c7;
+  --accent-deep: #225d55;
+  --accent-text: #79d5c7;
+  --accent-dim: rgba(89, 198, 182, 0.12);
+  --accent-glow: 0 4px 20px rgba(89, 198, 182, 0.1);
+  --grid-line: #26333c;
+  --grid-line-strong: #425660;
+  --shadow-main: none;
 
   --color-bg: var(--bg-base);
   --color-text: var(--text-primary);
   --color-surface: var(--bg-card);
   --color-border: var(--border);
   --color-accent: var(--accent);
+  color-scheme: dark;
 }
 
 /* ============================================
@@ -140,57 +133,39 @@
     line-height: 1.6;
   }
 
-  /* Subtle noise texture — editorial print feel */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 9997;
-    pointer-events: none;
-    opacity: var(--noise-opacity);
-    mix-blend-mode: normal;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 150px 150px;
-    background-repeat: repeat;
-  }
-  /* The grain is a full-screen layer blended over everything on every frame.
-     Barely visible on small screens, so skip it on touch devices. */
-  @media (pointer: coarse) {
-    body::before {
-      display: none;
-    }
+  ::selection {
+    background: var(--accent-dim);
+    color: var(--text-primary);
   }
 
-
-
-  /* Headings — editorial serif */
+  /* Headings — modern sans */
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    font-family: var(--font-display);
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
     text-wrap: balance;
   }
 
   h1 {
-    font-size: clamp(2rem, 3.5vw, 3rem);
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
   }
 
   h2 {
-    font-size: clamp(1.5rem, 2.5vw, 2.125rem);
-    font-weight: 500;
+    font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+    font-weight: 600;
   }
 
   h3 {
-    font-size: clamp(1.125rem, 1.75vw, 1.4rem);
-    font-weight: 500;
+    font-size: clamp(1.1rem, 1.75vw, 1.35rem);
+    font-weight: 600;
   }
 
   code,
@@ -225,7 +200,7 @@
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
-    border-radius: 2px;
+    border-radius: 4px;
   }
 }
 
@@ -285,21 +260,21 @@
     max-width: var(--reading-max);
   }
 
-  /* ============================================
-     MECHANICAL KEYBOARD SWITCH / KEYCAP BUTTONS
-     Custom tactile keycaps with actuation depth & PBT profile
+  /* =======  /* ============================================
+     MODERN MINIMALIST BUTTONS
+     Tailored, crisp 8px radius with subtle lift
      ============================================ */
 
   .btn-primary,
   .btn-ghost,
   .btn-secondary {
     position: relative;
-    font-family: var(--font-mono);
-    font-weight: 600;
-    font-size: 0.8125rem;
-    letter-spacing: 0.02em;
-    padding: 0.625rem 1.25rem 0.75rem;
-    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    padding: 0.5625rem 1.125rem;
+    border-radius: 8px; /* subtle & crisp */
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -308,134 +283,83 @@
     cursor: pointer;
     user-select: none;
     -webkit-font-smoothing: antialiased;
-    transition: transform 0.08s cubic-bezier(0.2, 0.8, 0.2, 1),
-      box-shadow 0.08s cubic-bezier(0.2, 0.8, 0.2, 1),
-      background-color 0.15s ease,
-      border-color 0.15s ease,
-      color 0.15s ease;
+    transition: transform 160ms var(--ease-out-expo),
+      box-shadow 160ms ease,
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease;
   }
 
-  /* Primary Artisan Accent Keycap (Orange Mechanical Switch) */
+  /* Primary Button */
   .btn-primary {
-    background-color: var(--accent);
-    color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow:
-      inset 0 1.5px 0 0 rgba(255, 255, 255, 0.4),
-      inset 0 -1px 0 0 rgba(0, 0, 0, 0.2),
-      0 3.5px 0 0 var(--accent-deep),
-      0 4.5px 0 0 rgba(0, 0, 0, 0.25),
-      0 6px 14px 0 rgb(var(--accent-rgb) / 0.3);
+    background-color: var(--text-primary);
+    color: var(--bg-base);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 8px -2px rgba(0, 0, 0, 0.1);
   }
 
   .btn-primary:hover {
-    background-color: var(--accent-hover);
-    color: #ffffff;
     transform: translateY(-1px);
-    box-shadow:
-      inset 0 1.5px 0 0 rgba(255, 255, 255, 0.5),
-      inset 0 -1px 0 0 rgba(0, 0, 0, 0.2),
-      0 4.5px 0 0 var(--accent-deep),
-      0 5.5px 0 0 rgba(0, 0, 0, 0.28),
-      0 8px 18px 0 rgb(var(--accent-rgb) / 0.4);
+    box-shadow: 0 4px 14px -3px rgba(0, 0, 0, 0.16);
+    color: var(--bg-base);
   }
 
-  /* Mechanical Bottom Out (Press Key All The Way Down) */
   .btn-primary:active {
-    transform: translateY(3.5px) !important;
-    box-shadow:
-      inset 0 1.5px 3px 0 rgba(0, 0, 0, 0.35),
-      inset 0 0 0 1px rgba(0, 0, 0, 0.2),
-      0 0 0 0 var(--accent-deep),
-      0 1px 2px 0 rgba(0, 0, 0, 0.2) !important;
+    transform: translateY(0) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08) !important;
   }
 
-  /* Ghost / Secondary Keycap (Machined Matte PBT Keycap) */
+  .dark .btn-primary {
+    background-color: var(--accent);
+    color: #0b1a18;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 10px -2px rgba(89, 198, 182, 0.25);
+  }
+
+  .dark .btn-primary:hover {
+    background-color: var(--accent-hover);
+    box-shadow: 0 4px 16px -2px rgba(89, 198, 182, 0.35);
+    color: #0b1a18;
+  }
+
+  /* Secondary / Ghost Button */
   .btn-ghost,
   .btn-secondary {
     background-color: var(--bg-surface);
     color: var(--text-primary);
     border: 1px solid var(--border);
-    box-shadow:
-      inset 0 1.5px 0 0 rgba(255, 255, 255, 0.8),
-      inset 0 -1px 0 0 rgba(0, 0, 0, 0.04),
-      0 3.5px 0 0 #d4d4d8,
-      0 4.5px 0 0 rgba(0, 0, 0, 0.08),
-      0 6px 12px 0 rgba(0, 0, 0, 0.06);
-  }
-
-  .dark .btn-ghost,
-  .dark .btn-secondary {
-    background-color: #18181b;
-    color: var(--text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow:
-      inset 0 1.5px 0 0 rgba(255, 255, 255, 0.15),
-      inset 0 -1px 0 0 rgba(0, 0, 0, 0.5),
-      0 3.5px 0 0 #09090b,
-      0 4.5px 0 0 rgba(0, 0, 0, 0.6),
-      0 6px 14px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   }
 
   .btn-ghost:hover,
   .btn-secondary:hover {
-    background-color: var(--bg-base);
-    border-color: var(--border-hover);
+    background-color: var(--bg-card);
+    border-color: var(--border-hover, var(--text-secondary));
     color: var(--text-primary);
     transform: translateY(-1px);
-    box-shadow:
-      inset 0 1.5px 0 0 rgba(255, 255, 255, 0.9),
-      0 4.5px 0 0 #d4d4d8,
-      0 5.5px 0 0 rgba(0, 0, 0, 0.1),
-      0 8px 16px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 3px 10px -2px rgba(0, 0, 0, 0.06);
+  }
+
+  .btn-ghost:active,
+  .btn-secondary:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+  }
+
+  .dark .btn-ghost,
+  .dark .btn-secondary {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 
   .dark .btn-ghost:hover,
   .dark .btn-secondary:hover {
-    background-color: #27272a;
+    background-color: var(--bg-card);
     border-color: rgba(255, 255, 255, 0.2);
-    color: var(--text-primary);
-    transform: translateY(-1px);
-    box-shadow:
-      inset 0 1.5px 0 0 rgba(255, 255, 255, 0.22),
-      0 4.5px 0 0 #09090b,
-      0 5.5px 0 0 rgba(0, 0, 0, 0.7),
-      0 8px 18px 0 rgba(0, 0, 0, 0.6);
-  }
-
-  /* Ghost Keycap Bottom Out */
-  .btn-ghost:active,
-  .btn-secondary:active {
-    transform: translateY(3.5px) !important;
-    box-shadow:
-      inset 0 1.5px 3px 0 rgba(0, 0, 0, 0.25),
-      inset 0 0 0 1px rgba(0, 0, 0, 0.1),
-      0 0 0 0 #d4d4d8,
-      0 1px 2px 0 rgba(0, 0, 0, 0.1) !important;
-  }
-
-  .dark .btn-ghost:active,
-  .dark .btn-secondary:active {
-    box-shadow:
-      inset 0 1.5px 3px 0 rgba(0, 0, 0, 0.6),
-      inset 0 0 0 1px rgba(0, 0, 0, 0.4),
-      0 0 0 0 #000,
-      0 1px 2px 0 rgba(0, 0, 0, 0.4) !important;
-  }
-
-  .btn-ghost:active,
-  .btn-secondary:active {
-    transform: translateY(1px) scale(0.985);
-    box-shadow:
-      inset 0 1.5px 3px 0 rgba(0, 0, 0, 0.15),
-      inset 0 0 0 1px rgba(0, 0, 0, 0.05);
-  }
-
-  .dark .btn-ghost:active,
-  .dark .btn-secondary:active {
-    box-shadow:
-      inset 0 1.5px 3px 0 rgba(0, 0, 0, 0.5),
-      inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.4);
   }
 
   /* ============================================

@@ -1,0 +1,388 @@
+---
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../../i18n/utils";
+import { profile } from "../../data/profile";
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
+---
+
+<section id="hero" class="modern-hero" aria-labelledby="hero-title">
+  <!-- Hero-scoped Spotlight Pattern (Strictly confined to hero, full-width bleed) -->
+  <div class="hero-spotlight-bg" aria-hidden="true">
+    <div class="hero-grid-base"></div>
+    <div class="hero-grid-spotlight"></div>
+    <div class="hero-spotlight-glow"></div>
+  </div>
+
+  <div class="modern-hero-copy">
+    <h1 id="hero-title">{lang === "bn" ? "হ্যালো, আমি ফজলে।" : "Hi, I’m Fazley."}</h1>
+    <p class="modern-role">{profile.role} <span>{profile.location.city}, {profile.location.country}</span></p>
+    <p class="modern-intro">
+      {lang === "bn" ? (
+        <>উচ্চ-ক্ষমতাসম্পন্ন <em>ব্যাকএন্ড সিস্টেম</em>, পেমেন্ট ইনফ্রাস্ট্রাকচার এবং স্কেলেবল REST API ডিজাইন ও ডেভেলপমেন্ট।</>
+      ) : (
+        <>Designing <em>resilient</em> backend systems, payment infrastructure, and scalable APIs for products that serve real users.</>
+      )}
+    </p>
+
+    <!-- Modern Buttons with subtle 8px radius -->
+    <div class="modern-actions">
+      <a href="mailto:fazley111@gmail.com" class="btn-primary">
+        <span>{lang === "bn" ? "কথা বলি" : "Let’s talk"}</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17L17 7" />
+          <path d="M7 7h10v10" />
+        </svg>
+      </a>
+      <a href={tp("/resume/")} class="btn-ghost">
+        <span>{t("nav.resume")}</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14" />
+          <path d="M12 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <figure class="modern-portrait">
+    <img src="/me.webp" alt={profile.shortName} width="480" height="480" loading="eager" fetchpriority="high" decoding="async" />
+    <figcaption>{lang === "bn" ? "ব্যাকএন্ড ইঞ্জিনিয়ার · বাংলাদেশ" : "Backend engineer · Bangladesh"}</figcaption>
+  </figure>
+</section>
+
+<style>
+  .modern-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 48px;
+    align-items: center;
+    padding: 56px 0 48px;
+  }
+
+  /* Hero-scoped Spotlight Background (confined strictly to hero, full-width bleed) */
+  .hero-spotlight-bg {
+    position: absolute;
+    top: -64px;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 72px, black calc(100% - 60px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 72px, black calc(100% - 60px), transparent 100%);
+  }
+
+  .hero-grid-base {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, var(--grid-line) 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: 0.45;
+    mask-image: radial-gradient(ellipse 85% 75% at 50% 50%, black 20%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 50%, black 20%, transparent 85%);
+  }
+
+  .hero-grid-spotlight {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, var(--accent) 1.25px, transparent 1.25px);
+    background-size: 28px 28px;
+    opacity: 0;
+    transition: opacity 280ms ease;
+    mask-image: radial-gradient(340px circle at var(--hero-mouse-x, -500px) var(--hero-mouse-y, -500px), black 0%, transparent 75%);
+    -webkit-mask-image: radial-gradient(340px circle at var(--hero-mouse-x, -500px) var(--hero-mouse-y, -500px), black 0%, transparent 75%);
+  }
+
+  .hero-spotlight-glow {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 320ms ease;
+    background: radial-gradient(380px circle at var(--hero-mouse-x, -500px) var(--hero-mouse-y, -500px), color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 70%);
+  }
+
+  :global(.modern-hero.has-mouse-moved) .hero-grid-spotlight,
+  :global(.modern-hero.has-mouse-moved) .hero-spotlight-glow {
+    opacity: 1;
+  }
+
+  @media (hover: none) {
+    .hero-grid-spotlight {
+      opacity: 0.65;
+      mask-image: radial-gradient(280px circle at 50% 35%, black 0%, transparent 75%);
+      -webkit-mask-image: radial-gradient(280px circle at 50% 35%, black 0%, transparent 75%);
+    }
+  }
+
+  @media print {
+    .hero-spotlight-bg {
+      display: none !important;
+    }
+  }
+
+  .modern-hero-copy {
+    position: relative;
+    z-index: 1;
+    animation: modern-copy-arrive 700ms var(--ease-out-expo) both;
+  }
+
+  @keyframes modern-copy-arrive {
+    from { transform: translateY(12px); }
+    to { transform: translateY(0); }
+  }
+
+  /* Typography */
+  .modern-hero h1 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 4.2vw, 2.85rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin: 0 0 14px;
+    color: var(--text-primary);
+  }
+
+  .modern-role {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    font-size: 14.5px;
+    margin: 0 0 18px;
+    color: var(--text-secondary);
+  }
+
+  .modern-role span {
+    color: var(--text-muted);
+  }
+
+  .modern-intro {
+    font-size: 18.5px;
+    line-height: 1.55;
+    max-width: 44ch;
+    margin: 0 0 24px;
+    color: var(--text-secondary);
+  }
+
+  .modern-intro em {
+    font-style: italic;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  /* Modern Actions & Buttons */
+  .modern-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary,
+  .btn-ghost {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 13.5px;
+    border-radius: 8px;
+    padding: 10px 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease, transform 160ms var(--ease-out-expo), box-shadow 160ms ease, border-color 160ms ease;
+  }
+
+  .btn-primary {
+    background: var(--text-primary);
+    color: var(--bg-base);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 8px -2px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-primary svg {
+    transition: transform 160ms var(--ease-out-expo);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px -3px rgba(0, 0, 0, 0.16);
+    color: var(--bg-base);
+  }
+
+  .btn-primary:hover svg {
+    transform: translate(2px, -2px);
+  }
+
+  :global(.dark) .btn-primary {
+    background: var(--accent);
+    color: #0b1a18;
+    font-weight: 600;
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 10px -2px rgba(89, 198, 182, 0.25);
+  }
+
+  :global(.dark) .btn-primary:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 4px 16px -2px rgba(89, 198, 182, 0.35);
+    color: #0b1a18;
+  }
+
+  .btn-ghost {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  }
+
+  .btn-ghost svg {
+    transition: transform 160ms var(--ease-out-expo);
+  }
+
+  .btn-ghost:hover {
+    background: var(--bg-card);
+    border-color: var(--text-secondary);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px -2px rgba(0, 0, 0, 0.06);
+  }
+
+  .btn-ghost:hover svg {
+    transform: translateX(3px);
+  }
+
+  /* Portrait */
+  .modern-portrait {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    animation: modern-arrive 900ms var(--ease-out-expo) both;
+  }
+
+  @keyframes modern-arrive {
+    from { transform: translateY(12px); clip-path: inset(0 0 8px 0); }
+    to { transform: translateY(0); clip-path: inset(0); }
+  }
+
+  .modern-portrait img {
+    width: 260px;
+    height: 286px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 12px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 28px -8px rgba(0, 0, 0, 0.07);
+    transition: transform 260ms var(--ease-out-expo), box-shadow 260ms ease;
+  }
+
+  .modern-portrait img:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.12);
+  }
+
+  :global(.dark) .modern-portrait img {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 16px 32px -8px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .modern-portrait figcaption {
+    display: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 860px) {
+    .modern-hero {
+      grid-template-columns: minmax(0, 1fr) 210px;
+      gap: 36px;
+      padding: 44px 0 40px;
+    }
+    .modern-portrait img {
+      width: 210px;
+      height: 231px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .modern-hero {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: 32px 0 36px;
+    }
+    .modern-portrait {
+      order: -1;
+      align-items: flex-start;
+    }
+    .modern-portrait img {
+      width: 140px;
+      height: 154px;
+    }
+    .modern-intro {
+      font-size: 17px;
+      line-height: 1.5;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .modern-portrait img {
+      width: 124px;
+      height: 136px;
+    }
+  }
+</style>
+
+<script>
+  function initHeroSpotlight() {
+    const hero = document.getElementById("hero");
+    const bg = hero?.querySelector<HTMLElement>(".hero-spotlight-bg");
+    if (!hero || !bg) return;
+
+    let rafId: number | null = null;
+    let hasMoved = false;
+
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = hero.getBoundingClientRect();
+      const navHeight = 64;
+
+      // Only illuminate when cursor is inside hero content area, strictly below the navbar
+      if (e.clientY < Math.max(navHeight, rect.top) || e.clientY > rect.bottom) {
+        if (hasMoved) {
+          hero.classList.remove("has-mouse-moved");
+          hasMoved = false;
+        }
+        return;
+      }
+
+      if (!hasMoved) {
+        hero.classList.add("has-mouse-moved");
+        hasMoved = true;
+      }
+
+      const bgRect = bg.getBoundingClientRect();
+      const x = e.clientX - bgRect.left;
+      const y = e.clientY - bgRect.top;
+
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          hero.style.setProperty("--hero-mouse-x", `${x}px`);
+          hero.style.setProperty("--hero-mouse-y", `${y}px`);
+          rafId = null;
+        });
+      }
+    };
+
+    const onMouseLeave = () => {
+      hero.classList.remove("has-mouse-moved");
+      hasMoved = false;
+    };
+
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    hero.addEventListener("mouseleave", onMouseLeave);
+  }
+
+  initHeroSpotlight();
+  document.addEventListener("astro:page-load", initHeroSpotlight);
+</script>

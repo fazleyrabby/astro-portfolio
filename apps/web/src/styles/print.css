@@ -1,5 +1,8 @@
 @media print {
-  :root {
+  :root,
+  .dark,
+  html,
+  body {
     --bg: #ffffff;
     --layer: #ffffff;
     --layer-2: #ffffff;
@@ -8,21 +11,12 @@
     --text-mid: #222222;
     --text-lo: #444444;
     --line: #cccccc;
-  }
-
-  .doc-header,
-  .doc-footer,
-  .skip-link,
-  .keycap,
-  .no-print,
-  nav[aria-label="Primary"] {
-    display: none !important;
-  }
-
-  body {
-    background: #fff;
-    color: #000;
-    font-size: 11pt;
+    color-scheme: light !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   main {

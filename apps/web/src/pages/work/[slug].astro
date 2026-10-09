@@ -197,8 +197,13 @@ const isExperiment = d.category === "experimental";
 
 <style>
   .case {
-    max-width: 900px;
+    width: min(900px, calc(100% - 48px));
     margin-inline: auto;
+  }
+  @media (max-width: 640px) {
+    .case {
+      width: calc(100% - 40px);
+    }
   }
   .back {
     display: inline-block;

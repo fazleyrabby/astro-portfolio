@@ -159,7 +159,6 @@ const categories = [
                   <span class="meta-tag meta-type">{type || "EXPERIMENT"}</span>
                   <span class="meta-dot">·</span>
                   <span class="meta-status">
-                    <span class="status-indicator"></span>
                     {status || "ACTIVE"}
                   </span>
                   {views_project && (
@@ -329,18 +328,27 @@ const categories = [
 
 <style>
   .experiments-page {
-    padding: clamp(2rem, 5vw, 4rem) 0 6rem;
+    padding: 48px 0 64px;
   }
 
   .experiments-container {
-    max-width: 1200px;
+    width: min(900px, calc(100% - 48px));
     margin: 0 auto;
-    padding: 0 clamp(1.25rem, 4vw, 2rem);
+    padding: 0;
+  }
+
+  @media (max-width: 640px) {
+    .experiments-page {
+      padding: 36px 0 48px;
+    }
+    .experiments-container {
+      width: calc(100% - 40px);
+    }
   }
 
   /* Header */
   .experiments-header {
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
   }
 
   .header-badges {
@@ -355,8 +363,8 @@ const categories = [
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
+    padding: 0.25rem 0.65rem;
+    border-radius: 7px;
     background: color-mix(in srgb, var(--accent) 12%, transparent);
     border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
   }
@@ -502,7 +510,7 @@ const categories = [
 
   .filter-chip {
     padding: 0.4rem 0.85rem;
-    border-radius: 9999px;
+    border-radius: 7px;
     font-family: var(--font-sans);
     font-size: 0.8125rem;
     font-weight: 500;
@@ -550,7 +558,7 @@ const categories = [
     display: flex;
     flex-direction: column;
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg, 14px);
+    border-radius: 12px;
     background: color-mix(in srgb, var(--bg-surface, #141419) 70%, var(--bg-base));
     overflow: hidden;
     transition: border-color 0.3s ease, transform 0.3s var(--ease-out-expo), box-shadow 0.3s ease;
@@ -633,8 +641,8 @@ const categories = [
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    padding: 0.5rem 1rem;
-    border-radius: 9999px;
+    padding: 0.5rem 0.85rem;
+    border-radius: 7px;
     background: var(--accent);
     color: #ffffff;
     font-family: var(--font-sans);
@@ -690,14 +698,6 @@ const categories = [
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--text-muted);
-  }
-
-  .status-indicator {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: #10b981;
-    box-shadow: 0 0 6px #10b981;
   }
 
   .meta-views {

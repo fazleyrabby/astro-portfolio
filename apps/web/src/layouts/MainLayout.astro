@@ -26,6 +26,8 @@ const {
   articleTags,
   lang = getLangFromUrl(Astro.url),
   altUrl,
+  bodyClass,
+  designContract,
 } = Astro.props;
 ---
 
@@ -48,9 +50,10 @@ const {
     {articleTags}
   />
   <body
-    class="font-sans min-h-screen relative bg-[var(--bg-base)] text-[var(--text-primary)] antialiased"
+    class:list={["font-sans min-h-screen relative bg-[var(--bg-base)] text-[var(--text-primary)] antialiased", bodyClass]}
     data-api-url={import.meta.env.PUBLIC_API_URL || "https://cms.fazleyrabbi.xyz"}
   >
+    {designContract && <Fragment set:html={`<!-- ${designContract} -->`} />}
     <Analytics />
 
     <div id="rain-wet-content" class="rain-wet-content min-h-screen flex flex-col">

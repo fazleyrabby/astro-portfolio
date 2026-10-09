@@ -41,17 +41,12 @@ const PAINT = ["#e8604c", "#f4b63f", "#2d8f8a", "#3f6fb5", "#f08a4b", "#7fb069"]
 
           return (
             <article
-              class="project-card-editorial reveal"
+              class="project-card-modern reveal"
               data-type={type || "backend"}
               data-title={title.toLowerCase()}
-              style={`--paint:${PAINT[index % PAINT.length]}`}
             >
-              {/* Container lid: corrugated strip in the container's paint color */}
-              <div class="project-card-lid" aria-hidden="true">
-                <span>FR-{String(index + 1).padStart(2, "0")}</span>
-              </div>
               {/* Thumbnail */}
-              <a href={href} class="project-card-thumb">
+              <a href={href} class="project-thumb-frame">
                 {thumbnail ? (
                   <img
                     src={thumbnail}
@@ -61,7 +56,7 @@ const PAINT = ["#e8604c", "#f4b63f", "#2d8f8a", "#3f6fb5", "#f08a4b", "#7fb069"]
                     height="338"
                   />
                 ) : (
-                  <div class="project-card-placeholder">
+                  <div class="project-thumb-placeholder">
                     <span>{title}</span>
                   </div>
                 )}
@@ -70,14 +65,14 @@ const PAINT = ["#e8604c", "#f4b63f", "#2d8f8a", "#3f6fb5", "#f08a4b", "#7fb069"]
               {/* Content */}
               <div class="project-card-body">
                 <div class="project-card-meta">
-                  <span class="project-card-type">{type?.toUpperCase() || 'PROJECT'}</span>
+                  <span class="project-card-type">{type?.toUpperCase() || 'BACKEND'}</span>
                   <span class="project-card-dot">·</span>
-                  <span class="project-card-status">{status?.toUpperCase() || 'ACTIVE'}</span>
+                  <span class="project-card-status">{status?.toUpperCase() || 'PRODUCTION'}</span>
                 </div>
 
-                <h3 class="project-card-title">
+                <h2 class="project-card-title">
                   <a href={href}>{title}</a>
-                </h3>
+                </h2>
 
                 <p class="project-card-desc">{description}</p>
 
@@ -120,178 +115,160 @@ const PAINT = ["#e8604c", "#f4b63f", "#2d8f8a", "#3f6fb5", "#f08a4b", "#7fb069"]
 
 <style>
   .projects-page {
-    padding: clamp(2rem, 5vw, 4rem) 0;
+    padding: 48px 0 64px;
   }
   .projects-page-container {
-    max-width: 1100px;
+    width: min(900px, calc(100% - 48px));
     margin: 0 auto;
-    padding: 0 clamp(1.25rem, 4vw, 2rem);
   }
-
-  .projects-page-header {
-    margin-bottom: 2rem;
-  }
-
-
 
   /* Grid */
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: clamp(1.5rem, 3vw, 2rem);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 24px;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 640px) {
+    .projects-page { padding: 36px 0 48px; }
+    .projects-page-container { width: calc(100% - 40px); }
     .projects-grid {
       grid-template-columns: 1fr;
+      gap: 32px;
     }
   }
 
   /* Card */
-  .project-card-editorial {
+  .project-card-modern {
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    background: var(--bg-surface);
-    transition: border-color 0.3s ease, transform 0.3s var(--ease-out-expo), box-shadow 0.3s ease;
-  }
-  .project-card-editorial:hover {
-    border-color: var(--border-hover);
-    transform: translateY(-4px);
-    box-shadow: 0 18px 36px -22px rgba(8, 14, 40, 0.5);
+    background: transparent;
+    border: 0;
   }
 
-  .project-card-lid {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    height: 26px;
-    padding: 0 0.75rem;
-    background:
-      repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.16) 0 2px, transparent 2px 12px),
-      var(--paint);
-    box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.25);
-  }
-  .project-card-lid span {
-    padding: 0 0.375rem;
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    color: #16213a;
-    background: var(--paint);
-  }
-
-  .project-card-thumb {
+  .project-thumb-frame {
     display: block;
+    aspect-ratio: 1.8;
+    padding: 16px;
+    background: var(--bg-surface);
+    border-radius: 14px;
     overflow: hidden;
-    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    transition: transform 280ms var(--ease-out-expo);
   }
-  .project-card-thumb img {
+  .project-thumb-frame img {
     width: 100%;
-    height: auto;
-    aspect-ratio: 16/9;
+    height: 100%;
     object-fit: cover;
-    transition: transform 0.5s var(--ease-out-expo);
+    object-position: top;
+    border-radius: 7px;
+    transition: transform 300ms var(--ease-out-expo);
   }
-  .project-card-editorial:hover .project-card-thumb img {
-    transform: scale(1.03);
+  .project-thumb-frame:hover {
+    transform: translateY(-3px);
+  }
+  .project-thumb-frame:hover img {
+    transform: scale(1.025);
   }
 
-  .project-card-placeholder {
+  .project-thumb-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    aspect-ratio: 16/9;
-    background: var(--bg-surface);
-    font-family: var(--font-display);
-    font-size: 1.125rem;
+    width: 100%;
+    height: 100%;
+    border-radius: 7px;
+    background: var(--bg-card);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
     color: var(--text-muted);
-    font-style: italic;
   }
 
   .project-card-body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 1.5rem;
+    padding: 16px 0 0;
   }
 
   .project-card-meta {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
   }
   .project-card-type,
   .project-card-status {
     font-family: var(--font-mono);
-    font-size: 0.625rem;
+    font-size: 11px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
   .project-card-type { color: var(--text-muted); }
-  .project-card-status { color: var(--accent); }
+  .project-card-status { color: var(--accent-text); }
   .project-card-dot { color: var(--text-muted); opacity: 0.4; }
 
   .project-card-title {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 1.25rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 18px;
     color: var(--text-primary);
-    margin: 0 0 0.5rem;
-    letter-spacing: -0.01em;
-    line-height: 1.2;
+    margin: 0 0 6px;
+    line-height: 1.25;
   }
   .project-card-title a {
     color: inherit;
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color 180ms ease;
   }
-  .project-card-editorial:hover .project-card-title a {
-    color: var(--accent);
+  .project-card-title a:hover {
+    color: var(--accent-text);
   }
 
   .project-card-desc {
     font-family: var(--font-sans);
-    font-size: 0.875rem;
+    font-size: 14px;
     color: var(--text-secondary);
     line-height: 1.6;
-    margin: 0 0 1rem;
-    flex: 1;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    margin: 0 0 12px;
+    max-width: 60ch;
   }
 
   .project-card-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.375rem;
-    margin-bottom: 1rem;
+    gap: 6px;
+    margin-bottom: 12px;
   }
 
   .project-card-links {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 16px;
     margin-top: auto;
   }
   .project-card-link {
     font-family: var(--font-sans);
-    font-size: 0.8125rem;
+    font-size: 13px;
     font-weight: 500;
     color: var(--text-muted);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color 180ms ease;
     display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 4px;
+  }
+  .project-card-link svg {
+    transition: transform 220ms var(--ease-out-expo);
   }
   .project-card-link:hover { color: var(--text-primary); }
-  .project-card-link--primary { color: var(--accent); }
-  .project-card-link--primary:hover { opacity: 0.8; }
+  .project-card-link:hover svg { transform: translateX(4px); }
+  .project-card-link--primary { color: var(--accent-text); font-weight: 600; }
+  .project-card-link--primary:hover { color: var(--accent-hover); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-thumb-frame:hover, .project-thumb-frame:hover img { transform: none !important; }
+    .project-card-link:hover svg { transform: none !important; }
+  }
 </style>

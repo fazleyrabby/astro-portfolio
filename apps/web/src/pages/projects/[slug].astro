@@ -208,12 +208,20 @@ const { arch, infra } = getProjectMeta(activeSlug);
 
 <style>
   .case-study-page {
-    padding: clamp(2rem, 5vw, 4rem) 0;
+    padding: 48px 0 64px;
   }
   .case-study-container {
-    max-width: 760px;
+    width: min(900px, calc(100% - 48px));
     margin: 0 auto;
-    padding: 0 clamp(1.25rem, 4vw, 2rem);
+    padding: 0;
+  }
+  @media (max-width: 640px) {
+    .case-study-page {
+      padding: 36px 0 48px;
+    }
+    .case-study-container {
+      width: calc(100% - 40px);
+    }
   }
 
   .case-nav {
@@ -256,13 +264,13 @@ const { arch, infra } = getProjectMeta(activeSlug);
   .case-meta-dot { color: var(--text-muted); opacity: 0.4; }
 
   .case-title {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(1.625rem, 3vw, 2.25rem);
-    line-height: 1.15;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    line-height: 1.12;
     color: var(--text-primary);
     margin: 0 0 1rem;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
   }
 
   .case-subtitle {
@@ -315,7 +323,9 @@ const { arch, infra } = getProjectMeta(activeSlug);
   /* Thumbnail */
   .case-thumbnail {
     margin-bottom: 3rem;
-    border-radius: var(--radius-lg);
+    border-radius: 12px;
+    padding: 16px;
+    background: var(--bg-surface);
     overflow: hidden;
     border: 1px solid var(--border);
   }
@@ -323,6 +333,7 @@ const { arch, infra } = getProjectMeta(activeSlug);
     width: 100%;
     height: auto;
     display: block;
+    border-radius: 8px;
   }
 
   /* Content blocks */
@@ -333,15 +344,15 @@ const { arch, infra } = getProjectMeta(activeSlug);
   }
 
   .case-section-title {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 1.5rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 1.35rem;
     color: var(--text-primary);
     margin: 0 0 1rem;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
   }
   .case-section-title--accent {
-    color: var(--accent);
+    color: var(--accent-text);
   }
 
   .case-text {
@@ -353,9 +364,9 @@ const { arch, infra } = getProjectMeta(activeSlug);
   }
 
   .case-impact-box {
-    background: var(--accent-dim);
-    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-    border-radius: var(--radius-lg);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
     padding: 1.25rem 1.5rem;
   }
   .case-impact-box p {

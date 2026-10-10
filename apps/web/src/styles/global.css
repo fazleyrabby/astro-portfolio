@@ -305,8 +305,7 @@
   }
 
   .btn-primary:active {
-    transform: translateY(0) !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08) !important;
+    /* press travel lives in the keycap block at the end of this file */
   }
 
   .dark .btn-primary {
@@ -343,8 +342,7 @@
 
   .btn-ghost:active,
   .btn-secondary:active {
-    transform: translateY(0) !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+    /* press travel lives in the keycap block at the end of this file */
   }
 
   .dark .btn-ghost,
@@ -1006,4 +1004,50 @@
 .code-block-header {
   background-color: #181825 !important;
   border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ============================================
+   KEYCAP ACTIONS
+   Every solid action sits on a 3px lip and travels onto it when pressed.
+   Unlayered so it applies over the layered button rules above.
+   ============================================ */
+:is(.btn-primary, .btn-ghost, .btn-secondary, .submit-btn, .journey-card-btn, .action-btn--primary, .action-btn--ghost, .filter-chip) {
+  --key-travel: 3px;
+  --key-base: color-mix(in srgb, var(--border) 60%, var(--text-muted));
+  --key-glow: rgba(0, 0, 0, 0.16);
+  margin-bottom: var(--key-travel);
+  box-shadow: 0 var(--key-travel) 0 var(--key-base), 0 8px 14px -8px var(--key-glow);
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, opacity 160ms ease,
+    transform 140ms var(--ease-out-expo), box-shadow 140ms var(--ease-out-expo);
+}
+.btn-primary { --key-base: color-mix(in srgb, var(--text-primary) 58%, var(--bg-base)); --key-glow: rgba(0, 0, 0, 0.3); }
+.dark .btn-primary { --key-base: var(--accent-deep); --key-glow: rgb(var(--accent-rgb) / 0.45); }
+:is(.submit-btn, .journey-card-btn, .action-btn--primary, .filter-chip.is-active) { --key-base: color-mix(in srgb, var(--accent) 62%, #000); --key-glow: rgb(var(--accent-rgb) / 0.4); }
+.dark :is(.btn-ghost, .btn-secondary, .action-btn--ghost, .filter-chip) { --key-glow: rgba(0, 0, 0, 0.5); }
+
+:is(.btn-primary, .btn-ghost, .btn-secondary, .submit-btn, .journey-card-btn, .action-btn--primary, .action-btn--ghost, .filter-chip):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 calc(var(--key-travel) + 1px) 0 var(--key-base), 0 12px 18px -8px var(--key-glow);
+}
+/* Pressed: the key meets its lip. A selected filter stays down. */
+:is(.btn-primary, .btn-ghost, .btn-secondary, .submit-btn, .journey-card-btn, .action-btn--primary, .action-btn--ghost, .filter-chip):active,
+.filter-chip.is-active,
+.filter-chip.is-active:hover {
+  transform: translateY(var(--key-travel));
+  box-shadow: 0 0 0 var(--key-base), 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition-duration: 60ms;
+}
+:is(.submit-btn, .journey-card-btn, .action-btn--primary, .action-btn--ghost, .filter-chip):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* List rows lean toward the reader on hover. */
+:is(.archive-title, .notes-list) a { transition: color 180ms ease, transform 220ms var(--ease-out-expo); }
+:is(.archive-title, .notes-list) a:hover { transform: translateX(6px); }
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.btn-primary, .btn-ghost, .btn-secondary, .submit-btn, .journey-card-btn, .action-btn--primary, .action-btn--ghost, .filter-chip),
+  :is(.archive-title, .notes-list) a { transition-duration: 1ms; }
+  :is(.archive-title, .notes-list) a:hover { transform: none; }
 }

@@ -45,7 +45,10 @@ const tp = useTranslatedPath(lang);
   </div>
 
   <figure class="modern-portrait">
-    <img src="/me.webp" alt={profile.shortName} width="480" height="480" loading="eager" fetchpriority="high" decoding="async" />
+    <span class="portrait-tilt" data-tilt>
+      <img src="/me.webp" alt={profile.shortName} width="480" height="480" loading="eager" fetchpriority="high" decoding="async" />
+      <span class="portrait-glare" aria-hidden="true"></span>
+    </span>
     <figcaption>{lang === "bn" ? "ব্যাকএন্ড ইঞ্জিনিয়ার · বাংলাদেশ" : "Backend engineer · Bangladesh"}</figcaption>
   </figure>
 </section>
@@ -267,26 +270,60 @@ const tp = useTranslatedPath(lang);
     to { transform: translateY(0); clip-path: inset(0); }
   }
 
+  /* The portrait leans toward the pointer; --tilt-* are set by the script below. */
+  .portrait-tilt {
+    position: relative;
+    display: block;
+    border-radius: 12px;
+    transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 28px -8px rgba(0, 0, 0, 0.07);
+    transition: transform 520ms var(--ease-out-expo), box-shadow 320ms ease;
+  }
+
+  .portrait-tilt.is-tilting {
+    transition: transform 90ms linear, box-shadow 320ms ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), 0 22px 44px -12px rgba(0, 0, 0, 0.16);
+  }
+
   .modern-portrait img {
+    display: block;
     width: 260px;
     height: 286px;
     object-fit: cover;
     object-position: center top;
-    border-radius: 12px;
+    border-radius: inherit;
     background: var(--bg-surface);
     border: 1px solid var(--border);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 28px -8px rgba(0, 0, 0, 0.07);
-    transition: transform 260ms var(--ease-out-expo), box-shadow 260ms ease;
   }
 
-  .modern-portrait img:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.12);
+  .portrait-glare {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(220px circle at var(--glare-x, 50%) var(--glare-y, 0%), rgba(255, 255, 255, 0.28), transparent 65%);
+    transition: opacity 320ms ease;
+  }
+
+  .portrait-tilt.is-tilting .portrait-glare {
+    opacity: 1;
+  }
+
+  :global(.dark) .portrait-tilt {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 16px 32px -8px rgba(0, 0, 0, 0.5);
+  }
+
+  :global(.dark) .portrait-tilt.is-tilting {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.45), 0 26px 48px -12px rgba(0, 0, 0, 0.7);
   }
 
   :global(.dark) .modern-portrait img {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 16px 32px -8px rgba(0, 0, 0, 0.5);
     border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  :global(.dark) .portrait-glare {
+    background: radial-gradient(220px circle at var(--glare-x, 50%) var(--glare-y, 0%), rgba(255, 255, 255, 0.14), transparent 65%);
   }
 
   .modern-portrait figcaption {
@@ -383,6 +420,45 @@ const tp = useTranslatedPath(lang);
     hero.addEventListener("mouseleave", onMouseLeave);
   }
 
-  initHeroSpotlight();
-  document.addEventListener("astro:page-load", initHeroSpotlight);
+  function initPortraitTilt() {
+    const card = document.querySelector<HTMLElement>("#hero [data-tilt]");
+    if (!card || card.dataset.ready) return;
+    card.dataset.ready = "true";
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const MAX = 7; // degrees
+    let rafId: number | null = null;
+
+    card.addEventListener("pointermove", (e) => {
+      const rect = card.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width;
+      const py = (e.clientY - rect.top) / rect.height;
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        card.classList.add("is-tilting");
+        card.style.setProperty("--tilt-x", `${((0.5 - py) * 2 * MAX).toFixed(2)}deg`);
+        card.style.setProperty("--tilt-y", `${((px - 0.5) * 2 * MAX).toFixed(2)}deg`);
+        card.style.setProperty("--glare-x", `${(px * 100).toFixed(1)}%`);
+        card.style.setProperty("--glare-y", `${(py * 100).toFixed(1)}%`);
+        rafId = null;
+      });
+    });
+
+    card.addEventListener("pointerleave", () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = null;
+      card.classList.remove("is-tilting");
+      card.style.setProperty("--tilt-x", "0deg");
+      card.style.setProperty("--tilt-y", "0deg");
+    });
+  }
+
+  const initHero = () => {
+    initHeroSpotlight();
+    initPortraitTilt();
+  };
+
+  initHero();
+  document.addEventListener("astro:page-load", initHero);
 </script>

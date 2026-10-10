@@ -1,0 +1,118 @@
+---
+// Pencil-style spot drawings of the port. Each one is plain line work pushed through a
+// turbulence filter, then drawn a second time slightly off-register, the way a quick
+// sketch doubles its own lines. Decorative only, so always aria-hidden.
+interface Props {
+  name: "yard" | "pier" | "lighthouse" | "bay" | "bottle" | string;
+  class?: string;
+}
+const { name, class: className } = Astro.props;
+
+type Drawing = { ink: string; wash?: string; accent?: string };
+
+const waves = (y: number, from: number, to: number) => {
+  let d = "";
+  for (let x = from; x < to; x += 34) d += `M${x} ${y} q5 -4 10 0 t10 0 `;
+  return d;
+};
+const box = (x: number, y: number, w = 50, h = 24) =>
+  // corners overshoot a little, like lines drawn without lifting carefully
+  `M${x - 2} ${y} H${x + w + 2} M${x + w} ${y - 2} V${y + h + 2} M${x + w + 2} ${y + h} H${x - 2} M${x} ${y + h + 2} V${y - 2} ` +
+  [1, 2, 3, 4].map((i) => `M${x + (w / 5) * i} ${y + 4} V${y + h - 4}`).join(" ");
+
+const drawings: Record<string, Drawing> = {
+  // Container yard: a stack of boxes under a waiting hook.
+  yard: {
+    wash: "M81 31 h50 v24 h-50z M27 83 h50 v24 h-50z",
+    ink:
+      [box(24, 80), box(78, 80), box(132, 80), box(50, 54), box(104, 54), box(78, 28)].join(" ") +
+      " M8 106 H194 M150 0 V12 M150 12 q9 2 6 10 q-3 7 -10 3",
+    accent: "M144 0 h12 M12 112 h30 M150 112 h38",
+  },
+  // The pier: planks on posts, a lamp at the end, a paper boat setting off.
+  pier: {
+    wash: "M146 86 l44 -1 l-10 15 h-25z",
+    ink:
+      "M6 60 H128 M6 66 H128 M128 58 V68 " +
+      [26, 58, 90, 120].map((x) => `M${x} 66 V104 M${x + 6} 66 V102`).join(" ") +
+      " M32 74 L58 96 M64 74 L90 96 M96 74 L120 94" +
+      " M112 60 V26 M112 26 q10 -2 12 6 M119 33 h10 l-2 9 h-6z" +
+      " M142 86 L188 85 L178 100 H153 Z M165 86 V58 L184 85 M165 58 L149 86 " +
+      waves(110, 4, 200) + waves(116, 20, 180),
+    accent: "M124 46 l-4 8 M124 46 v10 M124 46 l5 8",
+  },
+  // The lighthouse: striped tower on a rock, two beams out to sea.
+  lighthouse: {
+    wash: "M98 58 h24 l1.5 14 h-27z M94 88 h32 l1 12 h-34z",
+    ink:
+      "M90 102 L97 42 H119 L126 102 M95.5 56 H120.5 M94 72 H122.5 M92 88 H124.5" +
+      " M94 42 H122 M96 42 V28 H120 V42 M104 28 V42 M112 28 V42 M92 28 L108 12 L124 28 Z M108 12 V5" +
+      " M56 106 q14 -14 30 -6 q10 -10 24 -2 q16 -8 30 2 q10 -2 16 6 " +
+      waves(114, 6, 200),
+    accent: "M92 32 L30 18 M92 37 L28 44 M124 32 L186 18 M124 37 L188 44",
+  },
+  // The bay: a sampan under sail, low hills, the sun, two gulls.
+  bay: {
+    wash: "M106 40 L142 82 H106 Z",
+    ink:
+      "M56 84 q46 30 100 -8 q-30 16 -52 16 t-48 -8 M102 92 V30 M102 36 L138 78 H102 M102 44 L84 76 H102" +
+      " M4 70 q30 -30 62 -8 q14 -12 30 -4 M22 30 q5 -6 9 0 q5 -6 9 0 M52 18 q4 -5 7 0 q4 -5 7 0 " +
+      waves(108, 10, 200) + waves(115, 28, 190),
+    accent: "M166 18 a11 11 0 1 0 0.1 0 M166 2 v6 M186 26 l5 -3 M190 40 h-6 M146 26 l-5 -3",
+  },
+  // Message in a bottle, for the contact line.
+  bottle: {
+    wash: "M82 47 h36 v20 h-36z",
+    ink:
+      "M70 38 H126 q12 0 22 10 H164 V66 H148 q-10 10 -22 10 H70 q-14 0 -14 -19 t14 -19 Z" +
+      " M80 44 H116 V68 H80 Z M86 51 h22 M86 56 h24 M86 61 h16 M98 44 V68" +
+      " M40 44 l-8 -4 M38 56 h-9 M40 68 l-8 5 ",
+    accent: "M164 46 h10 v22 h-10z",
+  },
+};
+const art = drawings[name] ?? drawings.bay;
+const id = `sk-${name}-${Math.random().toString(36).slice(2, 7)}`;
+const tilt = name === "bottle" ? "rotate(-14 100 60)" : undefined;
+const sea = name === "bottle" ? waves(98, 20, 190) + waves(106, 4, 200) + waves(113, 30, 180) : "";
+---
+
+<svg class:list={["sketch", className]} viewBox="0 0 200 120" fill="none" aria-hidden="true">
+  <defs>
+    <filter id={`${id}-a`} filterUnits="userSpaceOnUse" x="-10" y="-10" width="220" height="140">
+      <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="4" result="n" />
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.2" />
+    </filter>
+    <filter id={`${id}-b`} filterUnits="userSpaceOnUse" x="-10" y="-10" width="220" height="140">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="11" result="n" />
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="4.5" />
+    </filter>
+  </defs>
+  <g transform={tilt}>
+    {art.wash && <path class="sk-wash" d={art.wash} filter={`url(#${id}-b)`} transform="translate(3 2.5)" />}
+    <path class="sk-ink" d={art.ink} filter={`url(#${id}-a)`} />
+    <path class="sk-ink sk-ghost" d={art.ink} filter={`url(#${id}-b)`} transform="translate(0.9 0.7)" />
+    {art.accent && <path class="sk-accent" d={art.accent} filter={`url(#${id}-a)`} />}
+  </g>
+  {sea && <path class="sk-ink" d={sea} filter={`url(#${id}-a)`} />}
+</svg>
+
+<style>
+  .sketch {
+    display: block;
+    width: 200px;
+    height: auto;
+    overflow: visible;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+    user-select: none;
+  }
+  .sk-ink { stroke: var(--text-secondary); stroke-width: 1.5; }
+  .sk-ghost { stroke-width: 1; opacity: 0.38; }
+  .sk-wash { fill: rgb(var(--accent-rgb) / 0.2); }
+  .sk-accent { stroke: var(--accent); stroke-width: 1.7; }
+
+  @media print {
+    .sketch { display: none; }
+  }
+</style>

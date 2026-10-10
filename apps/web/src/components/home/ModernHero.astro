@@ -19,9 +19,9 @@ const tp = useTranslatedPath(lang);
     <p class="modern-role">{profile.role} <span>{profile.location.city}, {profile.location.country}</span></p>
     <p class="modern-intro">
       {lang === "bn" ? (
-        <>উচ্চ-ক্ষমতাসম্পন্ন <em>ব্যাকএন্ড সিস্টেম</em>, পেমেন্ট ইনফ্রাস্ট্রাকচার এবং স্কেলেবল REST API ডিজাইন ও ডেভেলপমেন্ট।</>
+        <>উচ্চ-ক্ষমতাসম্পন্ন <em>ব্যাকএন্ড সিস্টেম<svg class="intro-underline" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true"><path d="M1 5 q8 -5 16 -1 t16 0 t16 -1 t16 1 t16 -1 t17 0" /></svg></em>, পেমেন্ট ইনফ্রাস্ট্রাকচার এবং স্কেলেবল REST API ডিজাইন ও ডেভেলপমেন্ট।</>
       ) : (
-        <>Designing <em>resilient</em> backend systems, payment infrastructure, and scalable APIs for products that serve real users.</>
+        <>Designing <em>resilient<svg class="intro-underline" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true"><path d="M1 5 q8 -5 16 -1 t16 0 t16 -1 t16 1 t16 -1 t17 0" /></svg></em> backend systems, payment infrastructure, and scalable APIs for products that serve real users.</>
       )}
     </p>
 
@@ -170,9 +170,37 @@ const tp = useTranslatedPath(lang);
   }
 
   .modern-intro em {
-    font-style: italic;
+    position: relative;
+    display: inline-block;
+    font-style: normal;
     font-weight: 600;
     color: var(--text-primary);
+  }
+
+  /* Pencil underline, drawn once after the copy arrives. */
+  .intro-underline {
+    position: absolute;
+    left: -2%;
+    bottom: -5px;
+    width: 104%;
+    height: 8px;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .intro-underline path {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 400;
+    animation: intro-underline-draw 700ms var(--ease-out-expo) 600ms both;
+  }
+
+  @keyframes intro-underline-draw {
+    from { stroke-dashoffset: 400; }
+    to { stroke-dashoffset: 0; }
   }
 
   /* Modern Actions & Buttons */

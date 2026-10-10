@@ -1,11 +1,13 @@
 ---
+import Sketch from "./Sketch.astro";
+
 interface Props {
   title: string;
   lede?: string;
   kicker?: string;
   motif?: "yard" | "pier" | "lighthouse" | "coast" | "bay" | string;
 }
-const { title, lede, kicker } = Astro.props;
+const { title, lede, kicker, motif } = Astro.props;
 ---
 
 <header class="modern-page-header">
@@ -14,6 +16,7 @@ const { title, lede, kicker } = Astro.props;
     <h1 class="modern-header-title">{title}</h1>
     {lede && <p class="modern-header-lede">{lede}</p>}
     <slot />
+    {motif && <Sketch name={motif} class="modern-header-sketch" />}
   </div>
 </header>
 
@@ -27,6 +30,7 @@ const { title, lede, kicker } = Astro.props;
   .modern-header-inner {
     width: min(900px, calc(100% - 48px));
     margin: 0 auto;
+    position: relative;
     animation: modern-header-arrive 600ms var(--ease-out-expo) both;
   }
   @keyframes modern-header-arrive {
@@ -56,6 +60,19 @@ const { title, lede, kicker } = Astro.props;
     font-size: 16px;
     line-height: 1.6;
     color: var(--text-secondary);
+  }
+  /* Spot drawing sits in the free right-hand column; it never shares space with text. */
+  .modern-header-inner :global(.modern-header-sketch) {
+    position: absolute;
+    right: 0;
+    bottom: -14px;
+    width: 236px;
+  }
+  @media (max-width: 860px) {
+    .modern-header-inner :global(.modern-header-sketch) { display: none; }
+  }
+  @media (min-width: 861px) {
+    .modern-header-lede { max-width: min(58ch, calc(100% - 276px)); }
   }
   @media (max-width: 640px) {
     .modern-page-header { padding: 36px 0 24px; }

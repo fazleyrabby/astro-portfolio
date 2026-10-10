@@ -48,7 +48,7 @@ body.modern-home .port-home { width: min(900px, calc(100% - 48px)); margin-inlin
 .modern-role { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 14.5px; margin: 0 0 18px; color: var(--text-secondary); }
 .modern-role span { color: var(--text-muted); }
 .modern-intro { font-size: 18.5px; line-height: 1.55; max-width: 56ch; margin: 0 0 24px; color: var(--text-secondary); }
-.modern-intro em { font-style: italic; font-weight: 600; color: var(--text-primary); }
+.modern-intro em { font-style: normal; font-weight: 600; color: var(--text-primary); }
 .modern-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 body.modern-home .btn-primary, body.modern-home .btn-ghost, body.modern-home .btn-secondary { font-family: var(--font-sans); font-weight: 500; font-size: 13.5px; border-radius: 8px; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; transition: background-color 160ms ease, color 160ms ease, transform 160ms var(--ease-out-expo), box-shadow 160ms ease, border-color 160ms ease; }
 body.modern-home .btn-primary { background: var(--text-primary); color: var(--bg-base); border: 1px solid rgba(0, 0, 0, 0.12); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 8px -2px rgba(0, 0, 0, 0.1); }
@@ -150,7 +150,7 @@ body.modern-home .contact-editorial { margin-top: 40px; padding-block: 32px 48px
 body.modern-home .contact-inner { text-align: left; max-width: none; }
 body.modern-home .contact-container { padding: 0; }
 body.modern-home .contact-title { font-size: 26px; }
-body.modern-home .contact-subtitle { font-size: 14px; max-width: 68ch; margin-bottom: 20px; }
+body.modern-home .contact-subtitle { font-size: 14px; max-width: min(68ch, calc(100% - 230px)); margin-bottom: 20px; }
 body.modern-home .contact-actions { justify-content: start; }
 @media (max-width: 860px) {
   .modern-hero { grid-template-columns: minmax(0, 1fr) 210px; gap: 36px; padding: 44px 0 40px; }
@@ -218,3 +218,4 @@ body.modern-home .site-footer { margin-top: 0; }
   body.modern-home .xp-item { column-gap: 0; }
   body.modern-home .xp-list::before, body.modern-home .xp-list::after, body.modern-home .xp-item::before { display: none; }
 }
+@media (max-width: 860px) { body.modern-home .contact-subtitle { max-width: 68ch; } }

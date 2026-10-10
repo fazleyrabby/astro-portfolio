@@ -53,6 +53,13 @@ const wave = (y: number, from: number, offset: number) => {
 
 <div class="harbor-strip" aria-hidden="true">
   <svg viewBox="0 0 900 150" preserveAspectRatio="xMaxYMax slice" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <defs>
+      <filter id="harbor-pencil" filterUnits="userSpaceOnUse" x="0" y="0" width="900" height="150">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="7" result="n" />
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6" />
+      </filter>
+    </defs>
+    <g filter="url(#harbor-pencil)">
     <!-- Hills behind the port -->
     <path class="hs-far" d={`M0 110 Q70 80 150 98 T300 88 T450 104 T${QUAY_END} 100`} />
 
@@ -91,6 +98,7 @@ const wave = (y: number, from: number, offset: number) => {
     <!-- Water -->
     <path class="hs-water" d={wave(138, QUAY_END + 8, 0)} />
     <path class="hs-water hs-water-2" d={wave(146, 0, 14)} />
+    </g>
   </svg>
 </div>
 

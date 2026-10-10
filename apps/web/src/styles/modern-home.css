@@ -47,7 +47,7 @@ body.modern-home .port-home { width: min(900px, calc(100% - 48px)); margin-inlin
 .modern-hero h1 { font-weight: 700; font-size: clamp(2.2rem, 4.2vw, 2.85rem); line-height: 1.08; letter-spacing: -0.03em; margin: 0 0 14px; color: var(--text-primary); }
 .modern-role { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 14.5px; margin: 0 0 18px; color: var(--text-secondary); }
 .modern-role span { color: var(--text-muted); }
-.modern-intro { font-size: 18.5px; line-height: 1.55; max-width: 44ch; margin: 0 0 24px; color: var(--text-secondary); }
+.modern-intro { font-size: 18.5px; line-height: 1.55; max-width: 56ch; margin: 0 0 24px; color: var(--text-secondary); }
 .modern-intro em { font-style: italic; font-weight: 600; color: var(--text-primary); }
 .modern-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 body.modern-home .btn-primary, body.modern-home .btn-ghost, body.modern-home .btn-secondary { font-family: var(--font-sans); font-weight: 500; font-size: 13.5px; border-radius: 8px; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; cursor: pointer; transition: background-color 160ms ease, color 160ms ease, transform 160ms var(--ease-out-expo), box-shadow 160ms ease, border-color 160ms ease; }

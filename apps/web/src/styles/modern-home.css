@@ -63,7 +63,6 @@ body.modern-home .btn-ghost:hover { background: var(--bg-card); border-color: va
 body.modern-home .btn-ghost:hover svg { transform: translateX(3px); }
 .modern-portrait { margin: 0; display: flex; flex-direction: column; align-items: flex-end; animation: modern-arrive 900ms var(--ease-out-expo) both; }
 .modern-portrait img { width: 260px; height: 286px; object-fit: cover; object-position: center top; border-radius: 12px; background: var(--bg-surface); border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 28px -8px rgba(0, 0, 0, 0.07); transition: transform 260ms var(--ease-out-expo), box-shadow 260ms ease; }
-.modern-portrait img:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.12); }
 .dark .modern-portrait img { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 16px 32px -8px rgba(0, 0, 0, 0.5); border-color: rgba(255, 255, 255, 0.12); }
 .modern-portrait figcaption { display: none; }
 .modern-hero-copy { animation: modern-copy-arrive 700ms var(--ease-out-expo) both; }
@@ -124,7 +123,7 @@ body.modern-home .tracer .t-err { color: #b52b34; }
 .dark body.modern-home .tracer-hop.is-cache .tracer-node { color: #102522; }
 
 /* Synthesis layout: compact portfolio, fine system rules, charcoal depth. */
-body.modern-home .production-sheet { padding-top: 28px; border-top: 1px solid var(--border); }
+body.modern-home .production-sheet { padding-top: 28px; }
 body.modern-home .work-header h2, body.modern-home .section-title, body.modern-home .xp-title, body.modern-home .notes-header h2 { font-size: 24px; font-weight: 600; }
 body.modern-home .work-grid { gap: 32px 24px; }
 body.modern-home .work-image { padding: 18px; aspect-ratio: 1.8; background: var(--bg-surface); }
@@ -182,4 +181,40 @@ body.modern-home .contact-actions { justify-content: start; }
   body.modern-home .tracer-node { padding: 5px; font-size: 10px; }
   body.modern-home .tracer-path { padding-inline: 10px; }
   body.modern-home .xp-item { grid-template-columns: 1fr; }
+}
+
+
+/* Tactile layer: keycap actions, career rail, closing harbor. */
+body.modern-home .btn-primary, body.modern-home .btn-ghost { --key-travel: 3px; margin-bottom: var(--key-travel); transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, transform 140ms var(--ease-out-expo), box-shadow 140ms var(--ease-out-expo); }
+body.modern-home .btn-primary { --key-base: color-mix(in srgb, var(--text-primary) 58%, var(--bg-base)); box-shadow: 0 var(--key-travel) 0 var(--key-base), 0 8px 16px -6px rgba(0, 0, 0, 0.28); }
+body.modern-home .btn-ghost { --key-base: var(--grid-line-strong); background: var(--bg-card); box-shadow: 0 var(--key-travel) 0 var(--key-base), 0 8px 14px -8px rgba(0, 0, 0, 0.14); }
+.dark body.modern-home .btn-primary { --key-base: var(--accent-deep); box-shadow: 0 var(--key-travel) 0 var(--key-base), 0 10px 20px -8px rgba(89, 198, 182, 0.4); }
+.dark body.modern-home .btn-ghost { box-shadow: 0 var(--key-travel) 0 var(--key-base), 0 8px 14px -8px rgba(0, 0, 0, 0.5); }
+body.modern-home .btn-primary:hover, body.modern-home .btn-ghost:hover { transform: translateY(-1px); }
+body.modern-home .btn-primary:hover { box-shadow: 0 calc(var(--key-travel) + 1px) 0 var(--key-base), 0 12px 20px -6px rgba(0, 0, 0, 0.3); }
+body.modern-home .btn-ghost:hover { box-shadow: 0 calc(var(--key-travel) + 1px) 0 var(--key-base), 0 12px 18px -8px rgba(0, 0, 0, 0.18); }
+.dark body.modern-home .btn-primary:hover { box-shadow: 0 calc(var(--key-travel) + 1px) 0 var(--key-base), 0 12px 24px -8px rgba(89, 198, 182, 0.5); }
+.dark body.modern-home .btn-ghost:hover { box-shadow: 0 calc(var(--key-travel) + 1px) 0 var(--key-base), 0 12px 18px -8px rgba(0, 0, 0, 0.6); }
+body.modern-home .btn-primary:active, body.modern-home .btn-ghost:active,
+.dark body.modern-home .btn-primary:active, .dark body.modern-home .btn-ghost:active { transform: translateY(var(--key-travel)); box-shadow: 0 0 0 var(--key-base), 0 1px 2px rgba(0, 0, 0, 0.2); transition-duration: 60ms; }
+body.modern-home .btn-primary:focus-visible, body.modern-home .btn-ghost:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+body.modern-home .xp-list { position: relative; --rail-x: 171px; }
+body.modern-home .xp-item { position: relative; column-gap: 44px; }
+body.modern-home .xp-list::before, body.modern-home .xp-list::after { content: ""; position: absolute; left: var(--rail-x); top: 28px; bottom: 28px; width: 1px; background: var(--border); }
+body.modern-home .xp-list::after { background: var(--accent); transform-origin: top; }
+body.modern-home .xp-item::before { content: ""; position: absolute; z-index: 1; left: calc(var(--rail-x) - 4px); top: 24px; width: 9px; height: 9px; box-sizing: border-box; background: var(--bg-base); border: 1.5px solid var(--grid-line-strong); transform: rotate(45deg); }
+body.modern-home .xp-item.is-current::before { background: var(--accent); border-color: var(--accent); }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    body.modern-home .xp-list::after { animation: xp-rail linear both; animation-timeline: view(); animation-range: entry 35% cover 62%; }
+  }
+}
+@keyframes xp-rail { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+body.modern-home .port-end { margin-top: 8px; }
+body.modern-home .site-footer { margin-top: 0; }
+@media (max-width: 480px) {
+  body.modern-home .xp-item { column-gap: 0; }
+  body.modern-home .xp-list::before, body.modern-home .xp-list::after, body.modern-home .xp-item::before { display: none; }
 }

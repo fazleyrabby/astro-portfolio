@@ -1,0 +1,164 @@
+---
+// Closing line-art scene: the Chattogram quay the footer rule stands on.
+// Decorative, so it is aria-hidden. The ship and the crane load follow the scroll
+// (no loops); without scroll-timeline support they simply rest in place.
+const QUAY = 120; // quay top, in viewBox units
+const QUAY_END = 548;
+const S = 0.4; // gantry scale; artwork below is authored against a 336-unit quay line
+
+const crane = (x: number, h = 0) => {
+  const q = 336;
+  const top = 176 - h;
+  return `
+    <g transform="translate(0 ${QUAY - q * S}) scale(${S})">
+      <path d="M${x} ${q} V${top} M${x + 58} ${q} V${top}" stroke-width="8"/>
+      <path d="M${x} ${q - 34} H${x + 58} M${x} ${top + 48} H${x + 58}" stroke-width="5"/>
+      <path d="M${x} ${q - 34} L${x + 58} ${top + 48} M${x + 58} ${q - 34} L${x} ${top + 48} M${x} ${top + 48} L${x + 58} ${top} M${x + 58} ${top + 48} L${x} ${top}" stroke-width="3"/>
+      <path d="M${x - 96} ${top} H${x + 176}" stroke-width="9"/>
+      <path d="M${x + 29} ${top - 62} L${x - 90} ${top - 2} M${x + 29} ${top - 62} L${x + 170} ${top - 2} M${x + 29} ${top - 62} V${top}" stroke-width="3"/>
+      <rect x="${x + 6}" y="${top - 22}" width="46" height="20" class="hs-solid"/>
+    </g>`;
+};
+const cranes = [
+  { x: 300, h: 0 },
+  { x: 800, h: 16 },
+  { x: 1170, h: -10 },
+];
+// The seaward crane carries the moving load.
+const lift = { x: (cranes[2].x + 158) * S, top: QUAY - (336 - (176 - cranes[2].h)) * S };
+
+const CW = 18;
+const CH = 8;
+const stacks = [
+  { x: 18, cols: [2, 3, 1] },
+  { x: 206, cols: [3, 2, 3, 1] },
+  { x: 398, cols: [1, 2, 2] },
+];
+const containers = stacks.flatMap((s, si) =>
+  s.cols.flatMap((height, c) =>
+    Array.from({ length: height }, (_, r) => ({
+      x: s.x + c * (CW + 1.5),
+      y: QUAY - (r + 1) * (CH + 1.5),
+      tone: (si * 5 + c * 3 + r * 2) % 4,
+    })),
+  ),
+);
+
+const wave = (y: number, from: number, offset: number) => {
+  let d = `M${from + offset} ${y}`;
+  for (let x = from + offset; x < 900; x += 44) d += ` q6 -3 12 0 t12 0 m20 0`;
+  return d;
+};
+---
+
+<div class="harbor-strip" aria-hidden="true">
+  <svg viewBox="0 0 900 150" preserveAspectRatio="xMaxYMax slice" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Hills behind the port -->
+    <path class="hs-far" d={`M0 110 Q70 80 150 98 T300 88 T450 104 T${QUAY_END} 100`} />
+
+    <!-- Quay and stacked boxes -->
+    <path class="hs-quay" d={`M0 ${QUAY} H${QUAY_END} V${QUAY + 22}`} />
+    {containers.map((c) => <rect class={`hs-box hs-box-${c.tone}`} x={c.x} y={c.y} width={CW} height={CH} rx="1" />)}
+
+    <g class="hs-cranes" set:html={cranes.map((c) => crane(c.x, c.h)).join("")} />
+
+    <!-- Load coming down from the seaward crane -->
+    <g class="hs-lift" style={`transform-origin: ${lift.x}px ${lift.top}px`}>
+      <path class="hs-cable" d={`M${lift.x} ${lift.top} v40`} />
+    </g>
+    <rect class="hs-load" x={lift.x - 9} y={lift.top + 40} width="18" height="8" rx="1" />
+
+    <!-- Cargo ship -->
+    <g class="hs-ship">
+      <g transform="translate(628 77) scale(0.5)">
+        <path class="hs-hull" d="M4 82h324l-22 38H30z" />
+        <path class="hs-stripe" d="M10 94h312" />
+        {[0, 1, 2, 3, 4].map((i) => <rect class={`hs-box hs-box-${(i + 1) % 4}`} x={36 + i * 38} y="62" width="36" height="19" />)}
+        {[0, 1, 2, 3].map((i) => <rect class={`hs-box hs-box-${(i + 3) % 4}`} x={36 + i * 38} y="42" width="36" height="19" />)}
+        {[0, 1].map((i) => <rect class={`hs-box hs-box-${i * 2}`} x={74 + i * 38} y="22" width="36" height="19" />)}
+        <path class="hs-hull" d="M236 82V34h62v48z M250 34V20h20v14z M300 82V58h14v24z" />
+        <path class="hs-ports" d="M246 46h44 M246 60h44" />
+        <path class="hs-mast" d="M20 82V52 M14 60h12" />
+      </g>
+    </g>
+
+    <!-- Sampan -->
+    <g transform="translate(826 112) scale(0.34)">
+      <path class="hs-mast" d="M58 8v40M58 10l26 34H58z" stroke-width="3.5" />
+      <path class="hs-hull" d="M4 44q10 20 56 20t56-26q-22 14-56 14T4 44z" stroke-width="3.5" />
+    </g>
+
+    <!-- Water -->
+    <path class="hs-water" d={wave(138, QUAY_END + 8, 0)} />
+    <path class="hs-water hs-water-2" d={wave(146, 0, 14)} />
+  </svg>
+</div>
+
+<style>
+  .harbor-strip {
+    margin-top: 8px;
+    overflow: hidden;
+    /* Fade the far (left) end so the scene has no hard edge on the canvas. */
+    mask-image: linear-gradient(to right, transparent 0, black 14%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 14%);
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: clamp(104px, 16.6vw, 150px);
+  }
+
+  .hs-far { stroke: var(--grid-line); stroke-width: 1.25; }
+  .hs-quay { stroke: var(--grid-line-strong); stroke-width: 1.5; }
+  .hs-cranes { stroke: var(--grid-line-strong); }
+  .hs-cranes :global(.hs-solid) { fill: var(--grid-line-strong); stroke: none; }
+  .hs-cable { stroke: var(--grid-line-strong); stroke-width: 1; }
+  .hs-load { fill: var(--accent); }
+
+  .hs-box { stroke: var(--bg-base); stroke-width: 1; }
+  .hs-box-0 { fill: var(--accent); }
+  .hs-box-1 { fill: var(--grid-line-strong); }
+  .hs-box-2 { fill: var(--border); }
+  .hs-box-3 { fill: rgb(var(--accent-rgb) / 0.45); }
+  .hs-ship .hs-box { stroke-width: 2; }
+
+  .hs-hull { fill: var(--bg-base); stroke: var(--text-muted); stroke-width: 2.5; }
+  .hs-stripe { stroke: var(--accent); stroke-width: 3; }
+  .hs-ports { stroke: var(--text-muted); stroke-width: 3; stroke-dasharray: 6 8; stroke-linecap: butt; }
+  .hs-mast { stroke: var(--text-muted); stroke-width: 2.5; }
+  .hs-water { stroke: var(--grid-line-strong); stroke-width: 1.25; }
+  .hs-water-2 { stroke: var(--grid-line); }
+
+  /* Scroll carries the ship in and lowers the load; both rest at their end state otherwise. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .hs-ship,
+      .hs-lift,
+      .hs-load {
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 55%;
+      }
+      .hs-ship { animation-name: hs-sail; }
+      .hs-lift { animation-name: hs-cable; }
+      .hs-load { animation-name: hs-lower; }
+    }
+  }
+  @keyframes hs-sail {
+    from { transform: translateX(150px); }
+    to { transform: translateX(0); }
+  }
+  @keyframes hs-cable {
+    from { transform: scaleY(0.2); }
+    to { transform: scaleY(1); }
+  }
+  @keyframes hs-lower {
+    from { transform: translateY(-32px); }
+    to { transform: translateY(0); }
+  }
+
+  @media print {
+    .harbor-strip { display: none; }
+  }
+</style>

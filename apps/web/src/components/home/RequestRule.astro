@@ -1,0 +1,126 @@
+---
+// The rule between the hero and the work grid, drawn as a request path.
+// A packet crosses it once on arrival and again whenever "Let's talk" is hovered or focused.
+const hops = ["client", "api", "queue", "db"];
+---
+
+<div class="req-rule" data-req-rule aria-hidden="true">
+  <div class="req-hops">
+    {hops.map((hop, i) => <span class="req-hop" style={`--hop: ${i}`}>{hop}</span>)}
+  </div>
+  <div class="req-line"><span class="req-run"><span class="req-packet"></span></span></div>
+</div>
+
+<style>
+  .req-rule {
+    --req-dur: 1100ms;
+    position: relative;
+    z-index: 1;
+  }
+  .req-hops {
+    display: flex;
+    justify-content: space-between;
+  }
+  .req-hop {
+    position: relative;
+    padding-bottom: 9px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1;
+    color: var(--text-muted);
+  }
+  /* Tick joining each hop to the line. */
+  .req-hop::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 1px;
+    height: 5px;
+    background: var(--grid-line-strong);
+  }
+  .req-hop:last-child::after {
+    left: auto;
+    right: 0;
+  }
+  .req-line {
+    position: relative;
+    height: 1px;
+    background: var(--border);
+  }
+  .req-run {
+    position: absolute;
+    inset: -1px 0;
+    overflow: hidden;
+  }
+  .req-packet {
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+  }
+  .req-packet::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 72px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(to right, transparent, var(--accent));
+  }
+
+  .req-rule.is-running .req-packet {
+    animation: req-travel var(--req-dur) cubic-bezier(0.45, 0, 0.2, 1) both;
+  }
+  .req-rule.is-running .req-hop {
+    animation: req-hit 520ms ease-out both;
+    animation-delay: calc(var(--hop) * var(--req-dur) / 3.4);
+  }
+  .req-rule.is-running .req-hop::after {
+    animation: req-tick 520ms ease-out both;
+    animation-delay: calc(var(--hop) * var(--req-dur) / 3.4);
+  }
+
+  @keyframes req-travel {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(72px); }
+  }
+  @keyframes req-hit {
+    0%, 100% { color: var(--text-muted); }
+    25% { color: var(--accent-text); }
+  }
+  @keyframes req-tick {
+    0%, 100% { background: var(--grid-line-strong); transform: scaleY(1); }
+    25% { background: var(--accent); transform: scaleY(1.8); }
+  }
+  .req-hop::after { transform-origin: bottom; }
+
+  @media print {
+    .req-rule { display: none; }
+  }
+</style>
+
+<script>
+  function initRequestRule() {
+    const rule = document.querySelector<HTMLElement>("[data-req-rule]");
+    if (!rule || rule.dataset.ready) return;
+    rule.dataset.ready = "true";
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const packet = rule.querySelector<HTMLElement>(".req-packet");
+    const send = () => {
+      if (rule.classList.contains("is-running")) return;
+      rule.classList.add("is-running");
+    };
+    packet?.addEventListener("animationend", () => rule.classList.remove("is-running"));
+
+    window.setTimeout(send, 650);
+    document.querySelectorAll<HTMLElement>("#hero .btn-primary").forEach((btn) => {
+      btn.addEventListener("pointerenter", send);
+      btn.addEventListener("focus", send);
+    });
+  }
+
+  initRequestRule();
+  document.addEventListener("astro:page-load", initRequestRule);
+</script>

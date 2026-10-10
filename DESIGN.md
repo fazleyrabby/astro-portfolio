@@ -57,16 +57,18 @@ Canvas: 900px maximum with 24px side gutters. Desktop hero: flexible greeting/co
 At 640px, gutters become 20px; projects/skills use one column and career dates stack. Portrait is 140×154px (124×136px at <=480px), rounded 16px. Portrait captions are hidden. At 560px, the header is 104px with navigation on a second row; post dates stack at 480px.
 
 ## Elevation & Depth
-Homepage actions and captions have no shadows. Tonal imagery frames, fine rules, and the bordered capabilities card create separation; the existing request terminal retains functional chrome.
+Captions have no shadows. Actions are keycaps: a 3px solid lip in a darker tone of the key plus one soft ambient shadow; press travels the full 3px and the lip closes. Tonal imagery frames, fine rules, and the bordered capabilities card create separation; the existing request terminal retains functional chrome.
 **The Flat Caption Rule.** Frame the project image, not the whole project; keep its information on the page background.
 
 ## Shapes
 Use action, imagery, image-inner, and panel radii from the tokens. Mobile portrait corners are 12px. Career and article rows remain open with fine separators.
 
 ## Components
-Actions: teal primary ‘Let’s talk’ links to email; outlined Resume links to the localized resume. Hover lifts 2px, press returns to rest. Preserve 2px accent focus outlines with 2px offset. Fixed navigation is 72px high on desktop, with Work/Writing/About/Resume in a pill and a sliding highlight responding to hover, focus, and section visibility. Theme/language controls remain; mobile shows the same links on a second row without a hamburger.
+Actions: teal primary ‘Let’s talk’ links to email; outlined Resume links to the localized resume. Hover lifts 1px, press sinks 3px onto the lip in 60ms. Preserve 2px accent focus outlines with 2px offset. Fixed navigation is 72px high on desktop, with Work/Writing/About/Resume in a pill and a sliding highlight responding to hover, focus, and section visibility. Theme/language controls remain; mobile shows the same links on a second row without a hamburger.
 Projects: real thumbnails with 18px frame inset and 1.8 aspect ratio; frame hover lifts 3px and image scales to 1.025. Captions retain case study/live/repository links. Capabilities use plain text skills under small headings, fine group-top rules, and 28px inner gutters; the request demo sits inside the same card on a tonal lower surface. Career and writing remain ruled lists; retain writing's empty state. Preserve request/cache/rate-limit behavior and paired status colors.
-Hero copy arrives once with transform-only 12px movement over 700ms so mobile text is never clipped; the portrait retains subtle clipping over 900ms. Theme changes take 260ms; action states 180ms; frames 280ms; navigation highlight slides over 300ms and project-link arrows move 4px over 220ms. Repeated scroll entrances are removed. Reduced-motion disables animations/transitions, smooth scrolling, and image movement.
+Hero copy arrives once with transform-only 12px movement over 700ms so mobile text is never clipped; the portrait retains subtle clipping over 900ms. Theme changes take 260ms; action states 180ms; frames 280ms; navigation highlight slides over 300ms and project-link arrows move 4px over 220ms. Repeated scroll entrances are removed.
+Tactile layer: the hero-to-work rule is a request path (client, api, queue, db in IBM Plex Mono 11px); a 72px accent packet crosses it once on arrival and again when ‘Let’s talk’ is hovered or focused. The portrait leans up to 7° toward a fine pointer with a soft glare and settles over 520ms. The career list carries a 1px rail with 9px diamond markers (filled accent for current roles); its accent fill follows scroll position. A line-art Chattogram quay closes the page above the footer rule: scroll brings the ship in and lowers the crane load. Scroll-linked pieces use CSS view timelines and rest in their end state without support. No looping or pulsing indicators anywhere.
+Site-wide exception to the homepage scope: keycap actions (`.btn-primary`, `.btn-ghost`, `.btn-secondary`, `.submit-btn`, `.journey-card-btn`, `.action-btn--*`, `.filter-chip`) and the 6px list-row lean live in the unlayered block at the end of `styles/global.css` and apply on every route. A selected filter chip stays pressed. Reduced-motion disables animations/transitions, smooth scrolling, and image movement.
 
 ## Do's and Don'ts
 - **Do** scope this world to the English and Bengali homepages.
@@ -74,6 +76,7 @@ Hero copy arrives once with transform-only 12px movement over 700ms so mobile te
 - **Do** preserve the real portrait, four project thumbnails, and factual content.
 - **Do** keep captions flat and capabilities in a separate spacious panel.
 - **Don't** extend this redesign to other routes without a new request.
+- **Don't** add pulsing dots, status blinkers, or any looping attention indicator.
 - **Don't** restore full-height intros, repeated scroll reveals, or nested project cards.
 - **Don't** ship generated mockup imagery as portrait or project evidence.
 - **Don't** replace simple career and writing lists with decorative dashboards.

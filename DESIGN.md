@@ -22,11 +22,11 @@ colors:
   dark-accent-hover: "#79d5c7"
   dark-action-text: "#102522"
 typography:
-  display: { fontFamily: 'DM Sans, system-ui, -apple-system, sans-serif', fontSize: 'clamp(2rem, 4vw, 2.75rem)', fontWeight: 700, lineHeight: 1.06, letterSpacing: '-0.03em' }
-  headline: { fontFamily: 'DM Sans, system-ui, -apple-system, sans-serif', fontSize: '24px', fontWeight: 600 }
-  intro: { fontFamily: 'DM Sans, system-ui, -apple-system, sans-serif', fontSize: '19px', lineHeight: 1.55 }
-  project-body: { fontFamily: 'DM Sans, system-ui, -apple-system, sans-serif', fontSize: '14px', lineHeight: 1.65 }
-  action: { fontFamily: 'DM Sans, system-ui, -apple-system, sans-serif', fontSize: '14px', fontWeight: 600 }
+  display: { fontFamily: 'Bricolage Grotesque, system-ui, -apple-system, sans-serif', fontSize: 'clamp(2rem, 4vw, 2.75rem)', fontWeight: 700, lineHeight: 1.06, letterSpacing: '-0.03em' }
+  headline: { fontFamily: 'Bricolage Grotesque, system-ui, -apple-system, sans-serif', fontSize: '24px', fontWeight: 600 }
+  intro: { fontFamily: 'Bricolage Grotesque, system-ui, -apple-system, sans-serif', fontSize: '19px', lineHeight: 1.55 }
+  project-body: { fontFamily: 'Bricolage Grotesque, system-ui, -apple-system, sans-serif', fontSize: '14px', lineHeight: 1.65 }
+  action: { fontFamily: 'Bricolage Grotesque, system-ui, -apple-system, sans-serif', fontSize: '14px', fontWeight: 600 }
 rounded: { action: '10px', imagery: '14px', image-inner: '7px', panel: '16px' }
 spacing: { action-gap: '12px', compact: '24px', grid-column: '24px', grid-row: '32px', section: '48px', hero-gap: '48px' }
 components:
@@ -40,7 +40,7 @@ components:
 
 ## Overview
 **Creative North Star: "Work Within Easy Reach"**
-A compact modern portfolio makes the engineer and his actual projects easy to assess. Cool surfaces, confident DM Sans, restrained teal actions, and real imagery establish a clear, approachable technical identity. The approved reference synthesis combines compact portfolio composition (#1), fine system rules (#2), and charcoal depth (#7).
+A compact modern portfolio makes the engineer and his actual projects easy to assess. Cool surfaces, confident Bricolage Grotesque, restrained teal actions, and real imagery establish a clear, approachable technical identity. The approved reference synthesis combines compact portfolio composition (#1), fine system rules (#2), and charcoal depth (#7).
 This document governs **only `/` and `/bn/`**, through the homepage body scope. Other routes retain their incumbent design.
 **Key Characteristics:** Compact introduction; real imagery and flat captions; paired themes; restrained interaction motion.
 
@@ -49,7 +49,7 @@ Sea teal identifies actions in light mode; bright mint teal with dark action tex
 **The Theme Pair Rule.** Use homepage semantic CSS variables so every surface, text role, and action adapts together.
 
 ## Typography
-DM Sans supplies display and body voice: a bold tightly tracked greeting, medium-weight section headings, 18px project titles, subordinate metadata. Intro width caps at 42ch. IBM Plex Mono remains in the existing request terminal and utilities; retain Bengali language support and natural wrapping.
+Bricolage Grotesque supplies display and body voice: a bold tightly tracked greeting, medium-weight section headings, 18px project titles, subordinate metadata. Intro width caps at 42ch. IBM Plex Mono remains in the existing request terminal and utilities; retain Bengali language support and natural wrapping.
 **The Short Intro Rule.** Keep the hero concise; let actual projects supply detail rather than adding narrative paragraphs.
 
 ## Layout

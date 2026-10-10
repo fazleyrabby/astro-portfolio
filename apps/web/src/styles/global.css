@@ -27,8 +27,8 @@
   --grid-line-strong: #c5d0d8;
 
   /* — Typography — */
-  --font-display: "DM Sans", system-ui, -apple-system, sans-serif;
-  --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-display: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
+  --font-sans: "Bricolage Grotesque", system-ui, -apple-system, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 
   /* — Timing — */

@@ -14,9 +14,9 @@ export default {
 		fontFamily: {
 			// One family site-wide. `serif` is kept as an alias so older markup using
 			// font-serif renders in the same sans face instead of falling back to a serif.
-			display: ['DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
-			serif: ['DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
-			sans: ['DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
+			display: ['Bricolage Grotesque', 'system-ui', '-apple-system', 'sans-serif'],
+			serif: ['Bricolage Grotesque', 'system-ui', '-apple-system', 'sans-serif'],
+			sans: ['Bricolage Grotesque', 'system-ui', '-apple-system', 'sans-serif'],
 			mono: ['IBM Plex Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
 		},
 		borderRadius: {

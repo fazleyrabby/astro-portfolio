@@ -6,12 +6,10 @@ const t = useTranslations(lang);
 const tp = useTranslatedPath(lang);
 ---
 
-<section id="hero" class="modern-hero" aria-labelledby="hero-title">
-  <!-- Hero-scoped Spotlight Pattern (Strictly confined to hero, full-width bleed) -->
+<section id="hero" class="modern-hero" data-halftone-host aria-labelledby="hero-title">
+  <!-- Hero-scoped number halftone (confined to the hero, full-width bleed). Waves run only while the pointer is over the hero. -->
   <div class="hero-spotlight-bg" aria-hidden="true">
-    <div class="hero-grid-base"></div>
-    <div class="hero-grid-spotlight"></div>
-    <div class="hero-spotlight-glow"></div>
+    <canvas class="halftone" data-halftone></canvas>
   </div>
 
   <div class="modern-hero-copy">
@@ -76,48 +74,6 @@ const tp = useTranslatedPath(lang);
     overflow: hidden;
     mask-image: linear-gradient(to bottom, transparent 0%, black 72px, black calc(100% - 60px), transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 72px, black calc(100% - 60px), transparent 100%);
-  }
-
-  .hero-grid-base {
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(circle, var(--grid-line) 1px, transparent 1px);
-    background-size: 28px 28px;
-    opacity: 0.45;
-    mask-image: radial-gradient(ellipse 85% 75% at 50% 50%, black 20%, transparent 85%);
-    -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 50%, black 20%, transparent 85%);
-  }
-
-  .hero-grid-spotlight {
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(circle, var(--accent) 1.25px, transparent 1.25px);
-    background-size: 28px 28px;
-    opacity: 0;
-    transition: opacity 280ms ease;
-    mask-image: radial-gradient(340px circle at var(--hero-mouse-x, -500px) var(--hero-mouse-y, -500px), black 0%, transparent 75%);
-    -webkit-mask-image: radial-gradient(340px circle at var(--hero-mouse-x, -500px) var(--hero-mouse-y, -500px), black 0%, transparent 75%);
-  }
-
-  .hero-spotlight-glow {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 320ms ease;
-    background: radial-gradient(380px circle at var(--hero-mouse-x, -500px) var(--hero-mouse-y, -500px), color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 70%);
-  }
-
-  :global(.modern-hero.has-mouse-moved) .hero-grid-spotlight,
-  :global(.modern-hero.has-mouse-moved) .hero-spotlight-glow {
-    opacity: 1;
-  }
-
-  @media (hover: none) {
-    .hero-grid-spotlight {
-      opacity: 0.65;
-      mask-image: radial-gradient(280px circle at 50% 35%, black 0%, transparent 75%);
-      -webkit-mask-image: radial-gradient(280px circle at 50% 35%, black 0%, transparent 75%);
-    }
   }
 
   @media print {
@@ -294,8 +250,8 @@ const tp = useTranslatedPath(lang);
   }
 
   @keyframes modern-arrive {
-    from { transform: translateY(12px); clip-path: inset(0 0 8px 0); }
-    to { transform: translateY(0); clip-path: inset(0); }
+    from { transform: translateY(12px); }
+    to { transform: translateY(0); }
   }
 
   /* The portrait leans toward the pointer; --tilt-* are set by the script below. */
@@ -320,8 +276,6 @@ const tp = useTranslatedPath(lang);
     object-fit: cover;
     object-position: center top;
     border-radius: inherit;
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
   }
 
   .portrait-glare {
@@ -344,10 +298,6 @@ const tp = useTranslatedPath(lang);
 
   :global(.dark) .portrait-tilt.is-tilting {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.45), 0 26px 48px -12px rgba(0, 0, 0, 0.7);
-  }
-
-  :global(.dark) .modern-portrait img {
-    border-color: rgba(255, 255, 255, 0.12);
   }
 
   :global(.dark) .portrait-glare {
@@ -400,53 +350,7 @@ const tp = useTranslatedPath(lang);
 </style>
 
 <script>
-  function initHeroSpotlight() {
-    const hero = document.getElementById("hero");
-    const bg = hero?.querySelector<HTMLElement>(".hero-spotlight-bg");
-    if (!hero || !bg) return;
-
-    let rafId: number | null = null;
-    let hasMoved = false;
-
-    const onMouseMove = (e: MouseEvent) => {
-      const rect = hero.getBoundingClientRect();
-      const navHeight = 64;
-
-      // Only illuminate when cursor is inside hero content area, strictly below the navbar
-      if (e.clientY < Math.max(navHeight, rect.top) || e.clientY > rect.bottom) {
-        if (hasMoved) {
-          hero.classList.remove("has-mouse-moved");
-          hasMoved = false;
-        }
-        return;
-      }
-
-      if (!hasMoved) {
-        hero.classList.add("has-mouse-moved");
-        hasMoved = true;
-      }
-
-      const bgRect = bg.getBoundingClientRect();
-      const x = e.clientX - bgRect.left;
-      const y = e.clientY - bgRect.top;
-
-      if (!rafId) {
-        rafId = requestAnimationFrame(() => {
-          hero.style.setProperty("--hero-mouse-x", `${x}px`);
-          hero.style.setProperty("--hero-mouse-y", `${y}px`);
-          rafId = null;
-        });
-      }
-    };
-
-    const onMouseLeave = () => {
-      hero.classList.remove("has-mouse-moved");
-      hasMoved = false;
-    };
-
-    window.addEventListener("mousemove", onMouseMove, { passive: true });
-    hero.addEventListener("mouseleave", onMouseLeave);
-  }
+  import { initHalftones } from "../../scripts/number-halftone";
 
   function initPortraitTilt() {
     const card = document.querySelector<HTMLElement>("#hero [data-tilt]");
@@ -483,7 +387,7 @@ const tp = useTranslatedPath(lang);
   }
 
   const initHero = () => {
-    initHeroSpotlight();
+    initHalftones();
     initPortraitTilt();
   };
 

@@ -150,6 +150,9 @@ const {
         // Exclude bots, crawlers, and automated headless scripts
         if (!isLikelyHuman()) return;
 
+        // Local development has no /api/track function and should not report to production
+        if (["localhost", "127.0.0.1", "[::1]"].includes(location.hostname)) return;
+
         // Exclude admin, owner, or explicitly ignored sessions
         try {
           if (

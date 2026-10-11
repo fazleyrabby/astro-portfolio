@@ -10,7 +10,8 @@ interface Props {
 const { title, lede, kicker, motif } = Astro.props;
 ---
 
-<header class="modern-page-header">
+<header class="modern-page-header" data-halftone-host>
+  <canvas class="halftone" data-halftone aria-hidden="true"></canvas>
   <div class="modern-header-inner">
     {kicker && <p class="modern-header-kicker">{kicker}</p>}
     <h1 class="modern-header-title">{title}</h1>
@@ -22,6 +23,8 @@ const { title, lede, kicker, motif } = Astro.props;
 
 <style>
   .modern-page-header {
+    position: relative;
+    overflow: hidden;
     border-bottom: 1px solid var(--border);
     background: var(--bg-base);
     padding: 48px 0 36px;
@@ -31,6 +34,7 @@ const { title, lede, kicker, motif } = Astro.props;
     width: min(900px, calc(100% - 48px));
     margin: 0 auto;
     position: relative;
+    z-index: 1;
     animation: modern-header-arrive 600ms var(--ease-out-expo) both;
   }
   @keyframes modern-header-arrive {
@@ -83,3 +87,10 @@ const { title, lede, kicker, motif } = Astro.props;
     .modern-header-inner { animation: none !important; }
   }
 </style>
+
+<script>
+  import { initHalftones } from "../../scripts/number-halftone";
+
+  initHalftones();
+  document.addEventListener("astro:page-load", initHalftones);
+</script>

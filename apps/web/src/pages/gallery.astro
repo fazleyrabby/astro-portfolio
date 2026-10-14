@@ -1,7 +1,8 @@
 ---
 Astro.response.headers.set("Cache-Control", "max-age=604800");
 import { Image } from "@unpic/astro";
-import MainLayout from "@layouts/MainLayout.astro";
+import SheetLayout from "@layouts/SheetLayout.astro";
+import PageHeader from "@components/sheet/PageHeader.astro";
 import { v2 as cloudinary } from "cloudinary";
 import ImagePopup from "@components/ImagePopup.astro";
 const env = import.meta.env;
@@ -20,11 +21,9 @@ const images = await cloudinary.search
     .execute();
 ---
 
-<MainLayout title="Photography">
-    <main class="gallery-container">
-        <p class="text-sm text-[var(--text-secondary)] text-center mb-8 leading-relaxed">
-            Some random shots I have taken on various trips. Mostly using my smart phone!
-        </p>
+<SheetLayout title="Photography">
+    <PageHeader title="Gallery" lede="Some random shots I have taken on various trips, mostly on my phone." />
+    <main class="gallery-container gallery-ruled">
 
         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
             {images.total_count > 0 && images.resources.map((img) => (
@@ -45,7 +44,7 @@ const images = await cloudinary.search
             (These images are hosted on Cloudinary)
         </p>
     </main>
-</MainLayout>
+</SheetLayout>
 
 <style>
   .gallery-container {

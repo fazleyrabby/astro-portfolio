@@ -1,0 +1,209 @@
+/* Ruled Sheet: content inside older pages, brought into the sheet's vocabulary.
+   Everything is scoped to body.sheet and overrides the pages' own scoped styles. */
+
+/* --- Page bodies: ruled from the header, aligned to the sheet padding --- */
+body.sheet :is(.projects-page, .experiments-page, .posts-page, .about-page, .uses-page, .resources-container,
+  .journey-layout, .gallery-container, .case-study-page, .article-page, .v3-workbench-container, .nf) {
+  position: relative;
+  padding: 32px var(--pad) 56px;
+  width: auto;
+  max-width: none;
+  margin: 0;
+}
+body.sheet :is(.projects-page, .experiments-page, .posts-page, .about-page, .uses-page, .resources-container, .gallery-ruled)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  height: 1px;
+  background: var(--line);
+  transform: translateX(-50%);
+}
+body.sheet :is(.projects-page-container, .experiments-container, .posts-container, .about-container, .uses-container,
+  .case-study-container, .article-container, .nf-container) {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+/* Pages that bring their own header need room under the floating nav. */
+body.sheet :is(.journey-layout, .gallery-container, .case-study-page, .article-page, .v3-workbench-container, .nf) { padding-top: 104px; }
+
+/* --- Eyebrows / kickers: not part of the sheet --- */
+body.sheet :is(.page-kicker, .journey-kicker, .post-badge, .journey-layout .hero-meta) { display: none; }
+
+/* --- Actions: flat pills everywhere, no keycap lip --- */
+body.sheet :is(.btn-primary, .btn-ghost, .btn-secondary, .submit-btn, .journey-card-btn, .action-btn--primary, .action-btn--ghost) {
+  margin-bottom: 0;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  box-shadow: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  transform: none;
+}
+body.sheet :is(.btn-primary, .submit-btn, .journey-card-btn, .action-btn--primary) {
+  background: var(--text-primary);
+  color: var(--bg-base);
+  border: 0;
+  filter: none;
+  opacity: 1;
+}
+body.sheet :is(.btn-primary, .submit-btn, .journey-card-btn, .action-btn--primary):hover {
+  background: color-mix(in srgb, var(--text-primary) 86%, var(--bg-base));
+  color: var(--bg-base);
+  box-shadow: none;
+  transform: none;
+}
+body.sheet :is(.btn-ghost, .btn-secondary, .action-btn--ghost) {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--line);
+}
+body.sheet :is(.btn-ghost, .btn-secondary, .action-btn--ghost):hover { border-color: var(--text-muted); background: transparent; box-shadow: none; transform: none; }
+body.sheet :is(.btn-primary, .btn-ghost, .btn-secondary, .submit-btn, .journey-card-btn, .action-btn--primary, .action-btn--ghost):active {
+  transform: scale(0.97);
+  box-shadow: none;
+}
+
+/* --- Tags: plain muted text, no chips --- */
+body.sheet :is(.tag, .tech-pill) {
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 0;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-muted);
+}
+body.sheet :is(.project-card-tags, .card-tags, .post-tags) { gap: 2px 12px; }
+
+/* --- Project + experiment cards: image, then text on the page. No boxes. --- */
+body.sheet :is(.projects-grid, .experiments-grid) { gap: 36px 24px; }
+body.sheet :is(.project-card-modern, .experiment-card) {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  transform: none;
+}
+body.sheet :is(.project-card-modern, .experiment-card):hover { box-shadow: none; transform: none; border-color: transparent; }
+body.sheet :is(.project-thumb-frame, .card-thumb-container) {
+  padding: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-surface);
+  aspect-ratio: 4 / 3;
+  transform: none;
+}
+body.sheet .project-thumb-frame:hover { transform: none; }
+body.sheet :is(.project-thumb-frame, .card-thumb-container) img { border-radius: 0; transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1); }
+body.sheet :is(.project-card-modern, .experiment-card):hover :is(.project-thumb-frame, .card-thumb-container) img { transform: scale(1.04); }
+body.sheet :is(.project-card-body, .card-body) { padding: 14px 0 0; }
+body.sheet :is(.project-card-meta, .card-meta) {
+  margin-bottom: 6px;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-muted);
+}
+body.sheet :is(.project-card-meta, .card-meta) * { font-family: inherit; letter-spacing: 0; color: inherit; background: none; padding: 0; border: 0; }
+body.sheet :is(.project-card-title, .card-title) { margin: 0 0 6px; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+body.sheet :is(.project-card-desc, .card-desc) { font-size: 14px; line-height: 1.6; color: var(--text-secondary); }
+body.sheet :is(.project-card-links, .card-footer) { border: 0; padding-top: 10px; margin-top: 4px; }
+body.sheet .project-card-link { font-size: 13px; color: var(--text-muted); }
+body.sheet .project-card-link--primary { color: var(--text-primary); }
+body.sheet .card-thumb-overlay { display: none; }
+
+/* --- Experiments: intro note, figures and filters as quiet text --- */
+body.sheet .experiments-header { margin-bottom: 24px; }
+body.sheet .ai-callout { display: block; max-width: 60ch; margin: 0 0 20px; padding: 0; border: 0; background: none; backdrop-filter: none; }
+body.sheet .ai-callout-icon { display: none; }
+body.sheet .ai-callout-title { font-size: 14px; }
+body.sheet .ai-callout-desc { font-size: 14px; line-height: 1.6; color: var(--text-secondary); }
+body.sheet .experiments-stats { gap: 4px 14px; padding: 0; border: 0; }
+body.sheet .stat-num { font-family: var(--font-sans); font-size: 13.5px; font-weight: 600; }
+body.sheet .stat-label { font-size: 13px; color: var(--text-muted); }
+body.sheet .stat-divider { color: var(--line); }
+body.sheet .filter-wrapper { margin-bottom: 28px; }
+body.sheet .filter-chip {
+  margin-bottom: 0;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+body.sheet .filter-chip:hover { color: var(--text-primary); border-color: var(--text-muted); background: transparent; transform: none; box-shadow: none; }
+body.sheet .filter-chip.is-active, body.sheet .filter-chip.is-active:hover {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--bg-base);
+  transform: none;
+  box-shadow: none;
+}
+body.sheet .filter-count { font-family: var(--font-sans); font-size: 12.5px; }
+body.sheet .experiments-cta { border: 0; background: none; padding: 32px 0 0; }
+
+/* --- Blog index: featured post becomes the first, larger row --- */
+body.sheet .post-featured {
+  padding: 0 0 24px;
+  margin-bottom: 24px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+body.sheet .post-featured-title { font-size: 22px; font-weight: 600; letter-spacing: -0.015em; }
+body.sheet .post-featured .post-tags { display: none; }
+body.sheet .post-read-link { font-size: 13.5px; color: var(--text-primary); }
+body.sheet .archive-heading { font-size: 14px; font-weight: 600; margin-bottom: 8px; border: 0; padding: 0; }
+body.sheet .archive-item { padding: 12px 0; border-bottom: 1px solid var(--line); }
+body.sheet .archive-title { font-size: 15px; font-weight: 500; }
+body.sheet .archive-desc { font-size: 13.5px; }
+body.sheet .archive-date { font-family: var(--font-sans); font-size: 13px; color: var(--text-muted); }
+
+/* --- About: story link as a plain ruled row, contact without boxes --- */
+body.sheet .about-journey-card {
+  margin: 32px 0 0;
+  padding: 20px 0;
+  border: 0;
+  border-block: 1px solid var(--line);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+body.sheet .journey-card-title { font-size: 16px; font-weight: 600; }
+body.sheet .journey-card-desc { font-size: 14px; color: var(--text-secondary); }
+body.sheet .about-contact { border-top: 0; margin-top: 32px; padding-top: 0; }
+body.sheet .about-contact-title { font-size: 20px; font-weight: 600; }
+body.sheet .about-contact-form :is(input, textarea) { background: transparent; border-color: var(--line); }
+
+/* --- Resources: sections of plain rows --- */
+body.sheet .res-section + .res-section { margin-top: 32px; }
+body.sheet .res-list { list-style: none; margin: 0; padding: 0; }
+body.sheet .res-list li { border-top: 1px solid var(--line); }
+body.sheet .res-list li:first-child { border-top: 0; }
+body.sheet .res-list a { display: block; padding: 10px 0; font-size: 15px; color: var(--text-primary); text-decoration: none; transition: color 160ms ease; }
+body.sheet .res-list a:hover { color: var(--accent-text); }
+
+/* --- Prose pages (uses, about, articles) keep a readable measure --- */
+body.sheet :is(.uses-content, .about-content) .prose { max-width: 65ch; }
+
+/* Gallery now has a PageHeader above it, so it only needs the normal gap. */
+body.sheet .gallery-ruled { padding-top: 32px; }
+
+@media (max-width: 640px) {
+  body.sheet :is(.projects-grid, .experiments-grid) { grid-template-columns: 1fr; }
+}

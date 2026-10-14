@@ -1,6 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
-import MainLayout from '@layouts/MainLayout.astro';
+import SheetLayout from "@layouts/SheetLayout.astro";
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../i18n/utils';
 
 export async function getStaticPaths() {
@@ -58,7 +58,7 @@ const getProjectMeta = (slug: string) => {
 const { arch, infra } = getProjectMeta(activeSlug);
 ---
 
-<MainLayout 
+<SheetLayout 
   title={`${activeData.title} — Case Study — Fazley Rabbi`}
   description={activeData.description}
   ogTitle={activeData.title}
@@ -204,7 +204,7 @@ const { arch, infra } = getProjectMeta(activeSlug);
 
     </div>
   </article>
-</MainLayout>
+</SheetLayout>
 
 <style>
   .case-study-page {

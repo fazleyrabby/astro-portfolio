@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import MainLayout from "@layouts/MainLayout.astro";
+import SheetLayout from "@layouts/SheetLayout.astro";
 
 // Real routes only — the "did you mean" suggestions are computed against these.
 const pages = [
@@ -22,7 +22,7 @@ const projects = (await getCollection("projects"))
 const routes = [...pages, ...projects];
 ---
 
-<MainLayout
+<SheetLayout
   title="404 Not Found — Fazley Rabbi"
   description="This route could not be found."
 >
@@ -80,7 +80,7 @@ const routes = [...pages, ...projects];
       </div>
     </div>
   </main>
-</MainLayout>
+</SheetLayout>
 
 <style>
   .nf {

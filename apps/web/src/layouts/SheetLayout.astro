@@ -4,11 +4,13 @@ import Head from "./Head.astro";
 import PillNav from "@components/sheet/PillNav.astro";
 import "../styles/global.css";
 import "../styles/sheet.css";
+import "../styles/sheet-pages.css";
 import Analytics from "@vercel/analytics/astro";
 import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
 import { profile } from "../data/profile";
 
-const { title, description, lang = getLangFromUrl(Astro.url) } = Astro.props;
+// Everything except lang/bodyClass/altUrl/designContract is forwarded to <Head> (title, og:*, article:*).
+const { lang = getLangFromUrl(Astro.url), bodyClass, altUrl, designContract, ...headProps } = Astro.props;
 const year = new Date().getFullYear();
 const t = useTranslations(lang);
 const tp = useTranslatedPath(lang);
@@ -22,8 +24,8 @@ const more = [
 ---
 
 <html lang={lang}>
-  <Head {title} {description} />
-  <body class="sheet font-sans antialiased">
+  <Head {...headProps} />
+  <body class:list={["sheet font-sans antialiased", bodyClass]} data-api-url={import.meta.env.PUBLIC_API_URL || "https://cms.fazleyrabbi.xyz"}>
     <Analytics />
     <PillNav />
     <div class="sheet-frame">

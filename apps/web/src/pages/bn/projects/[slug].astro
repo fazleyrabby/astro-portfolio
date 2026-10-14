@@ -1,6 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
-import MainLayout from '@layouts/MainLayout.astro';
+import SheetLayout from "@layouts/SheetLayout.astro";
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
 import { Image } from 'astro:assets';
 
@@ -65,7 +65,7 @@ const getProjectMeta = (slug: string) => {
 const { arch, infra } = getProjectMeta(activeSlug);
 ---
 
-<MainLayout 
+<SheetLayout 
   title={`${activeData.title} — ফজলে রাব্বি`}
   description={activeData.description}
   ogTitle={activeData.title}
@@ -362,7 +362,7 @@ const { arch, infra } = getProjectMeta(activeSlug);
     </section>
 
   </main>
-</MainLayout>
+</SheetLayout>
 
 <script is:inline>
   (function() {

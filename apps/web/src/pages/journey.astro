@@ -1,5 +1,5 @@
 ---
-import MainLayout from "@layouts/MainLayout.astro";
+import SheetLayout from "@layouts/SheetLayout.astro";
 import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
@@ -7,7 +7,7 @@ const t = useTranslations(lang);
 const tp = useTranslatedPath(lang);
 ---
 
-<MainLayout 
+<SheetLayout 
   title="My Journey — Fazley Rabbi" 
   description="From early computing memories and custom ROM tinkering to backend engineering with Laravel — my personal and professional tech journey."
   ogImage="/images/journey-hero.png"
@@ -329,7 +329,7 @@ const tp = useTranslatedPath(lang);
       </div>
     </main>
   </div>
-</MainLayout>
+</SheetLayout>
 
 <style>
   /* ============================================

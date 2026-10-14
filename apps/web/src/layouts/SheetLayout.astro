@@ -1,0 +1,60 @@
+---
+// Ruled Sheet shell: pill nav, one framed column, footer inside the frame.
+import Head from "./Head.astro";
+import PillNav from "@components/sheet/PillNav.astro";
+import "../styles/global.css";
+import "../styles/sheet.css";
+import Analytics from "@vercel/analytics/astro";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
+import { profile } from "../data/profile";
+
+const { title, description, lang = getLangFromUrl(Astro.url) } = Astro.props;
+const year = new Date().getFullYear();
+const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
+// Secondary pages live in the footer so the pill nav stays short.
+const more = [
+  { href: "/journey/", label: t("nav.journey") || "Journey" },
+  { href: "/uses/", label: t("nav.uses") || "Uses" },
+  { href: "/gallery/", label: t("nav.gallery") || "Gallery" },
+  { href: "/resources/", label: t("nav.resources") || "Resources" },
+];
+---
+
+<html lang={lang}>
+  <Head {title} {description} />
+  <body class="sheet font-sans antialiased">
+    <Analytics />
+    <PillNav />
+    <div class="sheet-frame">
+      <slot />
+      <footer class="sheet-section sheet-rule sheet-footer">
+        <nav class="sheet-footer-more" aria-label="More pages">
+          {more.map((m) => <a href={tp(m.href)}>{m.label}</a>)}
+        </nav>
+        <span>© {year} {profile.shortName}</span>
+        <span class="sheet-footer-links">
+          {profile.socials.filter((s) => s.id !== "email").map((s) => (
+            <a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>
+          ))}
+        </span>
+      </footer>
+    </div>
+  </body>
+</html>
+
+<style>
+  .sheet-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .sheet-footer-more { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 4px 18px; margin-bottom: 12px; font-size: 14px; }
+  .sheet-footer-more a { color: var(--text-secondary); }
+  .sheet-footer-links { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+  .sheet-footer a { color: var(--text-muted); text-decoration: none; }
+  .sheet-footer a:hover { color: var(--text-primary); }
+</style>

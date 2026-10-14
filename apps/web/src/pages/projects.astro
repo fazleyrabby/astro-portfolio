@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
-import MainLayout from "@layouts/MainLayout.astro";
-import PortBanner from "@components/port/PortBanner.astro";
+import SheetLayout from "@layouts/SheetLayout.astro";
+import PortBanner from "@components/sheet/PageHeader.astro";
 import { getLangFromUrl, useTranslations, useTranslatedPath } from "@i18n/utils";
 import { Image } from "astro:assets";
 
@@ -21,13 +21,18 @@ const mainProjects = projects.filter((p) => p.data.category !== "experimental");
 const PAINT = ["#e8604c", "#f4b63f", "#2d8f8a", "#3f6fb5", "#f08a4b", "#7fb069"];
 ---
 
-<MainLayout title="Projects — Fazley Rabbi">
+<SheetLayout title="Projects — Fazley Rabbi">
   <PortBanner
     title="Projects"
     kicker="The container yard"
     lede="Production systems and products I've designed, built and kept running."
     motif="yard"
-  />
+  >
+    <a class="sheet-pill sheet-pill--ghost projects-exp-link" href={tp("/experiments/")}>
+      {lang === "bn" ? "এক্সপেরিমেন্ট ও সাইড প্রজেক্ট" : "Experiments & side projects"}
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+    </a>
+  </PortBanner>
   <main class="projects-page">
     <div class="projects-page-container">
 
@@ -109,11 +114,12 @@ const PAINT = ["#e8604c", "#f4b63f", "#2d8f8a", "#3f6fb5", "#f08a4b", "#7fb069"]
 
     </div>
   </main>
-</MainLayout>
+</SheetLayout>
 
 
 
 <style>
+  .projects-exp-link { margin-top: 18px; }
   .projects-page {
     padding: 48px 0 64px;
   }

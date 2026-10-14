@@ -1,6 +1,6 @@
 ---
-import MainLayout from "@layouts/MainLayout.astro";
-import PortBanner from "@components/port/PortBanner.astro";
+import SheetLayout from "@layouts/SheetLayout.astro";
+import PortBanner from "@components/sheet/PageHeader.astro";
 import { getCollection } from "astro:content";
 
 const allResources = await getCollection("resources");
@@ -17,7 +17,7 @@ const sections = [
 const getResources = (id) => allResources.find((r) => r.id === id)?.data || [];
 ---
 
-<MainLayout title="Resources">
+<SheetLayout title="Resources">
     <PortBanner title="Resources" kicker="The harbor library" lede="A curated collection of helpful resources and inspirations." motif="bay" />
     <main class="resources-container">
 
@@ -39,7 +39,7 @@ const getResources = (id) => allResources.find((r) => r.id === id)?.data || [];
             ))}
         </div>
     </main>
-</MainLayout>
+</SheetLayout>
 
 <style>
   .resources-container {

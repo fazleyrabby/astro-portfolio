@@ -1,38 +1,194 @@
 ---
-import MainLayout from "@layouts/MainLayout.astro";
-import "../styles/modern-home.css";
-import ModernHero from "@components/home/ModernHero.astro";
-import ProjectsGrid from "@components/home/ProjectsGrid.astro";
-import ExperienceTimeline from "@components/home/ExperienceTimeline.astro";
-import SkillsSection from "@components/home/SkillsSection.astro";
-import LatestNotes from "@components/home/LatestNotes.astro";
-import ContactCTA from "@components/ContactCTA.astro";
+import { getCollection } from "astro:content";
+import SheetLayout from "@layouts/SheetLayout.astro";
+import Row from "@components/sheet/Row.astro";
 import RequestRule from "@components/home/RequestRule.astro";
-import HarborStrip from "@components/home/HarborStrip.astro";
+import { getLatestPosts, getAllPosts } from "@lib/supabase-cache";
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
+import { profile } from "../data/profile";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
+const bn = lang === "bn";
+
+const allProjects = (await getCollection("projects")).filter(
+  (p) => (p.data.lang || "en") === lang && !p.data.hidden && p.data.category !== "experimental",
+);
+const projects = [...allProjects].sort((a, b) => (a.data.position ?? 999) - (b.data.position ?? 999)).slice(0, 3);
+
+const experiences = (await getCollection("experiences"))
+  .filter((e) => (e.data.lang || "en") === lang)
+  .sort((a, b) => new Date(b.data.timeline ?? 0).getTime() - new Date(a.data.timeline ?? 0).getTime());
+
+const posts = await getLatestPosts(lang, 4);
+const postCount = (await getAllPosts(lang)).length;
+
+const glance = [
+  { value: profile.experience.claim.replace(/\s*years?/i, ""), label: bn ? "বছরের অভিজ্ঞতা" : "Years of experience" },
+  { value: String(allProjects.length), label: bn ? "প্রোডাকশন প্রজেক্ট" : "Production projects" },
+  { value: String(postCount), label: bn ? "প্রকাশিত লেখা" : "Articles written" },
+];
+const fmt = (d: string) => new Date(d).toLocaleDateString(bn ? "bn-BD" : "en-US", { month: "short", year: "numeric" });
 ---
 
-<MainLayout title="Fazley Rabbi — Backend Engineer (Laravel)" bodyClass="modern-home" designContract="THESIS: Work within easy reach; compact split intro replaces the full-height harbor. OWN-WORLD: Cool white and charcoal surfaces, Bricolage Grotesque, sea teal actions, flat project captions, 14px imagery corners. STORY: Understand the engineer, inspect real projects, explore career and capabilities, read four posts, contact. FIRST VIEWPORT: 900px centered canvas; compact greeting and 104px portrait; work starts within the first viewport. FORM: User-approved reference synthesis: compact portfolio, fine system lines, charcoal dark mode; seed d1e1a1e0 overridden by pinned direction. FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance">
-  <main class="port-home">
-    <ModernHero />
-    <RequestRule />
-
-    <div id="cargo" class="home-sheet production-sheet">
-      <div id="work"><ProjectsGrid /></div>
-
+<SheetLayout title="Fazley Rabbi — Backend Engineer (Laravel)">
+<main>
+  <section id="hero" class="sheet-section hero">
+    <img class="hero-avatar" src="/me.webp" alt={profile.shortName} width="64" height="64" loading="eager" decoding="async" />
+    <h1>
+      {bn ? "হ্যালো, আমি ফজলে।" : "Hello, I’m Fazley."}
+      <span>{bn ? <>আমি একজন <b>ব্যাকএন্ড ইঞ্জিনিয়ার</b>, পেমেন্ট সিস্টেম ও API তৈরি করি।</> : <>I’m a <b>backend engineer</b> building payment systems &amp; APIs.</>}</span>
+    </h1>
+    <div class="hero-actions">
+      <a class="sheet-pill sheet-pill--solid" href={`mailto:${profile.email}`} data-send-request>
+        {bn ? "কথা বলি" : "Let’s talk"}
+      </a>
+      <p class="hero-status">
+        <strong>{bn ? "নতুন কাজের জন্য প্রস্তুত" : "Open to backend roles"}</strong>
+        <span>{bn ? "রিমোট · UTC+6" : `Remote · ${profile.location.timezone}`}</span>
+      </p>
     </div>
+    <div class="hero-trace"><RequestRule /></div>
+  </section>
 
-    <div id="capabilities" class="home-sheet capabilities-sheet">
-      <SkillsSection />
-    </div>
+  <section class="sheet-section" style="--i: 1">
+    <h2 class="sheet-label">{bn ? "এক নজরে" : "At a glance"}</h2>
+    <dl class="glance">
+      {glance.map((g) => (
+        <div><dt>{g.label}</dt><dd>{g.value}</dd></div>
+      ))}
+    </dl>
+  </section>
 
-    <div id="learning-to-ship" class="home-sheet career-sheet">
-      <ExperienceTimeline />
+  <section class="sheet-section" style="--i: 2">
+    <div class="sheet-head">
+      <h2 class="sheet-label">{bn ? "সাম্প্রতিক কাজ" : "Recent work"}</h2>
+      <a class="sheet-more" href={tp("/projects/")}>{t("projects.viewAll") || "All work"}</a>
     </div>
+    <div class="work">
+      {projects.map(({ data, slug }) => {
+        const hasCase = !!(data.problem || data.highlights?.length);
+        const href = hasCase ? tp(`/projects/${slug.replace(/-bn$/, "")}/`) : (data.live || data.github || tp("/projects/"));
+        return (
+          <a class="work-card" href={href}>
+            <span class="work-thumb">{data.thumbnail && <img src={data.thumbnail} alt="" loading="lazy" decoding="async" width="400" height="300" />}</span>
+            <span class="work-title">{data.title}</span>
+            <span class="work-tag">{data.tech?.slice(0, 2).join(" / ")}</span>
+          </a>
+        );
+      })}
+    </div>
+  </section>
 
-    <div id="lights-on" class="home-sheet writing-sheet">
-      <LatestNotes />
-      <ContactCTA />
+  <section class="sheet-section" style="--i: 3">
+    <h2 class="sheet-label">{bn ? "অভিজ্ঞতা" : "Experience"}</h2>
+    <ul class="sheet-list">
+      {experiences.map((e) => (
+        <Row title={e.data.role} sub={e.data.title} meta={`${e.data.from} – ${e.data.to}`} href={e.data.link && e.data.link !== "#" ? e.data.link : undefined} external />
+      ))}
+    </ul>
+  </section>
+
+  <section class="sheet-section" style="--i: 4">
+    <div class="sheet-head">
+      <h2 class="sheet-label">{t("nav.blog") || "Writing"}</h2>
+      <a class="sheet-more" href={tp("/posts/")}>{bn ? "সব লেখা" : "All writing"}</a>
     </div>
-    <div class="port-end"><HarborStrip /></div>
-  </main>
-</MainLayout>
+    {posts.length === 0 ? (
+      <p class="muted">{t("posts.empty")}</p>
+    ) : (
+      <ul class="sheet-list">
+        {posts.map((p) => <Row title={p.title} href={tp(`/posts/${p.slug}/`)} meta={p.published_at ? fmt(p.published_at) : undefined} />)}
+      </ul>
+    )}
+  </section>
+
+  <section class="sheet-section contact" style="--i: 5">
+    <h2 class="sheet-label">{bn ? "যোগাযোগ" : "Get in touch"}</h2>
+    <p class="muted">{profile.availability.detail}</p>
+    <div class="hero-actions">
+      <a class="sheet-pill sheet-pill--solid" href={`mailto:${profile.email}`}>{profile.email}</a>
+      <a class="sheet-pill sheet-pill--ghost" href={tp("/resume/")}>
+        {t("nav.resume") || "Resume"}
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+      </a>
+    </div>
+  </section>
+</main>
+</SheetLayout>
+
+<style>
+  .hero { padding-top: 112px; padding-bottom: 36px; }
+  /* Soft teal wash at the very top; fully faded before the headline. Wider than the frame. */
+  .hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 50%;
+    width: min(1200px, 100vw);
+    height: 300px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse 60% 100% at 50% 0%, rgb(var(--accent-rgb) / 0.08), transparent 100%);
+    pointer-events: none;
+  }
+  :global(.dark) .hero::after {
+    background: radial-gradient(ellipse 60% 100% at 50% 0%, rgb(var(--accent-rgb) / 0.11), transparent 100%);
+  }
+  .hero { isolation: isolate; }
+  .hero-avatar {
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 28px;
+    border-radius: 16px;
+    object-fit: cover;
+    object-position: center top;
+  }
+  h1 {
+    margin: 0 0 28px;
+    font-size: clamp(1.9rem, 5vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    color: var(--text-primary);
+    text-wrap: balance;
+  }
+  h1 span { display: block; color: var(--text-muted); }
+  h1 b { font-weight: 600; color: var(--text-primary); }
+  .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+  .hero-status { margin: 0; display: flex; flex-direction: column; font-size: 12.5px; line-height: 1.35; }
+  .hero-status strong { font-weight: 500; color: var(--text-primary); }
+  .hero-status span { color: var(--text-muted); }
+  .hero-trace { margin-top: 44px; }
+
+  .glance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0; }
+  .glance div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 4px; }
+  .glance dd { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .glance dt { font-size: 13px; color: var(--text-muted); }
+
+  .sheet-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .sheet-more { font-size: 13px; color: var(--text-muted); text-decoration: none; }
+  .sheet-more:hover { color: var(--text-primary); }
+
+  .work { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .work-card { display: flex; flex-direction: column; min-width: 0; color: inherit; text-decoration: none; }
+  .work-thumb { display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 8px; background: var(--bg-surface); }
+  .work-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .work-card:hover .work-thumb img { transform: scale(1.04); }
+  .work-title { margin-top: 10px; font-size: 13.5px; font-weight: 600; color: var(--text-primary); }
+  .work-tag { font-size: 12.5px; color: var(--text-muted); }
+
+  .sheet-list { list-style: none; margin: 0; padding: 0; }
+  .muted { margin: 0 0 18px; font-size: 14.5px; line-height: 1.6; color: var(--text-secondary); }
+
+  @media (max-width: 560px) {
+    .hero { padding-top: 96px; }
+    .work { grid-template-columns: 1fr 1fr; }
+    .glance dd { font-size: 26px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .work-thumb img { transition: none; }
+  }
+</style>

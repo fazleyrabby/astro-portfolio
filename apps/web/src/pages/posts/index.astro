@@ -1,6 +1,6 @@
 ---
-import MainLayout from "@layouts/MainLayout.astro";
-import PortBanner from "@components/port/PortBanner.astro";
+import SheetLayout from "@layouts/SheetLayout.astro";
+import PortBanner from "@components/sheet/PageHeader.astro";
 import { getAllPosts } from "@lib/supabase-cache";
 import {
   getLangFromUrl,
@@ -35,7 +35,7 @@ const featuredPost = publishedPosts[0];
 const archivePosts = publishedPosts.slice(1);
 ---
 
-<MainLayout title="Engineering Journal & Notes — Fazley Rabbi">
+<SheetLayout title="Engineering Journal & Notes — Fazley Rabbi">
   <PortBanner
     title="Blog"
     kicker="The lighthouse"
@@ -124,7 +124,7 @@ const archivePosts = publishedPosts.slice(1);
 
     </div>
   </main>
-</MainLayout>
+</SheetLayout>
 
 <style>
   .posts-page {

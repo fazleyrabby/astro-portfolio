@@ -115,7 +115,7 @@ const hops = ["client", "api", "queue", "db"];
     packet?.addEventListener("animationend", () => rule.classList.remove("is-running"));
 
     window.setTimeout(send, 650);
-    document.querySelectorAll<HTMLElement>("#hero .btn-primary").forEach((btn) => {
+    document.querySelectorAll<HTMLElement>("#hero .btn-primary, [data-send-request]").forEach((btn) => {
       btn.addEventListener("pointerenter", send);
       btn.addEventListener("focus", send);
     });

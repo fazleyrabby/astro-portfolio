@@ -1,0 +1,26 @@
+---
+// Inner-page header for the Ruled Sheet: title and one quiet line, nothing else.
+// Accepts the old PortBanner props so pages can swap over; kicker and motif are ignored.
+interface Props { title: string; lede?: string; kicker?: string; motif?: string }
+const { title, lede } = Astro.props;
+---
+
+<header class="sheet-section page-header">
+  <h1>{title}</h1>
+  {lede && <p>{lede}</p>}
+  <slot />
+</header>
+
+<style>
+  .page-header { padding-top: 112px; padding-bottom: 32px; }
+  h1 {
+    margin: 0;
+    font-size: clamp(1.9rem, 5vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    color: var(--text-primary);
+  }
+  p { margin: 10px 0 0; max-width: 56ch; font-size: 16px; line-height: 1.55; color: var(--text-muted); }
+  @media (max-width: 560px) { .page-header { padding-top: 96px; } }
+</style>

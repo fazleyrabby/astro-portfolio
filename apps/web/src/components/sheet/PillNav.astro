@@ -1,0 +1,86 @@
+---
+import { getLangFromUrl, useTranslations, useTranslatedPath } from "../../i18n/utils";
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const tp = useTranslatedPath(lang);
+const path = Astro.url.pathname.replace(/^\/bn/, "") || "/";
+const items = [
+  { href: "/", label: t("nav.home") || "Home" },
+  { href: "/projects/", label: t("nav.projects") || "Work" },
+  { href: "/posts/", label: t("nav.blog") || "Writing" },
+  { href: "/about/", label: t("nav.about") || "About" },
+  { href: "/resume/", label: t("nav.resume") || "Resume" },
+];
+// Experiments live under Projects, so that pill stays lit there too.
+const isActive = (href: string) =>
+  href === "/" ? path === "/" : path.startsWith(href.replace(/\/$/, "")) || (href === "/projects/" && path.startsWith("/experiments"));
+---
+
+<nav class="sheet-nav" aria-label="Primary">
+  {items.map((item) => (
+    <a href={tp(item.href)} aria-current={isActive(item.href) ? "page" : undefined}>{item.label}</a>
+  ))}
+  <span class="sheet-nav-sep" aria-hidden="true"></span>
+  <button type="button" class="sheet-nav-theme" data-sheet-theme aria-label="Toggle light/dark theme">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" /></svg>
+  </button>
+</nav>
+
+<style>
+  .sheet-nav {
+    position: fixed;
+    z-index: 50;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg-card);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -12px rgba(0, 0, 0, 0.18);
+    max-width: calc(100vw - 24px);
+  }
+  a, button {
+    display: inline-flex;
+    align-items: center;
+    height: 30px;
+    padding: 0 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    white-space: nowrap;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease;
+  }
+  a:hover, button:hover { color: var(--text-primary); }
+  a[aria-current="page"] { background: var(--bg-surface); color: var(--text-primary); font-weight: 500; }
+  .sheet-nav-sep { width: 1px; height: 16px; margin: 0 2px; background: var(--line); }
+  .sheet-nav-theme { padding: 0 9px; }
+  /* Narrow phones: the pill scrolls sideways rather than wrapping or clipping. */
+  @media (max-width: 520px) {
+    .sheet-nav { overflow-x: auto; scrollbar-width: none; }
+    .sheet-nav::-webkit-scrollbar { display: none; }
+    a, button { padding: 0 9px; font-size: 12.5px; flex-shrink: 0; }
+  }
+</style>
+
+<script>
+  const bind = () => {
+    document.querySelectorAll<HTMLButtonElement>("[data-sheet-theme]").forEach((btn) => {
+      if (btn.dataset.ready) return;
+      btn.dataset.ready = "true";
+      btn.addEventListener("click", () => {
+        const dark = document.documentElement.classList.toggle("dark");
+        try { localStorage.setItem("color-mode", dark ? "dark" : "light"); } catch (_) {}
+      });
+    });
+  };
+  bind();
+  document.addEventListener("astro:page-load", bind);
+</script>

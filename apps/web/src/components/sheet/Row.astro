@@ -1,0 +1,34 @@
+---
+// One ruled list row: title (and optional sub line) on the left, meta on the right.
+interface Props { href?: string; title: string; sub?: string; meta?: string; external?: boolean }
+const { href, title, sub, meta, external } = Astro.props;
+const Tag = href ? "a" : "div";
+---
+
+<li class="sheet-row">
+  <Tag class="sheet-row-main" href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
+    <span class="sheet-row-title">{title}</span>
+    {sub && <span class="sheet-row-sub">{sub}</span>}
+  </Tag>
+  {meta && <span class="sheet-row-meta">{meta}</span>}
+</li>
+
+<style>
+  .sheet-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 4px 20px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+  }
+  .sheet-row:first-child { border-top: 0; padding-top: 0; }
+  .sheet-row-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; color: inherit; text-decoration: none; }
+  .sheet-row-title { font-size: 15px; font-weight: 500; color: var(--text-primary); transition: color 160ms ease; }
+  a.sheet-row-main:hover .sheet-row-title { color: var(--accent-text); }
+  .sheet-row-sub { font-size: 13.5px; color: var(--text-secondary); }
+  .sheet-row-meta { font-size: 13px; color: var(--text-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  @media (max-width: 480px) {
+    .sheet-row { grid-template-columns: 1fr; }
+  }
+</style>

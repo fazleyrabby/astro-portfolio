@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
-import MainLayout from "@layouts/MainLayout.astro";
-import PortBanner from "@components/port/PortBanner.astro";
+import SheetLayout from "@layouts/SheetLayout.astro";
+import PortBanner from "@components/sheet/PageHeader.astro";
 import { getLangFromUrl, useTranslations, useTranslatedPath } from "@i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
@@ -23,7 +23,7 @@ const categories = [
 ];
 ---
 
-<MainLayout
+<SheetLayout
   title="Experiments & Creative Lab — Fazley Rabbi"
   description="Playable games, interactive 3D simulations, WebGL shaders, and creative coding experiments built for the web."
   ogTitle="Experiments & Creative Lab — Fazley Rabbi"
@@ -233,7 +233,7 @@ const categories = [
 
     </div>
   </main>
-</MainLayout>
+</SheetLayout>
 
 <script>
   function setupFilter() {

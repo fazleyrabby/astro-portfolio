@@ -1,10 +1,10 @@
 ---
-import MainLayout from "@layouts/MainLayout.astro";
-import PortBanner from "@components/port/PortBanner.astro";
+import SheetLayout from "@layouts/SheetLayout.astro";
+import PortBanner from "@components/sheet/PageHeader.astro";
 import { Content as UsesMarkdown } from "../content/uses.md";
 ---
 
-<MainLayout title="Setup & Workbench — Fazley Rabbi">
+<SheetLayout title="Setup & Workbench — Fazley Rabbi">
   <PortBanner title="Uses" kicker="The workbench" lede="The hardware, software and homelab I work with." motif="bay" />
   <main class="uses-page">
     <div class="uses-container">
@@ -16,7 +16,7 @@ import { Content as UsesMarkdown } from "../content/uses.md";
       </div>
     </div>
   </main>
-</MainLayout>
+</SheetLayout>
 
 <style>
   .uses-page {

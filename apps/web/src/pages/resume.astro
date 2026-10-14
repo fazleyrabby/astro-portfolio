@@ -1,23 +1,16 @@
 ---
-import MainLayout from '@layouts/MainLayout.astro';
+import SheetLayout from '@layouts/SheetLayout.astro';
+import PageHeader from '@components/sheet/PageHeader.astro';
 ---
 
-<MainLayout title="Resume — Fazley Rabbi">
+<SheetLayout title="Resume — Fazley Rabbi">
+  <PageHeader title="Resume" lede="Backend engineer · Laravel, payments and APIs.">
+    <button id="print-resume" class="sheet-pill sheet-pill--solid resume-print print-btn">
+      Print / save PDF
+    </button>
+  </PageHeader>
   <main class="resume-page">
     <div class="resume-container">
-
-      <!-- Header -->
-      <header class="resume-header reveal">
-        <div>
-          <h1 class="page-title">Resume</h1>
-        </div>
-        <div class="resume-actions">
-          <button id="print-resume" class="btn-primary resume-action-btn print-btn">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h10z"/></svg>
-            Print Resume
-          </button>
-        </div>
-      </header>
 
       <!-- CV Paper Body -->
       <div class="cv-card reveal">
@@ -217,7 +210,7 @@ import MainLayout from '@layouts/MainLayout.astro';
 
     </div>
   </main>
-</MainLayout>
+</SheetLayout>
 
 <script>
   function setupPrint() {
@@ -258,22 +251,20 @@ import MainLayout from '@layouts/MainLayout.astro';
 </script>
 
 <style>
-  .resume-page {
-    padding: 48px 0 64px;
+  /* Resume sits in the sheet column; its own rules replace the old card frame. */
+  .resume-page { position: relative; padding: 32px var(--pad) 48px; }
+  .resume-page::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 100vw;
+    height: 1px;
+    background: var(--line);
+    transform: translateX(-50%);
   }
-  .resume-container {
-    width: min(900px, calc(100% - 48px));
-    margin: 0 auto;
-    padding: 0;
-  }
-  @media (max-width: 640px) {
-    .resume-page {
-      padding: 36px 0 48px;
-    }
-    .resume-container {
-      width: calc(100% - 40px);
-    }
-  }
+  .resume-container { width: 100%; margin: 0; padding: 0; }
+  .resume-print { margin-top: 18px; border: 0; cursor: pointer; font-family: inherit; }
 
   .resume-header {
     display: flex;
@@ -302,10 +293,10 @@ import MainLayout from '@layouts/MainLayout.astro';
 
   /* CV Card Frame */
   .cv-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: clamp(1.5rem, 4vw, 3rem);
+    background: none;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
   }
 
   .cv-header {

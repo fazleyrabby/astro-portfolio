@@ -1,0 +1,116 @@
+/* Ruled Sheet: one narrow framed column, hairline rules between sections, monochrome UI.
+   Scoped to body.sheet so it can be trialled page by page. */
+body.sheet {
+  --bg-base: #ffffff;
+  --bg-card: #ffffff;
+  --bg-surface: #f4f5f6;
+  --text-primary: #111315;
+  --text-secondary: #5d646b;
+  --text-muted: #6b7279;
+  --line: #e6e8ea;
+  --accent: #0d6970;
+  --accent-rgb: 13 105 112;
+  --accent-text: #0d6970;
+  --border: var(--line);
+  --sheet-w: 800px;
+  --pad: 36px;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  overflow-x: clip;
+  color-scheme: light;
+}
+.dark body.sheet {
+  --bg-base: #0f1113;
+  --bg-card: #16191c;
+  --bg-surface: #1a1d20;
+  --text-primary: #eceef0;
+  --text-secondary: #a3aab1;
+  --text-muted: #949ba2;
+  --line: #24282c;
+  --accent: #59c6b6;
+  --accent-rgb: 89 198 182;
+  --accent-text: #79d5c7;
+  color-scheme: dark;
+}
+/* Sheet pages have no scroll-reveal; content is simply there. */
+body.sheet .reveal { opacity: 1; transform: none; }
+body.sheet ::selection { background: rgb(var(--accent-rgb) / 0.18); }
+
+.sheet-frame {
+  position: relative;
+  width: min(var(--sheet-w), 100%);
+  min-height: 100vh;
+  margin-inline: auto;
+  border-inline: 1px solid var(--line);
+}
+
+/* Sections: hairline on top that runs the full viewport width. */
+.sheet-section {
+  position: relative;
+  padding: 32px var(--pad);
+}
+.sheet-section + .sheet-section::before,
+.sheet-rule::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  height: 1px;
+  background: var(--line);
+  transform: translateX(-50%);
+  animation: sheet-rule-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes sheet-rule-in { from { transform: translateX(-50%) scaleX(0); } }
+
+.sheet-label {
+  margin: 0 0 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.sheet-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sheet-pill svg { transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1); }
+.sheet-pill:hover svg { transform: translateX(2px); }
+.sheet-pill:active { transform: scale(0.97); }
+.sheet-pill--solid { background: var(--text-primary); color: var(--bg-base); }
+.sheet-pill--solid:hover { background: color-mix(in srgb, var(--text-primary) 86%, var(--bg-base)); color: var(--bg-base); }
+.sheet-pill--ghost { border: 1px solid var(--line); color: var(--text-primary); }
+.sheet-pill--ghost:hover { border-color: var(--text-muted); }
+.sheet-pill:focus-visible, .sheet-frame a:focus-visible, .sheet-nav a:focus-visible, .sheet-nav button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  body.sheet { --pad: 20px; }
+  .sheet-frame { border-inline: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet-section + .sheet-section::before, .sheet-rule::before { animation: none; }
+  .sheet-pill, .sheet-pill svg { transition: none; }
+}
+
+@media print {
+  .sheet-nav, .sheet-footer, .page-header { display: none !important; }
+  .sheet-frame { border: 0; width: 100%; }
+  .sheet-section::before, .resume-page::before { display: none; }
+}
+
+/* Older page containers line up with the sheet's inner edge. */
+body.sheet :is(.projects-page-container, .experiments-container, .posts-container, .about-container, .uses-container, .resources-container) {
+  width: calc(100% - 2 * var(--pad));
+}

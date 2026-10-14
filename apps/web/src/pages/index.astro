@@ -120,21 +120,22 @@ const fmt = (d: string) => new Date(d).toLocaleDateString(bn ? "bn-BD" : "en-US"
 
 <style>
   .hero { padding-top: 112px; padding-bottom: 36px; }
-  /* Soft teal wash at the very top; fully faded before the headline. Wider than the frame. */
+  /* Soft teal wash at the very top. The layer spans the viewport and the ellipse fades out
+     well inside it, so there are no hard edges on wide screens. */
   .hero::after {
     content: "";
     position: absolute;
     z-index: -1;
     top: 0;
     left: 50%;
-    width: min(1200px, 100vw);
-    height: 300px;
+    width: 100vw;
+    height: 340px;
     transform: translateX(-50%);
-    background: radial-gradient(ellipse 60% 100% at 50% 0%, rgb(var(--accent-rgb) / 0.08), transparent 100%);
+    background: radial-gradient(640px 320px at 50% 0%, rgb(var(--accent-rgb) / 0.08), transparent 100%);
     pointer-events: none;
   }
   :global(.dark) .hero::after {
-    background: radial-gradient(ellipse 60% 100% at 50% 0%, rgb(var(--accent-rgb) / 0.11), transparent 100%);
+    background: radial-gradient(640px 320px at 50% 0%, rgb(var(--accent-rgb) / 0.11), transparent 100%);
   }
   .hero { isolation: isolate; }
   .hero-avatar {

@@ -32,7 +32,7 @@ const fmt = (d: string) => new Date(d).toLocaleDateString(bn ? "bn-BD" : "en-US"
     <img class="hero-avatar" src="/me.webp" alt={profile.shortName} width="64" height="64" loading="eager" decoding="async" />
     <h1>
       {bn ? "হ্যালো, আমি ফজলে।" : "Hello, I’m Fazley."}
-      <span>{bn ? <>৫+ বছরের অভিজ্ঞ <b>ব্যাকএন্ড ইঞ্জিনিয়ার</b>, পেমেন্ট সিস্টেম ও API তৈরি করি।</> : <>I’m a <b>backend engineer</b> with {profile.experience.claim} building payment systems &amp; APIs.</>}</span>
+      <span>{bn ? <>৫+ বছরের অভিজ্ঞ <b>ব্যাকএন্ড ইঞ্জিনিয়ার</b>, সিস্টেম, প্ল্যাটফর্ম ও API তৈরি করি।</> : <>I’m a <b>backend engineer</b> with {profile.experience.claim} building systems, platforms, and APIs.</>}</span>
     </h1>
     <div class="hero-actions">
       <a class="sheet-pill sheet-pill--solid" href={`mailto:${profile.email}`} data-send-request>

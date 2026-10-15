@@ -3,6 +3,7 @@
 import Head from "./Head.astro";
 import PillNav from "@components/sheet/PillNav.astro";
 import VisitorTracking from "@components/VisitorTracking.astro";
+import VisitorCounter from "@components/VisitorCounter.astro";
 import "../styles/global.css";
 import "../styles/sheet.css";
 import "../styles/sheet-pages.css";
@@ -36,7 +37,10 @@ const more = [
         <nav class="sheet-footer-more" aria-label="More pages">
           {more.map((m) => <a href={tp(m.href)}>{m.label}</a>)}
         </nav>
-        <span>© {year} {profile.shortName}</span>
+        <span class="sheet-footer-meta">
+          <span>© {year} {profile.shortName}</span>
+          <VisitorCounter lang={lang} />
+        </span>
         <span class="sheet-footer-links">
           {profile.socials.filter((s) => s.id !== "email").map((s) => (
             <a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>
@@ -59,6 +63,21 @@ const more = [
   .sheet-footer-more { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 4px 18px; margin-bottom: 12px; font-size: 14px; }
   .sheet-footer-more a { color: var(--text-secondary); }
   .sheet-footer-links { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+  .sheet-footer-meta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; }
+  /* Visit count as plain footer text, matching the copyright line. */
+  .sheet-footer :global(.visitor-counter-wrapper) {
+    display: inline-flex;
+    gap: 5px;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .sheet-footer :global(.visitor-label) { font-family: inherit; font-size: inherit; letter-spacing: 0; text-transform: none; color: inherit; }
+  .sheet-footer :global(.visitor-count) { font-family: inherit; font-size: inherit; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
   .sheet-footer a { color: var(--text-muted); text-decoration: none; }
   .sheet-footer a:hover { color: var(--text-primary); }
 </style>

@@ -105,12 +105,7 @@ body.sheet ::selection { background: rgb(var(--accent-rgb) / 0.18); }
 }
 
 @media print {
-  .sheet-nav, .sheet-footer, .page-header { display: none !important; }
+  .sheet-nav, .sheet-footer, .sheet-page-header { display: none !important; }
   .sheet-frame { border: 0; width: 100%; }
   .sheet-section::before, .resume-page::before { display: none; }
-}
-
-/* Older page containers line up with the sheet's inner edge. */
-body.sheet :is(.projects-page-container, .experiments-container, .posts-container, .about-container, .uses-container, .resources-container) {
-  width: calc(100% - 2 * var(--pad));
 }

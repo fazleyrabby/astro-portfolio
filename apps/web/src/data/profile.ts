@@ -39,7 +39,7 @@ export const profile = {
     github: "https://github.com/fazleyrabby",
     linkedin: "https://linkedin.com/in/fazley-rabby",
     x: "https://x.com/itsfazley",
-    youtube: "https://youtube.com/@fazleyrabby",
+    youtube: "https://www.youtube.com/@codingwithfazley",
     codepen: "https://codepen.io/fazleyrabby",
   },
   resume: {
@@ -66,7 +66,7 @@ export const profile = {
     { id: "github", label: "GitHub", href: "https://github.com/fazleyrabby" },
     { id: "linkedin", label: "LinkedIn", href: "https://linkedin.com/in/fazley-rabby" },
     { id: "x", label: "X", href: "https://x.com/itsfazley" },
-    { id: "youtube", label: "YouTube", href: "https://youtube.com/@fazleyrabby" },
+    { id: "youtube", label: "YouTube", href: "https://www.youtube.com/@codingwithfazley" },
     { id: "codepen", label: "CodePen", href: "https://codepen.io/fazleyrabby" },
     { id: "email", label: "Email", href: "mailto:fazley111@gmail.com" },
   ],

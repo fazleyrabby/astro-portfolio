@@ -1,0 +1,75 @@
+---
+// Visitor telemetry: posts one record per session to /api/track (Vercel function),
+// falling back to the API host. Skips bots, owner/admin sessions and localhost.
+---
+
+<script>
+  import { collectVisitorTelemetry, isLikelyHuman } from "../lib/fingerprint";
+
+  const trackVisitor = async () => {
+    // Exclude bots, crawlers, and automated headless scripts
+    if (!isLikelyHuman()) return;
+
+    // Local development has no /api/track function and should not report to production
+    if (["localhost", "127.0.0.1", "[::1]"].includes(location.hostname)) return;
+
+    // Exclude admin, owner, or explicitly ignored sessions
+    try {
+      if (
+        localStorage.getItem("cms_token") ||
+        localStorage.getItem("ignore_stats") === "true" ||
+        localStorage.getItem("admin_mode") === "true"
+      ) {
+        return;
+      }
+    } catch (_) {}
+
+    const sessionKey = "portfolio_visitor_tracked";
+    if (sessionStorage.getItem(sessionKey)) return;
+
+    try {
+      const telemetry = await collectVisitorTelemetry();
+
+      // Primary: Vercel serverless function on same origin (100% serverless, zero VPS required)
+      let res = await fetch("/api/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(telemetry),
+        keepalive: true,
+      }).catch(() => null);
+
+      // Fallback if local dev or different environment
+      if (!res || !res.ok) {
+        const apiUrl =
+          document.body?.getAttribute("data-api-url") ||
+          "https://cms.fazleyrabbi.xyz";
+        res = await fetch(`${apiUrl}/track`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(telemetry),
+          keepalive: true,
+        }).catch(() => null);
+      }
+
+      if (res && res.ok) {
+        sessionStorage.setItem(sessionKey, "true");
+      }
+    } catch (_) {}
+  };
+
+  if (window.requestIdleCallback) {
+    requestIdleCallback(trackVisitor);
+  } else {
+    window.addEventListener("load", trackVisitor);
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    if (!sessionStorage.getItem("portfolio_visitor_tracked")) {
+      if (window.requestIdleCallback) {
+        requestIdleCallback(trackVisitor);
+      } else {
+        setTimeout(trackVisitor, 100);
+      }
+    }
+  });
+</script>

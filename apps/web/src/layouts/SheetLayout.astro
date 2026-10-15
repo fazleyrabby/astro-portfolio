@@ -2,6 +2,7 @@
 // Ruled Sheet shell: pill nav, one framed column, footer inside the frame.
 import Head from "./Head.astro";
 import PillNav from "@components/sheet/PillNav.astro";
+import VisitorTracking from "@components/VisitorTracking.astro";
 import "../styles/global.css";
 import "../styles/sheet.css";
 import "../styles/sheet-pages.css";
@@ -27,6 +28,7 @@ const more = [
   <Head {...headProps} />
   <body class:list={["sheet font-sans antialiased", bodyClass]} data-api-url={import.meta.env.PUBLIC_API_URL || "https://cms.fazleyrabbi.xyz"}>
     <Analytics />
+    <VisitorTracking />
     <PillNav />
     <div class="sheet-frame">
       <slot />

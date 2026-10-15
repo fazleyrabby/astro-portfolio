@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 import SheetLayout from "@layouts/SheetLayout.astro";
 import Row from "@components/sheet/Row.astro";
 import RequestRule from "@components/home/RequestRule.astro";
-import { getLatestPosts, getAllPosts } from "@lib/supabase-cache";
+import { getLatestPosts } from "@lib/supabase-cache";
 import { getLangFromUrl, useTranslations, useTranslatedPath } from "../i18n/utils";
 import { profile } from "../data/profile";
 
@@ -22,13 +22,7 @@ const experiences = (await getCollection("experiences"))
   .sort((a, b) => new Date(b.data.timeline ?? 0).getTime() - new Date(a.data.timeline ?? 0).getTime());
 
 const posts = await getLatestPosts(lang, 4);
-const postCount = (await getAllPosts(lang)).length;
 
-const glance = [
-  { value: profile.experience.claim.replace(/\s*years?/i, ""), label: bn ? "বছরের অভিজ্ঞতা" : "Years of experience" },
-  { value: String(allProjects.length), label: bn ? "প্রোডাকশন প্রজেক্ট" : "Production projects" },
-  { value: String(postCount), label: bn ? "প্রকাশিত লেখা" : "Articles written" },
-];
 const fmt = (d: string) => new Date(d).toLocaleDateString(bn ? "bn-BD" : "en-US", { month: "short", year: "numeric" });
 ---
 
@@ -38,7 +32,7 @@ const fmt = (d: string) => new Date(d).toLocaleDateString(bn ? "bn-BD" : "en-US"
     <img class="hero-avatar" src="/me.webp" alt={profile.shortName} width="64" height="64" loading="eager" decoding="async" />
     <h1>
       {bn ? "হ্যালো, আমি ফজলে।" : "Hello, I’m Fazley."}
-      <span>{bn ? <>আমি একজন <b>ব্যাকএন্ড ইঞ্জিনিয়ার</b>, পেমেন্ট সিস্টেম ও API তৈরি করি।</> : <>I’m a <b>backend engineer</b> building payment systems &amp; APIs.</>}</span>
+      <span>{bn ? <>৫+ বছরের অভিজ্ঞ <b>ব্যাকএন্ড ইঞ্জিনিয়ার</b>, পেমেন্ট সিস্টেম ও API তৈরি করি।</> : <>I’m a <b>backend engineer</b> with {profile.experience.claim} building payment systems &amp; APIs.</>}</span>
     </h1>
     <div class="hero-actions">
       <a class="sheet-pill sheet-pill--solid" href={`mailto:${profile.email}`} data-send-request>
@@ -53,15 +47,6 @@ const fmt = (d: string) => new Date(d).toLocaleDateString(bn ? "bn-BD" : "en-US"
   </section>
 
   <section class="sheet-section" style="--i: 1">
-    <h2 class="sheet-label">{bn ? "এক নজরে" : "At a glance"}</h2>
-    <dl class="glance">
-      {glance.map((g) => (
-        <div><dt>{g.label}</dt><dd>{g.value}</dd></div>
-      ))}
-    </dl>
-  </section>
-
-  <section class="sheet-section" style="--i: 2">
     <div class="sheet-head">
       <h2 class="sheet-label">{bn ? "সাম্প্রতিক কাজ" : "Recent work"}</h2>
       <a class="sheet-more" href={tp("/projects/")}>{t("projects.viewAll") || "All work"}</a>
@@ -81,7 +66,7 @@ const fmt = (d: string) => new Date(d).toLocaleDateString(bn ? "bn-BD" : "en-US"
     </div>
   </section>
 
-  <section class="sheet-section" style="--i: 3">
+  <section class="sheet-section" style="--i: 2">
     <h2 class="sheet-label">{bn ? "অভিজ্ঞতা" : "Experience"}</h2>
     <ul class="sheet-list">
       {experiences.map((e) => (
@@ -90,7 +75,7 @@ const fmt = (d: string) => new Date(d).toLocaleDateString(bn ? "bn-BD" : "en-US"
     </ul>
   </section>
 
-  <section class="sheet-section" style="--i: 4">
+  <section class="sheet-section" style="--i: 3">
     <div class="sheet-head">
       <h2 class="sheet-label">{t("nav.blog") || "Writing"}</h2>
       <a class="sheet-more" href={tp("/posts/")}>{bn ? "সব লেখা" : "All writing"}</a>
@@ -104,7 +89,7 @@ const fmt = (d: string) => new Date(d).toLocaleDateString(bn ? "bn-BD" : "en-US"
     )}
   </section>
 
-  <section class="sheet-section contact" style="--i: 5">
+  <section class="sheet-section contact" style="--i: 4">
     <h2 class="sheet-label">{bn ? "যোগাযোগ" : "Get in touch"}</h2>
     <p class="muted">{profile.availability.detail}</p>
     <div class="hero-actions">
@@ -164,10 +149,6 @@ const fmt = (d: string) => new Date(d).toLocaleDateString(bn ? "bn-BD" : "en-US"
   .hero-status span { color: var(--text-muted); }
   .hero-trace { margin-top: 44px; }
 
-  .glance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0; }
-  .glance div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 4px; }
-  .glance dd { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
-  .glance dt { font-size: 13px; color: var(--text-muted); }
 
   .sheet-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
   .sheet-more { font-size: 13px; color: var(--text-muted); text-decoration: none; }
@@ -187,7 +168,6 @@ const fmt = (d: string) => new Date(d).toLocaleDateString(bn ? "bn-BD" : "en-US"
   @media (max-width: 560px) {
     .hero { padding-top: 96px; }
     .work { grid-template-columns: 1fr 1fr; }
-    .glance dd { font-size: 26px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .work-thumb img { transition: none; }

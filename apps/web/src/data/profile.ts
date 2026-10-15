@@ -67,7 +67,6 @@ export const profile = {
     { id: "linkedin", label: "LinkedIn", href: "https://linkedin.com/in/fazley-rabby" },
     { id: "x", label: "X", href: "https://x.com/itsfazley" },
     { id: "youtube", label: "YouTube", href: "https://www.youtube.com/@codingwithfazley" },
-    { id: "codepen", label: "CodePen", href: "https://codepen.io/fazleyrabby" },
     { id: "email", label: "Email", href: "mailto:fazley111@gmail.com" },
   ],
 } as const;

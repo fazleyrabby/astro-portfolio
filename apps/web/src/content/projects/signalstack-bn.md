@@ -11,6 +11,6 @@ thumbnail: "/projects/signalstack.png"
 description: "Next-Gen AI Intelligence Terminal for real-time geopolitical and tech feed distillation."
 tech: ["Node.js", "NestJS", "Groq", "OpenRouter", "Redis", "Real-time AI"]
 status: "Ongoing"
-position: 2
+position: 3
 lang: bn
 ---
